@@ -59,7 +59,7 @@
 <body>
   <div id="root"></div>
   <script type="module">
-    import React, { useState, useMemo, useCallback } from 'react';
+    import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
     import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
     import htm from 'htm';
@@ -76,6 +76,154 @@
       marginBottom: 24,
     };
 
+    // --- Rate Picker ---
+
+    const PK = { w: 840, h: 280, ml: 55, mr: 20, mt: 20, mb: 35 };
+    const PL = PK.ml, PR = PK.w - PK.mr, PT = PK.mt, PB = PK.h - PK.mb;
+    const PW = PR - PL, PH = PB - PT;
+    const RMIN = 2.5, RMAX = 10.0;
+
+    function yearToX(yr) { return PL + ((yr - 1) / 29) * PW; }
+    function xToYear(x) { return Math.max(1, Math.min(30, Math.round(1 + ((x - PL) / PW) * 29))); }
+    function rateToY(r) { return PB - ((r - RMIN) / (RMAX - RMIN)) * PH; }
+    function yToRate(y) {
+      const raw = RMIN + ((PB - y) / PH) * (RMAX - RMIN);
+      return Math.max(RMIN, Math.min(RMAX, Math.round(raw * 4) / 4));
+    }
+
+    function clientToSVG(e, svgRef) {
+      const rect = svgRef.current.getBoundingClientRect();
+      return { x: (e.clientX - rect.left) * (PK.w / rect.width), y: (e.clientY - rect.top) * (PK.h / rect.height) };
+    }
+
+    function buildStepPath(cps) {
+      const sorted = [...cps].sort((a, b) => a.year - b.year);
+      let d = `M${yearToX(sorted[0].year)},${rateToY(sorted[0].rate)}`;
+      for (let i = 1; i < sorted.length; i++) {
+        d += ` L${yearToX(sorted[i].year)},${rateToY(sorted[i].rate)}`;
+      }
+      const last = sorted[sorted.length - 1];
+      d += ` L${yearToX(30)},${rateToY(last.rate)}`;
+      return d;
+    }
+
+    function RatePicker({ controlPoints, onChange, holdingYears }) {
+      const svgRef = useRef(null);
+      const dragIdx = useRef(null);
+      const dragMoved = useRef(false);
+
+      const sorted = useMemo(() => [...controlPoints].sort((a, b) => a.year - b.year), [controlPoints]);
+
+      const onPointerDown = useCallback((e, idx) => {
+        if (e.button !== 0) return; // left-click only
+        e.preventDefault();
+        e.stopPropagation();
+        dragIdx.current = idx;
+        dragMoved.current = false;
+        svgRef.current.setPointerCapture(e.pointerId);
+      }, []);
+
+      const onPointerMove = useCallback((e) => {
+        if (dragIdx.current === null) return;
+        dragMoved.current = true;
+        const pt = clientToSVG(e, svgRef);
+        const idx = dragIdx.current;
+        const cp = sorted[idx];
+        const newRate = yToRate(pt.y);
+        let newYear = cp.year;
+        if (idx !== 0 || cp.year !== 1) {
+          newYear = xToYear(pt.x);
+          if (newYear === 1 && idx !== 0) newYear = 2;
+          // prevent overlapping another point's year
+          for (let i = 0; i < sorted.length; i++) {
+            if (i !== idx && sorted[i].year === newYear) {
+              newYear = cp.year; // revert
+              break;
+            }
+          }
+        }
+        const updated = sorted.map((p, i) => i === idx ? { year: newYear, rate: newRate } : p);
+        onChange(updated);
+      }, [sorted, onChange]);
+
+      const onPointerUp = useCallback((e) => {
+        dragIdx.current = null;
+      }, []);
+
+      const onClick = useCallback((e) => {
+        if (dragMoved.current) { dragMoved.current = false; return; }
+        const pt = clientToSVG(e, svgRef);
+        if (pt.x < PL || pt.x > PR || pt.y < PT || pt.y > PB) return;
+        const yr = xToYear(pt.x);
+        if (sorted.some(p => p.year === yr)) return;
+        onChange([...sorted, { year: yr, rate: yToRate(pt.y) }]);
+      }, [sorted, onChange]);
+
+      const onRemove = useCallback((e, idx) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (sorted[idx].year === 1) return;
+        onChange(sorted.filter((_, i) => i !== idx));
+      }, [sorted, onChange]);
+
+      const gridYears = [1, 5, 10, 15, 20, 25, 30];
+      const gridRates = [3, 4, 5, 6, 7, 8, 9, 10];
+
+      return html`
+        <div style=${{ ...cardStyle, padding: '16px 16px 12px' }}>
+          <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, padding: '0 12px' }}>
+            <span style=${{ color: '#94a3b8', fontWeight: 500, fontSize: 14 }}>Mortgage Rate Schedule</span>
+            <span style=${{ color: '#64748b', fontSize: 12 }}>Click to add points \u00b7 drag to adjust \u00b7 right-click to remove</span>
+          </div>
+          <svg ref=${svgRef} viewBox="0 0 ${PK.w} ${PK.h}" style=${{ width: '100%', cursor: 'crosshair', userSelect: 'none' }}
+            onPointerMove=${onPointerMove} onPointerUp=${onPointerUp} onClick=${onClick}>
+            <!-- plot background -->
+            <rect x=${PL} y=${PT} width=${PW} height=${PH} fill="#0f172a" rx="4" />
+            <!-- grey zone beyond holding period -->
+            ${holdingYears < 30 && html`
+              <rect x=${yearToX(holdingYears + 1)} y=${PT} width=${PR - yearToX(holdingYears + 1)} height=${PH}
+                fill="rgba(100,116,139,0.15)" />
+            `}
+            <!-- grid lines -->
+            ${gridYears.map(yr => html`
+              <line key=${'gy' + yr} x1=${yearToX(yr)} y1=${PT} x2=${yearToX(yr)} y2=${PB}
+                stroke="#334155" strokeDasharray="3 3" />
+            `)}
+            ${gridRates.map(r => html`
+              <line key=${'gr' + r} x1=${PL} y1=${rateToY(r)} x2=${PR} y2=${rateToY(r)}
+                stroke="#334155" strokeDasharray="3 3" />
+            `)}
+            <!-- x-axis labels -->
+            ${gridYears.map(yr => html`
+              <text key=${'xl' + yr} x=${yearToX(yr)} y=${PB + 18} fill="#64748b" fontSize="11"
+                textAnchor="middle">${yr}</text>
+            `)}
+            <!-- y-axis labels -->
+            ${gridRates.map(r => html`
+              <text key=${'yl' + r} x=${PL - 8} y=${rateToY(r) + 4} fill="#64748b" fontSize="11"
+                textAnchor="end">${r}%</text>
+            `)}
+            <!-- step function path -->
+            <path d=${buildStepPath(sorted)} fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+            <!-- control points -->
+            ${sorted.map((cp, i) => html`
+              <circle key=${i} cx=${yearToX(cp.year)} cy=${rateToY(cp.rate)} r=${8}
+                fill="#f59e0b" stroke="#0f172a" strokeWidth=${2}
+                style=${{ cursor: 'grab' }}
+                onPointerDown=${(e) => onPointerDown(e, i)}
+                onContextMenu=${(e) => onRemove(e, i)} />
+            `)}
+            <!-- labels on points -->
+            ${sorted.map((cp, i) => html`
+              <text key=${'t' + i} x=${yearToX(cp.year)} y=${rateToY(cp.rate) - 14}
+                fill="#f8fafc" fontSize="11" fontWeight="600" textAnchor="middle"
+                style=${{ pointerEvents: 'none' }}>${cp.rate.toFixed(2)}%</text>
+            `)}
+          </svg>
+        </div>
+      `;
+    }
+
     function SliderInput({ label, value, onChange, min, max, step, format }) {
       return html`
         <div style=${{ marginBottom: 20 }}>
@@ -91,7 +239,7 @@
 
     function SummaryCards({ data }) {
       const cards = [
-        { label: 'Monthly Payment', value: formatCurrency(data.monthlyPayment), color: '#f59e0b' },
+        { label: 'Mo. Payment (Yr 1)', value: formatCurrency(data.monthlyPayment), color: '#f59e0b' },
         { label: 'Total Paid', value: formatCurrency(data.totalPaid), color: '#94a3b8' },
         { label: 'Total Interest', value: formatCurrency(data.totalInterest), color: '#ef4444' },
         { label: 'Home Value', value: formatCurrency(data.finalHomeValue), color: '#10b981' },
@@ -166,7 +314,7 @@
 
     function AmortizationTable({ schedule }) {
       const [open, setOpen] = useState(false);
-      const cols = ['Year', 'Begin Balance', 'Payment', 'Principal', 'Interest', 'End Balance', 'Home Value', 'Equity'];
+      const cols = ['Year', 'Rate', 'Mo. Payment', 'Begin Balance', 'Principal', 'Interest', 'End Balance', 'Home Value', 'Equity'];
       const thStyle = { padding: '8px 10px', textAlign: 'right', fontSize: 12, color: '#94a3b8', fontWeight: 600, borderBottom: '1px solid #334155', whiteSpace: 'nowrap' };
       const tdStyle = { padding: '7px 10px', textAlign: 'right', fontSize: 13, fontFamily: 'monospace', borderBottom: '1px solid rgba(51,65,85,0.5)' };
 
@@ -180,7 +328,7 @@
           </button>
           ${open && html`
             <div style=${{ overflowX: 'auto', marginTop: 16 }}>
-              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 880 }}>
                 <thead>
                   <tr>${cols.map((c, i) => html`<th key=${i} style=${{ ...thStyle, textAlign: i === 0 ? 'left' : 'right' }}>${c}</th>`)}</tr>
                 </thead>
@@ -188,8 +336,9 @@
                   ${schedule.map((row, i) => html`
                     <tr key=${i} style=${{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
                       <td style=${{ ...tdStyle, textAlign: 'left', color: '#f8fafc' }}>${row.year}</td>
+                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${row.rate.toFixed(2)}%</td>
+                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${formatCurrency(row.monthlyPayment)}</td>
                       <td style=${tdStyle}>${formatCurrency(row.beginningBalance)}</td>
-                      <td style=${tdStyle}>${formatCurrency(row.payment)}</td>
                       <td style=${{ ...tdStyle, color: '#10b981' }}>${formatCurrency(row.principal)}</td>
                       <td style=${{ ...tdStyle, color: '#ef4444' }}>${formatCurrency(row.interest)}</td>
                       <td style=${tdStyle}>${formatCurrency(row.endingBalance)}</td>
@@ -205,15 +354,31 @@
       `;
     }
 
+    const STORAGE_KEY = 'mortgage-calc-state';
+    const DEFAULTS = { price: 800000, downPct: 20, controlPoints: [{ year: 1, rate: 6.5 }], appreciation: 3, years: 10 };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return { ...DEFAULTS, ...JSON.parse(raw) };
+      } catch {}
+      return DEFAULTS;
+    }
+
     function App() {
-      const [price, setPrice] = useState(800000);
-      const [downPct, setDownPct] = useState(20);
-      const [rate, setRate] = useState(6.5);
-      const [appreciation, setAppreciation] = useState(3);
-      const [years, setYears] = useState(10);
+      const init = useMemo(loadState, []);
+      const [price, setPrice] = useState(init.price);
+      const [downPct, setDownPct] = useState(init.downPct);
+      const [controlPoints, setControlPoints] = useState(init.controlPoints);
+      const [appreciation, setAppreciation] = useState(init.appreciation);
+      const [years, setYears] = useState(init.years);
       const [chartTab, setChartTab] = useState('equity');
 
-      const result = useMemo(() => computeMortgage(price, downPct, rate, appreciation, years), [price, downPct, rate, appreciation, years]);
+      useEffect(() => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ price, downPct, controlPoints, appreciation, years }));
+      }, [price, downPct, controlPoints, appreciation, years]);
+
+      const result = useMemo(() => computeMortgage(price, downPct, controlPoints, appreciation, years), [price, downPct, controlPoints, appreciation, years]);
 
       const tabBtn = (id, label) => ({
         background: chartTab === id ? '#f59e0b' : 'rgba(255,255,255,0.06)',
@@ -237,9 +402,6 @@
             <${SliderInput} label="Down Payment" value=${downPct} onChange=${setDownPct}
               min=${0} max=${50} step=${5}
               format=${v => v + '% (' + formatCurrency(price * v / 100) + ')'} />
-            <${SliderInput} label="Mortgage Rate" value=${rate} onChange=${setRate}
-              min=${2.5} max=${10} step=${0.25}
-              format=${v => v.toFixed(3) + '%'} />
             <${SliderInput} label="Annual Appreciation" value=${appreciation} onChange=${setAppreciation}
               min=${0} max=${10} step=${0.5}
               format=${v => v.toFixed(1) + '%'} />
@@ -247,6 +409,8 @@
               min=${1} max=${30} step=${1}
               format=${v => v + ' year' + (v > 1 ? 's' : '')} />
           </div>
+
+          <${RatePicker} controlPoints=${controlPoints} onChange=${setControlPoints} holdingYears=${years} />
 
           <${SummaryCards} data=${result} />
 
@@ -262,7 +426,7 @@
           <${AmortizationTable} schedule=${result.schedule} />
 
           <p style=${{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 8 }}>
-            Assumes 30-year fixed mortgage. Excludes property tax, insurance, PMI, and closing costs.
+            Assumes 30-year mortgage with configurable rate schedule. Excludes property tax, insurance, PMI, and closing costs.
           </p>
         </div>
       `;

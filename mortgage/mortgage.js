@@ -11,24 +11,60 @@ export function formatAxisCurrency(v) {
 
 export function formatPercent(v, d = 1) { return v.toFixed(d) + '%'; }
 
-export function computeMortgage(housePrice, downPct, annualRate, appreciationRate, holdingYears) {
+export function resolveYearlyRates(rateInput, totalYears = 30) {
+  if (typeof rateInput === 'number') {
+    return Array.from({ length: totalYears }, () => rateInput);
+  }
+  const sorted = [...rateInput].sort((a, b) => a.year - b.year);
+  const rates = new Array(totalYears);
+  for (let y = 1; y <= totalYears; y++) {
+    // Find surrounding control points
+    let before = sorted[0];
+    let after = null;
+    for (const cp of sorted) {
+      if (cp.year <= y) before = cp;
+      else if (!after) after = cp;
+    }
+    if (!after || before.year === y) {
+      // At or past the last control point: use its rate
+      rates[y - 1] = before.rate;
+    } else {
+      // Linearly interpolate between before and after
+      const t = (y - before.year) / (after.year - before.year);
+      rates[y - 1] = before.rate + t * (after.rate - before.rate);
+    }
+  }
+  return rates;
+}
+
+export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears) {
   const downPayment = housePrice * downPct / 100;
   const loanAmount = housePrice - downPayment;
-  const r = annualRate / 100 / 12;
-  const n = 360; // 30-year fixed
-  const M = r === 0 ? loanAmount / n : loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  const yearlyRates = resolveYearlyRates(rateInput);
 
   const schedule = [];
   let balance = loanAmount;
 
   for (let year = 1; year <= holdingYears; year++) {
     const beginBal = balance;
+    const annualRate = yearlyRates[year - 1];
+    const r = annualRate / 100 / 12;
+    const remainingMonths = (30 - (year - 1)) * 12;
+
+    let M;
+    if (r === 0) {
+      M = balance / remainingMonths;
+    } else {
+      M = balance * (r * Math.pow(1 + r, remainingMonths)) / (Math.pow(1 + r, remainingMonths) - 1);
+    }
+
     let yearPrincipal = 0;
     let yearInterest = 0;
 
     for (let m = 0; m < 12; m++) {
+      if (balance <= 0) break;
       const intPmt = balance * r;
-      const prinPmt = M - intPmt;
+      const prinPmt = Math.min(M - intPmt, balance);
       yearInterest += intPmt;
       yearPrincipal += prinPmt;
       balance -= prinPmt;
@@ -40,6 +76,7 @@ export function computeMortgage(housePrice, downPct, annualRate, appreciationRat
 
     schedule.push({
       year,
+      monthlyPayment: M,
       beginningBalance: beginBal,
       payment: M * 12,
       principal: yearPrincipal,
@@ -47,10 +84,11 @@ export function computeMortgage(housePrice, downPct, annualRate, appreciationRat
       endingBalance: balance,
       homeValue,
       equity,
+      rate: annualRate,
     });
   }
 
-  const totalPaid = M * 12 * holdingYears;
+  const totalPaid = schedule.reduce((s, yr) => s + yr.payment, 0);
   const totalInterest = schedule.reduce((s, y) => s + y.interest, 0);
   const last = schedule[holdingYears - 1];
   const totalCashInvested = downPayment + totalPaid;
@@ -60,7 +98,7 @@ export function computeMortgage(housePrice, downPct, annualRate, appreciationRat
     : 0;
 
   return {
-    monthlyPayment: M,
+    monthlyPayment: schedule[0].payment / 12,
     downPayment,
     loanAmount,
     totalPaid,

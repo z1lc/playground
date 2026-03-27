@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeMortgage, formatCurrency, formatAxisCurrency, formatPercent } from './mortgage.js';
+import { computeMortgage, resolveYearlyRates, formatCurrency, formatAxisCurrency, formatPercent } from './mortgage.js';
 
 // Helper: independently compute monthly payment using the standard amortization formula
 function expectedMonthlyPayment(principal, annualRate) {
@@ -352,5 +352,163 @@ describe('formatPercent', () => {
   it('formats with specified decimals', () => {
     expect(formatPercent(3.456, 2)).toBe('3.46%');
     expect(formatPercent(0, 0)).toBe('0%');
+  });
+});
+
+// ─── 9. resolveYearlyRates ────────────────────────────────────────────────────
+
+describe('resolveYearlyRates', () => {
+  it('scalar input returns uniform 30-element array', () => {
+    const rates = resolveYearlyRates(6.5);
+    expect(rates).toHaveLength(30);
+    expect(rates.every(r => r === 6.5)).toBe(true);
+  });
+
+  it('single control point at year 1 fills all years', () => {
+    const rates = resolveYearlyRates([{ year: 1, rate: 5.0 }]);
+    expect(rates).toHaveLength(30);
+    expect(rates.every(r => r === 5.0)).toBe(true);
+  });
+
+  it('two control points interpolate linearly', () => {
+    const rates = resolveYearlyRates([{ year: 1, rate: 5.0 }, { year: 6, rate: 7.0 }]);
+    expect(rates[0]).toBe(5.0);       // year 1: at first point
+    expect(rates[2]).toBeCloseTo(5.8); // year 3: 2/5 of the way from 5 to 7
+    expect(rates[5]).toBe(7.0);       // year 6: at second point
+    expect(rates[29]).toBe(7.0);      // year 30: flat after last point
+  });
+
+  it('unsorted control points are handled correctly', () => {
+    const rates = resolveYearlyRates([{ year: 10, rate: 8.0 }, { year: 1, rate: 5.0 }]);
+    expect(rates[0]).toBe(5.0);
+    expect(rates[4]).toBeCloseTo(5.0 + (4/9) * 3); // year 5: interpolated
+    expect(rates[9]).toBe(8.0);
+    expect(rates[29]).toBe(8.0);
+  });
+
+  it('three control points with interpolation', () => {
+    const rates = resolveYearlyRates([
+      { year: 1, rate: 4.0 }, { year: 5, rate: 6.0 }, { year: 15, rate: 3.0 }
+    ]);
+    expect(rates[0]).toBe(4.0);           // year 1
+    expect(rates[2]).toBeCloseTo(5.0);    // year 3: halfway from 4 to 6
+    expect(rates[4]).toBe(6.0);           // year 5
+    expect(rates[9]).toBeCloseTo(4.5);    // year 10: halfway from 6 to 3
+    expect(rates[14]).toBe(3.0);          // year 15
+    expect(rates[29]).toBe(3.0);          // year 30: flat after last
+  });
+
+  it('custom totalYears parameter', () => {
+    const rates = resolveYearlyRates(5.0, 10);
+    expect(rates).toHaveLength(10);
+  });
+});
+
+// ─── 10. Variable-Rate Computation ────────────────────────────────────────────
+
+describe('variable rate computation', () => {
+  it('single control point matches scalar rate result', () => {
+    const scalar = computeMortgage(800000, 20, 6.5, 3, 10);
+    const points = computeMortgage(800000, 20, [{ year: 1, rate: 6.5 }], 3, 10);
+    expect(points.monthlyPayment).toBeCloseTo(scalar.monthlyPayment, 2);
+    expect(points.totalPaid).toBeCloseTo(scalar.totalPaid, 2);
+    expect(points.totalInterest).toBeCloseTo(scalar.totalInterest, 2);
+    expect(points.remainingBalance).toBeCloseTo(scalar.remainingBalance, 2);
+  });
+
+  it('higher rate in later years increases total interest', () => {
+    const flat = computeMortgage(800000, 20, 6.5, 3, 10);
+    const rising = computeMortgage(800000, 20, [
+      { year: 1, rate: 6.5 }, { year: 5, rate: 8.0 }
+    ], 3, 10);
+    expect(rising.totalInterest).toBeGreaterThan(flat.totalInterest);
+  });
+
+  it('lower rate in later years decreases total interest', () => {
+    const flat = computeMortgage(800000, 20, 6.5, 3, 10);
+    const falling = computeMortgage(800000, 20, [
+      { year: 1, rate: 6.5 }, { year: 5, rate: 4.0 }
+    ], 3, 10);
+    expect(falling.totalInterest).toBeLessThan(flat.totalInterest);
+  });
+
+  it('schedule rows include correct per-year rate (interpolated)', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 6, rate: 7.0 }
+    ], 3, 10);
+    expect(result.schedule[0].rate).toBe(5.0);           // year 1
+    expect(result.schedule[2].rate).toBeCloseTo(5.8);    // year 3: interpolated
+    expect(result.schedule[5].rate).toBe(7.0);           // year 6
+    expect(result.schedule[9].rate).toBe(7.0);           // year 10: flat after last
+  });
+
+  it('balance continuity holds with variable rates', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 3, rate: 7.0 }, { year: 8, rate: 4.0 }
+    ], 3, 10);
+    for (let i = 1; i < result.schedule.length; i++) {
+      expect(result.schedule[i].beginningBalance)
+        .toBeCloseTo(result.schedule[i - 1].endingBalance, 2);
+    }
+  });
+
+  it('principal + interest = payment holds each year with variable rates', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 5, rate: 9.0 }
+    ], 3, 10);
+    for (const yr of result.schedule) {
+      expect(yr.principal + yr.interest).toBeCloseTo(yr.payment, 1);
+    }
+  });
+
+  it('30-year variable rate fully amortizes', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 10, rate: 7.0 }, { year: 20, rate: 4.0 }
+    ], 0, 30);
+    expect(result.remainingBalance).toBeCloseTo(0, 0);
+  });
+
+  it('totalPaid equals sum of yearly payments', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 5, rate: 8.0 }
+    ], 3, 10);
+    const sumPayments = result.schedule.reduce((s, yr) => s + yr.payment, 0);
+    expect(result.totalPaid).toBeCloseTo(sumPayments, 2);
+  });
+});
+
+// ─── 11. Schedule Monthly Payment Field ───────────────────────────────────────
+
+describe('schedule monthlyPayment field', () => {
+  it('monthlyPayment * 12 = annual payment for each year', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    for (const yr of result.schedule) {
+      expect(yr.monthlyPayment * 12).toBeCloseTo(yr.payment, 2);
+    }
+  });
+
+  it('monthlyPayment is constant with a fixed rate', () => {
+    const result = computeMortgage(800000, 20, 6.5, 0, 30);
+    const first = result.schedule[0].monthlyPayment;
+    for (const yr of result.schedule) {
+      expect(yr.monthlyPayment).toBeCloseTo(first, 2);
+    }
+  });
+
+  it('monthlyPayment changes with variable rates', () => {
+    const result = computeMortgage(800000, 20, [
+      { year: 1, rate: 5.0 }, { year: 6, rate: 8.0 }
+    ], 3, 10);
+    // years 1-5 have lower rates than years 6-10, so monthly payment should differ
+    expect(result.schedule[0].monthlyPayment).not.toBeCloseTo(result.schedule[9].monthlyPayment, 0);
+    // each row's monthlyPayment * 12 should still equal payment
+    for (const yr of result.schedule) {
+      expect(yr.monthlyPayment * 12).toBeCloseTo(yr.payment, 2);
+    }
+  });
+
+  it('summary monthlyPayment matches first schedule row', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    expect(result.monthlyPayment).toBeCloseTo(result.schedule[0].monthlyPayment, 2);
   });
 });

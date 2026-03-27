@@ -40,8 +40,11 @@ export function resolveYearlyRates(rateInput, totalYears = 30) {
 export const PROPERTY_TAX_RATE = 0.01;  // 1.0% of home value per year
 export const INSURANCE_RATE = 0.004;    // 0.4% of home value per year
 export const PMI_RATE = 0.007;          // 0.7% of loan amount per year
+export const STANDARD_DEDUCTION_MARRIED = 32200;
+export const SALT_CAP = 40000;
+export const MORTGAGE_DEBT_CAP = 750000;
 
-export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears, maintenanceRate = 0) {
+export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears, maintenanceRate = 0, marginalTaxRate = 0) {
   const downPayment = housePrice * downPct / 100;
   const loanAmount = housePrice - downPayment;
   const yearlyRates = resolveYearlyRates(rateInput);
@@ -81,6 +84,10 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     const maintenance = homeValue * maintenanceRate / 100;
     const equity = homeValue - balance;
     const pmi = (equity / homeValue < 0.2 && balance > 0) ? balance * PMI_RATE : 0;
+    const deductibleInterest = loanAmount > 0 ? yearInterest * Math.min(1, MORTGAGE_DEBT_CAP / loanAmount) : 0;
+    const saltDeduction = Math.min(propertyTax, SALT_CAP);
+    const totalItemized = deductibleInterest + saltDeduction;
+    const taxSavings = Math.max(0, totalItemized - STANDARD_DEDUCTION_MARRIED) * marginalTaxRate / 100;
 
     schedule.push({
       year,
@@ -97,6 +104,7 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
       insurance,
       maintenance,
       pmi,
+      taxSavings,
     });
   }
 
@@ -106,8 +114,9 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
   const totalInsurance = schedule.reduce((s, yr) => s + yr.insurance, 0);
   const totalPMI = schedule.reduce((s, yr) => s + yr.pmi, 0);
   const totalMaintenance = schedule.reduce((s, yr) => s + yr.maintenance, 0);
+  const totalTaxSavings = schedule.reduce((s, yr) => s + yr.taxSavings, 0);
   const last = schedule[holdingYears - 1];
-  const totalCashInvested = downPayment + totalPaid + totalPropertyTax + totalInsurance + totalPMI + totalMaintenance;
+  const totalCashInvested = downPayment + totalPaid + totalPropertyTax + totalInsurance + totalPMI + totalMaintenance - totalTaxSavings;
   const netProfit = last.equity - totalCashInvested;
   const annROI = totalCashInvested > 0
     ? Math.pow(last.equity / totalCashInvested, 1 / holdingYears) - 1
@@ -123,6 +132,7 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     totalInsurance,
     totalPMI,
     totalMaintenance,
+    totalTaxSavings,
     finalHomeValue: last.homeValue,
     remainingBalance: last.endingBalance,
     equity: last.equity,

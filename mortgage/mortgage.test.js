@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeMortgage, computeStockComparison, resolveYearlyRates, formatCurrency, formatAxisCurrency, formatPercent, PROPERTY_TAX_RATE, INSURANCE_RATE, PMI_RATE } from './mortgage.js';
+import { computeMortgage, computeStockComparison, resolveYearlyRates, formatCurrency, formatAxisCurrency, formatPercent, PROPERTY_TAX_RATE, INSURANCE_RATE, PMI_RATE, STANDARD_DEDUCTION_MARRIED, SALT_CAP, MORTGAGE_DEBT_CAP } from './mortgage.js';
 
 // Helper: independently compute monthly payment using the standard amortization formula
 function expectedMonthlyPayment(principal, annualRate) {
@@ -607,7 +607,7 @@ describe('PMI', () => {
 
   it('PMI is included in totalCashInvested for netProfit', () => {
     const result = computeMortgage(800000, 10, 6.5, 3, 10);
-    const totalCash = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance + result.totalPMI;
+    const totalCash = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance + result.totalPMI + result.totalMaintenance - result.totalTaxSavings;
     expect(result.netProfit).toBeCloseTo(result.equity - totalCash, 2);
   });
 });
@@ -643,5 +643,77 @@ describe('computeStockComparison', () => {
   it('finalStockValue matches last schedule entry', () => {
     const result = computeStockComparison(160000, 10, 10);
     expect(result.finalStockValue).toBe(result.schedule[9].stockValue);
+  });
+});
+
+// ─── 15. Mortgage Interest Deduction ──────────────────────────────────────────
+
+describe('mortgage interest deduction', () => {
+  it('no tax savings when tax rate is 0', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10, 1, 0);
+    expect(result.totalTaxSavings).toBe(0);
+    for (const yr of result.schedule) {
+      expect(yr.taxSavings).toBe(0);
+    }
+  });
+
+  it('no tax savings when itemized deductions < standard deduction', () => {
+    // Small mortgage: $200k house, 50% down = $100k loan, low interest + low property tax
+    const result = computeMortgage(200000, 50, 3.0, 0, 10, 0, 24);
+    // Interest on $100k at 3% is ~$3k/yr, property tax ~$2k/yr, total ~$5k < $32,200 standard deduction
+    expect(result.totalTaxSavings).toBe(0);
+  });
+
+  it('positive tax savings when itemized > standard deduction', () => {
+    // Large mortgage: $1M house, 20% down = $800k loan at 6.5%
+    const result = computeMortgage(1000000, 20, 6.5, 3, 10, 0, 24);
+    // Interest ~$52k/yr + property tax ~$10k = ~$62k > $32,200
+    expect(result.totalTaxSavings).toBeGreaterThan(0);
+    expect(result.schedule[0].taxSavings).toBeGreaterThan(0);
+  });
+
+  it('tax savings = (itemized - standard_deduction) * rate', () => {
+    const result = computeMortgage(1000000, 20, 6.5, 0, 1, 0, 24);
+    const yr = result.schedule[0];
+    const deductibleInt = yr.interest * Math.min(1, MORTGAGE_DEBT_CAP / 800000);
+    const salt = Math.min(yr.propertyTax, SALT_CAP);
+    const expectedSavings = Math.max(0, deductibleInt + salt - STANDARD_DEDUCTION_MARRIED) * 0.24;
+    expect(yr.taxSavings).toBeCloseTo(expectedSavings, 2);
+  });
+
+  it('interest is pro-rated when loan exceeds $750k cap', () => {
+    // $1.5M house, 0% down = $1.5M loan, only 750k/1500k = 50% of interest deductible
+    const result = computeMortgage(1500000, 0, 6.5, 0, 1, 0, 24);
+    const fullRate = computeMortgage(750000, 0, 6.5, 0, 1, 0, 24);
+    // Pro-rated: deductible interest on $1.5M loan should be half the total interest
+    const yr = result.schedule[0];
+    expect(yr.interest).toBeGreaterThan(fullRate.schedule[0].interest);
+    // Tax savings should reflect the cap
+    const deductibleInt = yr.interest * (MORTGAGE_DEBT_CAP / 1500000);
+    const salt = Math.min(yr.propertyTax, SALT_CAP);
+    const expected = Math.max(0, deductibleInt + salt - STANDARD_DEDUCTION_MARRIED) * 0.24;
+    expect(yr.taxSavings).toBeCloseTo(expected, 2);
+  });
+
+  it('SALT cap is applied to property tax', () => {
+    // Very expensive house: $4M, property tax = $40k+ per year
+    const result = computeMortgage(4000000, 50, 6.5, 0, 1, 0, 24);
+    const yr = result.schedule[0];
+    // Property tax = $4M * 1% = $40k, exactly at SALT cap
+    expect(yr.propertyTax).toBe(40000);
+    // With appreciation, property tax would exceed SALT cap
+    const result2 = computeMortgage(4000000, 50, 6.5, 5, 1, 0, 24);
+    const yr2 = result2.schedule[0];
+    // Tax savings should use capped SALT, not full property tax
+    const deductibleInt = yr2.interest * Math.min(1, MORTGAGE_DEBT_CAP / 2000000);
+    const expected = Math.max(0, deductibleInt + SALT_CAP - STANDARD_DEDUCTION_MARRIED) * 0.24;
+    expect(yr2.taxSavings).toBeCloseTo(expected, 2);
+  });
+
+  it('tax savings reduces totalCashInvested', () => {
+    const withTax = computeMortgage(1000000, 20, 6.5, 3, 10, 0, 24);
+    const noTax = computeMortgage(1000000, 20, 6.5, 3, 10, 0, 0);
+    expect(withTax.netProfit).toBeGreaterThan(noTax.netProfit);
+    expect(withTax.totalTaxSavings).toBeGreaterThan(0);
   });
 });

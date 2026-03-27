@@ -5,7 +5,10 @@ export function formatCurrency(v) {
 
 export function formatAxisCurrency(v) {
   if (Math.abs(v) >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
-  if (Math.abs(v) >= 1e3) return '$' + Math.round(v / 1e3) + 'k';
+  if (Math.abs(v) >= 1e3) {
+    const k = v / 1e3;
+    return k === Math.floor(k) ? '$' + k + 'k' : '$' + k.toFixed(1) + 'k';
+  }
   return '$' + v;
 }
 

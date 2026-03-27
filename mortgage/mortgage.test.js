@@ -331,6 +331,8 @@ describe('formatAxisCurrency', () => {
   it('formats thousands with k suffix', () => {
     expect(formatAxisCurrency(500000)).toBe('$500k');
     expect(formatAxisCurrency(1000)).toBe('$1k');
+    expect(formatAxisCurrency(7500)).toBe('$7.5k');
+    expect(formatAxisCurrency(2500)).toBe('$2.5k');
   });
 
   it('formats millions with M suffix', () => {

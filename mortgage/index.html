@@ -350,10 +350,12 @@
     function PaymentTooltip({ active, payload, label }) {
       if (!active || !payload?.length) return null;
       const taxSavings = payload[0]?.payload?.taxSavings;
+      const bars = payload.filter(p => p.dataKey !== 'total');
+      const total = payload.find(p => p.dataKey === 'total');
       return html`
         <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', fontSize: 13 }}>
           <div style=${{ color: '#94a3b8', marginBottom: 6, fontWeight: 600 }}>Year ${label}</div>
-          ${payload.map((p, i) => html`
+          ${bars.map((p, i) => html`
             <div key=${i} style=${{ color: p.color, display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7 }}>
               <span>${p.name}</span>
               <span style=${{ fontFamily: 'monospace' }}>${formatCurrency(p.value)}</span>
@@ -363,6 +365,14 @@
             <div style=${{ color: '#10b981', display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7 }}>
               <span>Tax Savings</span>
               <span style=${{ fontFamily: 'monospace' }}>-${formatCurrency(taxSavings)}</span>
+            </div>
+          `}
+          ${total && html`
+            <div style=${{ borderTop: '1px solid #475569', marginTop: 4, paddingTop: 4 }}>
+              <div style=${{ color: total.color, display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7, fontWeight: 700 }}>
+                <span>${total.name}</span>
+                <span style=${{ fontFamily: 'monospace' }}>${formatCurrency(total.value)}</span>
+              </div>
             </div>
           `}
         </div>

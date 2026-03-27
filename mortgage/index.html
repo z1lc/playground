@@ -61,9 +61,9 @@
   <script type="module">
     import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
-    import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+    import { ComposedChart, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
     import htm from 'htm';
-    import { formatCurrency, formatAxisCurrency, formatPercent, computeMortgage } from './mortgage.js';
+    import { formatCurrency, formatAxisCurrency, formatPercent, computeMortgage, computeStockComparison } from './mortgage.js';
     const html = htm.bind(React.createElement);
 
     // --- Components ---
@@ -237,25 +237,45 @@
       `;
     }
 
-    function SummaryCards({ data }) {
+    function SummaryCards({ data, stockResult }) {
+      const totalCosts = data.downPayment + data.totalPaid + data.totalPropertyTax + data.totalInsurance + data.totalPMI;
       const cards = [
-        { label: 'Mo. Payment (Yr 1)', value: formatCurrency(data.monthlyPayment), color: '#f59e0b' },
-        { label: 'Total Paid', value: formatCurrency(data.totalPaid), color: '#94a3b8' },
-        { label: 'Total Interest', value: formatCurrency(data.totalInterest), color: '#ef4444' },
+        { label: 'Total Wealth', value: formatCurrency(data.equity + stockResult.finalStockValue), color: '#8b5cf6' },
+        { label: 'Stock Portfolio', value: formatCurrency(stockResult.finalStockValue), color: '#3b82f6' },
         { label: 'Home Value', value: formatCurrency(data.finalHomeValue), color: '#10b981' },
-        { label: 'Remaining Balance', value: formatCurrency(data.remainingBalance), color: '#94a3b8' },
-        { label: 'Equity', value: formatCurrency(data.equity), color: '#10b981' },
-        { label: 'Net Profit', value: formatCurrency(data.netProfit), color: data.netProfit >= 0 ? '#10b981' : '#ef4444' },
-        { label: 'Annualized ROI', value: formatPercent(data.annualizedROI * 100, 2), color: data.annualizedROI >= 0 ? '#10b981' : '#ef4444' },
       ];
+      const cardStyle2 = { background: '#1e293b', border: '1px solid #334155', borderRadius: 10, padding: '14px 16px' };
+      const breakdownItems = [
+        { label: 'Down Payment', value: formatCurrency(data.downPayment) },
+        { label: 'Principal', value: formatCurrency(data.totalPaid - data.totalInterest) },
+        { label: 'Interest', value: formatCurrency(data.totalInterest) },
+        { label: 'Property Tax', value: formatCurrency(data.totalPropertyTax) },
+        { label: 'Insurance', value: formatCurrency(data.totalInsurance) },
+      ];
+      if (data.totalPMI > 0) breakdownItems.push({ label: 'PMI', value: formatCurrency(data.totalPMI) });
+
       return html`
-        <div style=${{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
-          ${cards.map((c, i) => html`
-            <div key=${i} style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 10, padding: '14px 16px' }}>
-              <div style=${{ fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: 500 }}>${c.label}</div>
-              <div style=${{ fontSize: 20, fontWeight: 700, color: c.color, fontFamily: 'monospace' }}>${c.value}</div>
+        <div style=${{ marginBottom: 24 }}>
+          <div style=${{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12 }}>
+            ${cards.map((c, i) => html`
+              <div key=${i} style=${cardStyle2}>
+                <div style=${{ fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: 500 }}>${c.label}</div>
+                <div style=${{ fontSize: 20, fontWeight: 700, color: c.color, fontFamily: 'monospace' }}>${c.value}</div>
+              </div>
+            `)}
+            <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: '10px 10px 0 0', borderBottom: 'none', padding: '14px 16px', marginBottom: -13 }}>
+              <div style=${{ fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: 500 }}>Total Paid</div>
+              <div style=${{ fontSize: 20, fontWeight: 700, color: '#ef4444', fontFamily: 'monospace' }}>${formatCurrency(totalCosts)}</div>
             </div>
-          `)}
+          </div>
+          <div style=${{ background: '#1e293b', border: '1px solid #334155', borderTop: 'none', borderRadius: '10px 0 10px 10px', padding: '12px 16px', marginTop: -1, display: 'flex', gap: 24 }}>
+            ${breakdownItems.map((item, i) => html`
+              <div key=${i} style=${{ flex: 1 }}>
+                <div style=${{ fontSize: 12, color: '#64748b', marginBottom: 4, fontWeight: 500 }}>${item.label}</div>
+                <div style=${{ fontSize: 15, fontWeight: 600, color: '#e2e8f0', fontFamily: 'monospace' }}>${item.value}</div>
+              </div>
+            `)}
+          </div>
         </div>
       `;
     }
@@ -275,11 +295,11 @@
       `;
     }
 
-    function EquityChart({ schedule }) {
+    function EquityChart({ data }) {
       return html`
         <div style=${cardStyle}>
           <${ResponsiveContainer} width="100%" height=${350}>
-            <${LineChart} data=${schedule}>
+            <${LineChart} data=${data}>
               <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
               <${XAxis} dataKey="year" tick=${{ fill: '#64748b', fontSize: 12 }} />
               <${YAxis} tickFormatter=${formatAxisCurrency} tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
@@ -288,6 +308,7 @@
               <${Line} type="monotone" dataKey="homeValue" name="Home Value" stroke="#10b981" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
               <${Line} type="monotone" dataKey="endingBalance" name="Remaining Balance" stroke="#ef4444" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
               <${Line} type="monotone" dataKey="equity" name="Equity" stroke="#f59e0b" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+              <${Line} type="monotone" dataKey="stockValue" name="Stock Portfolio" stroke="#3b82f6" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />
             <//>
           <//>
         </div>
@@ -295,17 +316,31 @@
     }
 
     function PaymentChart({ schedule }) {
+      const hasPMI = schedule.some(yr => yr.pmi > 0);
+      const data = useMemo(() => schedule.map(yr => ({
+        year: yr.year,
+        principal: yr.principal / 12,
+        interest: yr.interest / 12,
+        propertyTax: yr.propertyTax / 12,
+        insurance: yr.insurance / 12,
+        ...(hasPMI ? { pmi: yr.pmi / 12 } : {}),
+        total: yr.monthlyPayment + yr.propertyTax / 12 + yr.insurance / 12 + yr.pmi / 12,
+      })), [schedule, hasPMI]);
       return html`
         <div style=${cardStyle}>
           <${ResponsiveContainer} width="100%" height=${350}>
-            <${BarChart} data=${schedule}>
+            <${ComposedChart} data=${data}>
               <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
               <${XAxis} dataKey="year" tick=${{ fill: '#64748b', fontSize: 12 }} />
               <${YAxis} tickFormatter=${formatAxisCurrency} tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
               <${Tooltip} content=${(props) => html`<${ChartTooltip} ...${props} />`} />
               <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8' }} />
               <${Bar} dataKey="principal" name="Principal" stackId="a" fill="#10b981" />
-              <${Bar} dataKey="interest" name="Interest" stackId="a" fill="#ef4444" radius=${[3, 3, 0, 0]} />
+              <${Bar} dataKey="interest" name="Interest" stackId="a" fill="#ef4444" />
+              <${Bar} dataKey="propertyTax" name="Property Tax" stackId="a" fill="#8b5cf6" />
+              <${Bar} dataKey="insurance" name="Insurance" stackId="a" fill="#06b6d4" radius=${hasPMI ? [0,0,0,0] : [3,3,0,0]} />
+              ${hasPMI && html`<${Bar} dataKey="pmi" name="PMI" stackId="a" fill="#f97316" radius=${[3, 3, 0, 0]} />`}
+              <${Line} type="monotone" dataKey="total" name="Total" stroke="#f8fafc" strokeWidth=${3} dot=${false} activeDot=${{ r: 4 }} />
             <//>
           <//>
         </div>
@@ -355,7 +390,7 @@
     }
 
     const STORAGE_KEY = 'mortgage-calc-state';
-    const DEFAULTS = { price: 800000, downPct: 20, controlPoints: [{ year: 1, rate: 6.5 }], appreciation: 3, years: 10 };
+    const DEFAULTS = { price: 800000, totalCash: 300000, downPctOfCash: 100, controlPoints: [{ year: 1, rate: 6.5 }], appreciation: 3, years: 10, stockReturn: 10 };
 
     function loadState() {
       try {
@@ -368,17 +403,30 @@
     function App() {
       const init = useMemo(loadState, []);
       const [price, setPrice] = useState(init.price);
-      const [downPct, setDownPct] = useState(init.downPct);
+      const [totalCash, setTotalCash] = useState(init.totalCash);
+      const [downPctOfCash, setDownPctOfCash] = useState(init.downPctOfCash);
       const [controlPoints, setControlPoints] = useState(init.controlPoints);
       const [appreciation, setAppreciation] = useState(init.appreciation);
       const [years, setYears] = useState(init.years);
-      const [chartTab, setChartTab] = useState('equity');
+      const [stockReturn, setStockReturn] = useState(init.stockReturn);
+      const [chartTab, setChartTab] = useState('breakdown');
+
+      const maxDownPctOfCash = totalCash > 0 ? Math.min(100, Math.floor((price / totalCash) * 100 / 5) * 5) : 100;
+      const effectiveDownPctOfCash = Math.min(downPctOfCash, maxDownPctOfCash);
+      const downPayment = totalCash * effectiveDownPctOfCash / 100;
+      const stockInvestment = totalCash - downPayment;
+      const downPct = price > 0 ? (downPayment / price) * 100 : 0;
 
       useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ price, downPct, controlPoints, appreciation, years }));
-      }, [price, downPct, controlPoints, appreciation, years]);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ price, totalCash, downPctOfCash, controlPoints, appreciation, years, stockReturn }));
+      }, [price, totalCash, downPctOfCash, controlPoints, appreciation, years, stockReturn]);
 
       const result = useMemo(() => computeMortgage(price, downPct, controlPoints, appreciation, years), [price, downPct, controlPoints, appreciation, years]);
+      const stockResult = useMemo(() => computeStockComparison(stockInvestment, stockReturn, years), [stockInvestment, stockReturn, years]);
+      const equityChartData = useMemo(() => result.schedule.map((yr, i) => ({
+        ...yr,
+        stockValue: stockResult.schedule[i].stockValue,
+      })), [result.schedule, stockResult.schedule]);
 
       const tabBtn = (id, label) => ({
         background: chartTab === id ? '#f59e0b' : 'rgba(255,255,255,0.06)',
@@ -399,34 +447,44 @@
             <${SliderInput} label="House Price" value=${price} onChange=${setPrice}
               min=${500000} max=${2000000} step=${100000}
               format=${v => formatCurrency(v)} />
-            <${SliderInput} label="Down Payment" value=${downPct} onChange=${setDownPct}
-              min=${0} max=${50} step=${5}
-              format=${v => v + '% (' + formatCurrency(price * v / 100) + ')'} />
+            <${SliderInput} label="Available Cash" value=${totalCash} onChange=${setTotalCash}
+              min=${0} max=${2000000} step=${100000}
+              format=${v => formatCurrency(v)} />
+            <${SliderInput} label=${html`Down Payment Split${downPct < 20
+              ? html` <span style=${{ color: '#ef4444', fontSize: 12, fontWeight: 400, marginLeft: 4 }}>+0.7% PMI until 20% equity</span>`
+              : ''}${maxDownPctOfCash < 100
+              ? html` <span style=${{ color: '#64748b', fontSize: 12, fontWeight: 400, marginLeft: 4 }}>capped at ${maxDownPctOfCash}% (home price)</span>`
+              : ''}`} value=${effectiveDownPctOfCash} onChange=${setDownPctOfCash}
+              min=${0} max=${maxDownPctOfCash} step=${5}
+              format=${v => v + '% \u2192 ' + formatCurrency(downPayment) + ' down, ' + formatCurrency(stockInvestment) + ' stocks'} />
             <${SliderInput} label="Annual Appreciation" value=${appreciation} onChange=${setAppreciation}
               min=${0} max=${10} step=${0.5}
               format=${v => v.toFixed(1) + '%'} />
             <${SliderInput} label="Holding Period" value=${years} onChange=${setYears}
               min=${1} max=${30} step=${1}
               format=${v => v + ' year' + (v > 1 ? 's' : '')} />
+            <${SliderInput} label="Stock Market Return" value=${stockReturn} onChange=${setStockReturn}
+              min=${0} max=${15} step=${0.5}
+              format=${v => v.toFixed(1) + '%'} />
           </div>
 
           <${RatePicker} controlPoints=${controlPoints} onChange=${setControlPoints} holdingYears=${years} />
 
-          <${SummaryCards} data=${result} />
+          <${SummaryCards} data=${result} stockResult=${stockResult} />
 
           <div style=${{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <button style=${tabBtn('equity', 'Equity & Value')} onClick=${() => setChartTab('equity')}>Equity & Value</button>
-            <button style=${tabBtn('breakdown', 'Payment Breakdown')} onClick=${() => setChartTab('breakdown')}>Payment Breakdown</button>
+            <button style=${tabBtn('breakdown')} onClick=${() => setChartTab('breakdown')}>Monthly Costs</button>
+            <button style=${tabBtn('equity')} onClick=${() => setChartTab('equity')}>Equity & Value</button>
           </div>
 
-          ${chartTab === 'equity'
-            ? html`<${EquityChart} schedule=${result.schedule} />`
-            : html`<${PaymentChart} schedule=${result.schedule} />`}
+          ${chartTab === 'breakdown'
+            ? html`<${PaymentChart} schedule=${result.schedule} />`
+            : html`<${EquityChart} data=${equityChartData} />`}
 
           <${AmortizationTable} schedule=${result.schedule} />
 
           <p style=${{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 8 }}>
-            Assumes 30-year mortgage with configurable rate schedule. Excludes property tax, insurance, PMI, and closing costs.
+            Assumes 30-year mortgage with configurable rate schedule. Includes 1.0% property tax, 0.4% insurance (Atlanta, GA estimates), and 0.7% PMI when equity is below 20%. Excludes closing costs.
           </p>
         </div>
       `;

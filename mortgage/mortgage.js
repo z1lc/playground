@@ -37,6 +37,10 @@ export function resolveYearlyRates(rateInput, totalYears = 30) {
   return rates;
 }
 
+export const PROPERTY_TAX_RATE = 0.01;  // 1.0% of home value per year
+export const INSURANCE_RATE = 0.004;    // 0.4% of home value per year
+export const PMI_RATE = 0.007;          // 0.7% of loan amount per year
+
 export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears) {
   const downPayment = housePrice * downPct / 100;
   const loanAmount = housePrice - downPayment;
@@ -72,7 +76,10 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
 
     balance = Math.max(0, balance);
     const homeValue = housePrice * Math.pow(1 + appreciationRate / 100, year);
+    const propertyTax = homeValue * PROPERTY_TAX_RATE;
+    const insurance = homeValue * INSURANCE_RATE;
     const equity = homeValue - balance;
+    const pmi = (equity / homeValue < 0.2 && balance > 0) ? balance * PMI_RATE : 0;
 
     schedule.push({
       year,
@@ -85,13 +92,19 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
       homeValue,
       equity,
       rate: annualRate,
+      propertyTax,
+      insurance,
+      pmi,
     });
   }
 
   const totalPaid = schedule.reduce((s, yr) => s + yr.payment, 0);
   const totalInterest = schedule.reduce((s, y) => s + y.interest, 0);
+  const totalPropertyTax = schedule.reduce((s, yr) => s + yr.propertyTax, 0);
+  const totalInsurance = schedule.reduce((s, yr) => s + yr.insurance, 0);
+  const totalPMI = schedule.reduce((s, yr) => s + yr.pmi, 0);
   const last = schedule[holdingYears - 1];
-  const totalCashInvested = downPayment + totalPaid;
+  const totalCashInvested = downPayment + totalPaid + totalPropertyTax + totalInsurance + totalPMI;
   const netProfit = last.equity - totalCashInvested;
   const annROI = totalCashInvested > 0
     ? Math.pow(last.equity / totalCashInvested, 1 / holdingYears) - 1
@@ -103,11 +116,28 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     loanAmount,
     totalPaid,
     totalInterest,
+    totalPropertyTax,
+    totalInsurance,
+    totalPMI,
     finalHomeValue: last.homeValue,
     remainingBalance: last.endingBalance,
     equity: last.equity,
     netProfit,
     annualizedROI: annROI,
+    schedule,
+  };
+}
+
+export function computeStockComparison(lumpSum, annualReturnPct, holdingYears) {
+  const schedule = [];
+  for (let year = 1; year <= holdingYears; year++) {
+    schedule.push({
+      year,
+      stockValue: lumpSum * Math.pow(1 + annualReturnPct / 100, year),
+    });
+  }
+  return {
+    finalStockValue: schedule[holdingYears - 1].stockValue,
     schedule,
   };
 }

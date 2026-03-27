@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeMortgage, resolveYearlyRates, formatCurrency, formatAxisCurrency, formatPercent } from './mortgage.js';
+import { computeMortgage, computeStockComparison, resolveYearlyRates, formatCurrency, formatAxisCurrency, formatPercent, PROPERTY_TAX_RATE, INSURANCE_RATE, PMI_RATE } from './mortgage.js';
 
 // Helper: independently compute monthly payment using the standard amortization formula
 function expectedMonthlyPayment(principal, annualRate) {
@@ -207,7 +207,8 @@ describe('summary totals', () => {
   });
 
   it('netProfit = equity - (downPayment + totalPaid)', () => {
-    expect(result.netProfit).toBeCloseTo(result.equity - (result.downPayment + result.totalPaid), 2);
+    expect(result.netProfit).toBeCloseTo(
+      result.equity - (result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance), 2);
   });
 });
 
@@ -216,7 +217,7 @@ describe('summary totals', () => {
 describe('ROI calculation', () => {
   it('annualized ROI formula: (equity / totalCash)^(1/years) - 1', () => {
     const result = computeMortgage(800000, 20, 6.5, 3, 10);
-    const totalCash = result.downPayment + result.totalPaid;
+    const totalCash = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance;
     const expected = Math.pow(result.equity / totalCash, 1 / 10) - 1;
     expect(result.annualizedROI).toBeCloseTo(expected, 6);
   });
@@ -510,5 +511,137 @@ describe('schedule monthlyPayment field', () => {
   it('summary monthlyPayment matches first schedule row', () => {
     const result = computeMortgage(800000, 20, 6.5, 3, 10);
     expect(result.monthlyPayment).toBeCloseTo(result.schedule[0].monthlyPayment, 2);
+  });
+});
+
+// ─── 12. Property Tax & Insurance ─────────────────────────────────────────────
+
+describe('property tax and insurance', () => {
+  it('each year propertyTax = homeValue * PROPERTY_TAX_RATE', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    for (const yr of result.schedule) {
+      expect(yr.propertyTax).toBeCloseTo(yr.homeValue * PROPERTY_TAX_RATE, 2);
+    }
+  });
+
+  it('each year insurance = homeValue * INSURANCE_RATE', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    for (const yr of result.schedule) {
+      expect(yr.insurance).toBeCloseTo(yr.homeValue * INSURANCE_RATE, 2);
+    }
+  });
+
+  it('tax and insurance grow with appreciation', () => {
+    const result = computeMortgage(800000, 20, 6.5, 5, 10);
+    expect(result.schedule[9].propertyTax).toBeGreaterThan(result.schedule[0].propertyTax);
+    expect(result.schedule[9].insurance).toBeGreaterThan(result.schedule[0].insurance);
+  });
+
+  it('tax and insurance are constant with 0% appreciation', () => {
+    const result = computeMortgage(800000, 20, 6.5, 0, 10);
+    for (const yr of result.schedule) {
+      expect(yr.propertyTax).toBeCloseTo(800000 * PROPERTY_TAX_RATE, 2);
+      expect(yr.insurance).toBeCloseTo(800000 * INSURANCE_RATE, 2);
+    }
+  });
+
+  it('totalPropertyTax = sum of schedule propertyTax', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    const sum = result.schedule.reduce((s, yr) => s + yr.propertyTax, 0);
+    expect(result.totalPropertyTax).toBeCloseTo(sum, 2);
+  });
+
+  it('totalInsurance = sum of schedule insurance', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    const sum = result.schedule.reduce((s, yr) => s + yr.insurance, 0);
+    expect(result.totalInsurance).toBeCloseTo(sum, 2);
+  });
+
+  it('tax and insurance are included in netProfit calculation', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    const totalCash = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance;
+    expect(result.netProfit).toBeCloseTo(result.equity - totalCash, 2);
+  });
+
+  it('tax and insurance make netProfit lower than without them', () => {
+    const result = computeMortgage(800000, 20, 6.5, 3, 10);
+    // netProfit should be lower than equity - (downPayment + totalPaid) since tax+insurance are extra costs
+    const profitWithoutTaxIns = result.equity - (result.downPayment + result.totalPaid);
+    expect(result.netProfit).toBeLessThan(profitWithoutTaxIns);
+  });
+});
+
+// ─── 13. PMI ──────────────────────────────────────────────────────────────────
+
+describe('PMI', () => {
+  it('no PMI when down payment >= 20%', () => {
+    const result = computeMortgage(800000, 20, 6.5, 0, 10);
+    for (const yr of result.schedule) {
+      expect(yr.pmi).toBe(0);
+    }
+    expect(result.totalPMI).toBe(0);
+  });
+
+  it('PMI applies when equity < 20% of home value', () => {
+    const result = computeMortgage(800000, 10, 6.5, 0, 10);
+    expect(result.schedule[0].pmi).toBeGreaterThan(0);
+    expect(result.totalPMI).toBeGreaterThan(0);
+  });
+
+  it('PMI = balance * PMI_RATE when active', () => {
+    const result = computeMortgage(800000, 10, 6.5, 0, 1);
+    const yr = result.schedule[0];
+    expect(yr.pmi).toBeCloseTo(yr.endingBalance * PMI_RATE, 0);
+  });
+
+  it('PMI drops off once equity reaches 20%', () => {
+    const result = computeMortgage(800000, 10, 6.5, 5, 30);
+    const firstWithoutPMI = result.schedule.find(yr => yr.pmi === 0);
+    expect(firstWithoutPMI).toBeDefined();
+    // once PMI drops, it stays off
+    const idx = result.schedule.indexOf(firstWithoutPMI);
+    for (let i = idx; i < result.schedule.length; i++) {
+      expect(result.schedule[i].pmi).toBe(0);
+    }
+  });
+
+  it('PMI is included in totalCashInvested for netProfit', () => {
+    const result = computeMortgage(800000, 10, 6.5, 3, 10);
+    const totalCash = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance + result.totalPMI;
+    expect(result.netProfit).toBeCloseTo(result.equity - totalCash, 2);
+  });
+});
+
+// ─── 14. Stock Market Comparison ──────────────────────────────────────────────
+
+describe('computeStockComparison', () => {
+  it('compounds a lump sum correctly', () => {
+    const result = computeStockComparison(100000, 10, 10);
+    expect(result.finalStockValue).toBeCloseTo(100000 * Math.pow(1.10, 10), 2);
+  });
+
+  it('0% return keeps value at initial investment', () => {
+    const result = computeStockComparison(160000, 0, 10);
+    expect(result.finalStockValue).toBeCloseTo(160000, 2);
+    for (const yr of result.schedule) {
+      expect(yr.stockValue).toBeCloseTo(160000, 2);
+    }
+  });
+
+  it('schedule length matches holding years', () => {
+    const result = computeStockComparison(100000, 10, 5);
+    expect(result.schedule.length).toBe(5);
+  });
+
+  it('year-by-year compounding is correct', () => {
+    const result = computeStockComparison(200000, 8, 20);
+    for (const yr of result.schedule) {
+      expect(yr.stockValue).toBeCloseTo(200000 * Math.pow(1.08, yr.year), 2);
+    }
+  });
+
+  it('finalStockValue matches last schedule entry', () => {
+    const result = computeStockComparison(160000, 10, 10);
+    expect(result.finalStockValue).toBe(result.schedule[9].stockValue);
   });
 });

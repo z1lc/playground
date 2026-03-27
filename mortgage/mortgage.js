@@ -41,7 +41,7 @@ export const PROPERTY_TAX_RATE = 0.01;  // 1.0% of home value per year
 export const INSURANCE_RATE = 0.004;    // 0.4% of home value per year
 export const PMI_RATE = 0.007;          // 0.7% of loan amount per year
 
-export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears) {
+export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears, maintenanceRate = 0) {
   const downPayment = housePrice * downPct / 100;
   const loanAmount = housePrice - downPayment;
   const yearlyRates = resolveYearlyRates(rateInput);
@@ -78,6 +78,7 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     const homeValue = housePrice * Math.pow(1 + appreciationRate / 100, year);
     const propertyTax = homeValue * PROPERTY_TAX_RATE;
     const insurance = homeValue * INSURANCE_RATE;
+    const maintenance = homeValue * maintenanceRate / 100;
     const equity = homeValue - balance;
     const pmi = (equity / homeValue < 0.2 && balance > 0) ? balance * PMI_RATE : 0;
 
@@ -94,6 +95,7 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
       rate: annualRate,
       propertyTax,
       insurance,
+      maintenance,
       pmi,
     });
   }
@@ -103,8 +105,9 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
   const totalPropertyTax = schedule.reduce((s, yr) => s + yr.propertyTax, 0);
   const totalInsurance = schedule.reduce((s, yr) => s + yr.insurance, 0);
   const totalPMI = schedule.reduce((s, yr) => s + yr.pmi, 0);
+  const totalMaintenance = schedule.reduce((s, yr) => s + yr.maintenance, 0);
   const last = schedule[holdingYears - 1];
-  const totalCashInvested = downPayment + totalPaid + totalPropertyTax + totalInsurance + totalPMI;
+  const totalCashInvested = downPayment + totalPaid + totalPropertyTax + totalInsurance + totalPMI + totalMaintenance;
   const netProfit = last.equity - totalCashInvested;
   const annROI = totalCashInvested > 0
     ? Math.pow(last.equity / totalCashInvested, 1 / holdingYears) - 1
@@ -119,6 +122,7 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     totalPropertyTax,
     totalInsurance,
     totalPMI,
+    totalMaintenance,
     finalHomeValue: last.homeValue,
     remainingBalance: last.endingBalance,
     equity: last.equity,

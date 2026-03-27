@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mortgage Calculator & ROI Projection</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #334155;
+      border-radius: 3px;
+      outline: none;
+      margin: 8px 0 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #f59e0b;
+      cursor: pointer;
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 6px rgba(245,158,11,0.4);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #f59e0b;
+      cursor: pointer;
+      border: 2px solid #0f172a;
+    }
+    ::-webkit-scrollbar { height: 6px; width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.2.0",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+      "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useState, useMemo, useCallback } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+    import htm from 'htm';
+    import { formatCurrency, formatAxisCurrency, formatPercent, computeMortgage } from './mortgage.js';
+    const html = htm.bind(React.createElement);
+
+    // --- Components ---
+
+    const cardStyle = {
+      background: '#1e293b',
+      border: '1px solid #334155',
+      borderRadius: 12,
+      padding: '24px 28px',
+      marginBottom: 24,
+    };
+
+    function SliderInput({ label, value, onChange, min, max, step, format }) {
+      return html`
+        <div style=${{ marginBottom: 20 }}>
+          <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 14 }}>
+            <span style=${{ color: '#94a3b8', fontWeight: 500 }}>${label}</span>
+            <span style=${{ color: '#f8fafc', fontWeight: 600, fontFamily: 'monospace', fontSize: 15 }}>${format(value)}</span>
+          </div>
+          <input type="range" min=${min} max=${max} step=${step} value=${value}
+            onInput=${e => onChange(parseFloat(e.target.value))} />
+        </div>
+      `;
+    }
+
+    function SummaryCards({ data }) {
+      const cards = [
+        { label: 'Monthly Payment', value: formatCurrency(data.monthlyPayment), color: '#f59e0b' },
+        { label: 'Total Paid', value: formatCurrency(data.totalPaid), color: '#94a3b8' },
+        { label: 'Total Interest', value: formatCurrency(data.totalInterest), color: '#ef4444' },
+        { label: 'Home Value', value: formatCurrency(data.finalHomeValue), color: '#10b981' },
+        { label: 'Remaining Balance', value: formatCurrency(data.remainingBalance), color: '#94a3b8' },
+        { label: 'Equity', value: formatCurrency(data.equity), color: '#10b981' },
+        { label: 'Net Profit', value: formatCurrency(data.netProfit), color: data.netProfit >= 0 ? '#10b981' : '#ef4444' },
+        { label: 'Annualized ROI', value: formatPercent(data.annualizedROI * 100, 2), color: data.annualizedROI >= 0 ? '#10b981' : '#ef4444' },
+      ];
+      return html`
+        <div style=${{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
+          ${cards.map((c, i) => html`
+            <div key=${i} style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 10, padding: '14px 16px' }}>
+              <div style=${{ fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: 500 }}>${c.label}</div>
+              <div style=${{ fontSize: 20, fontWeight: 700, color: c.color, fontFamily: 'monospace' }}>${c.value}</div>
+            </div>
+          `)}
+        </div>
+      `;
+    }
+
+    function ChartTooltip({ active, payload, label }) {
+      if (!active || !payload?.length) return null;
+      return html`
+        <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', fontSize: 13 }}>
+          <div style=${{ color: '#94a3b8', marginBottom: 6, fontWeight: 600 }}>Year ${label}</div>
+          ${payload.map((p, i) => html`
+            <div key=${i} style=${{ color: p.color, display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7 }}>
+              <span>${p.name}</span>
+              <span style=${{ fontFamily: 'monospace' }}>${formatCurrency(p.value)}</span>
+            </div>
+          `)}
+        </div>
+      `;
+    }
+
+    function EquityChart({ schedule }) {
+      return html`
+        <div style=${cardStyle}>
+          <${ResponsiveContainer} width="100%" height=${350}>
+            <${LineChart} data=${schedule}>
+              <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
+              <${XAxis} dataKey="year" tick=${{ fill: '#64748b', fontSize: 12 }} />
+              <${YAxis} tickFormatter=${formatAxisCurrency} tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
+              <${Tooltip} content=${(props) => html`<${ChartTooltip} ...${props} />`} />
+              <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8' }} />
+              <${Line} type="monotone" dataKey="homeValue" name="Home Value" stroke="#10b981" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+              <${Line} type="monotone" dataKey="endingBalance" name="Remaining Balance" stroke="#ef4444" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+              <${Line} type="monotone" dataKey="equity" name="Equity" stroke="#f59e0b" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+            <//>
+          <//>
+        </div>
+      `;
+    }
+
+    function PaymentChart({ schedule }) {
+      return html`
+        <div style=${cardStyle}>
+          <${ResponsiveContainer} width="100%" height=${350}>
+            <${BarChart} data=${schedule}>
+              <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
+              <${XAxis} dataKey="year" tick=${{ fill: '#64748b', fontSize: 12 }} />
+              <${YAxis} tickFormatter=${formatAxisCurrency} tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
+              <${Tooltip} content=${(props) => html`<${ChartTooltip} ...${props} />`} />
+              <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8' }} />
+              <${Bar} dataKey="principal" name="Principal" stackId="a" fill="#10b981" />
+              <${Bar} dataKey="interest" name="Interest" stackId="a" fill="#ef4444" radius=${[3, 3, 0, 0]} />
+            <//>
+          <//>
+        </div>
+      `;
+    }
+
+    function AmortizationTable({ schedule }) {
+      const [open, setOpen] = useState(false);
+      const cols = ['Year', 'Begin Balance', 'Payment', 'Principal', 'Interest', 'End Balance', 'Home Value', 'Equity'];
+      const thStyle = { padding: '8px 10px', textAlign: 'right', fontSize: 12, color: '#94a3b8', fontWeight: 600, borderBottom: '1px solid #334155', whiteSpace: 'nowrap' };
+      const tdStyle = { padding: '7px 10px', textAlign: 'right', fontSize: 13, fontFamily: 'monospace', borderBottom: '1px solid rgba(51,65,85,0.5)' };
+
+      return html`
+        <div style=${cardStyle}>
+          <button onClick=${() => setOpen(!open)} style=${{
+            background: 'none', border: 'none', color: '#f59e0b', fontSize: 14, fontWeight: 600,
+            cursor: 'pointer', fontFamily: 'inherit', padding: 0
+          }}>
+            ${open ? 'Hide' : 'Show'} Yearly Breakdown ${open ? '\u25B2' : '\u25BC'}
+          </button>
+          ${open && html`
+            <div style=${{ overflowX: 'auto', marginTop: 16 }}>
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+                <thead>
+                  <tr>${cols.map((c, i) => html`<th key=${i} style=${{ ...thStyle, textAlign: i === 0 ? 'left' : 'right' }}>${c}</th>`)}</tr>
+                </thead>
+                <tbody>
+                  ${schedule.map((row, i) => html`
+                    <tr key=${i} style=${{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
+                      <td style=${{ ...tdStyle, textAlign: 'left', color: '#f8fafc' }}>${row.year}</td>
+                      <td style=${tdStyle}>${formatCurrency(row.beginningBalance)}</td>
+                      <td style=${tdStyle}>${formatCurrency(row.payment)}</td>
+                      <td style=${{ ...tdStyle, color: '#10b981' }}>${formatCurrency(row.principal)}</td>
+                      <td style=${{ ...tdStyle, color: '#ef4444' }}>${formatCurrency(row.interest)}</td>
+                      <td style=${tdStyle}>${formatCurrency(row.endingBalance)}</td>
+                      <td style=${{ ...tdStyle, color: '#10b981' }}>${formatCurrency(row.homeValue)}</td>
+                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${formatCurrency(row.equity)}</td>
+                    </tr>
+                  `)}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function App() {
+      const [price, setPrice] = useState(800000);
+      const [downPct, setDownPct] = useState(20);
+      const [rate, setRate] = useState(6.5);
+      const [appreciation, setAppreciation] = useState(3);
+      const [years, setYears] = useState(10);
+      const [chartTab, setChartTab] = useState('equity');
+
+      const result = useMemo(() => computeMortgage(price, downPct, rate, appreciation, years), [price, downPct, rate, appreciation, years]);
+
+      const tabBtn = (id, label) => ({
+        background: chartTab === id ? '#f59e0b' : 'rgba(255,255,255,0.06)',
+        color: chartTab === id ? '#0f172a' : '#94a3b8',
+        border: 'none', borderRadius: 8, padding: '8px 18px',
+        fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+        transition: 'all 0.15s',
+      });
+
+      return html`
+        <div style=${{ maxWidth: 900, margin: '0 auto' }}>
+          <div style=${{ marginBottom: 32 }}>
+            <h1 style=${{ fontSize: '1.8rem', fontWeight: 700, marginBottom: 6 }}>Mortgage Calculator</h1>
+            <p style=${{ color: '#64748b', fontSize: 15 }}>Project payments, equity buildup, and investment returns across scenarios</p>
+          </div>
+
+          <div style=${cardStyle}>
+            <${SliderInput} label="House Price" value=${price} onChange=${setPrice}
+              min=${500000} max=${2000000} step=${100000}
+              format=${v => formatCurrency(v)} />
+            <${SliderInput} label="Down Payment" value=${downPct} onChange=${setDownPct}
+              min=${0} max=${50} step=${5}
+              format=${v => v + '% (' + formatCurrency(price * v / 100) + ')'} />
+            <${SliderInput} label="Mortgage Rate" value=${rate} onChange=${setRate}
+              min=${2.5} max=${10} step=${0.25}
+              format=${v => v.toFixed(3) + '%'} />
+            <${SliderInput} label="Annual Appreciation" value=${appreciation} onChange=${setAppreciation}
+              min=${0} max=${10} step=${0.5}
+              format=${v => v.toFixed(1) + '%'} />
+            <${SliderInput} label="Holding Period" value=${years} onChange=${setYears}
+              min=${1} max=${30} step=${1}
+              format=${v => v + ' year' + (v > 1 ? 's' : '')} />
+          </div>
+
+          <${SummaryCards} data=${result} />
+
+          <div style=${{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            <button style=${tabBtn('equity', 'Equity & Value')} onClick=${() => setChartTab('equity')}>Equity & Value</button>
+            <button style=${tabBtn('breakdown', 'Payment Breakdown')} onClick=${() => setChartTab('breakdown')}>Payment Breakdown</button>
+          </div>
+
+          ${chartTab === 'equity'
+            ? html`<${EquityChart} schedule=${result.schedule} />`
+            : html`<${PaymentChart} schedule=${result.schedule} />`}
+
+          <${AmortizationTable} schedule=${result.schedule} />
+
+          <p style=${{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 8 }}>
+            Assumes 30-year fixed mortgage. Excludes property tax, insurance, PMI, and closing costs.
+          </p>
+        </div>
+      `;
+    }
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

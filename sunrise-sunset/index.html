@@ -41,6 +41,7 @@
       Madrid: { lat: 40.4168, lng: -3.7038, tzStd: 1, tzDst: 2, color: "#8b5cf6", label: "Madrid, Spain" },
       NewYork: { lat: 40.7128, lng: -74.006, tzStd: -5, tzDst: -4, color: "#3b82f6", label: "New York, NY" },
       SanFrancisco: { lat: 37.7749, lng: -122.4194, tzStd: -8, tzDst: -7, color: "#06b6d4", label: "San Francisco, CA" },
+      Austin: { lat: 30.2672, lng: -97.7431, tzStd: -6, tzDst: -5, color: "#f43f5e", label: "Austin, TX" },
     }
 
     function calcSunTimes(dayOfYear, lat, lng, tzOffset) {
@@ -214,7 +215,7 @@
               ☀️ Sunrise & Sunset Comparison
             </h1>
             <p style=${{ color: "#64748b", fontSize: 14, marginBottom: 20 }}>
-              Annual daylight patterns across seven cities · Local times with DST
+              Annual daylight patterns across eight cities · Local times with DST
             </p>
 
             <div style=${{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
@@ -312,23 +313,14 @@
             <div style=${{ marginTop: 20, background: "#1e293b", borderRadius: 12, padding: 16 }}>
               <h3 style=${{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: "#f8fafc" }}>Key Takeaways</h3>
               <div style=${{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7 }}>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#8b5cf6" }}>Madrid</strong> has the latest sunsets despite being at a similar latitude to New York — its position on the western edge of the CET timezone pushes solar noon later, giving it summer sunsets near 9:45 PM.
+                <p style=${{ marginBottom: 10 }}>
+                  Two forces shape what time the sun rises and sets: <strong style=${{ color: "#cbd5e1" }}>latitude</strong> controls how much daylight varies across the year, while <strong style=${{ color: "#cbd5e1" }}>position within a timezone</strong> shifts the clock times earlier or later.
                 </p>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#06b6d4" }}>San Francisco</strong> (~37.8°N) is in the Pacific timezone and sits far west in its zone, giving it later sunrises and sunsets compared to East Coast cities at similar latitudes.
+                <p style=${{ marginBottom: 10 }}>
+                  <strong style=${{ color: "#cbd5e1" }}>Latitude and seasonal swing.</strong> The further north a city sits, the more extreme its seasons. <strong style=${{ color: "#3b82f6" }}>New York</strong> (40.7°N) and <strong style=${{ color: "#8b5cf6" }}>Madrid</strong> (40.4°N) have the widest gap between their longest and shortest days. Moving south, <strong style=${{ color: "#f59e0b" }}>Nashville</strong>, <strong style=${{ color: "#ec4899" }}>Asheville</strong>, <strong style=${{ color: "#10b981" }}>Huntsville</strong>, and <strong style=${{ color: "#ef4444" }}>Atlanta</strong> cluster in the mid-30s and show progressively less variation. <strong style=${{ color: "#f43f5e" }}>Austin</strong> (30.3°N) has the flattest curve of the US cities — its days stay closest to 12 hours year-round.
                 </p>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#ef4444" }}>Atlanta</strong> at ~33.7°N is the southernmost city, so it has the smallest seasonal variation — the gap between longest and shortest day is narrowest.
-                </p>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#10b981" }}>Huntsville</strong> sits between Atlanta and Nashville in latitude (~34.7°N) and shares Nashville's Central timezone, tracking close to Nashville's times.
-                </p>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#ec4899" }}>Asheville</strong> (~35.6°N) is in the Eastern timezone like Atlanta, so its clock times shift earlier than Huntsville despite similar latitude.
-                </p>
-                <p style=${{ marginBottom: 8 }}>
-                  <strong style=${{ color: "#f59e0b" }}>Nashville</strong> and <strong style=${{ color: "#3b82f6" }}>New York</strong> show similar daylight patterns, but New York's higher latitude amplifies seasonal extremes.
+                <p style=${{ marginBottom: 10 }}>
+                  <strong style=${{ color: "#cbd5e1" }}>Timezone position.</strong> Cities on the western edge of their timezone get later sunrises and later sunsets by the clock. This is why <strong style=${{ color: "#8b5cf6" }}>Madrid</strong> — despite matching New York's latitude — enjoys summer sunsets near 9:45 PM, thanks to sitting at the far western edge of Central European Time. Similarly, <strong style=${{ color: "#06b6d4" }}>San Francisco</strong> gets noticeably later sunsets than East Coast cities at similar latitudes. Among the southeastern cities, <strong style=${{ color: "#10b981" }}>Huntsville</strong> and <strong style=${{ color: "#f59e0b" }}>Nashville</strong> share the Central timezone and track closely, while nearby <strong style=${{ color: "#ec4899" }}>Asheville</strong> is in the Eastern timezone and sees everything shift about an hour earlier on the clock.
                 </p>
               </div>
             </div>

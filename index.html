@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0b0f1a;
+      color: #e8e8e8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+    .tools {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .card {
+      display: block;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-2px);
+    }
+    .card .emoji {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card .description {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Playground</h1>
+    <div class="tools">
+      <a href="manacher/" class="card">
+        <span class="emoji">🪞</span>
+        <h2>Manacher's Algorithm Visualizer</h2>
+        <p class="description">Step through Manacher's linear-time algorithm for finding the longest palindromic substring, with an interactive visualization of each phase.</p>
+      </a>
+      <a href="sunrise-sunset/" class="card">
+        <span class="emoji">🌅</span>
+        <h2>Sunrise & Sunset Comparison</h2>
+        <p class="description">Compare sunrise and sunset times across different cities throughout the year with interactive charts.</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sunrise & Sunset Comparison</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f172a; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.2.0",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+      "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useState, useMemo } from 'react'
+    import { createRoot } from 'react-dom/client'
+    import {
+      LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+      ResponsiveContainer, ReferenceLine,
+    } from 'recharts'
+    import htm from 'htm'
+
+    const html = htm.bind(React.createElement)
+
+    const cities = {
+      Nashville: { lat: 36.1627, lng: -86.7816, tzStd: -6, tzDst: -5, color: "#f59e0b", label: "Nashville, TN" },
+      Atlanta: { lat: 33.749, lng: -84.388, tzStd: -5, tzDst: -4, color: "#ef4444", label: "Atlanta, GA" },
+      Huntsville: { lat: 34.7304, lng: -86.5861, tzStd: -6, tzDst: -5, color: "#10b981", label: "Huntsville, AL" },
+      Asheville: { lat: 35.5951, lng: -82.5515, tzStd: -5, tzDst: -4, color: "#ec4899", label: "Asheville, NC" },
+      Madrid: { lat: 40.4168, lng: -3.7038, tzStd: 1, tzDst: 2, color: "#8b5cf6", label: "Madrid, Spain" },
+      NewYork: { lat: 40.7128, lng: -74.006, tzStd: -5, tzDst: -4, color: "#3b82f6", label: "New York, NY" },
+      SanFrancisco: { lat: 37.7749, lng: -122.4194, tzStd: -8, tzDst: -7, color: "#06b6d4", label: "San Francisco, CA" },
+    }
+
+    function calcSunTimes(dayOfYear, lat, lng, tzOffset) {
+      const toRad = (d) => (d * Math.PI) / 180
+      const toDeg = (r) => (r * 180) / Math.PI
+      const B = ((2 * Math.PI) / 365) * (dayOfYear - 1)
+      const decl = toDeg(
+        0.006918 - 0.399912 * Math.cos(B) + 0.070257 * Math.sin(B) -
+        0.006758 * Math.cos(2 * B) + 0.000907 * Math.sin(2 * B) -
+        0.002697 * Math.cos(3 * B) + 0.00148 * Math.sin(3 * B)
+      )
+      const eot = 229.18 * (0.000075 + 0.001868 * Math.cos(B) - 0.032077 * Math.sin(B) -
+        0.014615 * Math.cos(2 * B) - 0.04089 * Math.sin(2 * B))
+      const latRad = toRad(lat)
+      const declRad = toRad(decl)
+      const cosHA = (Math.cos(toRad(90.833)) - Math.sin(latRad) * Math.sin(declRad)) /
+        (Math.cos(latRad) * Math.cos(declRad))
+      if (cosHA > 1 || cosHA < -1) return null
+      const HA = toDeg(Math.acos(cosHA))
+      const solarNoon = 720 - 4 * lng - eot + tzOffset * 60
+      return { sunrise: (solarNoon - HA * 4) / 60, sunset: (solarNoon + HA * 4) / 60 }
+    }
+
+    function isDST_US(month, day) {
+      if (month > 3 && month < 11) return true
+      if (month < 3 || month > 11) return false
+      if (month === 3) return day >= 9
+      if (month === 11) return day < 2
+      return false
+    }
+
+    function isDST_EU(month, day) {
+      if (month > 3 && month < 10) return true
+      if (month < 3 || month > 10) return false
+      if (month === 3) return day >= 25
+      if (month === 10) return day >= 25 ? false : true
+      return false
+    }
+
+    function formatTime(hours) {
+      if (hours == null) return "--:--"
+      const h = Math.floor(hours)
+      const m = Math.round((hours - h) * 60)
+      const ampm = h >= 12 ? "PM" : "AM"
+      const h12 = h === 0 ? 12 : h > 12 ? h - 12 : h
+      return `${h12}:${m.toString().padStart(2, "0")} ${ampm}`
+    }
+
+    function dayOfYearToDate(doy) {
+      const date = new Date(2025, 0, 1)
+      date.setDate(doy)
+      return date
+    }
+
+    const monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+
+    function CustomTooltip({ active, payload }) {
+      if (!active || !payload?.length) return null
+      const entry = payload[0]?.payload
+      return html`
+        <div style=${{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, padding: "10px 14px", fontSize: 13 }}>
+          <div style=${{ color: "#94a3b8", marginBottom: 6, fontWeight: 600 }}>${entry?.date}</div>
+          ${payload.map((p, i) => {
+            const cityKey = p.dataKey.split("_")[0]
+            const type = p.dataKey.includes("daylight") ? "daylight" : p.dataKey.includes("sunrise") ? "sunrise" : "sunset"
+            const cityLabel = cities[cityKey]?.label || cityKey
+            return html`
+              <div key=${i} style=${{ color: p.color, display: "flex", justifyContent: "space-between", gap: 16, lineHeight: 1.6 }}>
+                <span>${cityLabel}</span>
+                <span style=${{ fontFamily: "monospace" }}>
+                  ${type === "daylight"
+                    ? `${Math.floor(p.value)}h ${Math.round((p.value % 1) * 60)}m`
+                    : formatTime(p.value)}
+                </span>
+              </div>
+            `
+          })}
+        </div>
+      `
+    }
+
+    function App() {
+      const [view, setView] = useState("daylight")
+      const [selectedCities, setSelectedCities] = useState(["Nashville", "Atlanta", "Madrid"])
+
+      const toggleCity = (city) => {
+        setSelectedCities((prev) =>
+          prev.includes(city) ? prev.filter((c) => c !== city) : [...prev, city]
+        )
+      }
+
+      const data = useMemo(() => {
+        const result = []
+        for (let doy = 1; doy <= 365; doy++) {
+          const date = dayOfYearToDate(doy)
+          const month = date.getMonth() + 1
+          const day = date.getDate()
+          const entry = { doy, date: `${monthLabels[month - 1]} ${day}` }
+          for (const [key, city] of Object.entries(cities)) {
+            const isDst = key === "Madrid" ? isDST_EU(month, day) : isDST_US(month, day)
+            const tz = isDst ? city.tzDst : city.tzStd
+            const times = calcSunTimes(doy, city.lat, city.lng, tz)
+            if (times) {
+              entry[`${key}_sunrise`] = parseFloat(times.sunrise.toFixed(3))
+              entry[`${key}_sunset`] = parseFloat(times.sunset.toFixed(3))
+              entry[`${key}_daylight`] = parseFloat((times.sunset - times.sunrise).toFixed(2))
+            }
+          }
+          result.push(entry)
+        }
+        return result
+      }, [])
+
+      const tableData = useMemo(() => {
+        const samples = []
+        for (let m = 0; m < 12; m++) {
+          const d = new Date(2025, m, 15)
+          const doy = Math.floor((d - new Date(2025, 0, 0)) / 86400000)
+          const entry = data.find((e) => e.doy === doy) || data[doy - 1]
+          if (entry) samples.push(entry)
+        }
+        return samples
+      }, [data])
+
+      const formatYAxis = (val) => {
+        if (view === "daylight") return `${Math.floor(val)}h`
+        return formatTime(val)
+      }
+
+      const getYDomain = () => {
+        const suffix = view === "daylight" ? "_daylight" : view === "sunrise" ? "_sunrise" : "_sunset"
+        let min = Infinity, max = -Infinity
+        for (const entry of data) {
+          for (const key of selectedCities) {
+            const val = entry[`${key}${suffix}`]
+            if (val != null) {
+              if (val < min) min = val
+              if (val > max) max = val
+            }
+          }
+        }
+        if (!isFinite(min)) return [0, 24]
+        const padding = (max - min) * 0.08
+        return [Math.floor((min - padding) * 2) / 2, Math.ceil((max + padding) * 2) / 2]
+      }
+
+      const suffix = view === "daylight" ? "_daylight" : view === "sunrise" ? "_sunrise" : "_sunset"
+
+      const tabStyle = (active) => ({
+        padding: "8px 16px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13,
+        fontWeight: active ? 600 : 400, background: active ? "#334155" : "transparent",
+        color: active ? "#f8fafc" : "#94a3b8", transition: "all 0.15s",
+      })
+
+      const cityBtnStyle = (key, active) => ({
+        padding: "6px 14px", borderRadius: 20, border: `2px solid ${cities[key].color}`,
+        cursor: "pointer", fontSize: 12, fontWeight: 600,
+        background: active ? cities[key].color + "22" : "transparent",
+        color: active ? cities[key].color : "#64748b", transition: "all 0.15s", opacity: active ? 1 : 0.5,
+      })
+
+      const tickFormatter = (doy) => {
+        const d = dayOfYearToDate(doy)
+        return d.getDate() === 1 || doy === 1 ? monthLabels[d.getMonth()] : ""
+      }
+
+      return html`
+        <div style=${{ background: "#0f172a", color: "#e2e8f0", minHeight: "100vh", padding: "24px 20px", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+          <div style=${{ maxWidth: 900, margin: "0 auto" }}>
+            <h1 style=${{ fontSize: 22, fontWeight: 700, marginBottom: 4, color: "#f8fafc" }}>
+              ☀️ Sunrise & Sunset Comparison
+            </h1>
+            <p style=${{ color: "#64748b", fontSize: 14, marginBottom: 20 }}>
+              Annual daylight patterns across seven cities · Local times with DST
+            </p>
+
+            <div style=${{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+              ${["daylight", "sunrise", "sunset"].map((v) => html`
+                <button key=${v} onClick=${() => setView(v)} style=${tabStyle(view === v)}>
+                  ${v === "daylight" ? "Daylight Hours" : v === "sunrise" ? "Sunrise" : "Sunset"}
+                </button>
+              `)}
+              <button onClick=${() => setView("table")} style=${tabStyle(view === "table")}>
+                Monthly Table
+              </button>
+            </div>
+
+            <div style=${{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+              ${Object.keys(cities).map((key) => html`
+                <button key=${key} onClick=${() => toggleCity(key)} style=${cityBtnStyle(key, selectedCities.includes(key))}>
+                  ${cities[key].label}
+                </button>
+              `)}
+            </div>
+
+            ${view !== "table" ? html`
+              <div style=${{ background: "#1e293b", borderRadius: 12, padding: "16px 8px 8px 0" }}>
+                <${ResponsiveContainer} width="100%" height=${400}>
+                  <${LineChart} data=${data} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                    <${CartesianGrid} strokeDasharray="3 3" stroke="#1e293b" />
+                    <${XAxis} dataKey="doy" stroke="#475569"
+                      tick=${{ fill: "#64748b", fontSize: 12 }}
+                      tickFormatter=${tickFormatter}
+                      interval=${0}
+                      ticks=${[1,32,60,91,121,152,182,213,244,274,305,335]} />
+                    <${YAxis} domain=${getYDomain()} stroke="#475569"
+                      tick=${{ fill: "#64748b", fontSize: 11 }}
+                      tickFormatter=${formatYAxis} width=${55} />
+                    <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} />
+                    ${view === "daylight" && html`
+                      <${ReferenceLine} y=${12} stroke="#475569" strokeDasharray="6 4"
+                        label=${{ value: "12h", fill: "#475569", fontSize: 11 }} />
+                    `}
+                    ${selectedCities.map((key) => html`
+                      <${Line} key=${key + suffix} type="monotone" dataKey=${`${key}${suffix}`}
+                        stroke=${cities[key].color} strokeWidth=${2.5} dot=${false}
+                        name=${cities[key].label} />
+                    `)}
+                  <//>
+                <//>
+              </div>
+            ` : html`
+              <div style=${{ overflowX: "auto" }}>
+                <table style=${{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                  <thead>
+                    <tr style=${{ borderBottom: "2px solid #334155" }}>
+                      <th style=${{ padding: "10px 8px", textAlign: "left", color: "#94a3b8" }}>Month</th>
+                      ${selectedCities.map((key) => html`
+                        <th key=${key} colSpan=${3} style=${{ padding: "10px 6px", textAlign: "center", color: cities[key].color, borderLeft: "1px solid #1e293b" }}>
+                          ${cities[key].label}
+                        </th>
+                      `)}
+                    </tr>
+                    <tr style=${{ borderBottom: "1px solid #334155" }}>
+                      <th></th>
+                      ${selectedCities.map((key) => html`
+                        <${React.Fragment} key=${key + "hdr"}>
+                          <th style=${{ padding: "6px 4px", textAlign: "center", color: "#64748b", fontSize: 10, borderLeft: "1px solid #1e293b" }}>Rise</th>
+                          <th style=${{ padding: "6px 4px", textAlign: "center", color: "#64748b", fontSize: 10 }}>Set</th>
+                          <th style=${{ padding: "6px 4px", textAlign: "center", color: "#64748b", fontSize: 10 }}>Day</th>
+                        <//>
+                      `)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tableData.map((entry, i) => html`
+                      <tr key=${i} style=${{ borderBottom: "1px solid #1e293b", background: i % 2 === 0 ? "#0f172a" : "#1e293b22" }}>
+                        <td style=${{ padding: "8px", fontWeight: 600, color: "#cbd5e1" }}>${monthLabels[i]}</td>
+                        ${selectedCities.map((key) => html`
+                          <${React.Fragment} key=${key + "row" + i}>
+                            <td style=${{ padding: "8px 4px", textAlign: "center", fontFamily: "monospace", color: "#fbbf24", fontSize: 11, borderLeft: "1px solid #1e293b" }}>
+                              ${formatTime(entry[`${key}_sunrise`])}
+                            </td>
+                            <td style=${{ padding: "8px 4px", textAlign: "center", fontFamily: "monospace", color: "#f97316", fontSize: 11 }}>
+                              ${formatTime(entry[`${key}_sunset`])}
+                            </td>
+                            <td style=${{ padding: "8px 4px", textAlign: "center", fontFamily: "monospace", color: "#94a3b8", fontSize: 11 }}>
+                              ${Math.floor(entry[`${key}_daylight`])}h${Math.round((entry[`${key}_daylight`] % 1) * 60)}m
+                            </td>
+                          <//>
+                        `)}
+                      </tr>
+                    `)}
+                  </tbody>
+                </table>
+              </div>
+            `}
+
+            <div style=${{ marginTop: 20, background: "#1e293b", borderRadius: 12, padding: 16 }}>
+              <h3 style=${{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: "#f8fafc" }}>Key Takeaways</h3>
+              <div style=${{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7 }}>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#8b5cf6" }}>Madrid</strong> has the latest sunsets despite being at a similar latitude to New York — its position on the western edge of the CET timezone pushes solar noon later, giving it summer sunsets near 9:45 PM.
+                </p>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#06b6d4" }}>San Francisco</strong> (~37.8°N) is in the Pacific timezone and sits far west in its zone, giving it later sunrises and sunsets compared to East Coast cities at similar latitudes.
+                </p>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#ef4444" }}>Atlanta</strong> at ~33.7°N is the southernmost city, so it has the smallest seasonal variation — the gap between longest and shortest day is narrowest.
+                </p>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#10b981" }}>Huntsville</strong> sits between Atlanta and Nashville in latitude (~34.7°N) and shares Nashville's Central timezone, tracking close to Nashville's times.
+                </p>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#ec4899" }}>Asheville</strong> (~35.6°N) is in the Eastern timezone like Atlanta, so its clock times shift earlier than Huntsville despite similar latitude.
+                </p>
+                <p style=${{ marginBottom: 8 }}>
+                  <strong style=${{ color: "#f59e0b" }}>Nashville</strong> and <strong style=${{ color: "#3b82f6" }}>New York</strong> show similar daylight patterns, but New York's higher latitude amplifies seasonal extremes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    createRoot(document.getElementById("root")).render(html`<${App} />`)
+  </script>
+</body>
+</html>

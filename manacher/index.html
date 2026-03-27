@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manacher's Algorithm Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0f; }
+    input:focus { outline: none; border-color: #f59e0b !important; }
+    button { border: none; font-family: inherit; }
+    button:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useMemo, useCallback, useRef, useEffect } = React;
+
+    const EXAMPLES = ["abaaba", "abacaba", "abcba", "racecar", "cbbd"];
+
+    const PYTHON_LINES = [
+      { id: 0,  indent: 0, text: "def longest_palindrome(text):" },
+      { id: 1,  indent: 1, text: "chars = '#' + '#'.join(text) + '#'" },
+      { id: 2,  indent: 1, text: "n = len(chars)" },
+      { id: 3,  indent: 1, text: "palindrome_radius = [0] * n" },
+      { id: 4,  indent: 1, text: "center, right_boundary = 0, 0" },
+      { id: 5,  indent: 1, text: "for current_pos in range(n):" },
+      { id: 6,  indent: 2, text: "mirror_pos = 2 * center - current_pos" },
+      { id: 7,  indent: 2, text: "if current_pos < right_boundary:" },
+      { id: 8,  indent: 3, text: "palindrome_radius[current_pos] = min(palindrome_radius[mirror_pos], right_boundary - current_pos)" },
+      { id: 9,  indent: 2, text: "r = palindrome_radius[current_pos]" },
+      { id: 10, indent: 2, text: "while current_pos - r - 1 >= 0 and current_pos + r + 1 < n \\" },
+      { id: 11, indent: 4, text: "and chars[current_pos - r - 1] == chars[current_pos + r + 1]:" },
+      { id: 12, indent: 3, text: "r += 1" },
+      { id: 13, indent: 2, text: "palindrome_radius[current_pos] = r" },
+      { id: 14, indent: 2, text: "if current_pos + r > right_boundary:" },
+      { id: 15, indent: 3, text: "center, right_boundary = current_pos, current_pos + r" },
+      { id: 16, indent: 1, text: "max_radius = max(palindrome_radius)" },
+      { id: 17, indent: 1, text: "max_pos = palindrome_radius.index(max_radius)" },
+      { id: 18, indent: 1, text: "start = (max_pos - max_radius) // 2" },
+      { id: 19, indent: 1, text: "return text[start : start + max_radius]" },
+    ];
+
+    function computeSteps(original) {
+      const T = ["#", ...original.split("").flatMap((c) => [c, "#"])];
+      const n = T.length;
+      const allSubSteps = [];
+      const P = new Array(n).fill(0);
+      let C = 0, R = 0;
+
+      for (let i = 0; i < n; i++) {
+        const mirror = 2 * C - i;
+        const insideBoundary = i < R;
+
+        allSubSteps.push({
+          i, C, R, mirror: insideBoundary ? mirror : null,
+          P: [...P], activeLine: [5, 6],
+          desc: `current_pos = ${i}, mirror_pos = 2 * ${C} - ${i} = ${mirror}`,
+          T,
+        });
+
+        let radius;
+        if (insideBoundary) {
+          radius = Math.min(P[mirror], R - i);
+          P[i] = radius;
+          allSubSteps.push({
+            i, C, R, mirror,
+            P: [...P], activeLine: [7, 8],
+            desc: `current_pos < right_boundary (${i} < ${R}), so palindrome_radius[${i}] = min(palindrome_radius[${mirror}], ${R} - ${i}) = min(${P[mirror]}, ${R - i}) = ${radius}`,
+            T,
+          });
+        } else {
+          radius = 0;
+          P[i] = 0;
+          allSubSteps.push({
+            i, C, R, mirror: null,
+            P: [...P], activeLine: [7],
+            desc: `current_pos \u2265 right_boundary (${i} \u2265 ${R}) \u2014 condition is false, palindrome_radius[${i}] stays 0`,
+            T,
+          });
+        }
+
+        allSubSteps.push({
+          i, C, R, mirror: insideBoundary ? mirror : null,
+          P: [...P], activeLine: [9],
+          desc: `r = palindrome_radius[${i}] = ${radius}`,
+          T,
+        });
+
+        let expanded = false;
+        while (
+          i - radius - 1 >= 0 &&
+          i + radius + 1 < n &&
+          T[i - radius - 1] === T[i + radius + 1]
+        ) {
+          radius++;
+          P[i] = radius;
+          expanded = true;
+          allSubSteps.push({
+            i, C, R, mirror: insideBoundary ? mirror : null,
+            P: [...P], activeLine: [10, 11, 12],
+            expandCheck: { left: i - radius, right: i + radius },
+            desc: `chars[${i - radius}] = '${T[i - radius]}' == chars[${i + radius}] = '${T[i + radius]}' \u2713 \u2192 r += 1 \u2192 r = ${radius}`,
+            T,
+          });
+        }
+
+        const lIdx = i - radius - 1;
+        const rIdx = i + radius + 1;
+        if (lIdx >= 0 && rIdx < n) {
+          allSubSteps.push({
+            i, C, R, mirror: insideBoundary ? mirror : null,
+            P: [...P], activeLine: [10, 11],
+            expandCheck: { left: lIdx, right: rIdx, fail: true },
+            desc: `chars[${lIdx}] = '${T[lIdx]}' \u2260 chars[${rIdx}] = '${T[rIdx]}' \u2717 \u2192 while condition false, stop`,
+            T,
+          });
+        } else {
+          allSubSteps.push({
+            i, C, R, mirror: insideBoundary ? mirror : null,
+            P: [...P], activeLine: [10, 11],
+            desc: expanded ? `Reached edge of string \u2192 while condition false, stop` : `Out of bounds or mismatch \u2192 while condition false`,
+            T,
+          });
+        }
+
+        allSubSteps.push({
+          i, C, R, mirror: insideBoundary ? mirror : null,
+          P: [...P], activeLine: [13],
+          desc: `palindrome_radius[${i}] = r = ${P[i]}`,
+          T,
+        });
+
+        if (i + P[i] > R) {
+          const oldR = R;
+          C = i;
+          R = i + P[i];
+          allSubSteps.push({
+            i, C, R, mirror: insideBoundary ? mirror : null,
+            P: [...P], activeLine: [14, 15],
+            desc: `${i} + ${P[i]} = ${i + P[i]} > ${oldR} \u2192 center = ${C}, right_boundary = ${R}`,
+            T,
+          });
+        } else {
+          allSubSteps.push({
+            i, C, R, mirror: insideBoundary ? mirror : null,
+            P: [...P], activeLine: [14],
+            desc: `${i} + ${P[i]} = ${i + P[i]} \u2264 ${R} \u2192 condition false, right_boundary unchanged`,
+            T,
+          });
+        }
+      }
+
+      return { T, subSteps: allSubSteps, P, original };
+    }
+
+    function Cell({ char, idx, highlight, label, glow }) {
+      const colors = {
+        center: "#f59e0b", mirror: "#8b5cf6",
+        "expand-match": "#10b981", "expand-fail": "#ef4444",
+        palindrome: "rgba(245,158,11,0.22)", boundary: "#3b82f6",
+      };
+      const bg = colors[highlight] || "transparent";
+      const solid = ["center", "mirror", "boundary"].includes(highlight);
+      const border = solid ? `2px solid ${bg}`
+        : highlight === "expand-match" ? "2px solid #10b981"
+        : highlight === "expand-fail" ? "2px solid #ef4444"
+        : "1px solid rgba(255,255,255,0.08)";
+      const color = char === "#" ? "rgba(255,255,255,0.18)" : "#f0f0f0";
+
+      return (
+        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 32 }}>
+          {label ? (
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: colors[highlight] || "#999", textTransform: "uppercase", height: 14 }}>{label}</div>
+          ) : <div style={{ height: 14 }} />}
+          <div style={{
+            width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center",
+            border, borderRadius: 6, background: bg === "transparent" ? "rgba(255,255,255,0.03)" : bg,
+            color: solid ? "#000" : highlight === "expand-fail" ? "#fff" : color,
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 14,
+            fontWeight: highlight === "center" ? 800 : 500,
+            boxShadow: glow ? `0 0 12px ${bg}` : "none",
+            transition: "all 0.25s ease",
+          }}>{char}</div>
+        </div>
+      );
+    }
+
+    function PCell({ value, active, highlight }) {
+      return (
+        <div style={{
+          width: 30, height: 24, display: "inline-flex", alignItems: "center", justifyContent: "center",
+          fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+          fontWeight: active ? 700 : 400,
+          color: highlight ? "#f59e0b" : active ? "#10b981" : value !== "\u00b7" && value > 0 ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.12)",
+          minWidth: 32, transition: "all 0.25s ease",
+        }}>{value}</div>
+      );
+    }
+
+    function PythonLine({ line, active }) {
+      return (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "3px 0", paddingLeft: line.indent * 20,
+          transition: "all 0.2s ease", opacity: active ? 1 : 0.55,
+        }}>
+          <div style={{
+            width: 4, height: 18, borderRadius: 2, flexShrink: 0,
+            background: active ? "#f59e0b" : "transparent",
+            transition: "all 0.2s ease",
+          }} />
+          <code style={{
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.5,
+            color: active ? "#f5d090" : "rgba(255,255,255,0.55)",
+            fontWeight: active ? 600 : 400, transition: "all 0.2s ease",
+            whiteSpace: "pre",
+          }}>{line.text}</code>
+        </div>
+      );
+    }
+
+    function App() {
+      const [inputVal, setInputVal] = useState(EXAMPLES[0]);
+      const [stepIdx, setStepIdx] = useState(0);
+      const [playing, setPlaying] = useState(false);
+      const playRef = useRef(null);
+      const scrollRef = useRef(null);
+
+      const data = useMemo(() => computeSteps(inputVal), [inputVal]);
+      const { T, subSteps } = data;
+      const total = subSteps.length;
+      const step = subSteps[Math.min(stepIdx, total - 1)];
+
+      useEffect(() => { setStepIdx(0); setPlaying(false); }, [inputVal]);
+
+      useEffect(() => {
+        if (playing) {
+          playRef.current = setInterval(() => {
+            setStepIdx((prev) => {
+              if (prev >= total - 1) { setPlaying(false); return prev; }
+              return prev + 1;
+            });
+          }, 900);
+        }
+        return () => clearInterval(playRef.current);
+      }, [playing, total]);
+
+      useEffect(() => {
+        if (scrollRef.current) {
+          const c = scrollRef.current;
+          c.scrollTo({ left: step.i * 34 - c.clientWidth / 2, behavior: "smooth" });
+        }
+      }, [step.i]);
+
+      const getHighlight = useCallback((idx) => {
+        if (idx === step.i) return "center";
+        if (step.expandCheck && !step.expandCheck.fail && (idx === step.expandCheck.left || idx === step.expandCheck.right)) return "expand-match";
+        if (step.expandCheck && step.expandCheck.fail && (idx === step.expandCheck.left || idx === step.expandCheck.right)) return "expand-fail";
+        if (idx === step.mirror) return "mirror";
+        const r = step.P[step.i] || 0;
+        if (idx >= step.i - r && idx <= step.i + r && idx !== step.i) return "palindrome";
+        if (idx === step.R && step.R > 0 && idx !== step.i) return "boundary";
+        return null;
+      }, [step]);
+
+      const getLabel = useCallback((idx) => {
+        if (idx === step.i && idx === step.C) return "pos=ctr";
+        if (idx === step.i) return "pos";
+        if (idx === step.mirror) return "mir";
+        if (idx === step.R && step.R > 0 && idx !== step.i) return "R";
+        if (idx === step.C && step.C !== step.i) return "ctr";
+        return null;
+      }, [step]);
+
+      const longestInfo = useMemo(() => {
+        if (stepIdx < total - 1) return null;
+        const finalP = subSteps[total - 1].P;
+        let maxR = 0, maxI = 0;
+        for (let i = 0; i < finalP.length; i++) {
+          if (finalP[i] > maxR) { maxR = finalP[i]; maxI = i; }
+        }
+        const start = (maxI - maxR) / 2;
+        return { substring: inputVal.slice(start, start + maxR), length: maxR };
+      }, [stepIdx, total, subSteps, inputVal]);
+
+      const btn = (disabled) => ({
+        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 8, padding: "7px 14px",
+        color: disabled ? "rgba(255,255,255,0.15)" : "#e8e8e8",
+        cursor: disabled ? "default" : "pointer", fontSize: 13, fontWeight: 500,
+      });
+
+      return (
+        <div style={{
+          minHeight: "100vh", background: "#0a0a0f", color: "#e8e8e8",
+          fontFamily: "'IBM Plex Sans', -apple-system, sans-serif",
+          padding: "28px 20px", display: "flex", flexDirection: "column", alignItems: "center",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 26 }}>
+            <h1 style={{
+              fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em", margin: 0,
+              background: "linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            }}>Manacher's Algorithm</h1>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 5, fontWeight: 300 }}>
+              Step through runnable Python &middot; watch each line execute
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 22, flexWrap: "wrap", justifyContent: "center" }}>
+            <input type="text" value={inputVal}
+              onChange={(e) => setInputVal(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 15))}
+              placeholder="Enter a string..."
+              style={{
+                background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 8, padding: "8px 14px", color: "#f0f0f0",
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 14, width: 160,
+              }}
+            />
+            <div style={{ display: "flex", gap: 5 }}>
+              {EXAMPLES.map((ex) => (
+                <button key={ex} onClick={() => setInputVal(ex)} style={{
+                  background: inputVal === ex ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.04)",
+                  border: inputVal === ex ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 6, padding: "5px 9px",
+                  color: inputVal === ex ? "#f59e0b" : "rgba(255,255,255,0.5)",
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: 11, cursor: "pointer",
+                }}>{ex}</button>
+              ))}
+            </div>
+          </div>
+
+          {!inputVal ? <p style={{ color: "rgba(255,255,255,0.3)" }}>Type a string to begin.</p> : (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap", justifyContent: "center" }}>
+                <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} disabled={stepIdx === 0} style={btn(stepIdx === 0)}>{"\u25C0"} Prev</button>
+                <button onClick={() => setPlaying((p) => !p)} style={{
+                  background: playing ? "rgba(239,68,68,0.2)" : "rgba(245,158,11,0.15)",
+                  border: playing ? "1px solid rgba(239,68,68,0.4)" : "1px solid rgba(245,158,11,0.3)",
+                  borderRadius: 8, padding: "7px 18px",
+                  color: playing ? "#ef4444" : "#f59e0b", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                }}>{playing ? "\u23F8 Pause" : "\u25B6 Play"}</button>
+                <button onClick={() => setStepIdx((p) => Math.min(total - 1, p + 1))} disabled={stepIdx >= total - 1} style={btn(stepIdx >= total - 1)}>Next {"\u25B6"}</button>
+                <button onClick={() => { setStepIdx(0); setPlaying(false); }} style={{ ...btn(false), color: "rgba(255,255,255,0.4)" }}>{"\u21BA"}</button>
+              </div>
+
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginBottom: 14, fontVariantNumeric: "tabular-nums" }}>
+                Sub-step {stepIdx + 1} / {total} &middot; current_pos = {step.i} &middot; center = {step.C} &middot; right_boundary = {step.R}
+              </div>
+
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 14, padding: "20px 16px", width: "100%", maxWidth: 720, marginBottom: 14,
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 8 }}>
+                  chars[]
+                </div>
+                <div ref={scrollRef} style={{ display: "flex", gap: 2, overflowX: "auto", paddingBottom: 6 }}>
+                  {T.map((ch, idx) => (
+                    <Cell key={idx} char={ch} idx={idx} highlight={getHighlight(idx)} label={getLabel(idx)} glow={idx === step.i} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginTop: 14, marginBottom: 4 }}>
+                  palindrome_radius[]
+                </div>
+                <div style={{ display: "flex", gap: 2, overflowX: "auto" }}>
+                  {step.P.map((v, idx) => (
+                    <PCell key={idx} value={idx <= step.i ? v : "\u00B7"} active={idx === step.i} highlight={idx === step.i} />
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.12)",
+                borderRadius: 10, padding: "11px 16px", width: "100%", maxWidth: 720, marginBottom: 14,
+              }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: "#6ee7b7", lineHeight: 1.6 }}>
+                  {"\u2192"} {step.desc}
+                </div>
+              </div>
+
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 14, padding: "18px 20px", width: "100%", maxWidth: 720, marginBottom: 20,
+                overflowX: "auto",
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 10 }}>
+                  Python Implementation
+                </div>
+                {PYTHON_LINES.map((line) => (
+                  <PythonLine key={line.id} line={line} active={step.activeLine.includes(line.id)} />
+                ))}
+              </div>
+
+              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", marginBottom: 20 }}>
+                {[
+                  { color: "#f59e0b", label: "current_pos" }, { color: "#8b5cf6", label: "mirror_pos" },
+                  { color: "#3b82f6", label: "right_boundary" }, { color: "#10b981", label: "Expand \u2713" },
+                  { color: "#ef4444", label: "Expand \u2717" },
+                ].map(({ color, label }) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "rgba(255,255,255,0.4)" }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 3, background: color }} />{label}
+                  </div>
+                ))}
+              </div>
+
+              {longestInfo && (
+                <div style={{
+                  background: "linear-gradient(135deg, rgba(245,158,11,0.08), rgba(139,92,246,0.08))",
+                  border: "1px solid rgba(245,158,11,0.2)", borderRadius: 12,
+                  padding: "14px 22px", textAlign: "center", maxWidth: 720, width: "100%",
+                }}>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+                    Longest Palindromic Substring
+                  </div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: "#f59e0b" }}>
+                    "{longestInfo.substring}"
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>length {longestInfo.length}</div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

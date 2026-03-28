@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slotted Page Visualizer</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 28px; }
+    .back-link {
+      display: inline-block; margin-bottom: 20px; color: #94a3b8;
+      text-decoration: none; font-size: 0.85rem;
+    }
+    .back-link:hover { color: #e2e8f0; }
+
+    .toggle-group {
+      display: inline-flex; border-radius: 8px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toggle-btn {
+      padding: 8px 20px; border: none; background: transparent;
+      color: #94a3b8; cursor: pointer; font-size: 0.9rem; font-family: inherit;
+      transition: background 0.2s, color 0.2s;
+    }
+    .toggle-btn.active { background: #f59e0b; color: #0f172a; font-weight: 600; }
+    .toggle-btn:not(.active):hover { background: rgba(255,255,255,0.05); }
+
+    .input-row {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .input-row input[type="text"] {
+      background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 8px 14px; color: #e2e8f0;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem;
+      outline: none; width: 160px;
+    }
+    .input-row input[type="text"]:focus { border-color: #3b82f6; }
+    .input-row label { color: #94a3b8; font-size: 0.85rem; }
+
+    .btn {
+      padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 600; font-family: inherit;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+    .btn-insert { background: #10b981; color: #0f172a; }
+    .btn-delete { background: #ef4444; color: #fff; }
+    .btn-compact { background: #f59e0b; color: #0f172a; }
+
+    .stats-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .stat-box {
+      background: #1e293b; border-radius: 8px; padding: 10px 16px;
+      font-size: 0.8rem; color: #94a3b8;
+    }
+    .stat-box .val { color: #e2e8f0; font-weight: 600; font-size: 1rem; }
+
+    .viz-container {
+      background: #1e293b; border-radius: 12px; padding: 20px;
+      margin-bottom: 20px; overflow-x: auto;
+    }
+    .viz-container svg { display: block; }
+
+    .avail-list {
+      background: #1e293b; border-radius: 12px; padding: 16px 20px;
+      margin-bottom: 20px; font-size: 0.85rem;
+    }
+    .avail-list h3 { font-size: 0.9rem; color: #94a3b8; margin-bottom: 8px; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; font-size: 0.8rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; color: #94a3b8; }
+    .legend-swatch {
+      width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
+    }
+
+    .error-msg {
+      background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px; padding: 8px 14px; color: #fca5a5;
+      font-size: 0.85rem; margin-bottom: 12px;
+    }
+
+    @keyframes flash-in {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); transform: scale(1.04); }
+      100% { box-shadow: none; transform: scale(1); }
+    }
+    @keyframes flash-compact {
+      0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
+      100% { box-shadow: none; }
+    }
+    @keyframes poof {
+      0% { transform: scale(1); opacity: 1; filter: blur(0); }
+      15% { transform: scale(1.01); opacity: 0.9; filter: blur(0); }
+      100% { transform: scale(0.15); opacity: 0; filter: blur(8px); }
+    }
+    @keyframes poof-particle {
+      0% { opacity: 1; transform: translate(0,0) scale(1); }
+      60% { opacity: 0.8; }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
+    .anim-insert { animation: flash-in 0.6s ease-out; }
+    .anim-poof { animation: poof 0.55s ease-in forwards; pointer-events: none; }
+    .cell-card-wrapper {
+      transition: max-height 0.35s ease 0.25s, max-width 0.35s ease 0.25s, margin 0.35s ease 0.25s,
+                  padding 0.35s ease 0.25s, opacity 0.25s ease 0.2s;
+      overflow: visible; max-height: 200px; max-width: 900px; opacity: 1;
+    }
+    .cell-card-wrapper.collapsing {
+      max-height: 0 !important; max-width: 0 !important; margin: 0 !important;
+      padding: 0 !important; opacity: 0; overflow: hidden;
+    }
+    .anim-compact .viz-container { animation: flash-compact 0.6s ease-out; }
+    .poof-particle {
+      position: absolute; border-radius: 50%;
+      width: var(--size, 10px); height: var(--size, 10px);
+      background: #ef4444;
+      animation: poof-particle var(--dur, 0.6s) ease-out forwards;
+      animation-delay: var(--delay, 0s);
+      pointer-events: none;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "htm": "https://esm.sh/htm@3.1.1"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useState, useReducer, useMemo, useEffect } from 'react';
+    import { createRoot } from 'react-dom/client';
+    const h = React.createElement;
+
+    // ── Constants ──────────────────────────────────────────────
+    const PAGE_SIZE = 256;
+    const HEADER_SIZE = 12;
+    const CELL_OFFSET_SIZE = 2;
+
+    const COLORS = {
+      header: '#475569',
+      offsetPtr: '#3b82f6',
+      keySize: '#38bdf8',
+      pageId: '#a78bfa',
+      flags: '#f472b6',
+      valueSize: '#22d3ee',
+      keyBytes: '#fbbf24',
+      dataRecord: '#4ade80',
+      freeSeg: '#ef4444',
+      selected: '#ffffff',
+    };
+
+    // ── Helpers ────────────────────────────────────────────────
+    function cellSize(cellType, key, value) {
+      const keyBytes = new TextEncoder().encode(key).length;
+      if (cellType === 'key') return 4 + 4 + keyBytes;
+      const valueBytes = new TextEncoder().encode(value || '').length;
+      return 1 + 4 + 4 + keyBytes + valueBytes;
+    }
+
+    function cellFields(cellType, key, value) {
+      const keyBytes = new TextEncoder().encode(key).length;
+      if (cellType === 'key') {
+        return [
+          { name: 'key_size', size: 4, color: COLORS.keySize },
+          { name: 'page_id', size: 4, color: COLORS.pageId },
+          { name: 'key', size: keyBytes, color: COLORS.keyBytes, label: '"' + key + '"' },
+        ];
+      }
+      const valueBytes = new TextEncoder().encode(value || '').length;
+      return [
+        { name: 'flags', size: 1, color: COLORS.flags },
+        { name: 'key_size', size: 4, color: COLORS.keySize },
+        { name: 'value_size', size: 4, color: COLORS.valueSize },
+        { name: 'key', size: keyBytes, color: COLORS.keyBytes, label: '"' + key + '"' },
+        { name: 'data_record', size: valueBytes, color: COLORS.dataRecord, label: '"' + value + '"' },
+      ];
+    }
+
+    function computeLayout(cells, freeSegments) {
+      const activeCells = cells.filter(c => !c.deleted);
+      const numOffsets = activeCells.length;
+      const offsetsEnd = HEADER_SIZE + numOffsets * CELL_OFFSET_SIZE;
+      const allCellsByOffset = activeCells.slice().sort((a, b) => a.offset - b.offset);
+      const cellDataStart = allCellsByOffset.length > 0 ? allCellsByOffset[0].offset : PAGE_SIZE;
+      const contiguousFree = cellDataStart - offsetsEnd;
+      const fragmentedFree = freeSegments.reduce((s, seg) => s + seg.size, 0);
+      const sortedOffsets = activeCells.slice()
+        .sort((a, b) => a.key.localeCompare(b.key))
+        .map(c => ({ cellId: c.id, offset: c.offset, key: c.key }));
+      return { offsetsEnd, cellDataStart, contiguousFree, fragmentedFree, sortedOffsets, numOffsets };
+    }
+
+    // ── Example Data ──────────────────────────────────────────
+    const EXAMPLE_KEYS = ['Tom', 'Leslie', 'Ron', 'April', 'Ben', 'Ann', 'Chris', 'Andy', 'Donna', 'Jerry', 'Mark', 'Lucy', 'Dave', 'Gina', 'Kyle'];
+    const EXAMPLE_VALUES = ['admin_primary', 'regular_user', 'content_editor', 'read_only_viewer', 'community_mod', 'temporary_guest', 'repo_owner_full', 'support_staff', 'team_lead_senior', 'summer_intern_2026', 'backend_developer', 'platform_ops', 'eng_manager', 'senior_director', 'vice_president'];
+
+    // ── Persistence ─────────────────────────────────────────────
+    const STORAGE_KEY_PREFIX = 'slotted-page-';
+    const STORAGE_META_KEY = 'slotted-page-meta';
+
+    function storageKey(cellType) { return STORAGE_KEY_PREFIX + cellType; }
+
+    const defaultPageState = {
+      cells: [],
+      freeSegments: [],
+      nextId: 1,
+      inputKey: '',
+      inputValue: '',
+    };
+
+    function loadState() {
+      try {
+        const meta = JSON.parse(localStorage.getItem(STORAGE_META_KEY) || '{}');
+        const cellType = meta.cellType || 'key';
+        const customInput = meta.customInput || false;
+        const raw = localStorage.getItem(storageKey(cellType));
+        const page = raw ? { ...defaultPageState, ...JSON.parse(raw) } : { ...defaultPageState };
+        return { ...page, cellType, customInput, selectedCellId: null, error: null };
+      } catch {
+        return { ...defaultPageState, cellType: 'key', customInput: false, selectedCellId: null, error: null };
+      }
+    }
+
+    function saveState(state) {
+      try {
+        const { cellType, customInput, selectedCellId, error, ...page } = state;
+        localStorage.setItem(STORAGE_META_KEY, JSON.stringify({ cellType, customInput }));
+        localStorage.setItem(storageKey(cellType), JSON.stringify(page));
+      } catch {}
+    }
+
+    function loadPageForType(cellType) {
+      try {
+        const raw = localStorage.getItem(storageKey(cellType));
+        return raw ? { ...defaultPageState, ...JSON.parse(raw) } : { ...defaultPageState };
+      } catch { return { ...defaultPageState }; }
+    }
+
+    // ── Reducer ────────────────────────────────────────────────
+    function baseReducer(state, action) {
+      switch (action.type) {
+        case 'SET_CELL_TYPE': {
+          const page = loadPageForType(action.cellType);
+          return { ...page, cellType: action.cellType, customInput: state.customInput, selectedCellId: null, error: null };
+        }
+        case 'SET_INPUT_KEY':
+          return { ...state, inputKey: action.value, error: null };
+        case 'SET_INPUT_VALUE':
+          return { ...state, inputValue: action.value, error: null };
+        case 'SET_CUSTOM_INPUT':
+          return { ...state, customInput: action.value };
+        case 'SELECT_CELL':
+          return { ...state, selectedCellId: state.selectedCellId === action.cellId ? null : action.cellId };
+
+        case 'INSERT_CELL': {
+          const { cellType, cells, freeSegments, nextId, inputKey, inputValue, customInput } = state;
+          let key, value;
+          if (customInput) {
+            key = inputKey.trim();
+            if (!key) return { ...state, error: 'Key cannot be empty.' };
+            value = cellType === 'key_value' ? (inputValue || '') : null;
+          } else {
+            const usedKeys = new Set(cells.filter(c => !c.deleted).map(c => c.key));
+            const available = EXAMPLE_KEYS.filter(k => !usedKeys.has(k));
+            if (available.length === 0) return { ...state, error: 'No more example keys available.' };
+            key = available[Math.floor(Math.random() * available.length)];
+            value = cellType === 'key_value' ? EXAMPLE_VALUES[EXAMPLE_KEYS.indexOf(key) % EXAMPLE_VALUES.length] : null;
+          }
+          const size = cellSize(cellType, key, value);
+          const activeCells = cells.filter(c => !c.deleted);
+          const numOffsetsAfter = activeCells.length + 1;
+          const offsetsEndAfter = HEADER_SIZE + numOffsetsAfter * CELL_OFFSET_SIZE;
+
+          let offset = null;
+          let newFreeSegments = [...freeSegments];
+          for (let i = 0; i < newFreeSegments.length; i++) {
+            if (newFreeSegments[i].size >= size) {
+              offset = newFreeSegments[i].offset;
+              const remainder = newFreeSegments[i].size - size;
+              if (remainder > 0) {
+                newFreeSegments[i] = { offset: offset + size, size: remainder };
+              } else {
+                newFreeSegments.splice(i, 1);
+              }
+              break;
+            }
+          }
+
+          if (offset === null) {
+            const allActive = cells.filter(c => !c.deleted).sort((a, b) => a.offset - b.offset);
+            const cellDataStart = allActive.length > 0 ? allActive[0].offset : PAGE_SIZE;
+            const available = cellDataStart - offsetsEndAfter;
+            if (available < size) {
+              const fragFree = newFreeSegments.reduce((s, seg) => s + seg.size, 0);
+              if (available + fragFree >= size) {
+                return { ...state, error: 'Not enough contiguous space. Try compacting first.' };
+              }
+              return { ...state, error: 'Page is full! Cannot insert this cell.' };
+            }
+            offset = cellDataStart - size;
+          } else {
+            const allActive = cells.filter(c => !c.deleted).sort((a, b) => a.offset - b.offset);
+            const cellDataStart = allActive.length > 0 ? Math.min(allActive[0].offset, offset) : offset;
+            if (offsetsEndAfter > cellDataStart) {
+              return { ...state, error: 'Page is full! Cannot fit another offset pointer.' };
+            }
+          }
+
+          return {
+            ...state,
+            cells: [...cells, { id: nextId, key, value, offset, size, deleted: false, insertionOrder: nextId }],
+            freeSegments: newFreeSegments,
+            nextId: nextId + 1,
+            inputKey: '',
+            inputValue: '',
+            error: null,
+            highlightCellId: nextId,
+            animating: 'insert',
+          };
+        }
+
+        case 'DELETE_CELL': {
+          const { cells, freeSegments, selectedCellId } = state;
+          if (selectedCellId === null) return state;
+          const cell = cells.find(c => c.id === selectedCellId);
+          if (!cell || cell.deleted) return state;
+          const newCells = cells.map(c => c.id === selectedCellId ? { ...c, deleted: true } : c);
+          let segs = [...freeSegments, { offset: cell.offset, size: cell.size }]
+            .sort((a, b) => a.offset - b.offset);
+          const merged = [];
+          for (const seg of segs) {
+            if (merged.length > 0 && merged[merged.length - 1].offset + merged[merged.length - 1].size >= seg.offset) {
+              const last = merged[merged.length - 1];
+              const end = Math.max(last.offset + last.size, seg.offset + seg.size);
+              merged[merged.length - 1] = { offset: last.offset, size: end - last.offset };
+            } else {
+              merged.push({ ...seg });
+            }
+          }
+          return { ...state, cells: newCells, freeSegments: merged, selectedCellId: null, animating: 'delete' };
+        }
+
+        case 'COMPACT': {
+          const activeCells = state.cells.filter(c => !c.deleted);
+          if (activeCells.length === 0) return { ...state, freeSegments: [], cells: [] };
+          const sorted = activeCells.slice().sort((a, b) => a.insertionOrder - b.insertionOrder);
+          let cursor = PAGE_SIZE;
+          const repacked = sorted.map(c => { cursor -= c.size; return { ...c, offset: cursor }; });
+          return { ...state, cells: repacked, freeSegments: [], animating: 'compact' };
+        }
+
+        case 'RESET':
+          return { ...defaultPageState, cellType: state.cellType, customInput: state.customInput, selectedCellId: null, error: null };
+
+        case 'CLEAR_ANIMATION':
+          return { ...state, animating: null, highlightCellId: null };
+
+        default: return state;
+      }
+    }
+
+    function reducer(state, action) {
+      const next = baseReducer(state, action);
+      if (next !== state) saveState(next);
+      return next;
+    }
+
+    // ── SVG helpers ───────────────────────────────────────────
+    const SVG_W = 900;
+    const SVG_H = 120;
+    const ML = 10;
+    const BAR_Y = 30;
+    const BAR_H = 44;
+    const USABLE_W = SVG_W - 20;
+
+    function bx(b) { return ML + (b / PAGE_SIZE) * USABLE_W; }
+    function bw(b) { return (b / PAGE_SIZE) * USABLE_W; }
+
+    // ── Components ─────────────────────────────────────────────
+
+    function CellTypeToggle({ cellType, customInput, dispatch }) {
+      return h('div', { style: { display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 } },
+        h('div', { className: 'toggle-group' },
+          h('button', {
+            className: 'toggle-btn' + (cellType === 'key' ? ' active' : ''),
+            onClick: () => dispatch({ type: 'SET_CELL_TYPE', cellType: 'key' })
+          }, 'Key Cell'),
+          h('button', {
+            className: 'toggle-btn' + (cellType === 'key_value' ? ' active' : ''),
+            onClick: () => dispatch({ type: 'SET_CELL_TYPE', cellType: 'key_value' })
+          }, 'Key-Value Cell')
+        ),
+        h('label', { style: { display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', userSelect: 'none', fontSize: '0.85rem', color: '#94a3b8' } },
+          h('input', {
+            type: 'checkbox', checked: customInput,
+            onChange: e => dispatch({ type: 'SET_CUSTOM_INPUT', value: e.target.checked }),
+            style: { accentColor: '#f59e0b' }
+          }),
+          'Custom input'
+        )
+      );
+    }
+
+    function InputPanel({ state, dispatch, onDelete }) {
+      const handleInsert = () => dispatch({ type: 'INSERT_CELL' });
+      const handleKeyDown = (e) => { if (e.key === 'Enter') handleInsert(); };
+      return h('div', null,
+        h('div', { className: 'input-row' },
+          state.customInput ? [
+            h('label', { key: 'kl' }, 'Key:'),
+            h('input', {
+              key: 'ki', type: 'text', value: state.inputKey, maxLength: 20,
+              onInput: e => dispatch({ type: 'SET_INPUT_KEY', value: e.target.value }),
+              onKeyDown: handleKeyDown, placeholder: 'e.g. Tom'
+            }),
+            state.cellType === 'key_value' ? h('label', { key: 'vl' }, 'Value:') : null,
+            state.cellType === 'key_value' ? h('input', {
+              key: 'vi', type: 'text', value: state.inputValue, maxLength: 20,
+              onInput: e => dispatch({ type: 'SET_INPUT_VALUE', value: e.target.value }),
+              onKeyDown: handleKeyDown, placeholder: 'e.g. data'
+            }) : null,
+          ] : null,
+          h('button', {
+            className: 'btn btn-insert', onClick: handleInsert,
+            disabled: state.customInput && !state.inputKey.trim()
+          }, 'Insert'),
+          h('button', { className: 'btn btn-delete', onClick: onDelete, disabled: state.selectedCellId === null }, 'Delete Selected'),
+          h('button', { className: 'btn btn-compact', onClick: () => dispatch({ type: 'COMPACT' }), disabled: state.freeSegments.length === 0 }, 'Compact'),
+          h('button', {
+            className: 'btn', onClick: () => dispatch({ type: 'RESET' }),
+            style: { background: '#334155', color: '#94a3b8' }
+          }, 'Reset'),
+        ),
+        state.error ? h('div', { className: 'error-msg' }, state.error) : null
+      );
+    }
+
+    function PageStats({ layout }) {
+      const { cellDataStart, contiguousFree, fragmentedFree, numOffsets } = layout;
+      const stats = [
+        ['Page Size', PAGE_SIZE + 'B'],
+        ['Header', HEADER_SIZE + 'B'],
+        ['Offsets', numOffsets + ' (' + (numOffsets * CELL_OFFSET_SIZE) + 'B)'],
+        ['Free (contiguous)', contiguousFree + 'B'],
+        ['Free (fragmented)', fragmentedFree + 'B'],
+        ['Cell Data', (PAGE_SIZE - cellDataStart) + 'B'],
+      ];
+      return h('div', { className: 'stats-row' },
+        stats.map(([label, val]) =>
+          h('div', { className: 'stat-box', key: label },
+            h('span', { className: 'val' }, val), h('br'), label
+          )
+        )
+      );
+    }
+
+    function legendRow(items) {
+      return h('div', { className: 'legend' },
+        items.map(([label, color]) =>
+          h('div', { className: 'legend-item', key: label },
+            h('div', { className: 'legend-swatch', style: { background: color } }),
+            label
+          )
+        )
+      );
+    }
+
+    function PageLegend() {
+      return legendRow([
+        ['Header', COLORS.header],
+        ['Offset Ptr', COLORS.offsetPtr],
+        ['Cell data', COLORS.keyBytes],
+        ['Free segment', COLORS.freeSeg],
+      ]);
+    }
+
+    function CellLegend({ cellType }) {
+      const items = [
+        ...(cellType === 'key_value' ? [['flags', COLORS.flags]] : []),
+        ['key_size', COLORS.keySize],
+        ...(cellType === 'key' ? [['page_id', COLORS.pageId]] : [['value_size', COLORS.valueSize]]),
+        ['key bytes', COLORS.keyBytes],
+        ...(cellType === 'key_value' ? [['data_record', COLORS.dataRecord]] : []),
+      ];
+      return legendRow(items);
+    }
+
+    function AvailabilityList({ freeSegments }) {
+      if (freeSegments.length === 0) return null;
+      return h('div', { className: 'avail-list' },
+        h('h3', null, 'Availability List (free segments)'),
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontFamily: 'monospace', fontSize: '0.85rem' } },
+          freeSegments.map((seg, i) => [
+            h('span', {
+              key: 'seg-' + i,
+              style: { background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, padding: '4px 10px' }
+            }, 'offset: ' + seg.offset + ', size: ' + seg.size + 'B'),
+            i < freeSegments.length - 1 ? h('span', { key: 'arr-' + i, style: { color: '#64748b' } }, '\u2192') : null,
+          ]),
+          h('span', { style: { color: '#64748b' } }, '\u2192 null')
+        )
+      );
+    }
+
+    // ── Page bar (SVG) ─────────────────────────────────────────
+    function PageBar({ state, layout, dispatch, hoveredCellId, setHoveredCellId, deletingCellId }) {
+      const { cells, freeSegments, selectedCellId } = state;
+      const { offsetsEnd, cellDataStart, sortedOffsets } = layout;
+      const activeCells = cells.filter(c => !c.deleted);
+      const svgChildren = [];
+
+      // Defs
+      svgChildren.push(
+        h('defs', { key: 'defs' },
+          h('pattern', { id: 'hatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' },
+            h('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: COLORS.freeSeg, strokeWidth: 1.5, strokeOpacity: 0.5 })
+          ),
+          h('marker', { id: 'arrowhead', markerWidth: 6, markerHeight: 4, refX: 6, refY: 2, orient: 'auto' },
+            h('polygon', { points: '0 0, 6 2, 0 4', fill: COLORS.offsetPtr, opacity: 0.6 })
+          )
+        )
+      );
+
+      // Byte ticks
+      [0, 32, 64, 96, 128, 160, 192, 224, 256].forEach(b => {
+        svgChildren.push(
+          h('line', { key: 'tick-' + b, x1: bx(b), y1: BAR_Y - 6, x2: bx(b), y2: BAR_Y, stroke: '#475569', strokeWidth: 1 }),
+          h('text', { key: 'tlbl-' + b, x: bx(b), y: BAR_Y - 10, textAnchor: 'middle', fill: '#64748b', fontSize: 9, fontFamily: 'monospace' }, b)
+        );
+      });
+
+      // Background
+      svgChildren.push(
+        h('rect', { key: 'bg', x: bx(0), y: BAR_Y, width: bw(PAGE_SIZE), height: BAR_H, fill: '#0f172a', rx: 4, stroke: '#334155', strokeWidth: 1 })
+      );
+
+      // Header
+      svgChildren.push(
+        h('rect', { key: 'hdr', x: bx(0), y: BAR_Y, width: bw(HEADER_SIZE), height: BAR_H, fill: COLORS.header, rx: 4, opacity: 0.8 }),
+        h('text', { key: 'hdr-l', x: bx(HEADER_SIZE / 2), y: BAR_Y + BAR_H / 2 + 4, textAnchor: 'middle', fill: '#e2e8f0', fontSize: 10, fontWeight: 600 }, 'Header')
+      );
+
+      // Highlight for newly inserted cell
+      const isNewCell = state.animating === 'insert' && state.highlightCellId;
+
+      // Offset pointers
+      sortedOffsets.forEach((so, i) => {
+        const x = bx(HEADER_SIZE + i * CELL_OFFSET_SIZE);
+        const w = bw(CELL_OFFSET_SIZE);
+        const isHov = hoveredCellId === so.cellId;
+        const isNewPtr = isNewCell === so.cellId;
+        svgChildren.push(
+          h('rect', {
+            key: 'op-' + so.cellId, x, y: BAR_Y, width: w, height: BAR_H,
+            fill: isNewPtr ? '#10b981' : COLORS.offsetPtr, opacity: isHov || isNewPtr ? 1 : 0.7,
+            stroke: isHov ? '#fff' : 'none', strokeWidth: 1,
+            style: { cursor: 'pointer', transition: 'opacity 0.3s, fill 0.6s' },
+            onMouseEnter: () => setHoveredCellId(so.cellId),
+            onMouseLeave: () => setHoveredCellId(null),
+            onClick: () => dispatch({ type: 'SELECT_CELL', cellId: so.cellId })
+          }),
+          h('text', {
+            key: 'opl-' + so.cellId, x: x + w / 2, y: BAR_Y + BAR_H / 2 + 3,
+            textAnchor: 'middle', fill: '#fff', fontSize: 7, fontFamily: 'monospace', pointerEvents: 'none'
+          }, so.offset)
+        );
+      });
+
+      // Offset label
+      if (sortedOffsets.length > 0) {
+        svgChildren.push(
+          h('text', {
+            key: 'op-lbl', x: bx(HEADER_SIZE + (sortedOffsets.length * CELL_OFFSET_SIZE) / 2),
+            y: BAR_Y + BAR_H + 14, textAnchor: 'middle', fill: COLORS.offsetPtr, fontSize: 9, fontWeight: 600
+          }, 'Offset Pointers (sorted by key)')
+        );
+      }
+
+      // Free space
+      const freeW = cellDataStart - offsetsEnd;
+      svgChildren.push(h('rect', { key: 'free', x: bx(offsetsEnd), y: BAR_Y, width: bw(freeW), height: BAR_H, fill: 'rgba(255,255,255,0.03)' }));
+      if (freeW > 20) {
+        svgChildren.push(
+          h('text', { key: 'free-l', x: bx((offsetsEnd + cellDataStart) / 2), y: BAR_Y + BAR_H / 2 + 4, textAnchor: 'middle', fill: '#64748b', fontSize: 10 }, 'Free Space')
+        );
+      }
+
+      // Free segments (hatched)
+      freeSegments.forEach((seg, i) => {
+        svgChildren.push(
+          h('rect', { key: 'fsh-' + i, x: bx(seg.offset), y: BAR_Y, width: bw(seg.size), height: BAR_H, fill: 'url(#hatch)' }),
+          h('rect', { key: 'fso-' + i, x: bx(seg.offset), y: BAR_Y, width: bw(seg.size), height: BAR_H, fill: COLORS.freeSeg, opacity: 0.15 })
+        );
+      });
+
+      // Preview free segment behind cell being deleted
+      if (deletingCellId) {
+        const delCell = activeCells.find(c => c.id === deletingCellId);
+        if (delCell) {
+          svgChildren.push(
+            h('rect', { key: 'fsh-preview', x: bx(delCell.offset), y: BAR_Y, width: bw(delCell.size), height: BAR_H, fill: 'url(#hatch)' }),
+            h('rect', { key: 'fso-preview', x: bx(delCell.offset), y: BAR_Y, width: bw(delCell.size), height: BAR_H, fill: COLORS.freeSeg, opacity: 0.15 })
+          );
+        }
+      }
+
+      // Cells in main bar
+      activeCells.forEach(c => {
+        const x = bx(c.offset);
+        const w = bw(c.size);
+        const isSel = selectedCellId === c.id;
+        const isHov = hoveredCellId === c.id;
+        const isNew = isNewCell === c.id;
+        const isDel = deletingCellId === c.id;
+        const isGone = isDel;
+        svgChildren.push(
+          h('rect', {
+            key: 'cb-' + c.id, x, y: BAR_Y, width: w, height: BAR_H,
+            fill: isDel ? COLORS.freeSeg : isNew ? '#10b981' : COLORS.keyBytes,
+            opacity: isGone ? 0 : isNew ? 0.95 : isHov ? 0.9 : 0.6,
+            stroke: isSel ? COLORS.selected : isNew ? '#10b981' : isHov ? '#94a3b8' : 'none',
+            strokeWidth: isSel || isNew ? 2 : 1,
+            style: { cursor: 'pointer', transition: 'x 0.4s ease, opacity 0.3s, fill 0.6s' },
+            onMouseEnter: () => setHoveredCellId(c.id),
+            onMouseLeave: () => setHoveredCellId(null),
+            onClick: () => dispatch({ type: 'SELECT_CELL', cellId: c.id })
+          })
+        );
+        if (w > 20 && !isGone) {
+          svgChildren.push(
+            h('text', {
+              key: 'cbl-' + c.id, x: x + w / 2, y: BAR_Y + BAR_H / 2 + 3,
+              textAnchor: 'middle', fill: '#0f172a', fontSize: 9, fontWeight: 600, pointerEvents: 'none'
+            }, c.key)
+          );
+        }
+      });
+
+      return h('div', { className: 'viz-container' },
+        h('svg', { viewBox: '0 0 ' + SVG_W + ' ' + SVG_H, width: '100%', style: { minWidth: 600 } }, ...svgChildren)
+      );
+    }
+
+    // ── Cell detail cards (HTML) ──────────────────────────────
+    function CellDetailCards({ state, layout, dispatch, hoveredCellId, setHoveredCellId, deletingCellId }) {
+      const { cells, freeSegments, selectedCellId, cellType } = state;
+      const { sortedOffsets } = layout;
+      const activeCells = cells.filter(c => !c.deleted);
+      if (activeCells.length === 0 && freeSegments.length === 0) {
+        return h('div', { style: { color: '#64748b', fontSize: '0.85rem', marginBottom: 20 } }, 'Insert cells to see their internal structure here.');
+      }
+
+      // Show cells in physical order (by offset, ascending = left to right on page)
+      const physicalOrder = activeCells.slice().sort((a, b) => a.offset - b.offset);
+
+      const cardStyle = (c) => ({
+        background: '#1e293b',
+        borderRadius: 10,
+        padding: '12px 16px',
+        border: selectedCellId === c.id ? '2px solid ' + COLORS.selected : hoveredCellId === c.id ? '1px solid #64748b' : '1px solid rgba(255,255,255,0.08)',
+        cursor: 'pointer',
+        transition: 'border-color 0.2s, transform 0.3s, opacity 0.3s',
+        minWidth: 180,
+      });
+      const isHighlighted = (c) => state.animating === 'insert' && state.highlightCellId === c.id;
+      const isDeleting = (c) => deletingCellId === c.id;
+
+      return h('div', { style: { marginBottom: 20 } },
+        h('div', { style: { color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, marginBottom: 8 } }, 'Cell Details (physical order on page)'),
+        h('div', { style: { display: 'flex', gap: 12, flexWrap: 'wrap' } },
+          physicalOrder.map(c => {
+            const fields = cellFields(cellType, c.key, c.value);
+            const logIdx = sortedOffsets.findIndex(so => so.cellId === c.id);
+            const deleting = isDeleting(c);
+            return h('div', {
+              key: c.id,
+              className: 'cell-card-wrapper' + (deleting ? ' collapsing' : ''),
+            },
+              h('div', {
+                className: deleting ? 'anim-poof' : isHighlighted(c) ? 'anim-insert' : '',
+                style: { ...cardStyle(c), position: 'relative', overflow: 'visible' },
+                onClick: () => dispatch({ type: 'SELECT_CELL', cellId: c.id }),
+                onMouseEnter: () => setHoveredCellId(c.id),
+                onMouseLeave: () => setHoveredCellId(null),
+              },
+              deleting ? Array.from({ length: 36 }, (_, i) => {
+                const angle = (i / 36) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+                const dist = 35 + Math.random() * 80;
+                const size = 6 + Math.random() * 10;
+                const colors = ['#ef4444','#f59e0b','#fbbf24','#fb923c','#f87171','#fdba74'];
+                return h('div', {
+                  key: 'p' + i, className: 'poof-particle',
+                  style: {
+                    '--dx': Math.cos(angle) * dist + 'px', '--dy': Math.sin(angle) * dist + 'px',
+                    '--size': size + 'px', '--dur': (0.4 + Math.random() * 0.35) + 's',
+                    '--delay': (Math.random() * 0.08) + 's',
+                    left: (30 + Math.random() * 40) + '%', top: (20 + Math.random() * 60) + '%',
+                    background: colors[i % colors.length],
+                  }
+                });
+              }) : null,
+              // Card header
+              h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 } },
+                h('span', { style: { fontWeight: 700, fontSize: '0.95rem' } }, c.key),
+                h('span', { style: { color: '#64748b', fontSize: '0.75rem', fontFamily: 'monospace' } },
+                  'offset ' + c.offset + ' | ' + c.size + 'B | ptr #' + (logIdx + 1))
+              ),
+              // Sub-field bars — fixed pixels per byte so equal-sized fields align across cells
+              h('div', { style: { display: 'flex', borderRadius: 6, overflow: 'hidden', height: 28 } },
+                fields.map((f, fi) => {
+                  const px = f.size * 18;
+                  return h('div', {
+                    key: fi,
+                    style: {
+                      background: f.color, width: px, flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: px > 40 ? 9 : 7, fontWeight: 700, color: '#0f172a',
+                      borderRight: fi < fields.length - 1 ? '1px solid rgba(0,0,0,0.2)' : 'none',
+                      overflow: 'hidden',
+                    },
+                  }, px > 30 ? f.name : '');
+                })
+              ),
+              // Sub-field legend
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '4px 10px', marginTop: 6, fontSize: '0.7rem', color: '#94a3b8' } },
+                fields.map((f, fi) =>
+                  h('span', { key: fi, style: { display: 'flex', alignItems: 'center', gap: 3 } },
+                    h('span', { style: { width: 8, height: 8, borderRadius: 2, background: f.color, flexShrink: 0 } }),
+                    f.name + ' (' + f.size + 'B)',
+                    f.label ? ' = ' + f.label : ''
+                  )
+                )
+              )
+            ));
+          }),
+          // Free segment cards
+          freeSegments.map((seg, i) =>
+            h('div', {
+              key: 'free-' + i,
+              style: {
+                background: 'rgba(239,68,68,0.08)', borderRadius: 10, padding: '12px 16px',
+                border: '1px dashed rgba(239,68,68,0.3)', minWidth: 140,
+              }
+            },
+              h('div', { style: { color: COLORS.freeSeg, fontWeight: 700, fontSize: '0.85rem', marginBottom: 4 } }, 'Free Segment'),
+              h('div', { style: { color: '#94a3b8', fontSize: '0.75rem', fontFamily: 'monospace' } },
+                'offset ' + seg.offset + ' | ' + seg.size + 'B')
+            )
+          )
+        )
+      );
+    }
+
+    // ── Order comparison ─────────────────────────────────────
+    function OrderComparison({ state, layout, dispatch, hoveredCellId, setHoveredCellId }) {
+      const { cells, selectedCellId } = state;
+      const { sortedOffsets } = layout;
+      const activeCells = cells.filter(c => !c.deleted);
+      if (activeCells.length === 0) return null;
+
+      const byInsertion = activeCells.slice().sort((a, b) => a.insertionOrder - b.insertionOrder);
+
+      const boxStyle = (c, accent) => ({
+        background: '#1e293b', borderRadius: 6, padding: '6px 14px',
+        border: selectedCellId === c.id ? '2px solid ' + COLORS.selected : '1px solid ' + accent,
+        cursor: 'pointer', textAlign: 'center', minWidth: 70,
+        transition: 'border-color 0.2s',
+        opacity: hoveredCellId === c.id ? 1 : 0.85,
+      });
+
+      return h('div', { style: { display: 'flex', gap: 40, flexWrap: 'wrap', marginBottom: 20 } },
+        // Logical order
+        h('div', null,
+          h('div', { style: { color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, marginBottom: 8 } }, 'Logical Order (sorted by key)'),
+          h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap' } },
+            sortedOffsets.map((so, i) => {
+              const c = cells.find(x => x.id === so.cellId);
+              if (!c) return null;
+              return h('div', {
+                key: so.cellId,
+                style: boxStyle(c, COLORS.offsetPtr),
+                onClick: () => dispatch({ type: 'SELECT_CELL', cellId: so.cellId }),
+                onMouseEnter: () => setHoveredCellId(so.cellId),
+                onMouseLeave: () => setHoveredCellId(null),
+              },
+                h('div', { style: { fontWeight: 600, fontSize: '0.9rem' } }, so.key),
+                h('div', { style: { color: '#64748b', fontSize: '0.7rem', fontFamily: 'monospace' } }, '@' + so.offset)
+              );
+            })
+          )
+        ),
+        // Insertion order
+        h('div', null,
+          h('div', { style: { color: '#64748b', fontSize: '0.8rem', fontWeight: 600, marginBottom: 8 } }, 'Insertion Order'),
+          h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap' } },
+            byInsertion.map(c =>
+              h('div', {
+                key: c.id,
+                style: { ...boxStyle(c, '#475569'), borderStyle: 'dashed' },
+                onClick: () => dispatch({ type: 'SELECT_CELL', cellId: c.id }),
+                onMouseEnter: () => setHoveredCellId(c.id),
+                onMouseLeave: () => setHoveredCellId(null),
+              },
+                h('div', { style: { color: '#94a3b8', fontSize: '0.9rem' } }, c.key),
+                h('div', { style: { color: '#64748b', fontSize: '0.7rem', fontFamily: 'monospace' } }, '#' + c.insertionOrder)
+              )
+            )
+          )
+        )
+      );
+    }
+
+    // ── App ────────────────────────────────────────────────────
+    function App() {
+      const [state, dispatch] = useReducer(reducer, null, loadState);
+      const [hoveredCellId, setHoveredCellId] = useState(null);
+      const [deletingCellId, setDeletingCellId] = useState(null);
+      const layout = useMemo(
+        () => computeLayout(state.cells, state.freeSegments),
+        [state.cells, state.freeSegments]
+      );
+
+      // Auto-clear insert/compact animation after duration
+      useEffect(() => {
+        if (state.animating) {
+          const t = setTimeout(() => dispatch({ type: 'CLEAR_ANIMATION' }), 700);
+          return () => clearTimeout(t);
+        }
+      }, [state.animating, state.highlightCellId]);
+
+      // Delete: poof + collapse run concurrently, then remove
+      useEffect(() => {
+        if (deletingCellId !== null) {
+          const t = setTimeout(() => {
+            dispatch({ type: 'DELETE_CELL' });
+            setDeletingCellId(null);
+          }, 650);
+          return () => clearTimeout(t);
+        }
+      }, [deletingCellId]);
+
+      const handleDelete = () => {
+        if (state.selectedCellId !== null) setDeletingCellId(state.selectedCellId);
+      };
+
+      const animClass = state.animating === 'compact' ? ' anim-compact' : '';
+
+      return h('div', { className: 'container' + animClass },
+        h('a', { href: '../', className: 'back-link' }, '\u2190 Back to Playground'),
+        h('h1', null, 'Slotted Page Visualizer'),
+        h('p', { className: 'subtitle' },
+          'Explore how B-Tree storage organizes cells within a ' + PAGE_SIZE + '-byte slotted page. Cells are appended right-to-left, while offset pointers maintain sorted key order.'
+        ),
+        h(CellTypeToggle, { cellType: state.cellType, customInput: state.customInput, dispatch }),
+        h(InputPanel, { state, dispatch, onDelete: handleDelete }),
+        h(PageStats, { layout }),
+        h(PageLegend),
+        h(PageBar, { state, layout, dispatch, hoveredCellId, setHoveredCellId, deletingCellId }),
+        h(CellLegend, { cellType: state.cellType }),
+        h(CellDetailCards, { state, layout, dispatch, hoveredCellId, setHoveredCellId, deletingCellId }),
+        h(OrderComparison, { state, layout, dispatch, hoveredCellId, setHoveredCellId }),
+        h(AvailabilityList, { freeSegments: state.freeSegments })
+      );
+    }
+
+    createRoot(document.getElementById('root')).render(h(App));
+  </script>
+</body>
+</html>

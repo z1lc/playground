@@ -197,7 +197,7 @@
               setOpen(next);
               try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); s.rateScheduleOpen = next; localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
             }}>
-            <span style=${{ color: '#94a3b8', fontWeight: 500, fontSize: 14 }}>Mortgage Rate Schedule <span style=${{ color: '#64748b', fontSize: 12 }}>${open ? '\u25B2' : '\u25BC'}</span></span>
+            <span style=${{ color: '#94a3b8', fontWeight: 500, fontSize: 14 }}>Mortgage Rate Schedule <span style=${{ color: '#64748b', fontSize: 12 }}>${open ? '\u25B2' : '\u25BC'}</span><a href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noopener" style=${refLink()} onClick=${e => e.stopPropagation()}>FRED</a></span>
             ${open
               ? html`<span style=${{ color: '#64748b', fontSize: 12 }}>Click to add points \u00b7 drag to adjust \u00b7 right-click to remove</span>`
               : html`<span style=${{ color: '#f8fafc', fontWeight: 600, fontFamily: 'monospace', fontSize: 13 }}>${n === 1 ? sorted[0].rate.toFixed(2) + '% fixed' : n + ' rate points'}</span>`
@@ -459,7 +459,8 @@
     }
 
     const STORAGE_KEY = 'mortgage-calc-state';
-    const DEFAULTS = { price: 800000, totalCash: 300000, downPctOfCash: 100, controlPoints: [{ year: 1, rate: 6.5 }], appreciation: 3, years: 10, stockReturn: 10, maintenance: 1, taxRate: 24 };
+    const DEFAULTS = { price: 800000, totalCash: 300000, downPctOfCash: 100, controlPoints: [{ year: 1, rate: 6.5 }], appreciation: 3.5, years: 12, stockReturn: 10, maintenance: 1, taxRate: 24 };
+    const refLink = (url) => ({ color: '#475569', fontSize: 11, marginLeft: 6, textDecoration: 'none', borderBottom: '1px dotted #475569' });
     const TAX_RATES = [10, 12, 22, 24, 32, 35, 37];
 
     function loadState() {
@@ -553,10 +554,10 @@
                   setDownPctOfCash(totalCash > 0 ? Math.min(100, (dp / totalCash) * 100) : 0);
                 }} />
             </div>
-            <${SliderInput} label="Annual House Appreciation" value=${appreciation} onChange=${setAppreciation}
+            <${SliderInput} label=${html`Annual House Appreciation<a href="https://fred.stlouisfed.org/series/ATXRHTSA" target="_blank" rel="noopener" style=${refLink()}>FRED</a>`} value=${appreciation} onChange=${setAppreciation}
               min=${0} max=${10} step=${0.5}
               format=${v => v.toFixed(1) + '%'} />
-            <${SliderInput} label="Time in Home" value=${years} onChange=${setYears}
+            <${SliderInput} label=${html`Time in Home<a href="https://www.redfin.com/news/homeowner-tenure-2022/" target="_blank" rel="noopener" style=${refLink()}>Redfin</a>`} value=${years} onChange=${setYears}
               min=${1} max=${30} step=${1}
               format=${v => v + ' year' + (v > 1 ? 's' : '')} />
             <${SliderInput} label="Maintenance" value=${maintenance} onChange=${setMaintenance}
@@ -570,7 +571,7 @@
               <input type="range" min=${0} max=${TAX_RATES.length - 1} step=${1} value=${TAX_RATES.indexOf(taxRate)}
                 onInput=${e => setTaxRate(TAX_RATES[parseInt(e.target.value)])} />
             </div>
-            <${SliderInput} label="Stock Market Return" value=${stockReturn} onChange=${setStockReturn}
+            <${SliderInput} label=${html`Stock Market Return<a href="https://curvo.eu/backtest/en/market-index/msci-world?currency=eur" target="_blank" rel="noopener" style=${refLink()}>MSCI</a>`} value=${stockReturn} onChange=${setStockReturn}
               min=${0} max=${15} step=${0.5}
               format=${v => v.toFixed(1) + '%'} />
           </div>

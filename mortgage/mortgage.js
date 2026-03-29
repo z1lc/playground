@@ -14,14 +14,12 @@ export function formatAxisCurrency(v) {
 
 export function formatPercent(v, d = 1) { return v.toFixed(d) + '%'; }
 
-export function resolveYearlyRates(rateInput, totalYears = 30) {
-  if (typeof rateInput === 'number') {
-    return Array.from({ length: totalYears }, () => rateInput);
-  }
-  const sorted = [...rateInput].sort((a, b) => a.year - b.year);
-  const rates = new Array(totalYears);
+// Generic interpolation for {year, value} control points
+export function resolveYearlyValues(input, totalYears = 30) {
+  if (typeof input === 'number') return Array.from({ length: totalYears }, () => input);
+  const sorted = [...input].sort((a, b) => a.year - b.year);
+  const values = new Array(totalYears);
   for (let y = 1; y <= totalYears; y++) {
-    // Find surrounding control points
     let before = sorted[0];
     let after = null;
     for (const cp of sorted) {
@@ -29,31 +27,61 @@ export function resolveYearlyRates(rateInput, totalYears = 30) {
       else if (!after) after = cp;
     }
     if (!after || before.year === y) {
-      // At or past the last control point: use its rate
-      rates[y - 1] = before.rate;
+      values[y - 1] = before.value;
     } else {
-      // Linearly interpolate between before and after
       const t = (y - before.year) / (after.year - before.year);
-      rates[y - 1] = before.rate + t * (after.rate - before.rate);
+      values[y - 1] = before.value + t * (after.value - before.value);
     }
   }
-  return rates;
+  return values;
 }
 
-export const PROPERTY_TAX_RATE = 0.01;  // 1.0% of home value per year
-export const INSURANCE_RATE = 0.004;    // 0.4% of home value per year
-export const PMI_RATE = 0.007;          // 0.7% of loan amount per year
+// Backward-compatible: accepts {year, rate} control points
+export function resolveYearlyRates(rateInput, totalYears = 30) {
+  if (typeof rateInput === 'number') return resolveYearlyValues(rateInput, totalYears);
+  return resolveYearlyValues(rateInput.map(cp => ({ year: cp.year, value: cp.rate })), totalYears);
+}
+
+export const PROPERTY_TAX_RATE = 0.01;
+export const INSURANCE_RATE = 0.004;
+export const PMI_RATE = 0.007;
 export const STANDARD_DEDUCTION_MARRIED = 32200;
 export const SALT_CAP = 40000;
 export const MORTGAGE_DEBT_CAP = 750000;
+export const GA_STATE_TAX_RATE = 0.0519; // Georgia flat rate 2026
 
-export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears, maintenanceRate = 0, marginalTaxRate = 0) {
-  const downPayment = housePrice * downPct / 100;
+// 2026 married filing jointly brackets
+export const TAX_BRACKETS_MFJ = [
+  { limit: 24900, rate: 10 },
+  { limit: 101400, rate: 12 },
+  { limit: 201550, rate: 22 },
+  { limit: 383900, rate: 24 },
+  { limit: 487450, rate: 32 },
+  { limit: 731200, rate: 35 },
+  { limit: Infinity, rate: 37 },
+];
+
+export function computeFederalTax(grossIncome, deduction = STANDARD_DEDUCTION_MARRIED) {
+  const taxableIncome = Math.max(0, grossIncome - deduction);
+  let tax = 0, prev = 0;
+  for (const bracket of TAX_BRACKETS_MFJ) {
+    const taxable = Math.min(taxableIncome, bracket.limit) - prev;
+    if (taxable <= 0) break;
+    tax += taxable * bracket.rate / 100;
+    prev = bracket.limit;
+  }
+  return tax;
+}
+
+export function computeFullScenario(housePrice, downPayment, stockInvestment, rateInput,
+  appreciationRate, holdingYears, maintenanceRate, incomeInput, stockReturnPct) {
   const loanAmount = housePrice - downPayment;
   const yearlyRates = resolveYearlyRates(rateInput);
+  const yearlyIncomes = incomeInput ? resolveYearlyValues(incomeInput, 30) : null;
 
   const schedule = [];
   let balance = loanAmount;
+  let stockPortfolio = stockInvestment;
 
   for (let year = 1; year <= holdingYears; year++) {
     const beginBal = balance;
@@ -87,10 +115,26 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     const maintenance = homeValue * maintenanceRate / 100;
     const equity = homeValue - balance;
     const pmi = (equity / homeValue < 0.2 && balance > 0) ? balance * PMI_RATE : 0;
+
+    // Tax computation: state tax first (no dependency), then include in SALT for federal
+    const income = yearlyIncomes ? yearlyIncomes[year - 1] : 0;
+    const stateTax = Math.max(0, income - STANDARD_DEDUCTION_MARRIED) * GA_STATE_TAX_RATE;
     const deductibleInterest = loanAmount > 0 ? yearInterest * Math.min(1, MORTGAGE_DEBT_CAP / loanAmount) : 0;
-    const saltDeduction = Math.min(propertyTax, SALT_CAP);
+    const saltDeduction = Math.min(propertyTax + stateTax, SALT_CAP);
     const totalItemized = deductibleInterest + saltDeduction;
-    const taxSavings = Math.max(0, totalItemized - STANDARD_DEDUCTION_MARRIED) * marginalTaxRate / 100;
+    const taxWithItemization = computeFederalTax(income, Math.max(STANDARD_DEDUCTION_MARRIED, totalItemized));
+    const taxWithStandard = computeFederalTax(income, STANDARD_DEDUCTION_MARRIED);
+    const taxSavings = taxWithStandard - taxWithItemization;
+
+    // Housing costs and cashflow
+    const housingCosts = M * 12 + propertyTax + insurance + maintenance + pmi;
+    const afterTaxIncome = income - taxWithItemization - stateTax;
+    const cashflow = afterTaxIncome - housingCosts;
+
+    // Stock portfolio: grow existing, then add/withdraw cashflow
+    const preWithdraw = stockPortfolio * (1 + stockReturnPct / 100) + cashflow;
+    const bankrupt = preWithdraw < 0;
+    stockPortfolio = Math.max(0, preWithdraw);
 
     schedule.push({
       year,
@@ -108,6 +152,14 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
       maintenance,
       pmi,
       taxSavings,
+      income,
+      federalTax: taxWithItemization,
+      stateTax,
+      housingCosts,
+      afterTaxIncome,
+      cashflow,
+      bankrupt,
+      stockValue: stockPortfolio,
     });
   }
 
@@ -141,8 +193,33 @@ export function computeMortgage(housePrice, downPct, rateInput, appreciationRate
     equity: last.equity,
     netProfit,
     annualizedROI: annROI,
+    finalStockValue: last.stockValue,
     schedule,
   };
+}
+
+// Backward-compatible wrapper
+export function computeMortgage(housePrice, downPct, rateInput, appreciationRate, holdingYears, maintenanceRate = 0, marginalTaxRate = 0) {
+  const downPayment = housePrice * downPct / 100;
+  const result = computeFullScenario(housePrice, downPayment, 0, rateInput, appreciationRate, holdingYears, maintenanceRate, null, 0);
+  // Apply legacy flat marginal tax rate if specified (for backward compat with tests)
+  if (marginalTaxRate > 0) {
+    let totalTaxSavings = 0;
+    for (const yr of result.schedule) {
+      const deductibleInterest = result.loanAmount > 0 ? yr.interest * Math.min(1, MORTGAGE_DEBT_CAP / result.loanAmount) : 0;
+      const saltDeduction = Math.min(yr.propertyTax, SALT_CAP);
+      const totalItemized = deductibleInterest + saltDeduction;
+      yr.taxSavings = Math.max(0, totalItemized - STANDARD_DEDUCTION_MARRIED) * marginalTaxRate / 100;
+      totalTaxSavings += yr.taxSavings;
+    }
+    result.totalTaxSavings = totalTaxSavings;
+    const totalCashInvested = result.downPayment + result.totalPaid + result.totalPropertyTax + result.totalInsurance + result.totalPMI + result.totalMaintenance - totalTaxSavings;
+    result.netProfit = result.equity - totalCashInvested;
+    result.annualizedROI = totalCashInvested > 0
+      ? Math.pow(result.equity / totalCashInvested, 1 / holdingYears) - 1
+      : 0;
+  }
+  return result;
 }
 
 export function computeStockComparison(lumpSum, annualReturnPct, holdingYears) {

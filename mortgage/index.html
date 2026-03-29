@@ -319,8 +319,8 @@
               <${XAxis} dataKey="year" tick=${{ fill: '#64748b', fontSize: 12 }} />
               <${YAxis} yAxisId="left" scale="log" domain=${[10000, 'auto']} allowDataOverflow=${true}
                 tickFormatter=${formatAxisCurrency} tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
-              <${YAxis} yAxisId="right" orientation="right" tickFormatter=${formatAxisCurrency}
-                tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} />
+              <${YAxis} yAxisId="right" orientation="right" tickFormatter=${v => formatAxisCurrency(Math.round(v / 100) * 100)}
+                tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} domain=${[dataMin => Math.min(0, dataMin), dataMax => Math.max(0, dataMax)]} />
               <${Tooltip} content=${(props) => html`<${ChartTooltip} ...${props} />`} />
               <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8' }} />
               <${Bar} yAxisId="right" dataKey="cashflow" name="Cashflow" fill="#475569" radius=${[3, 3, 0, 0]} />
@@ -338,9 +338,9 @@
     function PaymentTooltip({ active, payload, label }) {
       if (!active || !payload?.length) return null;
       const taxSavings = payload[0]?.payload?.taxSavings;
-      const bars = payload.filter(p => p.dataKey !== 'total' && p.dataKey !== 'afterTaxIncome');
+      const bars = payload.filter(p => p.dataKey !== 'total' && p.dataKey !== 'housingBudget');
       const total = payload.find(p => p.dataKey === 'total');
-      const income = payload.find(p => p.dataKey === 'afterTaxIncome');
+      const budget = payload.find(p => p.dataKey === 'housingBudget');
       return html`
         <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', fontSize: 13 }}>
           <div style=${{ color: '#94a3b8', marginBottom: 6, fontWeight: 600 }}>Year ${label}</div>
@@ -364,10 +364,10 @@
               </div>
             </div>
           `}
-          ${income && html`
-            <div style=${{ color: income.color, display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7 }}>
-              <span>${income.name}</span>
-              <span style=${{ fontFamily: 'monospace' }}>${formatCurrency(income.value)}</span>
+          ${budget && html`
+            <div style=${{ color: budget.color, display: 'flex', justifyContent: 'space-between', gap: 20, lineHeight: 1.7 }}>
+              <span>${budget.name}</span>
+              <span style=${{ fontFamily: 'monospace' }}>${formatCurrency(budget.value)}</span>
             </div>
           `}
         </div>
@@ -388,7 +388,7 @@
         ...(hasPMI ? { pmi: yr.pmi / 12 } : {}),
         taxSavings: yr.taxSavings > 0 ? yr.taxSavings / 12 : undefined,
         total: yr.monthlyPayment + yr.propertyTax / 12 + yr.insurance / 12 + yr.maintenance / 12 + yr.pmi / 12 - yr.taxSavings / 12,
-        ...(hasIncome ? { afterTaxIncome: yr.afterTaxIncome / 12 } : {}),
+        ...(hasIncome ? { housingBudget: yr.afterTaxIncome / 12 * 0.28 } : {}),
       })), [schedule, hasPMI, hasMaint, hasIncome]);
       const lastBar = hasPMI ? 'pmi' : hasMaint ? 'maintenance' : 'insurance';
       return html`
@@ -408,7 +408,7 @@
               ${hasMaint && html`<${Bar} dataKey="maintenance" name="Maintenance" stackId="a" fill="#ec4899" radius=${lastBar === 'maintenance' ? [3,3,0,0] : [0,0,0,0]} />`}
               ${hasPMI && html`<${Bar} dataKey="pmi" name="PMI" stackId="a" fill="#f97316" radius=${[3, 3, 0, 0]} />`}
               <${Line} type="monotone" dataKey="total" name="Total Costs" stroke="#f8fafc" strokeWidth=${3} dot=${false} activeDot=${{ r: 4 }} />
-              ${hasIncome && html`<${Line} type="monotone" dataKey="afterTaxIncome" name="After-Tax Income" stroke="#10b981" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
+              ${hasIncome && html`<${Line} type="monotone" dataKey="housingBudget" name="28% Rule Budget" stroke="#f97316" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
             <//>
           <//>
         </div>

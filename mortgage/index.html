@@ -388,7 +388,7 @@
         ...(hasPMI ? { pmi: yr.pmi / 12 } : {}),
         taxSavings: yr.taxSavings > 0 ? yr.taxSavings / 12 : undefined,
         total: yr.monthlyPayment + yr.propertyTax / 12 + yr.insurance / 12 + yr.maintenance / 12 + yr.pmi / 12 - yr.taxSavings / 12,
-        ...(hasIncome ? { housingBudget: yr.afterTaxIncome / 12 * 0.28 } : {}),
+        ...(hasIncome ? { housingBudget: yr.income / 12 * 0.30 } : {}),
       })), [schedule, hasPMI, hasMaint, hasIncome]);
       const lastBar = hasPMI ? 'pmi' : hasMaint ? 'maintenance' : 'insurance';
       return html`
@@ -408,7 +408,7 @@
               ${hasMaint && html`<${Bar} dataKey="maintenance" name="Maintenance" stackId="a" fill="#ec4899" radius=${lastBar === 'maintenance' ? [3,3,0,0] : [0,0,0,0]} />`}
               ${hasPMI && html`<${Bar} dataKey="pmi" name="PMI" stackId="a" fill="#f97316" radius=${[3, 3, 0, 0]} />`}
               <${Line} type="monotone" dataKey="total" name="Total Costs" stroke="#f8fafc" strokeWidth=${3} dot=${false} activeDot=${{ r: 4 }} />
-              ${hasIncome && html`<${Line} type="monotone" dataKey="housingBudget" name="28% Rule Budget" stroke="#f97316" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
+              ${hasIncome && html`<${Line} type="monotone" dataKey="housingBudget" name="30% Rule Budget" stroke="#f97316" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
             <//>
           <//>
         </div>
@@ -627,7 +627,7 @@
           <${AmortizationTable} schedule=${result.schedule} />
 
           <p style=${{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 8 }}>
-            Assumes 30-year mortgage with configurable rate schedule. Includes 1.0% property tax, 0.4% insurance (Atlanta, GA estimates), 0.7% PMI when equity below 20%, federal progressive tax, and 5.19% Georgia state tax. SALT deduction includes property tax + state income tax (capped at $40k). Excludes closing costs.
+            Assumes 30-year mortgage with configurable rate schedule. Includes 1.0% property tax, 0.4% insurance (Atlanta, GA estimates), 0.7% PMI when equity below 20%, federal progressive tax, and 5.19% Georgia state tax. SALT deduction includes property tax + state income tax (capped at $40k). Excludes closing costs. The 30% rule budget line shows 30% of gross (pre-tax) monthly income as a recommended housing cost ceiling.
           </p>
         </div>
       `;

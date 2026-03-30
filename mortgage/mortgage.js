@@ -36,6 +36,21 @@ export function resolveYearlyValues(input, totalYears = 30) {
   return values;
 }
 
+// Step-function interpolation: holds each control point's value until the next one
+export function resolveYearlyValuesStep(input, totalYears = 30) {
+  if (typeof input === 'number') return Array.from({ length: totalYears }, () => input);
+  const sorted = [...input].sort((a, b) => a.year - b.year);
+  const values = new Array(totalYears);
+  for (let y = 1; y <= totalYears; y++) {
+    let before = sorted[0];
+    for (const cp of sorted) {
+      if (cp.year <= y) before = cp;
+    }
+    values[y - 1] = before.value;
+  }
+  return values;
+}
+
 // Backward-compatible: accepts {year, rate} control points
 export function resolveYearlyRates(rateInput, totalYears = 30) {
   if (typeof rateInput === 'number') return resolveYearlyValues(rateInput, totalYears);
@@ -49,6 +64,18 @@ export const STANDARD_DEDUCTION_MARRIED = 32200;
 export const SALT_CAP = 40000;
 export const MORTGAGE_DEBT_CAP = 750000;
 export const GA_STATE_TAX_RATE = 0.0519; // Georgia flat rate 2026
+export const SS_RATE = 0.062;
+export const SS_WAGE_CAP = 176100; // 2026
+export const MEDICARE_RATE = 0.0145;
+export const MEDICARE_SURTAX_RATE = 0.009;
+export const MEDICARE_SURTAX_THRESHOLD = 250000; // married filing jointly
+
+export function computeFICA(grossIncome) {
+  const ss = Math.min(grossIncome, SS_WAGE_CAP) * SS_RATE;
+  const medicare = grossIncome * MEDICARE_RATE
+    + Math.max(0, grossIncome - MEDICARE_SURTAX_THRESHOLD) * MEDICARE_SURTAX_RATE;
+  return ss + medicare;
+}
 
 // 2026 married filing jointly brackets
 export const TAX_BRACKETS_MFJ = [
@@ -77,7 +104,7 @@ export function computeFullScenario(housePrice, downPayment, stockInvestment, ra
   appreciationRate, holdingYears, maintenanceRate, incomeInput, stockReturnPct) {
   const loanAmount = housePrice - downPayment;
   const yearlyRates = resolveYearlyRates(rateInput);
-  const yearlyIncomes = incomeInput ? resolveYearlyValues(incomeInput, 30) : null;
+  const yearlyIncomes = incomeInput ? resolveYearlyValuesStep(incomeInput, 30) : null;
 
   const schedule = [];
   let balance = loanAmount;
@@ -127,8 +154,9 @@ export function computeFullScenario(housePrice, downPayment, stockInvestment, ra
     const taxSavings = taxWithStandard - taxWithItemization;
 
     // Housing costs and cashflow
+    const fica = computeFICA(income);
     const housingCosts = M * 12 + propertyTax + insurance + maintenance + pmi;
-    const afterTaxIncome = income - taxWithItemization - stateTax;
+    const afterTaxIncome = income - taxWithItemization - stateTax - fica;
     const cashflow = afterTaxIncome - housingCosts;
 
     // Stock portfolio: grow existing, then add/withdraw cashflow
@@ -154,6 +182,7 @@ export function computeFullScenario(housePrice, downPayment, stockInvestment, ra
       taxSavings,
       income,
       federalTax: taxWithItemization,
+      fica,
       stateTax,
       housingCosts,
       afterTaxIncome,

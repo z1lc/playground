@@ -107,18 +107,23 @@
       return { x: (e.clientX - rect.left) * (SP.w / rect.width), y: (e.clientY - rect.top) * (SP.h / rect.height) };
     }
 
-    function spBuildPath(cps, vmin, vmax) {
+    function spBuildPath(cps, vmin, vmax, step = false) {
       const sorted = [...cps].sort((a, b) => a.year - b.year);
       let d = `M${spYearToX(sorted[0].year)},${spValToY(sorted[0].value, vmin, vmax)}`;
       for (let i = 1; i < sorted.length; i++) {
-        d += ` L${spYearToX(sorted[i].year)},${spValToY(sorted[i].value, vmin, vmax)}`;
+        if (step) {
+          d += ` H${spYearToX(sorted[i].year)}`;
+          d += ` V${spValToY(sorted[i].value, vmin, vmax)}`;
+        } else {
+          d += ` L${spYearToX(sorted[i].year)},${spValToY(sorted[i].value, vmin, vmax)}`;
+        }
       }
-      d += ` L${spYearToX(30)},${spValToY(sorted[sorted.length - 1].value, vmin, vmax)}`;
+      d += ` H${spYearToX(30)}`;
       return d;
     }
 
     function SchedulePicker({ controlPoints, onChange, holdingYears, label, valueMin, valueMax,
-      snapValue, formatLabel, formatPoint, color, storageOpenKey, collapsedSummary, refLinkData, gridValues }) {
+      snapValue, formatLabel, formatPoint, color, storageOpenKey, collapsedSummary, refLinkData, gridValues, step }) {
       const svgRef = useRef(null);
       const dragIdx = useRef(null);
       const dragMoved = useRef(false);
@@ -201,7 +206,7 @@
             ${gridValues.map(v => html`
               <text key=${'yl' + v} x=${SPL - 8} y=${spValToY(v, valueMin, valueMax) + 4} fill="#64748b" fontSize="11" textAnchor="end">${formatLabel(v)}</text>
             `)}
-            <path d=${spBuildPath(sorted, valueMin, valueMax)} fill="none" stroke=${color} strokeWidth="2.5" />
+            <path d=${spBuildPath(sorted, valueMin, valueMax, step)} fill="none" stroke=${color} strokeWidth="2.5" />
             ${sorted.map((cp, i) => html`
               <circle key=${i} cx=${spYearToX(cp.year)} cy=${spValToY(cp.value, valueMin, valueMax)} r=${8}
                 fill=${color} stroke="#0f172a" strokeWidth=${2} style=${{ cursor: 'grab' }}
@@ -323,7 +328,7 @@
                 tick=${{ fill: '#64748b', fontSize: 12 }} width=${70} domain=${[dataMin => Math.min(0, dataMin), dataMax => Math.max(0, dataMax)]} />
               <${Tooltip} content=${(props) => html`<${ChartTooltip} ...${props} />`} />
               <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8' }} />
-              <${Bar} yAxisId="right" dataKey="cashflow" name="Cashflow" fill="#475569" radius=${[3, 3, 0, 0]} />
+              <${Bar} yAxisId="right" dataKey="cashflow" name="Monthly Cashflow" fill="#475569" radius=${[3, 3, 0, 0]} />
               <${ReferenceLine} yAxisId="right" y=${0} stroke="#475569" />
               <${Line} yAxisId="left" type="monotone" dataKey="homeValue" name="Home Value" stroke="#10b981" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
               <${Line} yAxisId="left" type="monotone" dataKey="endingBalance" name="Remaining Balance" stroke="#ef4444" strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
@@ -407,52 +412,75 @@
               <${Bar} dataKey="insurance" name="Insurance" stackId="a" fill="#06b6d4" radius=${lastBar === 'insurance' ? [3,3,0,0] : [0,0,0,0]} />
               ${hasMaint && html`<${Bar} dataKey="maintenance" name="Maintenance" stackId="a" fill="#ec4899" radius=${lastBar === 'maintenance' ? [3,3,0,0] : [0,0,0,0]} />`}
               ${hasPMI && html`<${Bar} dataKey="pmi" name="PMI" stackId="a" fill="#f97316" radius=${[3, 3, 0, 0]} />`}
-              <${Line} type="monotone" dataKey="total" name="Total Costs" stroke="#f8fafc" strokeWidth=${3} dot=${false} activeDot=${{ r: 4 }} />
-              ${hasIncome && html`<${Line} type="monotone" dataKey="housingBudget" name="30% Rule Budget" stroke="#f97316" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
+              <${Line} type="stepAfter" dataKey="total" name="Total Costs" stroke="#f8fafc" strokeWidth=${3} dot=${false} activeDot=${{ r: 4 }} />
+              ${hasIncome && html`<${Line} type="stepAfter" dataKey="housingBudget" name="30% Rule Budget" stroke="#f97316" strokeWidth=${2} dot=${false} activeDot=${{ r: 4 }} strokeDasharray="6 3" />`}
             <//>
           <//>
         </div>
       `;
     }
 
-    function AmortizationTable({ schedule }) {
-      const [open, setOpen] = useState(false);
-      const cols = ['Year', 'Rate', 'Mo. Payment', 'Begin Balance', 'Principal', 'Interest', 'End Balance', 'Home Value', 'Equity'];
+    const ALL_TABLE_COLS = [
+      { key: 'year', label: 'Year', alwaysVisible: true, render: row => row.year, align: 'left', color: '#f8fafc' },
+      { key: 'rate', label: 'Rate', render: row => row.rate.toFixed(2) + '%', color: '#f59e0b' },
+      { key: 'payment', label: 'Mo. Payment', render: row => formatCurrency(row.monthlyPayment), color: '#f59e0b' },
+      { key: 'beginBal', label: 'Begin Balance', render: row => formatCurrency(row.beginningBalance) },
+      { key: 'principal', label: 'Principal', render: row => formatCurrency(row.principal), color: '#10b981' },
+      { key: 'interest', label: 'Interest', render: row => formatCurrency(row.interest), color: '#ef4444' },
+      { key: 'endBal', label: 'End Balance', render: row => formatCurrency(row.endingBalance) },
+      { key: 'homeValue', label: 'Home Value', render: row => formatCurrency(row.homeValue), color: '#10b981' },
+      { key: 'equity', label: 'Equity', render: row => formatCurrency(row.equity), color: '#f59e0b' },
+      { key: 'propertyTax', label: 'Property Tax', render: row => formatCurrency(row.propertyTax) },
+      { key: 'insurance', label: 'Insurance', render: row => formatCurrency(row.insurance) },
+      { key: 'maintenance', label: 'Maintenance', render: row => formatCurrency(row.maintenance) },
+      { key: 'pmi', label: 'PMI', render: row => formatCurrency(row.pmi) },
+      { key: 'taxSavings', label: 'Tax Savings', render: row => formatCurrency(row.taxSavings), color: '#10b981' },
+      { key: 'income', label: 'Income', render: row => formatCurrency(row.income) },
+      { key: 'federalTax', label: 'Federal Tax', render: row => formatCurrency(row.federalTax) },
+      { key: 'fica', label: 'FICA', render: row => formatCurrency(row.fica) },
+      { key: 'stateTax', label: 'State Tax', render: row => formatCurrency(row.stateTax) },
+      { key: 'afterTaxIncome', label: 'After-Tax Income', render: row => formatCurrency(row.afterTaxIncome) },
+      { key: 'housingCosts', label: 'Housing Costs', render: row => formatCurrency(row.housingCosts) },
+      { key: 'cashflow', label: 'Cashflow', render: row => formatCurrency(row.cashflow), color: row => row.cashflow >= 0 ? '#10b981' : '#ef4444' },
+      { key: 'stockValue', label: 'Stock Portfolio', render: row => formatCurrency(row.stockValue), color: '#3b82f6' },
+    ];
+    const DEFAULT_VISIBLE_COLS = ['rate', 'payment', 'beginBal', 'principal', 'interest', 'endBal', 'homeValue', 'equity'];
+
+    function AmortizationTable({ schedule, visibleCols, onVisibleColsChange }) {
       const thStyle = { padding: '8px 10px', textAlign: 'right', fontSize: 12, color: '#94a3b8', fontWeight: 600, borderBottom: '1px solid #334155', whiteSpace: 'nowrap' };
       const tdStyle = { padding: '7px 10px', textAlign: 'right', fontSize: 13, fontFamily: 'monospace', borderBottom: '1px solid rgba(51,65,85,0.5)' };
+      const toggleable = ALL_TABLE_COLS.filter(c => !c.alwaysVisible);
+      const cols = ALL_TABLE_COLS.filter(c => c.alwaysVisible || visibleCols.includes(c.key));
+
+      const toggle = (key) => {
+        onVisibleColsChange(visibleCols.includes(key) ? visibleCols.filter(k => k !== key) : [...visibleCols, key]);
+      };
 
       return html`
         <div style=${cardStyle}>
-          <button onClick=${() => setOpen(!open)} style=${{
-            background: 'none', border: 'none', color: '#f59e0b', fontSize: 14, fontWeight: 600,
-            cursor: 'pointer', fontFamily: 'inherit', padding: 0
-          }}>
-            ${open ? 'Hide' : 'Show'} Yearly Breakdown ${open ? '\u25B2' : '\u25BC'}
-          </button>
-          ${open && html`
-            <div style=${{ overflowX: 'auto', marginTop: 16 }}>
-              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 880 }}>
-                <thead>
-                  <tr>${cols.map((c, i) => html`<th key=${i} style=${{ ...thStyle, textAlign: i === 0 ? 'left' : 'right' }}>${c}</th>`)}</tr>
-                </thead>
-                <tbody>
-                  ${schedule.map((row, i) => html`
-                    <tr key=${i} style=${{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
-                      <td style=${{ ...tdStyle, textAlign: 'left', color: '#f8fafc' }}>${row.year}</td>
-                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${row.rate.toFixed(2)}%</td>
-                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${formatCurrency(row.monthlyPayment)}</td>
-                      <td style=${tdStyle}>${formatCurrency(row.beginningBalance)}</td>
-                      <td style=${{ ...tdStyle, color: '#10b981' }}>${formatCurrency(row.principal)}</td>
-                      <td style=${{ ...tdStyle, color: '#ef4444' }}>${formatCurrency(row.interest)}</td>
-                      <td style=${tdStyle}>${formatCurrency(row.endingBalance)}</td>
-                      <td style=${{ ...tdStyle, color: '#10b981' }}>${formatCurrency(row.homeValue)}</td>
-                      <td style=${{ ...tdStyle, color: '#f59e0b' }}>${formatCurrency(row.equity)}</td>
-                    </tr>
-                  `)}
-                </tbody>
-              </table>
-            </div>
-          `}
+          <div style=${{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginBottom: 12 }}>
+            ${toggleable.map(c => html`
+              <label key=${c.key} style=${{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#94a3b8', cursor: 'pointer', userSelect: 'none' }}>
+                <input type="checkbox" checked=${visibleCols.includes(c.key)} onChange=${() => toggle(c.key)}
+                  style=${{ accentColor: '#f59e0b' }} />
+                ${c.label}
+              </label>
+            `)}
+          </div>
+          <div style=${{ overflowX: 'auto' }}>
+            <table style=${{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>${cols.map(c => html`<th key=${c.key} style=${{ ...thStyle, textAlign: c.align || 'right' }}>${c.label}</th>`)}</tr>
+              </thead>
+              <tbody>
+                ${schedule.map((row, i) => html`
+                  <tr key=${i} style=${{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
+                    ${cols.map(c => html`<td key=${c.key} style=${{ ...tdStyle, textAlign: c.align || 'right', ...(c.color ? { color: typeof c.color === 'function' ? c.color(row) : c.color } : {}) }}>${c.render(row)}</td>`)}
+                  </tr>
+                `)}
+              </tbody>
+            </table>
+          </div>
         </div>
       `;
     }
@@ -480,10 +508,9 @@
       const [stockReturn, setStockReturn] = useState(init.stockReturn);
       const [maintenance, setMaintenance] = useState(init.maintenance);
       const [incomePoints, setIncomePoints] = useState(init.incomePoints || DEFAULTS.incomePoints);
-      const [settingsOpen, setSettingsOpen] = useState(() => {
-        try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY)); return s?.settingsOpen ?? true; } catch { return true; }
-      });
-      const [chartTab, setChartTab] = useState('breakdown');
+      const [settingsOpen, setSettingsOpen] = useState(init.settingsOpen ?? true);
+      const [chartTab, setChartTab] = useState(init.chartTab || 'breakdown');
+      const [visibleCols, setVisibleCols] = useState(init.visibleCols || DEFAULT_VISIBLE_COLS);
 
       const downPct = Math.min(downHomePct, price > 0 ? totalCash / price * 100 : 0);
       const downPayment = price * downPct / 100;
@@ -493,8 +520,8 @@
       const rateInput = useMemo(() => ratePoints.map(cp => ({ year: cp.year, rate: cp.value })), [ratePoints]);
 
       useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ price, totalCash, downHomePct, ratePoints, appreciation, years, stockReturn, maintenance, incomePoints }));
-      }, [price, totalCash, downHomePct, ratePoints, appreciation, years, stockReturn, maintenance, incomePoints]);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ price, totalCash, downHomePct, ratePoints, appreciation, years, stockReturn, maintenance, incomePoints, chartTab, visibleCols, settingsOpen }));
+      }, [price, totalCash, downHomePct, ratePoints, appreciation, years, stockReturn, maintenance, incomePoints, chartTab, visibleCols, settingsOpen]);
 
       const result = useMemo(() => computeFullScenario(price, downPayment, stockInvestment, rateInput, appreciation, years, maintenance, incomePoints, stockReturn),
         [price, downPayment, stockInvestment, rateInput, appreciation, years, maintenance, incomePoints, stockReturn]);
@@ -516,11 +543,7 @@
 
           <div style=${cardStyle}>
             <div style=${{ cursor: 'pointer' }}
-              onClick=${() => {
-                const next = !settingsOpen;
-                setSettingsOpen(next);
-                try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); s.settingsOpen = next; localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
-              }}>
+              onClick=${() => setSettingsOpen(s => !s)}>
               <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style=${{ color: '#e2e8f0', fontWeight: 600, fontSize: 18 }}>\u2699\uFE0F Settings <span style=${{ color: '#64748b', fontSize: 13 }}>${settingsOpen ? '\u25B2' : '\u25BC'}</span></span>
                 <span style=${{ color: '#64748b', fontSize: 12 }}>${settingsOpen ? 'Click to collapse' : 'Click to expand'}</span>
@@ -609,7 +632,8 @@
               label="Household Income" valueMin=${0} valueMax=${1000000}
               snapValue=${v => Math.round(v / 50000) * 50000} formatLabel=${v => formatAxisCurrency(v)}
               formatPoint=${v => formatCurrency(v)} color="#10b981"
-              gridValues=${[100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000]} />
+              gridValues=${[100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000]}
+              step=${true} />
           </div>
           </div>
 
@@ -618,16 +642,17 @@
           <div style=${{ display: 'flex', gap: 8, marginBottom: 16 }}>
             <button style=${tabBtn('breakdown')} onClick=${() => setChartTab('breakdown')}>Monthly Costs</button>
             <button style=${tabBtn('equity')} onClick=${() => setChartTab('equity')}>Equity & Value</button>
+            <button style=${tabBtn('table')} onClick=${() => setChartTab('table')}>Yearly Breakdown</button>
           </div>
 
           ${chartTab === 'breakdown'
             ? html`<${PaymentChart} schedule=${result.schedule} />`
-            : html`<${EquityChart} data=${result.schedule} />`}
-
-          <${AmortizationTable} schedule=${result.schedule} />
+            : chartTab === 'equity'
+            ? html`<${EquityChart} data=${result.schedule} />`
+            : html`<${AmortizationTable} schedule=${result.schedule} visibleCols=${visibleCols} onVisibleColsChange=${setVisibleCols} />`}
 
           <p style=${{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 8 }}>
-            Assumes 30-year mortgage with configurable rate schedule. Includes 1.0% property tax, 0.4% insurance (Atlanta, GA estimates), 0.7% PMI when equity below 20%, federal progressive tax, and 5.19% Georgia state tax. SALT deduction includes property tax + state income tax (capped at $40k). Excludes closing costs. The 30% rule budget line shows 30% of gross (pre-tax) monthly income as a recommended housing cost ceiling.
+            Assumes 30-year mortgage with configurable rate schedule. Includes 1.0% property tax, 0.4% insurance (Atlanta, GA estimates), 0.7% PMI when equity below 20%, federal progressive tax, FICA (6.2% SS + 1.45% Medicare + 0.9% surtax), and 5.19% Georgia state tax. SALT deduction includes property tax + state income tax (capped at $40k). Excludes closing costs. The 30% rule budget line shows 30% of gross (pre-tax) monthly income as a recommended housing cost ceiling.
           </p>
         </div>
       `;

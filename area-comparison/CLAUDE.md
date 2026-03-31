@@ -85,9 +85,23 @@ This is a tool that compares statistical information between the states Californ
 - **Attendance**: ESPN (NFL/NBA/MLB), Wikipedia (NHL/MLS). Most recent full regular season averages. Multi-team cities use average across teams.
 - **Levels**: City only
 
+#### K-12
+- **HS Graduation Rate**: 4-year adjusted cohort graduation rate. State: NCES / state DOE. City: district-level (SFUSD, NYC Public Schools, Atlanta Public Schools).
+- **Pre-K Enrollment**: % of 4-year-olds in state-funded pre-K. Source: NIEER State of Preschool Yearbook 2024.
+- **NAEP Scores**: Average scale scores from National Assessment of Educational Progress (2024). 4th and 8th grade, math and reading. State: all 3 states. City: NYC and Atlanta via TUDA program; SF not available (SFUSD not a TUDA participant).
+- **Levels**: State (all metrics), City (graduation rate + NAEP where available)
+
+#### College Affordability (under Universities > Public)
+- **Avg Net Price**: Average annual net price at public 4-year institutions after grants/scholarships, enrollment-weighted. Source: College Scorecard (2022-23).
+- **Avg Student Debt**: Median federal loan debt at graduation from public 4-year institutions. Source: College Scorecard (2022-23).
+- **Levels**: State only
+
 #### Universities
 - **Rankings**: US News Best National Universities 2025. Schools not in national rankings have estimated ranks marked with `est:true` and displayed in italics with "~" prefix.
-- **Levels**: City only
+- **Enrollment**: Undergraduate and graduate enrollment (Fall 2024) from US News and institutional websites, shown in tooltip on hover.
+- **Cost**: Annual cost of attendance (tuition + fees + room & board, in-state for public, no aid) for 2024-2025, from university websites. Shown in tooltip.
+- **Structure**: Split into Public and Private sub-sections, top 3 each. Only schools with undergraduate programs; no HBCUs. Out-of-state schools in a metro (e.g. Rutgers in NYC) marked with asterisk.
+- **Levels**: State, City
 
 #### Health
 - **AQI**: EPA Annual AQI by County 2024 (CSV: aqs.epa.gov/aqsweb/airdata/annual_aqi_by_county_2024.zip). State values are median of county medians. City values use county data (SF County, 5-borough avg for NYC, Fulton County for ATL).

@@ -141,6 +141,18 @@ Return ONLY a JSON object with exactly these fields:
 }}
 Include up to 5 top countries of origin in top_origins, ordered by count/percent descending.
 Use null for values not found.""",
+    "Commute": """Extract commute and transportation data for {area_name} from this page.
+Return ONLY a JSON object with exactly these fields:
+{{
+  "avg_commute_minutes": <float, average commute time in minutes>,
+  "drive_alone_percent": <float, percentage who drive alone>,
+  "carpool_percent": <float, percentage who carpool>,
+  "public_transit_percent": <float, percentage who use public transit>,
+  "walk_percent": <float, percentage who walk>,
+  "bike_percent": <float, percentage who bike>,
+  "work_from_home_percent": <float, percentage who work from home>
+}}
+Use null for values not found.""",
 }
 
 SCRIPT_DIR = Path(__file__).parent

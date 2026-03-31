@@ -6,6 +6,10 @@
   <title>Area Comparison</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    tbody tr:last-child td { border-bottom: none !important; }
+    tbody tr.subhdr td { border-bottom: none !important; }
+    tbody tr:has(+ tr.subhdr) td { border-bottom: none !important; }
+    thead tr th:first-child { border-bottom: none !important; }
     body {
       background: #FAF7F2;
       color: #1a1a1a;
@@ -52,7 +56,11 @@
         "politics": {
           "presidential": [{"y":1988,"d":47.6,"r":51.1},{"y":1992,"d":46.0,"r":32.6},{"y":1996,"d":51.1,"r":38.2},{"y":2000,"d":53.5,"r":41.7},{"y":2004,"d":54.3,"r":44.4},{"y":2008,"d":61.0,"r":37.0},{"y":2012,"d":60.2,"r":37.1},{"y":2016,"d":61.7,"r":31.6},{"y":2020,"d":63.5,"r":34.3},{"y":2024,"d":58.5,"r":38.3}],
           "congress": [{"c":107,"d":32,"r":20},{"c":108,"d":33,"r":20},{"c":109,"d":33,"r":20},{"c":110,"d":34,"r":19},{"c":111,"d":34,"r":19},{"c":112,"d":34,"r":19},{"c":113,"d":38,"r":15},{"c":114,"d":39,"r":14},{"c":115,"d":39,"r":14},{"c":116,"d":46,"r":7},{"c":117,"d":42,"r":11},{"c":118,"d":40,"r":12},{"c":119,"d":43,"r":7}]
-        }
+        },
+        "commute": {"avg_commute_minutes":29.7,"drive_alone_percent":67.3,"carpool_percent":10.2,"public_transit_percent":3.3,"walk_percent":2.5,"bike_percent":0.8,"work_from_home_percent":14.1},
+        "cost_of_living": {"rpp_index":110.7},
+        "inequality": {"gini":0.489},
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,119.2,150.0,170.2,186.9,197.9]}
       },
       "New York": {
         "population": { "total_population": 19697457, "population_density_per_sq_mi": 417.98 },
@@ -66,7 +74,11 @@
         "politics": {
           "presidential": [{"y":1988,"d":51.6,"r":47.5},{"y":1992,"d":49.7,"r":33.9},{"y":1996,"d":59.5,"r":30.6},{"y":2000,"d":60.2,"r":35.2},{"y":2004,"d":58.4,"r":40.1},{"y":2008,"d":62.9,"r":36.0},{"y":2012,"d":63.4,"r":35.2},{"y":2016,"d":59.4,"r":36.8},{"y":2020,"d":60.9,"r":37.7},{"y":2024,"d":55.1,"r":42.7}],
           "congress": [{"c":107,"d":19,"r":12},{"c":108,"d":19,"r":10},{"c":109,"d":20,"r":9},{"c":110,"d":23,"r":6},{"c":111,"d":26,"r":3},{"c":112,"d":21,"r":8},{"c":113,"d":21,"r":6},{"c":114,"d":18,"r":9},{"c":115,"d":18,"r":9},{"c":116,"d":21,"r":6},{"c":117,"d":19,"r":8},{"c":118,"d":15,"r":11},{"c":119,"d":19,"r":7}]
-        }
+        },
+        "commute": {"avg_commute_minutes":33.2,"drive_alone_percent":48.7,"carpool_percent":6.7,"public_transit_percent":24.2,"walk_percent":5.8,"bike_percent":0.9,"work_from_home_percent":11.8},
+        "cost_of_living": {"rpp_index":107.9},
+        "inequality": {"gini":0.513},
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,96.3,98.7,104.2,106.4,110.3]}
       },
       "Georgia": {
         "population": { "total_population": 10099320, "population_density_per_sq_mi": 175.35 },
@@ -80,7 +92,11 @@
         "politics": {
           "presidential": [{"y":1988,"d":39.5,"r":59.8},{"y":1992,"d":43.5,"r":42.9},{"y":1996,"d":45.8,"r":47.0},{"y":2000,"d":43.0,"r":54.7},{"y":2004,"d":41.4,"r":58.0},{"y":2008,"d":47.0,"r":52.2},{"y":2012,"d":45.5,"r":53.3},{"y":2016,"d":45.4,"r":50.4},{"y":2020,"d":49.5,"r":49.2},{"y":2024,"d":48.5,"r":50.7}],
           "congress": [{"c":107,"d":3,"r":8},{"c":108,"d":6,"r":7},{"c":109,"d":6,"r":7},{"c":110,"d":6,"r":7},{"c":111,"d":6,"r":7},{"c":112,"d":5,"r":9},{"c":113,"d":5,"r":9},{"c":114,"d":4,"r":10},{"c":115,"d":4,"r":10},{"c":116,"d":6,"r":8},{"c":117,"d":5,"r":9},{"c":118,"d":5,"r":9},{"c":119,"d":5,"r":9}]
-        }
+        },
+        "commute": {"avg_commute_minutes":29.4,"drive_alone_percent":71.5,"carpool_percent":9.3,"public_transit_percent":1.2,"walk_percent":1.3,"bike_percent":0.1,"work_from_home_percent":14.9},
+        "cost_of_living": {"rpp_index":96.3},
+        "inequality": {"gini":0.479},
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,119.6,141.8,179.3,211.7,233.9]}
       }
     },
     "cities": {
@@ -94,11 +110,17 @@
         "educational_attainment": { "graduate_degree_percent": 21.9, "bachelors_or_higher_percent": 60.2, "high_school_or_higher_percent": 87.4, "no_hs_diploma_percent": 12.6 },
         "employment_status": { "employed_percent": 65.4, "unemployed_percent": 4.3, "not_in_labor_force_percent": 30.2 },
         "walkability": { "walk_score": 89, "transit_score": 77, "bike_score": 72 },
-        "airports": { "list": [{"code":"SFO","name":"San Francisco Intl","passengers_millions":52.3,"international_percent":30.2},{"code":"OAK","name":"Oakland Intl","passengers_millions":10.8,"international_percent":5},{"code":"SJC","name":"San Jose Intl","passengers_millions":11.9,"international_percent":10}] },
-        "weather": { "highs": [57,60,63,65,67,69,70,70,72,70,63,57], "lows": [46,49,51,53,54,55,56,57,58,56,52,47], "muggy_days": 0, "clear_sky_percent": 67, "rainy_days_per_month": 3.7 },
+        "airports": { "list": [{"code":"SFO","name":"San Francisco International Airport","passengers_millions":52.3,"international_percent":30.2},{"code":"OAK","name":"Oakland International Airport","passengers_millions":10.8,"international_percent":5},{"code":"SJC","name":"San Jos\u00e9 Mineta International Airport","passengers_millions":11.9,"international_percent":10}] },
+        "weather": { "highs": [57,60,63,65,67,69,70,70,72,70,63,57], "lows": [46,49,51,53,54,55,56,57,58,56,52,47], "non_muggy_days": 30.4, "clear_sky_percent": 67, "dry_days_per_month": 26.3 },
         "politics": { "presidential": [{"y":1988,"d":63.0,"r":35.0},{"y":1992,"d":62.0,"r":20.0},{"y":1996,"d":74.0,"r":16.0},{"y":2000,"d":77.0,"r":17.0},{"y":2004,"d":83.0,"r":15.0},{"y":2008,"d":84.0,"r":13.0},{"y":2012,"d":84.0,"r":13.0},{"y":2016,"d":85.0,"r":10.0},{"y":2020,"d":85.0,"r":13.0},{"y":2024,"d":80.0,"r":17.0}] },
         "sports": [{"sport":"NFL","teams":[{"name":"49ers","color":"#AA0000"}]},{"sport":"NBA","teams":[{"name":"Warriors","color":"#1D428A"}]},{"sport":"MLB","teams":[{"name":"Giants","color":"#FD5A1E"}]},{"sport":"NHL","teams":[{"name":"Sharks","color":"#006D75"}]},{"sport":"MLS","teams":[{"name":"Earthquakes","color":"#0067B1"}]}],
-        "housing": {"home_price_index":[100,112.8,117.9,127.2,147.7,178.3,186.3,177.9,134.7,109.9,120.1,114.3,118.3,145.8,165.9,182.8,195.6,208.8,228.0,229.7,240.6,282.2,313.7,296.7,307.3],"rent_index":[100,110.6,114.9,115.0,114.7,115.0,116.8,121.3,126.3,130.4,130.3,133.3,138.8,145.0,153.0,162.3,173.1,182.6,192.4,199.1,204.3,204.5,207.9,218.1,222.3],"home_price_cagr":4.8,"rent_cagr":3.4}
+        "housing": {"home_price_index":[100,112.8,117.9,127.2,147.7,178.3,186.3,177.9,134.7,109.9,120.1,114.3,118.3,145.8,165.9,182.8,195.6,208.8,228.0,229.7,240.6,282.2,313.7,296.7,307.3],"rent_index":[100,110.6,114.9,115.0,114.7,115.0,116.8,121.3,126.3,130.4,130.3,133.3,138.8,145.0,153.0,162.3,173.1,182.6,192.4,199.1,204.3,204.5,207.9,218.1,222.3],"home_price_cagr":4.8,"rent_cagr":3.4},
+        "commute": {"avg_commute_minutes":32.2,"drive_alone_percent":30.4,"carpool_percent":6.0,"public_transit_percent":25.0,"walk_percent":10.0,"bike_percent":3.8,"work_from_home_percent":21.4},
+        "cost_of_living": {"rpp_index":115.6},
+        "crime": {"violent_per_100k":597,"property_per_100k":3929},
+        "inequality": {"gini":0.501},
+        "universities": [{"name":"Stanford","rank":2},{"name":"UC Berkeley","rank":10},{"name":"UCSF"},{"name":"SF State"},{"name":"USF","rank":115}],
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,94.9,101.1,108.6,112.6,122.3]}
       },
       "New York City": {
         "population": { "total_population": 19940274, "population_density_per_sq_mi": 3176 },
@@ -110,11 +132,17 @@
         "educational_attainment": { "graduate_degree_percent": 14.9, "bachelors_or_higher_percent": 36.2, "high_school_or_higher_percent": 80.8, "no_hs_diploma_percent": 19.2 },
         "employment_status": { "employed_percent": 58.2, "unemployed_percent": 5.5, "not_in_labor_force_percent": 36.3 },
         "walkability": { "walk_score": 88, "transit_score": 89, "bike_score": 69 },
-        "airports": { "list": [{"code":"JFK","name":"John F. Kennedy Intl","passengers_millions":63.3,"international_percent":49.8},{"code":"EWR","name":"Newark Liberty Intl","passengers_millions":48.9,"international_percent":28.4},{"code":"LGA","name":"LaGuardia","passengers_millions":33.5,"international_percent":5.1}] },
-        "weather": { "highs": [40,42,51,61,71,79,84,82,75,65,54,45], "lows": [29,30,37,46,56,65,71,69,62,52,42,34], "muggy_days": 46, "clear_sky_percent": 54, "rainy_days_per_month": 8.3 },
+        "airports": { "list": [{"code":"JFK","name":"John F. Kennedy International Airport","passengers_millions":63.3,"international_percent":49.8},{"code":"EWR","name":"Newark Liberty International Airport","passengers_millions":48.9,"international_percent":28.4},{"code":"LGA","name":"LaGuardia Airport","passengers_millions":33.5,"international_percent":5.1}] },
+        "weather": { "highs": [40,42,51,61,71,79,84,82,75,65,54,45], "lows": [29,30,37,46,56,65,71,69,62,52,42,34], "non_muggy_days": 26.6, "clear_sky_percent": 54, "dry_days_per_month": 21.7 },
         "politics": { "presidential": [{"y":1988,"d":66.2,"r":32.8},{"y":1992,"d":68.7,"r":24.0},{"y":1996,"d":77.1,"r":17.3},{"y":2000,"d":77.9,"r":18.2},{"y":2004,"d":75.0,"r":24.1},{"y":2008,"d":79.3,"r":20.1},{"y":2012,"d":81.2,"r":17.8},{"y":2016,"d":80.0,"r":17.0},{"y":2020,"d":76.2,"r":22.7},{"y":2024,"d":68.1,"r":30.0}] },
         "sports": [{"sport":"NFL","teams":[{"name":"Giants","color":"#0B2265"},{"name":"Jets","color":"#125740"}]},{"sport":"NBA","teams":[{"name":"Knicks","color":"#F58426"},{"name":"Nets","color":"#000000"}]},{"sport":"MLB","teams":[{"name":"Yankees","color":"#003087"},{"name":"Mets","color":"#FF5910"}]},{"sport":"NHL","teams":[{"name":"Rangers","color":"#0038A8"},{"name":"Islanders","color":"#00539B"}]},{"sport":"MLS","teams":[{"name":"NYCFC","color":"#6CACE4"},{"name":"Red Bulls","color":"#ED1E36"}]}],
-        "housing": {"home_price_index":[100,112.1,126.4,144.6,164.1,187.9,202.1,196.5,181.9,164.0,161.4,156.4,152.8,157.9,164.1,168.1,172.3,180.1,187.1,189.7,197.2,226.9,255.1,269.0,292.2],"rent_index":[100,104.0,108.7,113.4,118.6,124.8,131.2,137.2,144.1,149.7,152.8,156.1,159.9,164.8,169.8,175.0,181.0,185.6,189.3,194.9,198.8,199.2,204.1,215.7,226.2],"home_price_cagr":4.6,"rent_cagr":3.5}
+        "housing": {"home_price_index":[100,112.1,126.4,144.6,164.1,187.9,202.1,196.5,181.9,164.0,161.4,156.4,152.8,157.9,164.1,168.1,172.3,180.1,187.1,189.7,197.2,226.9,255.1,269.0,292.2],"rent_index":[100,104.0,108.7,113.4,118.6,124.8,131.2,137.2,144.1,149.7,152.8,156.1,159.9,164.8,169.8,175.0,181.0,185.6,189.3,194.9,198.8,199.2,204.1,215.7,226.2],"home_price_cagr":4.6,"rent_cagr":3.5},
+        "commute": {"avg_commute_minutes":40.6,"drive_alone_percent":20.6,"carpool_percent":4.4,"public_transit_percent":48.7,"walk_percent":9.6,"bike_percent":1.7,"work_from_home_percent":12.5},
+        "cost_of_living": {"rpp_index":112.6},
+        "crime": {"violent_per_100k":671,"property_per_100k":2368},
+        "inequality": {"gini":0.554},
+        "universities": [{"name":"Columbia","rank":3},{"name":"NYU","rank":35},{"name":"CUNY"},{"name":"Fordham","rank":89},{"name":"The New School"}],
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,89.6,92.9,101.5,103.7,110.8]}
       },
       "Atlanta": {
         "population": { "total_population": 6089815, "population_density_per_sq_mi": 727 },
@@ -126,11 +154,17 @@
         "educational_attainment": { "graduate_degree_percent": 13.4, "bachelors_or_higher_percent": 43.7, "high_school_or_higher_percent": 88.5, "no_hs_diploma_percent": 11.5 },
         "employment_status": { "employed_percent": 61.4, "unemployed_percent": 5.5, "not_in_labor_force_percent": 33.0 },
         "walkability": { "walk_score": 48, "transit_score": 44, "bike_score": 42 },
-        "airports": { "list": [{"code":"ATL","name":"Hartsfield-Jackson","passengers_millions":108.1,"international_percent":13.5}] },
-        "weather": { "highs": [53,57,65,73,80,86,88,87,82,72,63,55], "lows": [35,38,45,52,60,68,71,70,64,53,44,38], "muggy_days": 89, "clear_sky_percent": 58, "rainy_days_per_month": 9.6 },
+        "airports": { "list": [{"code":"ATL","name":"Hartsfield\u2013Jackson Atlanta International Airport","passengers_millions":108.1,"international_percent":13.5}] },
+        "weather": { "highs": [53,57,65,73,80,86,88,87,82,72,63,55], "lows": [35,38,45,52,60,68,71,70,64,53,44,38], "non_muggy_days": 23.0, "clear_sky_percent": 58, "dry_days_per_month": 20.4 },
         "politics": { "presidential": [{"y":1988,"d":56.3,"r":42.8},{"y":1992,"d":57.3,"r":33.2},{"y":1996,"d":58.9,"r":36.9},{"y":2000,"d":57.8,"r":39.8},{"y":2004,"d":59.2,"r":39.9},{"y":2008,"d":67.1,"r":32.1},{"y":2012,"d":64.1,"r":34.4},{"y":2016,"d":67.7,"r":26.9},{"y":2020,"d":72.6,"r":26.2},{"y":2024,"d":71.9,"r":27.0}] },
         "sports": [{"sport":"NFL","teams":[{"name":"Falcons","color":"#A71930"}]},{"sport":"NBA","teams":[{"name":"Hawks","color":"#E03A3E"}]},{"sport":"MLB","teams":[{"name":"Braves","color":"#CE1141"}]},{"sport":"NHL","teams":[]},{"sport":"MLS","teams":[{"name":"Atlanta United","color":"#80000B"}]}],
-        "housing": {"home_price_index":[100,105.4,109.4,112.9,117.0,123.0,128.3,129.1,118.2,104.5,101.9,94.8,87.4,103.4,112.9,119.1,126.1,133.0,140.8,147.0,155.1,180.9,217.8,227.5,237.7],"rent_index":[100,105.4,108.5,107.6,104.8,104.9,106.2,111.5,115.2,113.8,110.7,107.7,109.4,112.0,117.0,123.1,129.7,137.6,143.7,151.5,157.5,166.2,185.1,205.6,211.9],"home_price_cagr":3.7,"rent_cagr":3.2}
+        "housing": {"home_price_index":[100,105.4,109.4,112.9,117.0,123.0,128.3,129.1,118.2,104.5,101.9,94.8,87.4,103.4,112.9,119.1,126.1,133.0,140.8,147.0,155.1,180.9,217.8,227.5,237.7],"rent_index":[100,105.4,108.5,107.6,104.8,104.9,106.2,111.5,115.2,113.8,110.7,107.7,109.4,112.0,117.0,123.1,129.7,137.6,143.7,151.5,157.5,166.2,185.1,205.6,211.9],"home_price_cagr":3.7,"rent_cagr":3.2},
+        "commute": {"avg_commute_minutes":26.5,"drive_alone_percent":56.1,"carpool_percent":4.7,"public_transit_percent":5.8,"walk_percent":4.8,"bike_percent":1.0,"work_from_home_percent":25.6},
+        "cost_of_living": {"rpp_index":100.1},
+        "crime": {"violent_per_100k":702,"property_per_100k":3902},
+        "inequality": {"gini":0.573},
+        "universities": [{"name":"Georgia Tech","rank":33},{"name":"Emory","rank":24},{"name":"Morehouse"},{"name":"Spelman"},{"name":"Georgia State","rank":246}],
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,97.5,107.5,135.0,152.9,176.7]}
       }
     },
     "neighborhoods": {
@@ -144,8 +178,8 @@
         "educational_attainment": { "graduate_degree_percent": 12.6, "bachelors_or_higher_percent": 70.2, "high_school_or_higher_percent": 94.8, "no_hs_diploma_percent": 5.2 },
         "employment_status": { "employed_percent": 67.7, "unemployed_percent": 5.2, "not_in_labor_force_percent": 27.1 },
         "walkability": { "walk_score": 96, "transit_score": 75, "bike_score": 84 },
-        "airports": { "list": [{"code":"SFO","name":"San Francisco Intl","passengers_millions":52.3,"international_percent":30.2},{"code":"OAK","name":"Oakland Intl","passengers_millions":10.8,"international_percent":5},{"code":"SJC","name":"San Jose Intl","passengers_millions":11.9,"international_percent":10}] },
-        "weather": { "highs": [57,60,63,65,67,69,70,70,72,70,63,57], "lows": [46,49,51,53,54,55,56,57,58,56,52,47], "muggy_days": 0, "clear_sky_percent": 67, "rainy_days_per_month": 3.7 },
+        "airports": { "list": [{"code":"SFO","name":"San Francisco International Airport","passengers_millions":52.3,"international_percent":30.2},{"code":"OAK","name":"Oakland International Airport","passengers_millions":10.8,"international_percent":5},{"code":"SJC","name":"San Jos\u00e9 Mineta International Airport","passengers_millions":11.9,"international_percent":10}] },
+        "weather": { "highs": [57,60,63,65,67,69,70,70,72,70,63,57], "lows": [46,49,51,53,54,55,56,57,58,56,52,47], "non_muggy_days": 30.4, "clear_sky_percent": 67, "dry_days_per_month": 26.3 },
         "sports": [{"sport":"NFL","teams":[{"name":"49ers","color":"#AA0000"}]},{"sport":"NBA","teams":[{"name":"Warriors","color":"#1D428A"}]},{"sport":"MLB","teams":[{"name":"Giants","color":"#FD5A1E"}]},{"sport":"NHL","teams":[{"name":"Sharks","color":"#006D75"}]},{"sport":"MLS","teams":[{"name":"Earthquakes","color":"#0067B1"}]}],
         "housing": {"home_price_index":[100,112.8,117.9,127.2,147.7,178.3,186.3,177.9,134.7,109.9,120.1,114.3,118.3,145.8,165.9,182.8,195.6,208.8,228.0,229.7,240.6,282.2,313.7,296.7,307.3],"rent_index":[100,110.6,114.9,115.0,114.7,115.0,116.8,121.3,126.3,130.4,130.3,133.3,138.8,145.0,153.0,162.3,173.1,182.6,192.4,199.1,204.3,204.5,207.9,218.1,222.3],"home_price_cagr":4.8,"rent_cagr":3.4}
       },
@@ -159,8 +193,8 @@
         "educational_attainment": { "graduate_degree_percent": 17.7, "bachelors_or_higher_percent": 86.5, "high_school_or_higher_percent": 98.0, "no_hs_diploma_percent": 2.0 },
         "employment_status": { "employed_percent": 65.4, "unemployed_percent": 2.7, "not_in_labor_force_percent": 31.9 },
         "walkability": { "walk_score": 100, "transit_score": 100, "bike_score": 95 },
-        "airports": { "list": [{"code":"JFK","name":"John F. Kennedy Intl","passengers_millions":63.3,"international_percent":49.8},{"code":"EWR","name":"Newark Liberty Intl","passengers_millions":48.9,"international_percent":28.4},{"code":"LGA","name":"LaGuardia","passengers_millions":33.5,"international_percent":5.1}] },
-        "weather": { "highs": [40,42,51,61,71,79,84,82,75,65,54,45], "lows": [29,30,37,46,56,65,71,69,62,52,42,34], "muggy_days": 46, "clear_sky_percent": 54, "rainy_days_per_month": 8.3 },
+        "airports": { "list": [{"code":"JFK","name":"John F. Kennedy International Airport","passengers_millions":63.3,"international_percent":49.8},{"code":"EWR","name":"Newark Liberty International Airport","passengers_millions":48.9,"international_percent":28.4},{"code":"LGA","name":"LaGuardia Airport","passengers_millions":33.5,"international_percent":5.1}] },
+        "weather": { "highs": [40,42,51,61,71,79,84,82,75,65,54,45], "lows": [29,30,37,46,56,65,71,69,62,52,42,34], "non_muggy_days": 26.6, "clear_sky_percent": 54, "dry_days_per_month": 21.7 },
         "sports": [{"sport":"NFL","teams":[{"name":"Giants","color":"#0B2265"},{"name":"Jets","color":"#125740"}]},{"sport":"NBA","teams":[{"name":"Knicks","color":"#F58426"},{"name":"Nets","color":"#000000"}]},{"sport":"MLB","teams":[{"name":"Yankees","color":"#003087"},{"name":"Mets","color":"#FF5910"}]},{"sport":"NHL","teams":[{"name":"Rangers","color":"#0038A8"},{"name":"Islanders","color":"#00539B"}]},{"sport":"MLS","teams":[{"name":"NYCFC","color":"#6CACE4"},{"name":"Red Bulls","color":"#ED1E36"}]}],
         "housing": {"home_price_index":[100,112.1,126.4,144.6,164.1,187.9,202.1,196.5,181.9,164.0,161.4,156.4,152.8,157.9,164.1,168.1,172.3,180.1,187.1,189.7,197.2,226.9,255.1,269.0,292.2],"rent_index":[100,104.0,108.7,113.4,118.6,124.8,131.2,137.2,144.1,149.7,152.8,156.1,159.9,164.8,169.8,175.0,181.0,185.6,189.3,194.9,198.8,199.2,204.1,215.7,226.2],"home_price_cagr":4.6,"rent_cagr":3.5}
       },
@@ -174,8 +208,8 @@
         "educational_attainment": { "graduate_degree_percent": 36.7, "bachelors_or_higher_percent": 78.2, "high_school_or_higher_percent": 97.9, "no_hs_diploma_percent": 2.1 },
         "employment_status": { "employed_percent": 75.4, "unemployed_percent": 2.9, "not_in_labor_force_percent": 21.7 },
         "walkability": { "walk_score": 61, "transit_score": 37, "bike_score": 56 },
-        "airports": { "list": [{"code":"ATL","name":"Hartsfield-Jackson","passengers_millions":108.1,"international_percent":13.5}] },
-        "weather": { "highs": [53,57,65,73,80,86,88,87,82,72,63,55], "lows": [35,38,45,52,60,68,71,70,64,53,44,38], "muggy_days": 89, "clear_sky_percent": 58, "rainy_days_per_month": 9.6 },
+        "airports": { "list": [{"code":"ATL","name":"Hartsfield\u2013Jackson Atlanta International Airport","passengers_millions":108.1,"international_percent":13.5}] },
+        "weather": { "highs": [53,57,65,73,80,86,88,87,82,72,63,55], "lows": [35,38,45,52,60,68,71,70,64,53,44,38], "non_muggy_days": 23.0, "clear_sky_percent": 58, "dry_days_per_month": 20.4 },
         "sports": [{"sport":"NFL","teams":[{"name":"Falcons","color":"#A71930"}]},{"sport":"NBA","teams":[{"name":"Hawks","color":"#E03A3E"}]},{"sport":"MLB","teams":[{"name":"Braves","color":"#CE1141"}]},{"sport":"NHL","teams":[]},{"sport":"MLS","teams":[{"name":"Atlanta United","color":"#80000B"}]}],
         "housing": {"home_price_index":[100,105.4,109.4,112.9,117.0,123.0,128.3,129.1,118.2,104.5,101.9,94.8,87.4,103.4,112.9,119.1,126.1,133.0,140.8,147.0,155.1,180.9,217.8,227.5,237.7],"rent_index":[100,105.4,108.5,107.6,104.8,104.9,106.2,111.5,115.2,113.8,110.7,107.7,109.4,112.0,117.0,123.1,129.7,137.6,143.7,151.5,157.5,166.2,185.1,205.6,211.9],"home_price_cagr":3.7,"rent_cagr":3.2}
       }
@@ -194,118 +228,104 @@
 
     const COLORS = ['#E8A735', '#1D428A', '#A71930'];
 
-    const TOPIC_CONFIG = [
+    const SECTION_CONFIG = [
       {
-        key: 'population', label: '\uD83D\uDC65 Population',
-        metrics: [
-          { key: 'total_population', label: 'Total Population', format: 'number' },
-          { key: 'population_density_per_sq_mi', label: 'Density (per sq mi)', format: 'density', showBar: true },
+        key: 'demographics', label: '\uD83D\uDC65 Demographics',
+        topics: [
+          { key: 'population', label: 'Population', metrics: [
+            { key: 'total_population', label: 'Total Population', format: 'number' },
+            { key: 'population_density_per_sq_mi', label: 'Density (per sq mi)', format: 'density', showBar: true },
+          ], hasPopGrowthChart: true },
+          { key: 'age_and_sex', label: '\uD83E\uDDD3 Age', metrics: [
+            { key: 'children_percent', label: 'Children (0\u201317)', format: 'percent', showBar: true },
+            { key: 'college_percent', label: 'College (18\u201324)', format: 'percent', showBar: true },
+            { key: 'younger_adult_percent', label: 'Younger Adult (18\u201334)', format: 'percent', showBar: true },
+            { key: 'older_adult_percent', label: 'Older Adult (35\u201364)', format: 'percent', showBar: true },
+            { key: 'senior_percent', label: 'Senior (65+)', format: 'percent', showBar: true },
+          ] },
+          { key: 'race_and_ethnicity', label: '\uD83C\uDF0D Race & Ethnicity', metrics: [
+            { key: 'white_percent', label: 'White', format: 'percent', showBar: true },
+            { key: 'hispanic_percent', label: 'Hispanic', format: 'percent', showBar: true },
+            { key: 'black_percent', label: 'Black', format: 'percent', showBar: true },
+            { key: 'asian_percent', label: 'Asian', format: 'percent', showBar: true },
+            { key: 'mixed_other_percent', label: 'Mixed / Other', format: 'percent', showBar: true },
+          ] },
+          { key: 'national_origin', label: '\uD83C\uDDFA\uD83C\uDDF8 National Origin', metrics: [
+            { key: 'native_born_percent', label: 'Native Born', format: 'percent', showBar: true },
+            { key: 'foreign_born_percent', label: 'Foreign Born', format: 'percent', showBar: true },
+          ], hasTopOrigins: true },
+          { key: 'marital_status', label: '\uD83D\uDC8D Marital Status', metrics: [
+            { key: 'never_married_percent', label: 'Never Married', format: 'percent', showBar: true },
+            { key: 'married_percent', label: 'Married', format: 'percent', showBar: true },
+            { key: 'separated_divorced_widowed_percent', label: 'Sep / Div / Widowed', format: 'percent', showBar: true },
+          ] },
         ],
       },
       {
-        key: 'age_and_sex', label: '\uD83E\uDDD3 Age',
-        metrics: [
-          { key: 'children_percent', label: 'Children (0\u201317)', format: 'percent', showBar: true },
-          { key: 'college_percent', label: 'College (18\u201324)', format: 'percent', showBar: true },
-          { key: 'younger_adult_percent', label: 'Younger Adult (18\u201334)', format: 'percent', showBar: true },
-          { key: 'older_adult_percent', label: 'Older Adult (35\u201364)', format: 'percent', showBar: true },
-          { key: 'senior_percent', label: 'Senior (65+)', format: 'percent', showBar: true },
+        key: 'economy', label: '\uD83D\uDCB0 Economy',
+        topics: [
+          { key: 'household_income', label: '\uD83D\uDCB0 Income & Cost of Living', metrics: [
+            { key: 'median_household_income', label: 'Median Household Income', format: 'currency', showBar: true },
+            { key: 'rpp_index', label: 'Price Level', format: 'number', showBar: true, barMax: 120, dataKey: 'cost_of_living', tooltip: 'Regional Price Parity \u2014 100 = US average. Higher means more expensive for goods, services, and housing.' },
+            { key: 'gini', label: 'Gini Coefficient', format: 'number', showBar: true, barMax: 0.6, dataKey: 'inequality', tooltip: 'Measures income inequality from 0 (perfect equality) to 1 (all income held by one person). The US average is ~0.49.' },
+          ] },
+          { key: 'educational_attainment', label: '\uD83C\uDF93 Educational Attainment', metrics: [
+            { key: 'graduate_degree_percent', label: 'Graduate Degree', format: 'percent', showBar: true },
+            { key: 'bachelors_or_higher_percent', label: "Bachelor's or Higher", format: 'percent', showBar: true },
+            { key: 'high_school_or_higher_percent', label: 'High School or Higher', format: 'percent', showBar: true },
+            { key: 'no_hs_diploma_percent', label: 'No HS Diploma', format: 'percent', showBar: true },
+          ] },
+          { key: 'employment_status', label: '\uD83D\uDCBC Employment Status', metrics: [
+            { key: 'employed_percent', label: 'Employed', format: 'percent', showBar: true },
+            { key: 'unemployed_percent', label: 'Unemployed', format: 'percent', showBar: true },
+            { key: 'not_in_labor_force_percent', label: 'Not in Labor Force', format: 'percent', showBar: true },
+          ] },
+          { key: 'commute', label: '\uD83D\uDE97 Commute', granularities: ['states', 'cities'], metrics: [
+            { key: 'avg_commute_minutes', label: 'Avg Commute (min)', format: 'number', showBar: true },
+            { key: 'drive_alone_percent', label: 'Drive Alone', format: 'percent', showBar: true },
+            { key: 'public_transit_percent', label: 'Public Transit', format: 'percent', showBar: true },
+            { key: 'walk_percent', label: 'Walk', format: 'percent', showBar: true },
+            { key: 'bike_percent', label: 'Bike', format: 'percent', showBar: true },
+            { key: 'work_from_home_percent', label: 'Work from Home', format: 'percent', showBar: true },
+          ] },
         ],
       },
       {
-        key: 'race_and_ethnicity', label: '\uD83C\uDF0D Race & Ethnicity',
-        metrics: [
-          { key: 'white_percent', label: 'White', format: 'percent', showBar: true },
-          { key: 'hispanic_percent', label: 'Hispanic', format: 'percent', showBar: true },
-          { key: 'black_percent', label: 'Black', format: 'percent', showBar: true },
-          { key: 'asian_percent', label: 'Asian', format: 'percent', showBar: true },
-          { key: 'mixed_other_percent', label: 'Mixed / Other', format: 'percent', showBar: true },
+        key: 'lifestyle', label: '\uD83C\uDFD9\uFE0F Lifestyle',
+        topics: [
+          { key: 'weather', label: '\u26C5 Weather & Time', granularities: ['cities'], metrics: [
+            { key: 'non_muggy_days', label: 'Non-Muggy Days / Month', format: 'number', showBar: true },
+            { key: 'clear_sky_percent', label: 'Clear Skies', format: 'percent', showBar: true },
+            { key: 'dry_days_per_month', label: 'Dry Days / Month', format: 'number', showBar: true },
+          ], hasWeatherChart: true },
+          { key: 'walkability', label: '\uD83D\uDEB6 Walkability', granularities: ['cities', 'neighborhoods'], metrics: [
+            { key: 'walk_score', label: '\uD83D\uDEB6 Walk Score', format: 'number', showBar: true, barMax: 100 },
+            { key: 'transit_score', label: '\uD83D\uDE87 Transit Score', format: 'number', showBar: true, barMax: 100 },
+            { key: 'bike_score', label: '\uD83D\uDEB2 Bike Score', format: 'number', showBar: true, barMax: 100 },
+          ] },
+          { key: 'sports', label: '\uD83C\uDFDF\uFE0F Sports', granularities: ['cities'], metrics: [], hasTeamList: true },
+          { key: 'universities', label: '\uD83C\uDF93 Universities', granularities: ['cities'], metrics: [], hasUniversityList: true },
         ],
       },
       {
-        key: 'national_origin', label: '\uD83C\uDDFA\uD83C\uDDF8 National Origin',
-        metrics: [
-          { key: 'native_born_percent', label: 'Native Born', format: 'percent', showBar: true },
-          { key: 'foreign_born_percent', label: 'Foreign Born', format: 'percent', showBar: true },
+        key: 'infrastructure', label: '\uD83C\uDFD7\uFE0F Infrastructure',
+        topics: [
+          { key: 'housing', label: '\uD83C\uDFE0 Housing', granularities: ['cities'], metrics: [
+            { key: 'home_price_cagr', label: 'Home Price CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
+            { key: 'rent_cagr', label: 'Rent CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
+          ], hasHousingCharts: true },
+          { key: 'airports', label: '\u2708\uFE0F Airports', granularities: ['cities'], metrics: [], hasAirportList: true },
+          { key: 'crime', label: '\uD83D\uDD12 Crime', granularities: ['cities'], metrics: [
+            { key: 'violent_per_100k', label: 'Violent Crime / 100K', format: 'number', showBar: true, tooltip: 'Murder, rape, robbery, and aggravated assault' },
+            { key: 'property_per_100k', label: 'Property Crime / 100K', format: 'number', showBar: true, tooltip: 'Burglary, larceny-theft, motor vehicle theft, and arson' },
+          ] },
         ],
-        hasTopOrigins: true,
-      },
-      {
-        key: 'marital_status', label: '\uD83D\uDC8D Marital Status',
-        metrics: [
-          { key: 'never_married_percent', label: 'Never Married', format: 'percent', showBar: true },
-          { key: 'married_percent', label: 'Married', format: 'percent', showBar: true },
-          { key: 'separated_divorced_widowed_percent', label: 'Sep / Div / Widowed', format: 'percent', showBar: true },
-        ],
-      },
-      {
-        key: 'household_income', label: '\uD83D\uDCB0 Household Income',
-        metrics: [
-          { key: 'median_household_income', label: 'Median Household Income', format: 'currency', showBar: true },
-        ],
-      },
-      {
-        key: 'educational_attainment', label: '\uD83C\uDF93 Educational Attainment',
-        metrics: [
-          { key: 'graduate_degree_percent', label: 'Graduate Degree', format: 'percent', showBar: true },
-          { key: 'bachelors_or_higher_percent', label: "Bachelor's or Higher", format: 'percent', showBar: true },
-          { key: 'high_school_or_higher_percent', label: 'High School or Higher', format: 'percent', showBar: true },
-          { key: 'no_hs_diploma_percent', label: 'No HS Diploma', format: 'percent', showBar: true },
-        ],
-      },
-      {
-        key: 'employment_status', label: '\uD83D\uDCBC Employment Status',
-        metrics: [
-          { key: 'employed_percent', label: 'Employed', format: 'percent', showBar: true },
-          { key: 'unemployed_percent', label: 'Unemployed', format: 'percent', showBar: true },
-          { key: 'not_in_labor_force_percent', label: 'Not in Labor Force', format: 'percent', showBar: true },
-        ],
-      },
-      {
-        key: 'walkability', label: '\uD83D\uDEB6 Walkability',
-        granularities: ['cities', 'neighborhoods'],
-        metrics: [
-          { key: 'walk_score', label: 'Walk Score', format: 'number', showBar: true, barMax: 100 },
-          { key: 'transit_score', label: 'Transit Score', format: 'number', showBar: true, barMax: 100 },
-          { key: 'bike_score', label: 'Bike Score', format: 'number', showBar: true, barMax: 100 },
-        ],
-      },
-      {
-        key: 'airports', label: '\u2708\uFE0F Airports',
-        granularities: ['cities'],
-        metrics: [],
-        hasAirportList: true,
-      },
-      {
-        key: 'weather', label: '\u26C5 Weather & Time',
-        granularities: ['cities'],
-        metrics: [
-          { key: 'muggy_days', label: 'Muggy Days / Year', format: 'number', showBar: true },
-          { key: 'clear_sky_percent', label: 'Clear Skies', format: 'percent', showBar: true },
-          { key: 'rainy_days_per_month', label: 'Rainy Days / Month', format: 'number', showBar: true },
-        ],
-        hasWeatherChart: true,
-      },
-      {
-        key: 'sports', label: '\uD83C\uDFDF\uFE0F Sports',
-        granularities: ['cities'],
-        metrics: [],
-        hasTeamList: true,
-      },
-      {
-        key: 'housing', label: '\uD83C\uDFE0 Housing',
-        granularities: ['cities'],
-        metrics: [
-          { key: 'home_price_cagr', label: 'Home Price CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
-          { key: 'rent_cagr', label: 'Rent CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
-        ],
-        hasHousingCharts: true,
       },
       {
         key: 'politics', label: '\uD83D\uDDF3\uFE0F Politics',
-        granularities: ['states', 'cities'],
-        metrics: [],
-        hasPoliticsCharts: true,
+        topics: [
+          { key: 'politics', label: 'Elections & Representation', granularities: ['states', 'cities'], metrics: [], hasPoliticsCharts: true },
+        ],
       },
     ];
 
@@ -386,10 +406,10 @@
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         return {
           granularity: saved?.granularity || 'states',
-          expandedTopics: saved?.expandedTopics || TOPIC_CONFIG.map(t => t.key),
+          expandedTopics: saved?.expandedTopics || SECTION_CONFIG.map(s => s.key),
         };
       } catch {
-        return { granularity: 'states', expandedTopics: TOPIC_CONFIG.map(t => t.key) };
+        return { granularity: 'states', expandedTopics: SECTION_CONFIG.map(s => s.key) };
       }
     }
 
@@ -406,18 +426,21 @@
       const areas = AREA_NAMES[granularity];
       const areaData = areas.map(name => DATA.areas[granularity][name]);
 
-      const toggleTopic = (topicKey) => {
+      const toggleSection = (sectionKey) => {
         setExpandedTopics(prev =>
-          prev.includes(topicKey) ? prev.filter(k => k !== topicKey) : [...prev, topicKey]
+          prev.includes(sectionKey) ? prev.filter(k => k !== sectionKey) : [...prev, sectionKey]
         );
       };
 
-      const visibleTopics = TOPIC_CONFIG.filter(t => !t.granularities || t.granularities.includes(granularity));
+      const visibleSections = SECTION_CONFIG.map(section => ({
+        ...section,
+        visibleTopics: section.topics.filter(t => !t.granularities || t.granularities.includes(granularity)),
+      })).filter(s => s.visibleTopics.length > 0);
 
       const containerStyle = { maxWidth: 900, margin: '0 auto' };
       const titleStyle = { fontSize: 28, fontWeight: 700, color: '#1a1a1a', marginBottom: 24 };
       const tabRowStyle = {
-        display: 'flex', gap: 8, marginBottom: 24,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24,
         position: 'sticky', top: 0, zIndex: 100,
         background: '#FAF7F2', paddingTop: 12, paddingBottom: 12,
         marginLeft: -5, marginRight: -5, paddingLeft: 5, paddingRight: 5,
@@ -437,20 +460,26 @@
         <div style=${containerStyle}>
           <div style=${titleStyle}>Area Comparison</div>
           <div style=${tabRowStyle}>
-            ${['states', 'cities', 'neighborhoods'].map(g => html`
-              <button key=${g} style=${tabStyle(granularity === g)} onClick=${() => setGranularity(g)}>
-                ${g.charAt(0).toUpperCase() + g.slice(1)}
-              </button>
-            `)}
+            <div style=${{ display: 'flex', gap: 8 }}>
+              ${['states', 'cities', 'neighborhoods'].map(g => html`
+                <button key=${g} style=${tabStyle(granularity === g)} onClick=${() => setGranularity(g)}>
+                  ${g.charAt(0).toUpperCase() + g.slice(1)}
+                </button>
+              `)}
+            </div>
+            <div style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
+              <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
+              <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
+            </div>
           </div>
-          ${visibleTopics.map(topic => html`
-            <${TopicCard}
-              key=${topic.key}
-              topic=${topic}
+          ${visibleSections.map(section => html`
+            <${SectionCard}
+              key=${section.key}
+              section=${section}
               areas=${areas}
               areaData=${areaData}
-              expanded=${expandedTopics.includes(topic.key)}
-              onToggle=${() => toggleTopic(topic.key)}
+              expanded=${expandedTopics.includes(section.key)}
+              onToggle=${() => toggleSection(section.key)}
             />
           `)}
           <div style=${footerStyle}>
@@ -463,12 +492,16 @@
             <a href="https://weatherspark.com" style=${linkStyle}>WeatherSpark</a>
             ${' \u00B7 '}
             <a href="https://fred.stlouisfed.org" style=${linkStyle}>FRED</a>
+            ${' \u00B7 '}
+            <a href="https://ucr.fbi.gov" style=${linkStyle}>FBI UCR</a>
+            ${' \u00B7 '}
+            <a href="https://censusreporter.org" style=${linkStyle}>Census Reporter</a>
           </div>
         </div>
       `;
     }
 
-    function TopicCard({ topic, areas, areaData, expanded, onToggle }) {
+    function SectionCard({ section, areas, areaData, expanded, onToggle }) {
       const cardStyle = {
         background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5',
         marginBottom: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden',
@@ -477,50 +510,58 @@
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         padding: '16px 20px', cursor: 'pointer', userSelect: 'none',
       };
-      const headerTextStyle = { fontSize: 16, fontWeight: 600, color: '#1a1a1a' };
+      const headerTextStyle = { fontSize: 18, fontWeight: 700, color: '#1a1a1a' };
       const arrowStyle = {
         fontSize: 12, color: '#8a8a8a', transition: 'transform 0.3s',
         transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
       };
       const bodyStyle = {
-        maxHeight: expanded ? 2000 : 0, opacity: expanded ? 1 : 0,
-        overflow: 'hidden', transition: 'max-height 0.4s ease-in-out, opacity 0.3s ease-in-out',
+        maxHeight: expanded ? 20000 : 0, opacity: expanded ? 1 : 0,
+        overflow: 'hidden', transition: 'max-height 0.5s ease-in-out, opacity 0.3s ease-in-out',
+      };
+      const subHeaderStyle = {
+        fontSize: 14, fontWeight: 600, color: '#5a5a5a', padding: '12px 0 4px',
+        borderTop: '1px solid #f0ebe3', marginTop: 12,
       };
 
       return html`
         <div style=${cardStyle}>
           <div style=${headerStyle} onClick=${onToggle}>
-            <span style=${headerTextStyle}>${topic.label}</span>
+            <span style=${headerTextStyle}>${section.label}</span>
             <span style=${arrowStyle}>\u25BC</span>
           </div>
           <div style=${bodyStyle}>
             <div style=${{ padding: '0 20px 16px' }}>
-              <${ComparisonTable} topic=${topic} areas=${areas} areaData=${areaData} />
+              <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} showSubHeaders=${section.visibleTopics.length > 1} />
             </div>
           </div>
         </div>
       `;
     }
 
-    function ComparisonTable({ topic, areas, areaData }) {
+    function SectionTable({ topics, areas, areaData, showSubHeaders }) {
       const tableStyle = { width: '100%', borderCollapse: 'collapse' };
       const thStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 13, fontWeight: 600,
         color: i === 0 ? '#8a8a8a' : COLORS[i - 1], borderBottom: '1px solid #E8E0D5',
         width: i === 0 ? '34%' : '22%',
       });
-      const tdStyle = (i) => ({
-        textAlign: i === 0 ? 'left' : 'right', padding: '10px 12px', fontSize: 14,
-        color: i === 0 ? '#5a5a5a' : '#1a1a1a', fontVariantNumeric: 'tabular-nums',
-        borderBottom: '1px solid #f0ebe3', verticalAlign: 'bottom',
-      });
+      const subHeaderStyle = {
+        fontSize: 15, fontWeight: 600, color: '#3a3a3a', padding: '18px 12px 8px',
+      };
+
+      const hasTableContent = topics.some(t => t.metrics.length > 0 || t.hasTopOrigins || t.hasAirportList || t.hasTeamList || t.hasUniversityList || t.hasWeatherChart);
 
       return html`
-        ${topic.hasWeatherChart ? html`<${WeatherChart} areaData=${areaData} areas=${areas} />` : null}
-        ${topic.hasHousingCharts ? html`<${HousingCharts} areaData=${areaData} areas=${areas} />` : null}
-        ${topic.hasPoliticsCharts ? html`<${PoliticsCharts} areaData=${areaData} areas=${areas} />` : null}
-        ${!topic.hasPoliticsCharts || topic.metrics.length > 0 ? html`
-        <table style=${tableStyle}>
+        ${topics.map((topic, ti) => html`
+          <div key=${topic.key}>
+            ${topic.hasPopGrowthChart && areaData[0]?.population_growth ? html`<${PopGrowthChart} areaData=${areaData} areas=${areas} />` : null}
+            ${topic.hasWeatherChart ? html`<${WeatherChart} areaData=${areaData} areas=${areas} />` : null}
+            ${topic.hasHousingCharts ? html`<${HousingCharts} areaData=${areaData} areas=${areas} />` : null}
+            ${topic.hasPoliticsCharts ? html`<${PoliticsCharts} areaData=${areaData} areas=${areas} />` : null}
+          </div>
+        `)}
+        ${hasTableContent ? html`<table style=${tableStyle}>
           <thead>
             <tr>
               <th style=${thStyle(0)}></th>
@@ -528,12 +569,34 @@
             </tr>
           </thead>
           <tbody>
+            ${topics.map((topic, ti) => html`
+              ${showSubHeaders ? html`
+                <tr key=${'subhdr_' + topic.key} class="subhdr">
+                  <td colSpan="4" style=${subHeaderStyle}>${topic.label}</td>
+                </tr>
+              ` : null}
+              <${TopicRows} key=${'rows_' + topic.key} topic=${topic} areas=${areas} areaData=${areaData} />
+            `)}
+          </tbody>
+        </table>` : null}
+      `;
+    }
+
+    function TopicRows({ topic, areas, areaData }) {
+      const tdStyle = (i) => ({
+        textAlign: i === 0 ? 'left' : 'right', padding: '10px 12px', fontSize: 14,
+        color: i === 0 ? '#5a5a5a' : '#1a1a1a', fontVariantNumeric: 'tabular-nums',
+        borderBottom: '1px solid #f0ebe3', verticalAlign: 'bottom',
+      });
+
+      return html`
             ${topic.metrics.map(metric => {
-              const values = areaData.map(d => (d[topic.key] || {})[metric.key]);
+              const values = areaData.map(d => (d[metric.dataKey || topic.key] || {})[metric.key]);
+              if (values.every(v => v == null)) return null;
               const maxVal = metric.barMax || Math.max(...values.filter(v => v != null && v > 0));
               return html`
                 <tr key=${metric.key}>
-                  <td style=${tdStyle(0)}>${metric.label}</td>
+                  <td style=${tdStyle(0)}>${metric.tooltip ? html`<${Tooltip} text=${metric.tooltip}>${metric.label}<//>` : metric.label}</td>
                   ${values.map((val, i) => {
                     const desc = topic.key === 'walkability' ? getScoreDescription(metric.key, val) : '';
                     return html`
@@ -574,10 +637,11 @@
               const allLists = areaData.map(d => (d[topic.key] || {}).list || []);
               const totals = allLists.map(list => {
                 const totalPax = list.reduce((s, a) => s + a.passengers_millions, 0);
-                const wtdIntl = totalPax > 0 ? list.reduce((s, a) => s + a.passengers_millions * a.international_percent, 0) / totalPax : 0;
-                return { totalPax: Math.round(totalPax * 10) / 10, intlPct: Math.round(wtdIntl * 10) / 10 };
+                const intlPax = list.reduce((s, a) => s + a.passengers_millions * a.international_percent / 100, 0);
+                return { totalPax: Math.round(totalPax * 10) / 10, intlPax: Math.round(intlPax * 10) / 10 };
               });
               const maxPax = Math.max(...totals.map(t => t.totalPax));
+              const maxIntl = Math.max(...totals.map(t => t.intlPax));
               const maxLen = Math.max(...allLists.map(l => l.length));
               return html`
                 <tr key="airport_total_pax">
@@ -590,11 +654,11 @@
                   </td>`)}
                 </tr>
                 <tr key="airport_total_intl">
-                  <td style=${tdStyle(0)}>% International</td>
+                  <td style=${tdStyle(0)}>International Passengers</td>
                   ${totals.map((t, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
-                    <div>${t.intlPct}%</div>
+                    <div>${t.intlPax}M</div>
                     <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                      <div style=${{ width: t.intlPct + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                      <div style=${{ width: (t.intlPax / maxIntl * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
                     </div>
                   </td>`)}
                 </tr>
@@ -604,7 +668,7 @@
                     ${allLists.map((list, i) => {
                       const a = list[rank];
                       return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: '#5a5a5a' }}>
-                        ${a ? a.code + ' (' + a.passengers_millions + 'M, ' + a.international_percent + '% intl)' : ''}
+                        ${a ? html`<${Tooltip} text=${a.name}>${a.code}<//> (${a.passengers_millions}M, ${Math.round(a.passengers_millions * a.international_percent / 100 * 10) / 10}M intl)` : ''}
                       </td>`;
                     })}
                   </tr>
@@ -628,6 +692,20 @@
                 </tr>
               `);
             })() : null}
+            ${topic.hasUniversityList ? (() => {
+              const maxLen = Math.max(...areaData.map(d => (d.universities || []).length));
+              return Array.from({length: maxLen}, (_, rank) => html`
+                <tr key=${'uni_' + rank}>
+                  <td style=${tdStyle(0)}></td>
+                  ${areaData.map((d, i) => {
+                    const u = (d.universities || [])[rank];
+                    return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontWeight: 500 }}>
+                      ${u ? html`${u.rank ? html`<span style=${{ fontWeight: 400, color: '#8a8a8a', fontSize: 12 }}>#${u.rank} </span>` : ''}${u.name}` : ''}
+                    </td>`;
+                  })}
+                </tr>
+              `);
+            })() : null}
             ${topic.hasWeatherChart ? html`
               <tr key="sunrise_link">
                 <td style=${{ ...tdStyle(0), borderBottom: 'none' }}>Sunrise & Sunset</td>
@@ -636,9 +714,6 @@
                 </td>
               </tr>
             ` : null}
-          </tbody>
-        </table>
-        ` : null}
       `;
     }
 
@@ -756,6 +831,104 @@
               ${name}
             </span>
           `)}
+        </div>
+      `;
+    }
+
+    function PopGrowthChart({ areaData, areas }) {
+      const YEARS = areaData[0]?.population_growth?.years || [];
+      const W = 600, H = 200, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
+      const chartW = W - PAD_L - PAD_R, chartH = H - PAD_T - PAD_B;
+      const [hoverIdx, setHoverIdx] = useState(null);
+      const svgRef = React.useRef(null);
+
+      const smoothPath = (points) => {
+        if (points.length < 2) return '';
+        const d = ['M' + points[0][0] + ',' + points[0][1]];
+        for (let i = 0; i < points.length - 1; i++) {
+          const p0 = points[Math.max(0, i - 1)];
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const p3 = points[Math.min(points.length - 1, i + 2)];
+          d.push('C' + (p1[0]+(p2[0]-p0[0])/6) + ',' + (p1[1]+(p2[1]-p0[1])/6) + ' ' +
+                 (p2[0]-(p3[0]-p1[0])/6) + ',' + (p2[1]-(p3[1]-p1[1])/6) + ' ' + p2[0] + ',' + p2[1]);
+        }
+        return d.join(' ');
+      };
+
+      const allVals = areaData.flatMap(d => d.population_growth?.index || []);
+      const minV = Math.floor(Math.min(...allVals) / 10) * 10;
+      const maxV = Math.ceil(Math.max(...allVals) / 10) * 10 + 5;
+      const range = maxV - minV;
+      const toX = (i) => PAD_L + (i / (YEARS.length - 1)) * chartW;
+      const toY = (v) => PAD_T + chartH - ((v - minV) / range) * chartH;
+      const onMove = (e) => {
+        const svg = svgRef.current;
+        if (!svg) return;
+        const rect = svg.getBoundingClientRect();
+        const relX = ((e.clientX - rect.left) / rect.width * W) - PAD_L;
+        const idx = Math.round(relX / chartW * (YEARS.length - 1));
+        setHoverIdx(idx >= 0 && idx < YEARS.length ? idx : null);
+      };
+      const gridLines = [];
+      for (let v = Math.ceil(minV / 10) * 10; v <= maxV; v += 10) gridLines.push(v);
+
+      return html`
+        <div>
+          <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6 }}>Population Index (1970 = 100)</div>
+          <div style=${{ position: 'relative' }}>
+            <svg ref=${svgRef} viewBox="0 0 ${W} ${H}" style=${{ width: '100%', height: 'auto', display: 'block', cursor: 'crosshair', marginBottom: 8 }}
+              onMouseMove=${onMove} onMouseLeave=${() => setHoverIdx(null)}>
+              ${gridLines.map(v => html`
+                <line key=${'g'+v} x1=${PAD_L} y1=${toY(v)} x2=${W - PAD_R} y2=${toY(v)} stroke=${v === 100 ? '#999' : '#E8E0D5'} strokeWidth=${v === 100 ? '1' : '0.5'} />
+                <text key=${'l'+v} x=${PAD_L - 4} y=${toY(v) + 3} fill=${v === 100 ? '#999' : '#aaa'} fontSize="8" textAnchor="end">${v}</text>
+              `)}
+              ${YEARS.map((y, i) => html`
+                <text key=${'yr'+y} x=${toX(i)} y=${H - 4} fill="#aaa" fontSize="9" textAnchor="middle">${y}</text>
+              `)}
+              ${areaData.map((d, ci) => {
+                const vals = d.population_growth?.index || [];
+                const pts = vals.map((v, i) => [toX(i), toY(v)]);
+                return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />`;
+              })}
+              ${hoverIdx != null ? html`
+                <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+                ${areaData.map((d, ci) => {
+                  const v = d.population_growth?.index?.[hoverIdx];
+                  if (v == null) return null;
+                  return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                })}
+              ` : null}
+            </svg>
+            ${hoverIdx != null ? html`
+              <div style=${{
+                position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
+                background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+                borderRadius: 6, pointerEvents: 'none', zIndex: 10,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+              }}>
+                <div style=${{ fontWeight: 600, marginBottom: 4 }}>${YEARS[hoverIdx]}</div>
+                ${areaData.map((d, ci) => {
+                  const v = d.population_growth?.index?.[hoverIdx];
+                  if (v == null) return null;
+                  return html`
+                    <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                      <span>${areas[ci]}: ${v.toFixed(0)} (${v >= 100 ? '+' : ''}${(v - 100).toFixed(1)}%)</span>
+                    </div>
+                  `;
+                })}
+              </div>
+            ` : null}
+          </div>
+          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
+            ${areas.map((name, i) => html`
+              <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style=${{ width: 12, height: 3, background: COLORS[i], borderRadius: 1, display: 'inline-block' }} />
+                ${name}
+              </span>
+            `)}
+          </div>
         </div>
       `;
     }

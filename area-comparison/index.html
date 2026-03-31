@@ -18,6 +18,24 @@
       min-height: 100vh;
       padding: 48px 20px;
     }
+    @media (max-width: 640px) {
+      body { padding: 24px 0; }
+      .section-card {
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        box-shadow: none !important;
+        margin-bottom: 8px !important;
+      }
+      .page-title, .page-footer { padding-left: 16px; padding-right: 16px; }
+      .section-card .card-header { padding-left: 12px !important; padding-right: 12px !important; }
+      .section-card .card-body { padding-left: 8px !important; padding-right: 8px !important; }
+      .section-card td, .section-card th { padding-left: 6px !important; padding-right: 6px !important; }
+      .section-card svg path { stroke-width: 3.5 !important; }
+      .section-card svg line { stroke-width: 1.5 !important; }
+      .tab-row { justify-content: center !important; padding-top: 20px !important; margin-top: -20px !important; }
+      .expand-collapse { display: none !important; }
+    }
   </style>
   <script type="importmap">
     {
@@ -229,6 +247,11 @@
       cities: ['San Francisco', 'New York City', 'Atlanta'],
       neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside'],
     };
+    const AREA_NAMES_SHORT = {
+      states: ['CA', 'NY', 'GA'],
+      cities: ['SF', 'NYC', 'ATL'],
+      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS'],
+    };
 
     const COLORS = ['#E8A735', '#1D428A', '#A71930'];
 
@@ -398,7 +421,7 @@
         case 'number': return value.toLocaleString('en-US');
         case 'percent': return value.toFixed(1) + '%';
         case 'currency': return '$' + value.toLocaleString('en-US');
-        case 'density': return value.toLocaleString('en-US', { maximumFractionDigits: 1 }) + '/mi\u00B2';
+        case 'density': return value.toLocaleString('en-US', { maximumFractionDigits: value >= 1000 ? 0 : 1 }) + '/mi\u00B2';
         default: return String(value);
       }
     }
@@ -446,12 +469,20 @@
       const init = useMemo(loadState, []);
       const [granularity, setGranularity] = useState(init.granularity);
       const [expandedTopics, setExpandedTopics] = useState(init.expandedTopics);
+      const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
       useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ granularity, expandedTopics }));
       }, [granularity, expandedTopics]);
 
+      useEffect(() => {
+        const onResize = () => setIsMobile(window.innerWidth <= 640);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+      }, []);
+
       const areas = AREA_NAMES[granularity];
+      const displayAreas = isMobile ? AREA_NAMES_SHORT[granularity] : areas;
       const areaData = areas.map(name => DATA.areas[granularity][name]);
 
       const toggleSection = (sectionKey) => {
@@ -486,8 +517,8 @@
 
       return html`
         <div style=${containerStyle}>
-          <div style=${titleStyle}>Area Comparison</div>
-          <div style=${tabRowStyle}>
+          <div class="page-title" style=${titleStyle}>Area Comparison</div>
+          <div class="tab-row" style=${tabRowStyle}>
             <div style=${{ display: 'flex', gap: 8 }}>
               ${['states', 'cities', 'neighborhoods'].map(g => html`
                 <button key=${g} style=${tabStyle(granularity === g)} onClick=${() => setGranularity(g)}>
@@ -495,7 +526,7 @@
                 </button>
               `)}
             </div>
-            <div style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
+            <div class="expand-collapse" style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
               <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
               <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
             </div>
@@ -504,13 +535,13 @@
             <${SectionCard}
               key=${section.key}
               section=${section}
-              areas=${areas}
+              areas=${displayAreas}
               areaData=${areaData}
               expanded=${expandedTopics.includes(section.key)}
               onToggle=${() => toggleSection(section.key)}
             />
           `)}
-          <div style=${footerStyle}>
+          <div class="page-footer" style=${footerStyle}>
             Data: <a href="https://statisticalatlas.com" style=${linkStyle}>Statistical Atlas</a>
             ${' \u00B7 '}
             <a href="https://www.walkscore.com" style=${linkStyle}>Walk Score</a>
@@ -575,13 +606,13 @@
       };
 
       return html`
-        <div style=${cardStyle}>
-          <div style=${headerStyle} onClick=${onToggle}>
+        <div class="section-card" style=${cardStyle}>
+          <div class="card-header" style=${headerStyle} onClick=${onToggle}>
             <span style=${headerTextStyle}>${section.label}</span>
             <span style=${arrowStyle}>\u25BC</span>
           </div>
           <div style=${bodyStyle}>
-            <div style=${{ padding: '0 20px 16px' }}>
+            <div class="card-body" style=${{ padding: '0 20px 16px' }}>
               <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} showSubHeaders=${section.topics.length > 1} />
             </div>
           </div>

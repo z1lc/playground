@@ -79,6 +79,12 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: Walk Score, Transit Score, Bike Score (0-100 each)
 - **Neighborhood notes**: NP+AV averaged from individual neighborhood scores. GV uses West Village as proxy (WalkScore doesn't have a Greenwich Village page). VH+ML averaged from individual scores.
 - **Levels**: City, Neighborhood
+- **Bike Network Score**: PeopleForBikes Bicycle Network Analysis 2025 (cityratings.peopleforbikes.org). BNA score (0-100) + percentile among 2,901 cities. City only.
+
+#### Parks & Green Space
+- **Source**: Trust for Public Land ParkScore 2025 (parkscore.tpl.org)
+- **Data**: ParkScore rank and rating (0-100), % residents within 10-min walk of park, parkland as % of city area
+- **Levels**: City only
 
 #### Sports
 - **Teams**: Common knowledge, verified against Wikipedia
@@ -134,6 +140,13 @@ This is a tool that compares statistical information between the states Californ
 - **Source**: Wikipedia compilation of FBI UCR data (2023)
 - **Data**: Violent crime rate per 100K, property crime rate per 100K (2023)
 - **Levels**: City only
+
+#### Public Transit
+- **Source**: National Transit Database (NTD), agency reports (MTA, SFMTA, BART, MARTA), 2024 data
+- **Transit Score**: WalkScore transit score (0-100), same source as Walkability section
+- **Mode breakdown**: Per-mode rows (Heavy Rail, Light Rail, Commuter Rail, Bus) showing system name and annual ridership in millions. Tooltips on system names show full names; tooltips on ridership show route miles/stations (rail) or routes (bus).
+- **Notes**: SF: BART (heavy rail) + Muni Metro (light rail) + Muni Bus. NYC: Subway (heavy rail) + LIRR + Metro-North (commuter rail) + MTA Bus. ATL: MARTA Rail (heavy rail) + MARTA Bus. Raw numbers shown without per-capita normalization due to inconsistent service area boundaries.
+- **Levels**: City (all), Neighborhood (transit score only)
 
 ### Politics Section
 

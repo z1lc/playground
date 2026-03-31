@@ -11,8 +11,8 @@
     tbody tr:has(+ tr.subhdr) td { border-bottom: none !important; }
     tbody tr:has(+ tr.att-row) td { border-bottom: none !important; }
     thead tr th:first-child { border-bottom: none !important; }
-    html, body {
-      overflow-x: hidden;
+    html {
+      overflow-x: clip;
     }
     body {
       background: #FAF7F2;
@@ -38,6 +38,7 @@
       .section-card svg line { stroke-width: 1.5 !important; }
       .tab-row { justify-content: center !important; padding-top: 20px !important; margin-top: -20px !important; }
       .expand-collapse { display: none !important; }
+      .country-name { display: none; }
     }
   </style>
   <script type="importmap">
@@ -711,7 +712,7 @@
                   ${allOrigins.map((origins, i) => {
                     const o = origins[rank];
                     return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: '#5a5a5a' }}>
-                      ${o ? (COUNTRY_FLAGS[o.name] || '') + ' ' + o.name + ' (' + o.percent.toFixed(1) + '%)' : '\u2014'}
+                      ${o ? html`${COUNTRY_FLAGS[o.name] || ''} <span class="country-name">${o.name} </span>(${o.percent.toFixed(1)}%)` : '\u2014'}
                     </td>`;
                   })}
                 </tr>

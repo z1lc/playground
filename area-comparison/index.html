@@ -9,8 +9,8 @@
     tbody tr:last-child td { border-bottom: none !important; }
     tbody tr.subhdr td { border-bottom: none !important; }
     tbody tr:has(+ tr.subhdr) td { border-bottom: none !important; }
+    tbody tr:has(+ tr.repeated-header) td { border-bottom: none !important; }
     tbody tr:has(+ tr.att-row) td { border-bottom: none !important; }
-    thead tr th:first-child { border-bottom: none !important; }
     html, body {
       overflow-x: clip;
     }
@@ -541,6 +541,7 @@
               section=${section}
               areas=${displayAreas}
               areaData=${areaData}
+              isMobile=${isMobile}
               expanded=${expandedTopics.includes(section.key)}
               onToggle=${() => toggleSection(section.key)}
             />
@@ -586,7 +587,7 @@
       `;
     }
 
-    function SectionCard({ section, areas, areaData, expanded, onToggle }) {
+    function SectionCard({ section, areas, areaData, expanded, onToggle, isMobile }) {
       const cardStyle = {
         background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5',
         marginBottom: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden',
@@ -617,18 +618,18 @@
           </div>
           <div style=${bodyStyle}>
             <div class="card-body" style=${{ padding: '0 20px 16px' }}>
-              <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} showSubHeaders=${section.topics.length > 1} />
+              <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} showSubHeaders=${section.topics.length > 1} isMobile=${isMobile} />
             </div>
           </div>
         </div>
       `;
     }
 
-    function SectionTable({ topics, areas, areaData, showSubHeaders }) {
+    function SectionTable({ topics, areas, areaData, showSubHeaders, isMobile }) {
       const tableStyle = { width: '100%', borderCollapse: 'collapse' };
       const thStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 13, fontWeight: 600,
-        color: i === 0 ? '#8a8a8a' : COLORS[i - 1], borderBottom: '1px solid #E8E0D5',
+        color: i === 0 ? '#8a8a8a' : COLORS[i - 1],
         width: i === 0 ? '34%' : '22%',
       });
       const subHeaderStyle = {
@@ -636,6 +637,33 @@
       };
 
       const hasTableContent = topics.some(t => t.metrics.length > 0 || t.hasTopOrigins || t.hasAirportList || t.hasTeamList || t.hasUniversityList || t.hasFortune500List || t.hasWeatherChart);
+
+      // Estimate row count per topic for repeating headers
+      const estRows = (t) => {
+        let n = t.metrics.length;
+        if (t.hasTopOrigins) n += 3;
+        if (t.hasTeamList) n += 10;
+        if (t.hasUniversityList) n += 5;
+        if (t.hasAirportList) n += 5;
+        if (t.hasFortune500List) n += 1;
+        return n;
+      };
+
+      // Pre-compute which topics need a repeated header before them
+      const threshold = isMobile ? 5 : 10;
+      let rowsSinceHeader = 0;
+      const needsHeader = topics.map((topic, ti) => {
+        if (ti === 0) { rowsSinceHeader = estRows(topic); return false; }
+        const need = rowsSinceHeader >= threshold;
+        if (need) rowsSinceHeader = 0;
+        rowsSinceHeader += estRows(topic);
+        return need;
+      });
+
+      const headerRowWithLabel = (label) => html`<tr class="repeated-header">
+        <th style=${{ ...thStyle(0), fontSize: 15, fontWeight: 600, color: '#3a3a3a', verticalAlign: 'bottom' }}>${label || ''}</th>
+        ${areas.map((name, i) => html`<th key=${name} style=${thStyle(i + 1)}>${name.includes('+') ? name.split('+').map((part, j, arr) => html`${part.trim()} ${j < arr.length - 1 ? html`+ <br />` : ''}`) : name}</th>`)}
+      </tr>`;
 
       return html`
         ${topics.map((topic, ti) => html`
@@ -648,18 +676,16 @@
         `)}
         ${hasTableContent ? html`<table style=${tableStyle}>
           <thead>
-            <tr>
-              <th style=${thStyle(0)}></th>
-              ${areas.map((name, i) => html`<th key=${name} style=${thStyle(i + 1)}>${name.includes('+') ? name.split('+').map((part, j, arr) => html`${part.trim()} ${j < arr.length - 1 ? html`+ <br />` : ''}`) : name}</th>`)}
-            </tr>
+            ${headerRowWithLabel(showSubHeaders ? topics[0]?.label : '')}
           </thead>
           <tbody>
             ${topics.map((topic, ti) => html`
-              ${showSubHeaders ? html`
-                <tr key=${'subhdr_' + topic.key} class="subhdr">
-                  <td colSpan="4" style=${subHeaderStyle}>${topic.label}</td>
-                </tr>
-              ` : null}
+              ${ti > 0 && showSubHeaders ? (needsHeader[ti]
+                ? headerRowWithLabel(topic.label)
+                : html`<tr key=${'subhdr_' + topic.key} class="subhdr">
+                    <td colSpan="4" style=${subHeaderStyle}>${topic.label}</td>
+                  </tr>`
+              ) : null}
               <${TopicRows} key=${'rows_' + topic.key} topic=${topic} areas=${areas} areaData=${areaData} />
             `)}
           </tbody>

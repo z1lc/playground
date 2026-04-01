@@ -80,6 +80,7 @@ This is a tool that compares statistical information between the states Californ
 - **Neighborhood notes**: NP+AV averaged from individual neighborhood scores. GV uses West Village as proxy (WalkScore doesn't have a Greenwich Village page). VH+ML averaged from individual scores.
 - **Levels**: City, Neighborhood
 - **Bike Network Score**: PeopleForBikes Bicycle Network Analysis 2025 (cityratings.peopleforbikes.org). BNA score (0-100) + percentile among 2,901 cities. City only.
+- **Cyclist Fatality Rate**: Annualized cyclist fatalities per 10K bike commuters. Fatalities from NHTSA FARS 2014-2023 (10-year sum). Commuter denominator from Census ACS. City only. Atlanta data includes FARS bulk CSV data for years not in the 500K+ city fact sheet table.
 
 #### Parks & Green Space
 - **Source**: Trust for Public Land ParkScore 2025 (parkscore.tpl.org)

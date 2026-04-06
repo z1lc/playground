@@ -556,7 +556,7 @@
             { key: 'median_home_value_4br', label: 'Typical 4BR Value', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['median_home_value_2br','median_home_value_3br','median_home_value_4br'], tooltip: 'Zillow Home Value Index (4-bedroom) \u2014 average of last 12 months' },
             { key: 'home_price_cagr', label: 'Home Price CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
             { key: 'rent_cagr', label: 'Rent CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
-          ], hasHousingCharts: true },
+          ] },
           { key: 'crime', label: '\uD83D\uDD12 Crime', granularities: ['cities'], metrics: [
             { key: 'violent_per_100k', label: 'Violent Crime / 100K', format: 'number', showBar: true, tooltip: 'Murder, rape, robbery, and aggravated assault' },
             { key: 'property_per_100k', label: 'Property Crime / 100K', format: 'number', showBar: true, tooltip: 'Burglary, larceny-theft, motor vehicle theft, and arson' },
@@ -962,7 +962,7 @@
           <div key=${topic.key}>
             ${topic.hasPopGrowthChart && areaData[0]?.population_growth ? html`<${PopGrowthChart} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
             ${topic.hasWeatherChart ? html`<${WeatherChart} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
-            ${topic.hasHousingCharts ? html`<${HousingCharts} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
+            ${topic.key === 'housing' && areaData.some(d => d.housing?.home_price_index) ? html`<${HousingCharts} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
             ${topic.hasPoliticsCharts ? html`<${PoliticsCharts} areaData=${areaData} areas=${areas} areaColors=${areaColors} granularity=${granularity} />` : null}
           </div>
         `)}

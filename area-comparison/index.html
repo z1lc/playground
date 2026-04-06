@@ -21,6 +21,9 @@
       min-height: 100vh;
       padding: 48px 20px;
     }
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #e0e0e0; }
+    }
     @media (max-width: 640px) {
       body { padding: 24px 0; }
       .section-card {
@@ -58,6 +61,36 @@
     import { createRoot } from 'react-dom/client';
     import htm from 'htm';
     const html = htm.bind(React.createElement);
+
+    // --- THEME ---
+    const ThemeContext = React.createContext(null);
+    function useTheme() { return React.useContext(ThemeContext); }
+    const THEMES = {
+      light: {
+        pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
+        textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
+        border: '#E8E0D5', borderLight: '#f0ebe3', borderDropdown: '#e0d9cf',
+        buttonBg: '#F0EBE3', accent: '#E07A5F', accentText: '#fff',
+        settingsBg: '#fff', barTrack: '#f0ebe3',
+        tooltipBg: '#1a1a1a', tooltipText: '#fff',
+        tooltipShadow: 'rgba(0,0,0,0.2)', cardShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        settingsShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        gridLine: '#E8E0D5', axisText: '#aaa', axisBaseline: '#999',
+        hoverLine: '#888', dotStroke: '#fff', linkColor: '#8a8a8a',
+      },
+      dark: {
+        pageBg: '#1a1a1a', cardBg: '#242424', textPrimary: '#e0e0e0',
+        textSecondary: '#a0a0a0', textLabel: '#c0c0c0', textTertiary: '#777',
+        border: '#3a3530', borderLight: '#333', borderDropdown: '#444',
+        buttonBg: '#333', accent: '#E07A5F', accentText: '#fff',
+        settingsBg: '#2a2a2a', barTrack: '#333',
+        tooltipBg: '#e8e0d5', tooltipText: '#1a1a1a',
+        tooltipShadow: 'rgba(0,0,0,0.5)', cardShadow: '0 1px 3px rgba(0,0,0,0.3)',
+        settingsShadow: '0 4px 12px rgba(0,0,0,0.4)',
+        gridLine: '#3a3530', axisText: '#666', axisBaseline: '#666',
+        hoverLine: '#666', dotStroke: '#242424', linkColor: '#777',
+      },
+    };
 
     // --- DATA ---
     // race: mixed_other_percent = mixed + other
@@ -630,6 +663,7 @@
     }
 
     function Tooltip({ text, children }) {
+      const T = useTheme();
       const [show, setShow] = useState(false);
       const [pos, setPos] = useState({ x: 0, y: 0 });
       const onEnter = (e) => {
@@ -641,15 +675,15 @@
         <span
           onMouseEnter=${onEnter}
           onMouseLeave=${() => setShow(false)}
-          style=${{ borderBottom: '1px dashed #aaa', cursor: 'help' }}
+          style=${{ borderBottom: '1px dashed ' + T.hoverLine, cursor: 'help' }}
         >${children}${show ? html`
           <div style=${{
             position: 'fixed', left: Math.max(8, Math.min(window.innerWidth - 8, pos.x)), top: pos.y - 8,
             transform: 'translate(' + (pos.x < 120 ? '0%' : pos.x > window.innerWidth - 120 ? '-100%' : '-50%') + ', -100%)',
-            background: '#1a1a1a', color: '#fff', fontSize: 12, fontWeight: 400,
+            background: T.tooltipBg, color: T.tooltipText, fontSize: 12, fontWeight: 400,
             padding: '6px 10px', borderRadius: 6, maxWidth: Math.min(240, window.innerWidth - 16), whiteSpace: 'pre-line',
             pointerEvents: 'none', zIndex: 1000,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            boxShadow: '0 2px 8px ' + T.tooltipShadow,
           }}>${text}</div>
         ` : null}</span>
       `;
@@ -678,6 +712,14 @@
         return AREA_GROUPS.map((_, i) => i);
       });
       const [showSettings, setShowSettings] = useState(false);
+      const [isDark, setIsDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
+      useEffect(() => {
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = (e) => setIsDark(e.matches);
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+      }, []);
+      const T = isDark ? THEMES.dark : THEMES.light;
 
       useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ granularity, expandedTopics }));
@@ -741,25 +783,26 @@
       })).filter(s => s.visibleTopics.length > 0);
 
       const containerStyle = { maxWidth: areas.length > 3 ? 1100 : 900, margin: '0 auto' };
-      const titleStyle = { fontSize: 28, fontWeight: 700, color: '#1a1a1a', marginBottom: 24 };
+      const titleStyle = { fontSize: 28, fontWeight: 700, color: T.textPrimary, marginBottom: 24 };
       const tabRowStyle = {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24,
         position: 'sticky', top: 0, zIndex: 100,
-        background: '#FAF7F2', paddingTop: 12, paddingBottom: 12,
+        background: T.pageBg, paddingTop: 12, paddingBottom: 12,
         marginLeft: -5, marginRight: -5, paddingLeft: 5, paddingRight: 5,
       };
       const tabStyle = (active) => ({
         padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 14,
-        fontWeight: active ? 600 : 400, background: active ? '#E07A5F' : '#F0EBE3',
-        color: active ? '#fff' : '#5a5a5a', transition: 'all 0.15s',
+        fontWeight: active ? 600 : 400, background: active ? T.accent : T.buttonBg,
+        color: active ? T.accentText : T.textSecondary, transition: 'all 0.15s',
       });
       const footerStyle = {
-        marginTop: 32, paddingTop: 16, borderTop: '1px solid #E8E0D5',
-        fontSize: 12, color: '#8a8a8a', lineHeight: 1.6,
+        marginTop: 32, paddingTop: 16, borderTop: '1px solid ' + T.border,
+        fontSize: 12, color: T.textTertiary, lineHeight: 1.6,
       };
-      const linkStyle = { color: '#8a8a8a' };
+      const linkStyle = { color: T.linkColor };
 
       return html`
+        <${ThemeContext.Provider} value=${T}>
         <div style=${containerStyle}>
           <div class="page-title" style=${titleStyle}>Area Comparison</div>
           <div class="tab-row" style=${tabRowStyle}>
@@ -772,10 +815,10 @@
               <div class="settings-dropdown" style=${{ position: 'relative', marginLeft: 4 }}>
                 <button style=${tabStyle(showSettings)} onClick=${(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}>\u2699\uFE0F</button>
                 ${showSettings ? html`
-                  <div style=${{ position: 'absolute', right: 0, top: 40, background: '#fff', border: '1px solid #e0d9cf', borderRadius: 8, padding: '12px 16px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, minWidth: 200 }}>
-                    <div style=${{ fontSize: 13, fontWeight: 600, color: '#3a3a3a', marginBottom: 8 }}>Compare areas</div>
+                  <div style=${{ position: 'absolute', right: 0, top: 40, background: T.settingsBg, border: '1px solid ' + T.borderDropdown, borderRadius: 8, padding: '12px 16px', boxShadow: T.settingsShadow, zIndex: 1000, minWidth: 200 }}>
+                    <div style=${{ fontSize: 13, fontWeight: 600, color: T.textLabel, marginBottom: 8 }}>Compare areas</div>
                     ${AREA_GROUPS.map((g, i) => html`
-                      <label key=${i} style=${{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 13, color: '#3a3a3a', cursor: 'pointer' }}>
+                      <label key=${i} style=${{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 13, color: T.textLabel, cursor: 'pointer' }}>
                         <input type="checkbox" checked=${selectedIndices.includes(i)} onChange=${() => toggleAreaIndex(i)} style=${{ accentColor: COLORS[i] }} />
                         <span style=${{ color: COLORS[i], fontWeight: 500 }}>${g.neighborhood}</span>
                       </label>
@@ -784,10 +827,10 @@
                 ` : null}
               </div>
             </div>
-            <div style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
+            <div style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: T.textTertiary }}>
               <span class="expand-collapse" style=${{ display: 'flex', gap: 12 }}>
-                <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
-                <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
+                <a href="#" style=${{ color: T.textTertiary, textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
+                <a href="#" style=${{ color: T.textTertiary, textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
               </span>
             </div>
           </div>
@@ -872,21 +915,23 @@
             <a href="https://www.zillow.com/research/data/" style=${linkStyle}>Zillow</a>
           </div>
         </div>
+        <//>
       `;
     }
 
     function SectionCard({ section, areas, areaData, areaColors, expanded, onToggle, isMobile, granularity }) {
+      const T = useTheme();
       const cardStyle = {
-        background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5',
-        marginBottom: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden',
+        background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border,
+        marginBottom: 12, boxShadow: T.cardShadow, overflow: 'hidden',
       };
       const headerStyle = {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         padding: '16px 20px', cursor: 'pointer', userSelect: 'none',
       };
-      const headerTextStyle = { fontSize: 18, fontWeight: 700, color: '#1a1a1a' };
+      const headerTextStyle = { fontSize: 18, fontWeight: 700, color: T.textPrimary };
       const arrowStyle = {
-        fontSize: 12, color: '#8a8a8a', transition: 'transform 0.3s',
+        fontSize: 12, color: T.textTertiary, transition: 'transform 0.3s',
         transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
       };
       const bodyStyle = {
@@ -894,8 +939,8 @@
         overflow: 'hidden', transition: 'max-height 0.5s ease-in-out, opacity 0.3s ease-in-out',
       };
       const subHeaderStyle = {
-        fontSize: 14, fontWeight: 600, color: '#5a5a5a', padding: '12px 0 4px',
-        borderTop: '1px solid #f0ebe3', marginTop: 12,
+        fontSize: 14, fontWeight: 600, color: T.textSecondary, padding: '12px 0 4px',
+        borderTop: '1px solid ' + T.borderLight, marginTop: 12,
       };
 
       return html`
@@ -914,17 +959,18 @@
     }
 
     function SectionTable({ topics, areas, areaData, areaColors, showSubHeaders, isMobile, granularity }) {
+      const T = useTheme();
       const tableStyle = { width: '100%', borderCollapse: 'collapse' };
       const nAreas = areas.length;
       const dataColWidth = Math.floor(66 / nAreas) + '%';
       const labelColWidth = (100 - Math.floor(66 / nAreas) * nAreas) + '%';
       const thStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 13, fontWeight: 600,
-        color: i === 0 ? '#8a8a8a' : (areaColors || COLORS)[i - 1],
+        color: i === 0 ? T.textTertiary : (areaColors || COLORS)[i - 1],
         width: i === 0 ? labelColWidth : dataColWidth,
       });
       const subHeaderStyle = {
-        fontSize: 15, fontWeight: 600, color: '#3a3a3a', padding: '18px 12px 8px',
+        fontSize: 15, fontWeight: 600, color: T.textLabel, padding: '18px 12px 8px',
       };
 
       const hasTableContent = topics.some(t => t.metrics.length > 0 || t.hasTopOrigins || t.hasAirportList || t.hasTeamList || t.hasUniversityList || t.hasFortune500List || t.hasTransitList || t.hasWeatherChart);
@@ -953,7 +999,7 @@
       });
 
       const headerRowWithLabel = (label) => html`<tr class="repeated-header">
-        <th style=${{ ...thStyle(0), fontSize: 15, fontWeight: 600, color: '#3a3a3a', verticalAlign: 'bottom' }}>${label || ''}</th>
+        <th style=${{ ...thStyle(0), fontSize: 15, fontWeight: 600, color: T.textLabel, verticalAlign: 'bottom' }}>${label || ''}</th>
         ${areas.map((name, i) => html`<th key=${name} style=${thStyle(i + 1)}>${name.includes('+') ? name.split('+').map((part, j, arr) => html`${part.trim()} ${j < arr.length - 1 ? html`+ <br />` : ''}`) : name}</th>`)}
       </tr>`;
 
@@ -986,11 +1032,12 @@
     }
 
     function TopicRows({ topic, areas, areaData, areaColors, granularity }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       const tdStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '10px 12px', fontSize: 14,
-        color: i === 0 ? '#5a5a5a' : '#1a1a1a', fontVariantNumeric: 'tabular-nums',
-        borderBottom: '1px solid #f0ebe3', verticalAlign: 'bottom',
+        color: i === 0 ? T.textSecondary : T.textPrimary, fontVariantNumeric: 'tabular-nums',
+        borderBottom: '1px solid ' + T.borderLight, verticalAlign: 'bottom',
       });
 
       return html`
@@ -1021,10 +1068,10 @@
                     const cellContent = metric.format === 'rating' && val ? html`<span style=${{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><span style=${{ width: 10, height: 10, borderRadius: '50%', background: ratingColors[val] || '#999', display: 'inline-block' }} />${ratingLabels[val] || val}</span>` : fmt(val, metric.format);
                     return html`
                     <td key=${i} style=${tdStyle(i + 1)}>
-                      <div>${desc ? html`<${Tooltip} text=${desc}>${cellContent}<//>` : cellContent}${metric.rankKey && val != null ? (() => { const rv = (areaData[i][metric.dataKey || topic.key] || {})[metric.rankKey]; return rv != null ? html`<span style=${{ color: '#8a8a8a', fontSize: 12, fontWeight: 400 }}> (${metric.rankKey.includes('percentile') ? rv + (rv % 10 === 1 && rv !== 11 ? 'st' : rv % 10 === 2 && rv !== 12 ? 'nd' : rv % 10 === 3 && rv !== 13 ? 'rd' : 'th') + ' %ile' : '#' + rv})</span>` : ''; })() : ''}</div>
+                      <div>${desc ? html`<${Tooltip} text=${desc}>${cellContent}<//>` : cellContent}${metric.rankKey && val != null ? (() => { const rv = (areaData[i][metric.dataKey || topic.key] || {})[metric.rankKey]; return rv != null ? html`<span style=${{ color: T.textTertiary, fontSize: 12, fontWeight: 400 }}> (${metric.rankKey.includes('percentile') ? rv + (rv % 10 === 1 && rv !== 11 ? 'st' : rv % 10 === 2 && rv !== 12 ? 'nd' : rv % 10 === 3 && rv !== 13 ? 'rd' : 'th') + ' %ile' : '#' + rv})</span>` : ''; })() : ''}</div>
                       ${metric.showBar && val != null && maxVal > 0 ? html`
                         <div style=${{
-                          marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3',
+                          marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack,
                           overflow: 'hidden', display: 'flex', justifyContent: 'flex-end',
                         }}>
                           <div style=${{
@@ -1043,10 +1090,10 @@
               const maxRank = Math.max(...allOrigins.map(o => o.length));
               return Array.from({length: Math.min(maxRank, 3)}, (_, rank) => html`
                 <tr key=${'origin_' + rank}>
-                  <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 13, fontStyle: 'italic' }}>${rank === 0 ? 'Top origins:' : ''}</td>
+                  <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 13, fontStyle: 'italic' }}>${rank === 0 ? 'Top origins:' : ''}</td>
                   ${allOrigins.map((origins, i) => {
                     const o = origins[rank];
-                    return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: '#5a5a5a' }}>
+                    return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: T.textSecondary }}>
                       ${o ? html`${COUNTRY_FLAGS[o.name] || ''} <span class="country-name">${o.name} </span>(${o.percent.toFixed(1)}%)` : '\u2014'}
                     </td>`;
                   })}
@@ -1068,7 +1115,7 @@
                   <td style=${tdStyle(0)}>Total Passengers</td>
                   ${totals.map((t, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                     <div>${t.totalPax}M</div>
-                    <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                       <div style=${{ width: (t.totalPax / maxPax * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                     </div>
                   </td>`)}
@@ -1077,14 +1124,14 @@
                   <td style=${tdStyle(0)}>International Passengers</td>
                   ${totals.map((t, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                     <div>${t.intlPax}M</div>
-                    <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                       <div style=${{ width: (t.intlPax / maxIntl * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                     </div>
                   </td>`)}
                 </tr>
                 <tr key="airport_list">
-                  <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 13, fontStyle: 'italic' }}>Airports:</td>
-                  ${allLists.map((list, i) => html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: '#5a5a5a' }}>
+                  <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 13, fontStyle: 'italic' }}>Airports:</td>
+                  ${allLists.map((list, i) => html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: T.textSecondary }}>
                     ${list.map((a, ai) => html`<span key=${ai}><${Tooltip} text=${a.name + ' \u2014 ' + a.passengers_millions + 'M passengers, ' + Math.round(a.passengers_millions * a.international_percent / 100 * 10) / 10 + 'M international'}>${a.code}<//>${ai < list.length - 1 ? ', ' : ''}</span>`)}
                   </td>`)}
                 </tr>
@@ -1115,11 +1162,11 @@
                     })}
                   </tr>`,
                   html`<tr key=${'att_' + sport} class="att-row">
-                    <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 12 }}>Avg Attendance</td>
+                    <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 12 }}>Avg Attendance</td>
                     ${cityAvgs.map((avg, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                       ${avg != null ? html`
                         <div>${avg.toLocaleString('en-US')}</div>
-                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                           <div style=${{ width: (avg / maxAtt * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : '\u2014'}
@@ -1135,13 +1182,13 @@
                 const maxLen = Math.max(...areaData.map(d => { const unis = d.universities || {}; return (unis[list] || []).length; }));
                 return Array.from({length: maxLen}, (_, rank) => html`
                   <tr key=${prefix + '_' + rank}>
-                    <td style=${{ ...tdStyle(0), borderBottom: 'none', ...(rank === 0 ? { color: '#8a8a8a', fontSize: 13, fontStyle: 'italic', paddingTop: prefix === 'priv' ? 8 : 4 } : {}) }}>${rank === 0 ? label : ''}</td>
+                    <td style=${{ ...tdStyle(0), borderBottom: 'none', ...(rank === 0 ? { color: T.textTertiary, fontSize: 13, fontStyle: 'italic', paddingTop: prefix === 'priv' ? 8 : 4 } : {}) }}>${rank === 0 ? label : ''}</td>
                     ${areaData.map((d, i) => {
                       const unis = d.universities || {};
                       const u = (unis[list] || [])[rank];
                       const uniTip = u ? (u.full ? u.full + ' in ' + u.loc : '') + (u.ug != null ? '\nUndergrad: ' + u.ug.toLocaleString('en-US') + ' · Grad: ' + u.grad.toLocaleString('en-US') : '') + (u.outOfState ? '\nLocated in a neighboring state but part of this metro area' : '') : '';
                       return html`<td key=${i} style=${{ ...tdStyle(i + 1), fontWeight: 500, borderBottom: 'none' }}>
-                        ${u ? html`${u.rank ? html`<span style=${{ fontWeight: 400, color: '#8a8a8a', fontSize: 12, fontStyle: u.est ? 'italic' : 'normal' }}>${u.est ? '~' : '#'}${u.rank} </span>` : ''}<${Tooltip} text=${uniTip}>${u.name}<//>${u.outOfState ? '*' : ''}` : ''}
+                        ${u ? html`${u.rank ? html`<span style=${{ fontWeight: 400, color: T.textTertiary, fontSize: 12, fontStyle: u.est ? 'italic' : 'normal' }}>${u.est ? '~' : '#'}${u.rank} </span>` : ''}<${Tooltip} text=${uniTip}>${u.name}<//>${u.outOfState ? '*' : ''}` : ''}
                       </td>`;
                     })}
                   </tr>
@@ -1152,8 +1199,8 @@
                       const u = (unis[list] || [])[rank];
                       return html`<td key=${i} style=${tdStyle(i + 1)}>
                         ${u && u.cost ? html`
-                          <div style=${{ fontSize: 13, color: '#5a5a5a' }}>$${u.cost.toLocaleString('en-US')}</div>
-                          <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                          <div style=${{ fontSize: 13, color: T.textSecondary }}>$${u.cost.toLocaleString('en-US')}</div>
+                          <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                             <div style=${{ width: (u.cost / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                           </div>
                         ` : ''}
@@ -1165,13 +1212,13 @@
               const hasAffordability = areaData.some(d => (d.universities || {}).avg_net_price);
               const affordabilityRow = (key, label, tooltip) => html`
                 <tr key=${key}>
-                  <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 12 }}>${tooltip ? html`<${Tooltip} text=${tooltip}>${label}<//>` : label}</td>
+                  <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 12 }}>${tooltip ? html`<${Tooltip} text=${tooltip}>${label}<//>` : label}</td>
                   ${areaData.map((d, i) => {
                     const val = (d.universities || {})[key];
                     return html`<td key=${i} style=${tdStyle(i + 1)}>
                       ${val != null ? html`
-                        <div style=${{ fontSize: 13, color: '#5a5a5a' }}>$${val.toLocaleString('en-US')}</div>
-                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style=${{ fontSize: 13, color: T.textSecondary }}>$${val.toLocaleString('en-US')}</div>
+                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                           <div style=${{ width: (val / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : ''}
@@ -1181,7 +1228,7 @@
               `;
               const costNote = granularity === 'states' ? 'Costs include tuition, fees, room & board' : 'Costs are tuition & fees only';
               return html`
-                <tr key="uni_cost_note"><td colSpan=${areas.length + 1} style=${{ padding: '2px 12px 4px', fontSize: 12, color: '#8a8a8a', fontStyle: 'italic', borderBottom: 'none' }}>${costNote}${' \u00B7 '}For comparison (2014): Auburn #91, Pitt #62</td></tr>
+                <tr key="uni_cost_note"><td colSpan=${areas.length + 1} style=${{ padding: '2px 12px 4px', fontSize: 12, color: T.textTertiary, fontStyle: 'italic', borderBottom: 'none' }}>${costNote}${' \u00B7 '}For comparison (2014): Auburn #91, Pitt #62</td></tr>
                 ${renderUniRows('public', 'pub', 'Public')}
                 ${hasAffordability ? html`
                   ${affordabilityRow('avg_net_price', 'Avg Net Price', 'Average annual net price at public 4-year institutions after grants/scholarships (College Scorecard 2023)')}
@@ -1193,8 +1240,8 @@
             ${topic.hasFortune500List ? (() => {
               const allLists = areaData.map(d => (d[topic.key] || {}).fortune_500 || []);
               return html`<tr key="f500">
-                <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 13, fontStyle: 'italic', verticalAlign: 'top' }}>Fortune 500 HQs:</td>
-                ${allLists.map((list, i) => html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: '#5a5a5a', lineHeight: 1.5, verticalAlign: 'top' }}>
+                <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 13, fontStyle: 'italic', verticalAlign: 'top' }}>Fortune 500 HQs:</td>
+                ${allLists.map((list, i) => html`<td key=${i} style=${{ ...tdStyle(i + 1), fontSize: 13, color: T.textSecondary, lineHeight: 1.5, verticalAlign: 'top' }}>
                   ${list.map(c => c.name).join(', ')}
                 </td>`)}
               </tr>`;
@@ -1227,11 +1274,11 @@
                     </td>`)}
                   </tr>
                   <tr key=${'transit_r_' + mode}>
-                    <td style=${{ ...tdStyle(0), color: '#8a8a8a', fontSize: 12 }}>Ridership (M/yr)</td>
+                    <td style=${{ ...tdStyle(0), color: T.textTertiary, fontSize: 12 }}>Ridership (M/yr)</td>
                     ${systems.map((s, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                       ${s && s.ridership_millions ? html`
                         <div><${Tooltip} text=${s.miles ? s.miles + ' route mi \u00B7 ' + s.stations + ' stations' : s.routes + ' routes'}>${s.ridership_millions.toLocaleString('en-US')}M<//></div>
-                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: T.barTrack, overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
                           <div style=${{ width: (s.ridership_millions / maxRidership * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : '\u2014'}
@@ -1269,7 +1316,7 @@
               <tr key="sunrise_link">
                 <td style=${{ ...tdStyle(0), borderBottom: 'none' }}>Sunrise & Sunset</td>
                 <td colSpan=${areas.length} style=${{ ...tdStyle(1), borderBottom: 'none', textAlign: 'right' }}>
-                  <a href="../sunrise-sunset/" style=${{ color: '#E07A5F', textDecoration: 'none' }}>Compare daylight hours \u2192</a>
+                  <a href="../sunrise-sunset/" style=${{ color: T.accent, textDecoration: 'none' }}>Compare daylight hours \u2192</a>
                 </td>
               </tr>
             ` : null}
@@ -1277,6 +1324,7 @@
     }
 
     function WeatherChart({ areaData, areas, areaColors }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       const MONTHS = ['J','F','M','A','M','J','J','A','S','O','N','D'];
@@ -1322,16 +1370,16 @@
       };
 
       return html`
-        <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6 }}>Average Temperature (\u00B0F) by Month</div>
+        <div style=${{ fontSize: 13, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>Average Temperature (\u00B0F) by Month</div>
         <div style=${{ position: 'relative' }}>
           <svg ref=${svgRef} viewBox="0 0 ${W} ${H}" style=${{ width: '100%', height: 'auto', marginBottom: 8, display: 'block', cursor: 'crosshair' }}
             onMouseMove=${onMouseMove} onMouseLeave=${() => setHoverMonth(null)}>
             ${gridTemps.map(t => html`
-              <line key=${'grid' + t} x1=${PAD_L} y1=${toY(t)} x2=${W - PAD_R} y2=${toY(t)} stroke="#E8E0D5" strokeWidth="1" />
-              <text key=${'label' + t} x=${PAD_L - 4} y=${toY(t) + 4} fill="#aaa" fontSize="10" textAnchor="end">${t}\u00B0</text>
+              <line key=${'grid' + t} x1=${PAD_L} y1=${toY(t)} x2=${W - PAD_R} y2=${toY(t)} stroke=${T.gridLine} strokeWidth="1" />
+              <text key=${'label' + t} x=${PAD_L - 4} y=${toY(t) + 4} fill=${T.axisText} fontSize="10" textAnchor="end">${t}\u00B0</text>
             `)}
             ${MONTHS.map((m, i) => html`
-              <text key=${'month' + i} x=${toX(i)} y=${H - 4} fill="#aaa" fontSize="10" textAnchor="middle">${m}</text>
+              <text key=${'month' + i} x=${toX(i)} y=${H - 4} fill=${T.axisText} fontSize="10" textAnchor="middle">${m}</text>
             `)}
             ${areaData.map((d, ci) => {
               const w = d.weather;
@@ -1351,13 +1399,13 @@
               `;
             })}
             ${hoverMonth != null ? html`
-              <line x1=${toX(hoverMonth)} y1=${PAD_T} x2=${toX(hoverMonth)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+              <line x1=${toX(hoverMonth)} y1=${PAD_T} x2=${toX(hoverMonth)} y2=${H - PAD_B} stroke=${T.hoverLine} strokeWidth="1" strokeDasharray="3,3" />
               ${areaData.map((d, ci) => {
                 const w = d.weather;
                 if (!w) return null;
                 return html`
                   <g key=${'dots' + ci}>
-                    <circle cx=${toX(hoverMonth)} cy=${toY(w.highs[hoverMonth])} r="3.5" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />
+                    <circle cx=${toX(hoverMonth)} cy=${toY(w.highs[hoverMonth])} r="3.5" fill=${C[ci]} stroke=${T.dotStroke} strokeWidth="1.5" />
                     <circle cx=${toX(hoverMonth)} cy=${toY(w.lows[hoverMonth])} r="3" fill="none" stroke=${C[ci]} strokeWidth="1.5" />
                   </g>
                 `;
@@ -1367,9 +1415,9 @@
           ${hoverMonth != null ? html`
             <div style=${{
               position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
-              background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+              background: T.tooltipBg, color: T.tooltipText, fontSize: 12, padding: '8px 12px',
               borderRadius: 6, pointerEvents: 'none', zIndex: 10,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px ' + T.tooltipShadow, whiteSpace: 'nowrap',
             }}>
               <div style=${{ fontWeight: 600, marginBottom: 4 }}>${MONTH_NAMES[hoverMonth]}</div>
               ${areaData.map((d, ci) => {
@@ -1385,7 +1433,7 @@
             </div>
           ` : null}
         </div>
-        <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 12, fontSize: 12, color: '#5a5a5a' }}>
+        <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 12, fontSize: 12, color: T.textSecondary }}>
           ${areas.map((name, i) => html`
             <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
@@ -1397,6 +1445,7 @@
     }
 
     function PopGrowthChart({ areaData, areas, areaColors }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       const YEARS = areaData[0]?.population_growth?.years || [];
       const W = 600, H = 200, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
@@ -1437,16 +1486,16 @@
 
       return html`
         <div>
-          <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6 }}>Population Index (1970 = 100)</div>
+          <div style=${{ fontSize: 13, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>Population Index (1970 = 100)</div>
           <div style=${{ position: 'relative' }}>
             <svg ref=${svgRef} viewBox="0 0 ${W} ${H}" style=${{ width: '100%', height: 'auto', display: 'block', cursor: 'crosshair', marginBottom: 8 }}
               onMouseMove=${onMove} onMouseLeave=${() => setHoverIdx(null)}>
               ${gridLines.map(v => html`
-                <line key=${'g'+v} x1=${PAD_L} y1=${toY(v)} x2=${W - PAD_R} y2=${toY(v)} stroke=${v === 100 ? '#999' : '#E8E0D5'} strokeWidth=${v === 100 ? '1' : '0.5'} />
-                <text key=${'l'+v} x=${PAD_L - 4} y=${toY(v) + 3} fill=${v === 100 ? '#999' : '#aaa'} fontSize="8" textAnchor="end">${v}</text>
+                <line key=${'g'+v} x1=${PAD_L} y1=${toY(v)} x2=${W - PAD_R} y2=${toY(v)} stroke=${v === 100 ? T.axisBaseline : T.gridLine} strokeWidth=${v === 100 ? '1' : '0.5'} />
+                <text key=${'l'+v} x=${PAD_L - 4} y=${toY(v) + 3} fill=${v === 100 ? T.axisBaseline : T.axisText} fontSize="8" textAnchor="end">${v}</text>
               `)}
               ${YEARS.map((y, i) => html`
-                <text key=${'yr'+y} x=${toX(i)} y=${H - 4} fill="#aaa" fontSize="9" textAnchor="middle">${y}</text>
+                <text key=${'yr'+y} x=${toX(i)} y=${H - 4} fill=${T.axisText} fontSize="9" textAnchor="middle">${y}</text>
               `)}
               ${areaData.map((d, ci) => {
                 const vals = d.population_growth?.index || [];
@@ -1454,20 +1503,20 @@
                 return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />`;
               })}
               ${hoverIdx != null ? html`
-                <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+                <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke=${T.hoverLine} strokeWidth="1" strokeDasharray="3,3" />
                 ${areaData.map((d, ci) => {
                   const v = d.population_growth?.index?.[hoverIdx];
                   if (v == null) return null;
-                  return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke=${T.dotStroke} strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
             ${hoverIdx != null ? html`
               <div style=${{
                 position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
-                background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+                background: T.tooltipBg, color: T.tooltipText, fontSize: 12, padding: '8px 12px',
                 borderRadius: 6, pointerEvents: 'none', zIndex: 10,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px ' + T.tooltipShadow, whiteSpace: 'nowrap',
                 maxWidth: 'calc(100vw - 24px)',
               }}>
                 <div style=${{ fontWeight: 600, marginBottom: 4 }}>${YEARS[hoverIdx]}</div>
@@ -1484,7 +1533,7 @@
               </div>
             ` : null}
           </div>
-          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
+          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: T.textSecondary }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
@@ -1497,6 +1546,7 @@
     }
 
     function HousingGrowthChart({ title, dataKey, areaData, areas, areaColors, marginTop }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       const dataLen = Math.max(...areaData.map(d => (d.housing?.[dataKey] || []).length));
       const YEARS = Array.from({length: dataLen}, (_, i) => 2000 + i);
@@ -1537,17 +1587,17 @@
       for (let v = Math.ceil(minV / 50) * 50; v <= maxV; v += 50) { gridLines.push(v); }
 
       return html`
-        <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6, marginTop: marginTop || 0 }}>${title}</div>
+        <div style=${{ fontSize: 13, fontWeight: 600, color: T.textSecondary, marginBottom: 6, marginTop: marginTop || 0 }}>${title}</div>
         <div style=${{ position: 'relative' }}>
           <svg ref=${svgRef} viewBox="0 0 ${W} ${H}" style=${{ width: '100%', height: 'auto', display: 'block', cursor: 'crosshair', marginBottom: 8 }}
             onMouseMove=${onMove} onMouseLeave=${() => setHoverIdx(null)}>
             ${gridLines.map(v => html`
-              <line key=${'g'+v} x1=${PAD_L} y1=${toY(v)} x2=${W - PAD_R} y2=${toY(v)} stroke=${v === 100 ? '#999' : '#E8E0D5'} strokeWidth=${v === 100 ? '1' : '0.5'} />
-              <text key=${'l'+v} x=${PAD_L - 4} y=${toY(v) + 3} fill=${v === 100 ? '#999' : '#aaa'} fontSize="8" textAnchor="end">${v}</text>
+              <line key=${'g'+v} x1=${PAD_L} y1=${toY(v)} x2=${W - PAD_R} y2=${toY(v)} stroke=${v === 100 ? T.axisBaseline : T.gridLine} strokeWidth=${v === 100 ? '1' : '0.5'} />
+              <text key=${'l'+v} x=${PAD_L - 4} y=${toY(v) + 3} fill=${v === 100 ? T.axisBaseline : T.axisText} fontSize="8" textAnchor="end">${v}</text>
             `)}
             ${YEARS.filter((_, i) => i % 4 === 0 || i === YEARS.length - 1).map(y => {
               const i = YEARS.indexOf(y);
-              return html`<text key=${'yr'+y} x=${toX(i)} y=${H - 4} fill="#aaa" fontSize="9" textAnchor="middle">'${String(y).slice(2)}</text>`;
+              return html`<text key=${'yr'+y} x=${toX(i)} y=${H - 4} fill=${T.axisText} fontSize="9" textAnchor="middle">'${String(y).slice(2)}</text>`;
             })}
             ${areaData.map((d, ci) => {
               const vals = d.housing?.[dataKey] || [];
@@ -1555,20 +1605,20 @@
               return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />`;
             })}
             ${hoverIdx != null ? html`
-              <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+              <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke=${T.hoverLine} strokeWidth="1" strokeDasharray="3,3" />
               ${areaData.map((d, ci) => {
                 const v = d.housing?.[dataKey]?.[hoverIdx];
                 if (v == null) return null;
-                return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke=${T.dotStroke} strokeWidth="1.5" />`;
               })}
             ` : null}
           </svg>
           ${hoverIdx != null ? html`
             <div style=${{
               position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
-              background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+              background: T.tooltipBg, color: T.tooltipText, fontSize: 12, padding: '8px 12px',
               borderRadius: 6, pointerEvents: 'none', zIndex: 10,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px ' + T.tooltipShadow, whiteSpace: 'nowrap',
             }}>
               <div style=${{ fontWeight: 600, marginBottom: 4 }}>${YEARS[hoverIdx]}</div>
               ${areaData.map((d, ci) => {
@@ -1588,12 +1638,13 @@
     }
 
     function HousingCharts({ areaData, areas, areaColors }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       return html`
         <div>
           <${HousingGrowthChart} title=${'Home Price Index (2000 = 100)'} dataKey="home_price_index" areaData=${areaData} areas=${areas} areaColors=${areaColors} />
           ${areaData[0]?.housing?.rent_index ? html`<${HousingGrowthChart} title=${'Rent Index (2000 = 100)'} dataKey="rent_index" areaData=${areaData} areas=${areas} areaColors=${areaColors} marginTop=${16} />` : null}
-          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
+          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: T.textSecondary }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
@@ -1606,6 +1657,7 @@
     }
 
     function PoliticsCharts({ areaData, areas, areaColors, granularity }) {
+      const T = useTheme();
       const C = areaColors || COLORS;
       const DEM = '#4A7FBF', REP = '#D4564E';
       const [hoverElection, setHoverElection] = useState(null);
@@ -1671,22 +1723,22 @@
 
       return html`
         <div>
-          <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6 }}>Presidential Elections \u2014 Dem Margin (1988\u20132024)</div>
+          <div style=${{ fontSize: 13, fontWeight: 600, color: T.textSecondary, marginBottom: 6 }}>Presidential Elections \u2014 Dem Margin (1988\u20132024)</div>
           <div style=${{ position: 'relative' }}>
             <svg ref=${presRef} viewBox="0 0 ${PW} ${PH}" style=${{ width: '100%', height: 'auto', display: 'block', cursor: 'crosshair' }}
               onMouseMove=${onPresMove} onMouseLeave=${() => setHoverElection(null)}>
               ${pZeroY > P_PAD_T ? html`<rect x=${P_PAD_L} y=${P_PAD_T} width=${pChartW} height=${Math.max(0, pZeroY - P_PAD_T)} fill=${DEM} opacity="0.04" />` : null}
               ${pZeroY < P_PAD_T + pChartH ? html`<rect x=${P_PAD_L} y=${Math.max(P_PAD_T, pZeroY)} width=${pChartW} height=${Math.max(0, P_PAD_T + pChartH - Math.max(P_PAD_T, pZeroY))} fill=${REP} opacity="0.04" />` : null}
               ${pMinM <= 0 && pMaxM >= 0 ? html`
-                <line x1=${P_PAD_L} y1=${pZeroY} x2=${PW - P_PAD_R} y2=${pZeroY} stroke="#999" strokeWidth="1" />
-                <text x=${P_PAD_L - 4} y=${pZeroY + 4} fill="#999" fontSize="9" textAnchor="end">0</text>
+                <line x1=${P_PAD_L} y1=${pZeroY} x2=${PW - P_PAD_R} y2=${pZeroY} stroke=${T.axisBaseline} strokeWidth="1" />
+                <text x=${P_PAD_L - 4} y=${pZeroY + 4} fill=${T.axisBaseline} fontSize="9" textAnchor="end">0</text>
               ` : null}
               ${Array.from({length: Math.floor((pMaxM - pMinM) / 10) + 1}, (_, i) => Math.ceil(pMinM / 10) * 10 + i * 10).filter(m => m !== 0 && m > pMinM && m < pMaxM).map(m => html`
-                <line key=${'pg'+m} x1=${P_PAD_L} y1=${pToY(m)} x2=${PW - P_PAD_R} y2=${pToY(m)} stroke="#E8E0D5" strokeWidth="0.5" />
-                <text key=${'pl'+m} x=${P_PAD_L - 4} y=${pToY(m) + 3} fill="#aaa" fontSize="8" textAnchor="end">${m > 0 ? '+' + m : m}</text>
+                <line key=${'pg'+m} x1=${P_PAD_L} y1=${pToY(m)} x2=${PW - P_PAD_R} y2=${pToY(m)} stroke=${T.gridLine} strokeWidth="0.5" />
+                <text key=${'pl'+m} x=${P_PAD_L - 4} y=${pToY(m) + 3} fill=${T.axisText} fontSize="8" textAnchor="end">${m > 0 ? '+' + m : m}</text>
               `)}
               ${elections.map((el, ei) => html`
-                <text key=${'yr'+ei} x=${pToX(ei)} y=${PH - 4} fill="#aaa" fontSize="9" textAnchor="middle">'${String(el.y).slice(2)}</text>
+                <text key=${'yr'+ei} x=${pToX(ei)} y=${PH - 4} fill=${T.axisText} fontSize="9" textAnchor="middle">'${String(el.y).slice(2)}</text>
               `)}
               ${areaData.map((d, ci) => {
                 const pres = d.politics?.presidential || [];
@@ -1698,21 +1750,21 @@
                 `;
               })}
               ${hoverElection != null ? html`
-                <line x1=${pToX(hoverElection)} y1=${P_PAD_T} x2=${pToX(hoverElection)} y2=${PH - P_PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+                <line x1=${pToX(hoverElection)} y1=${P_PAD_T} x2=${pToX(hoverElection)} y2=${PH - P_PAD_B} stroke=${T.hoverLine} strokeWidth="1" strokeDasharray="3,3" />
                 ${areaData.map((d, ci) => {
                   const el = d.politics?.presidential?.[hoverElection];
                   if (!el) return null;
                   const margin = el.d - el.r;
-                  return html`<circle key=${ci} cx=${pToX(hoverElection)} cy=${pToY(margin)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${pToX(hoverElection)} cy=${pToY(margin)} r="4" fill=${C[ci]} stroke=${T.dotStroke} strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
             ${hoverElection != null ? html`
               <div style=${{
                 position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
-                background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+                background: T.tooltipBg, color: T.tooltipText, fontSize: 12, padding: '8px 12px',
                 borderRadius: 6, pointerEvents: 'none', zIndex: 10,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px ' + T.tooltipShadow, whiteSpace: 'nowrap',
                 maxWidth: 'calc(100vw - 24px)',
               }}>
                 <div style=${{ fontWeight: 600, marginBottom: 4 }}>${elections[hoverElection]?.y}</div>
@@ -1726,14 +1778,14 @@
                       <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                       <span>${areas[ci]}: </span>
                       <span style=${{ color: margin > 0 ? DEM : REP, fontWeight: 600 }}>${mStr}</span>
-                      <span style=${{ color: '#888', fontSize: 11 }}>(${el.d}\u2013${el.r})</span>
+                      <span style=${{ color: T.hoverLine, fontSize: 11 }}>(${el.d}\u2013${el.r})</span>
                     </div>
                   `;
                 })}
               </div>
             ` : null}
           </div>
-          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
+          <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: T.textSecondary }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
@@ -1743,20 +1795,20 @@
           </div>
 
           ${areaData[0]?.politics?.congress ? html`
-          <div style=${{ fontSize: 13, fontWeight: 600, color: '#5a5a5a', marginBottom: 6, marginTop: 16 }}>Congressional Delegation \u2014 Dem Margin</div>
+          <div style=${{ fontSize: 13, fontWeight: 600, color: T.textSecondary, marginBottom: 6, marginTop: 16 }}>Congressional Delegation \u2014 Dem Margin</div>
           <div style=${{ position: 'relative' }}>
             <svg ref=${congRef} viewBox="0 0 ${CW} ${CH}" style=${{ width: '100%', height: 'auto', display: 'block', cursor: 'crosshair', marginBottom: 8 }}
               onMouseMove=${onCongMove} onMouseLeave=${() => setHoverCongress(null)}>
               ${cMinM <= 0 && cMaxM >= 0 ? html`
-                <line x1=${C_PAD_L} y1=${cZeroY} x2=${CW - C_PAD_R} y2=${cZeroY} stroke="#999" strokeWidth="1" />
-                <text x=${C_PAD_L - 4} y=${cZeroY + 4} fill="#999" fontSize="9" textAnchor="end">0</text>
+                <line x1=${C_PAD_L} y1=${cZeroY} x2=${CW - C_PAD_R} y2=${cZeroY} stroke=${T.axisBaseline} strokeWidth="1" />
+                <text x=${C_PAD_L - 4} y=${cZeroY + 4} fill=${T.axisBaseline} fontSize="9" textAnchor="end">0</text>
               ` : null}
               ${Array.from({length: Math.floor((cMaxM - cMinM) / 20) + 1}, (_, i) => Math.ceil(cMinM / 20) * 20 + i * 20).filter(m => m !== 0 && m > cMinM && m < cMaxM).map(m => html`
-                <line key=${'cg'+m} x1=${C_PAD_L} y1=${cToY(m)} x2=${CW - C_PAD_R} y2=${cToY(m)} stroke="#E8E0D5" strokeWidth="0.5" />
-                <text key=${'cl'+m} x=${C_PAD_L - 4} y=${cToY(m) + 3} fill="#aaa" fontSize="8" textAnchor="end">${m > 0 ? '+' + m : m}</text>
+                <line key=${'cg'+m} x1=${C_PAD_L} y1=${cToY(m)} x2=${CW - C_PAD_R} y2=${cToY(m)} stroke=${T.gridLine} strokeWidth="0.5" />
+                <text key=${'cl'+m} x=${C_PAD_L - 4} y=${cToY(m) + 3} fill=${T.axisText} fontSize="8" textAnchor="end">${m > 0 ? '+' + m : m}</text>
               `)}
               ${congresses.map((c, i) => html`
-                <text key=${'cyr'+i} x=${cToX(i)} y=${CH - 4} fill="#aaa" fontSize="9" textAnchor="middle">'${String(2001 + i * 2).slice(2)}</text>
+                <text key=${'cyr'+i} x=${cToX(i)} y=${CH - 4} fill=${T.axisText} fontSize="9" textAnchor="middle">'${String(2001 + i * 2).slice(2)}</text>
               `)}
               ${cZeroY > C_PAD_T ? html`<rect x=${C_PAD_L} y=${C_PAD_T} width=${cChartW} height=${Math.max(0, cZeroY - C_PAD_T)} fill=${DEM} opacity="0.04" />` : null}
               ${cZeroY < C_PAD_T + cChartH ? html`<rect x=${C_PAD_L} y=${Math.max(C_PAD_T, cZeroY)} width=${cChartW} height=${Math.max(0, C_PAD_T + cChartH - Math.max(C_PAD_T, cZeroY))} fill=${REP} opacity="0.04" />` : null}
@@ -1770,21 +1822,21 @@
                 `;
               })}
               ${hoverCongress != null ? html`
-                <line x1=${cToX(hoverCongress)} y1=${C_PAD_T} x2=${cToX(hoverCongress)} y2=${CH - C_PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
+                <line x1=${cToX(hoverCongress)} y1=${C_PAD_T} x2=${cToX(hoverCongress)} y2=${CH - C_PAD_B} stroke=${T.hoverLine} strokeWidth="1" strokeDasharray="3,3" />
                 ${areaData.map((d, ci) => {
                   const c = d.politics?.congress?.[hoverCongress];
                   if (!c) return null;
                   const td = c.d+(c.sd||0), tr = c.r+(c.sr||0); const pct = (td-tr)/(td+tr)*100;
-                  return html`<circle key=${ci} cx=${cToX(hoverCongress)} cy=${cToY(pct)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${cToX(hoverCongress)} cy=${cToY(pct)} r="4" fill=${C[ci]} stroke=${T.dotStroke} strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
             ${hoverCongress != null ? html`
               <div style=${{
                 position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)',
-                background: '#1a1a1a', color: '#fff', fontSize: 12, padding: '8px 12px',
+                background: T.tooltipBg, color: T.tooltipText, fontSize: 12, padding: '8px 12px',
                 borderRadius: 6, pointerEvents: 'none', zIndex: 10,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px ' + T.tooltipShadow, whiteSpace: 'nowrap',
                 maxWidth: 'calc(100vw - 24px)',
               }}>
                 <div style=${{ fontWeight: 600, marginBottom: 4 }}>${2001 + hoverCongress * 2} (${congresses[hoverCongress]?.c}th Congress)</div>
@@ -1796,19 +1848,19 @@
                       <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                       <span>${areas[ci]}: </span>
                       ${(() => { const td=c.d+(c.sd||0), tr=c.r+(c.sr||0), m=Math.round((td-tr)/(td+tr)*100); return html`<span style=${{ fontWeight: 600, color: m > 0 ? DEM : REP }}>${(m>0?'D+':'R+')+Math.abs(m)}</span>`; })()}
-                      <span style=${{ color: '#888', fontSize: 11 }}>${' ('}</span>
+                      <span style=${{ color: T.hoverLine, fontSize: 11 }}>${' ('}</span>
                       <span style=${{ color: DEM, fontSize: 11 }}>${c.d}D</span>
-                      <span style=${{ color: '#888', fontSize: 11 }}>/</span>
+                      <span style=${{ color: T.hoverLine, fontSize: 11 }}>/</span>
                       <span style=${{ color: REP, fontSize: 11 }}>${c.r}R</span>
-                      <span style=${{ color: '#888', fontSize: 11 }}> House</span>
+                      <span style=${{ color: T.hoverLine, fontSize: 11 }}> House</span>
                       ${c.sd != null ? html`
-                        <span style=${{ color: '#888', fontSize: 11 }}>${' \u00B7 '}</span>
+                        <span style=${{ color: T.hoverLine, fontSize: 11 }}>${' \u00B7 '}</span>
                         <span style=${{ color: DEM, fontSize: 11 }}>${c.sd}D</span>
-                        <span style=${{ color: '#888', fontSize: 11 }}>/</span>
+                        <span style=${{ color: T.hoverLine, fontSize: 11 }}>/</span>
                         <span style=${{ color: REP, fontSize: 11 }}>${c.sr}R</span>
-                        <span style=${{ color: '#888', fontSize: 11 }}> Senate</span>
+                        <span style=${{ color: T.hoverLine, fontSize: 11 }}> Senate</span>
                       ` : null}
-                      <span style=${{ color: '#888', fontSize: 11 }}>)</span>
+                      <span style=${{ color: T.hoverLine, fontSize: 11 }}>)</span>
                     </div>
                   `;
                 })}

@@ -22,6 +22,7 @@ AREAS: dict[str, str] = {
     "California": "state/California",
     "New York": "state/New-York",
     "Georgia": "state/Georgia",
+    "Washington": "state/Washington",
     # Cities
     "San Francisco": "place/California/San-Francisco",
     "New York City": "place/New-York/New-York",
@@ -269,7 +270,7 @@ def combine_neighborhoods(nb1: dict, nb2: dict) -> dict:
 
 def categorize_area(area_name: str) -> str:
     """Return 'states', 'cities', or 'neighborhoods'."""
-    states = {"California", "New York", "Georgia"}
+    states = {"California", "New York", "Georgia", "Washington"}
     cities = {"San Francisco", "New York City", "Atlanta", "Seattle"}
     if area_name in states:
         return "states"

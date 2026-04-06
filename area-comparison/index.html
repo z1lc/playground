@@ -67,6 +67,7 @@
     function useTheme() { return React.useContext(ThemeContext); }
     const THEMES = {
       light: {
+        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32'],
         pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
         textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
         border: '#E8E0D5', borderLight: '#f0ebe3', borderDropdown: '#e0d9cf',
@@ -79,6 +80,7 @@
         hoverLine: '#888', dotStroke: '#fff', linkColor: '#8a8a8a',
       },
       dark: {
+        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50'],
         pageBg: '#1a1a1a', cardBg: '#242424', textPrimary: '#e0e0e0',
         textSecondary: '#a0a0a0', textLabel: '#c0c0c0', textTertiary: '#777',
         border: '#3a3530', borderLight: '#333', borderDropdown: '#444',
@@ -417,7 +419,7 @@
       neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI'],
     };
 
-    const COLORS = ['#E8A735', '#1D428A', '#A71930', '#2E7D32'];
+
 
     // Each index maps across granularities: neighborhoods[i] → cities[i] → states[i]
     const AREA_GROUPS = [
@@ -768,7 +770,7 @@
       const areaData = areas.map(name => DATA.areas[granularity][name]);
       const areaColors = dedupedGroups.map((g, gi) => {
         const origIdx = AREA_GROUPS.indexOf(g);
-        return COLORS[origIdx >= 0 ? origIdx : gi];
+        return T.colors[origIdx >= 0 ? origIdx : gi];
       });
 
       const toggleSection = (sectionKey) => {
@@ -819,8 +821,8 @@
                     <div style=${{ fontSize: 13, fontWeight: 600, color: T.textLabel, marginBottom: 8 }}>Compare areas</div>
                     ${AREA_GROUPS.map((g, i) => html`
                       <label key=${i} style=${{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 13, color: T.textLabel, cursor: 'pointer' }}>
-                        <input type="checkbox" checked=${selectedIndices.includes(i)} onChange=${() => toggleAreaIndex(i)} style=${{ accentColor: COLORS[i] }} />
-                        <span style=${{ color: COLORS[i], fontWeight: 500 }}>${g.neighborhood}</span>
+                        <input type="checkbox" checked=${selectedIndices.includes(i)} onChange=${() => toggleAreaIndex(i)} style=${{ accentColor: T.colors[i] }} />
+                        <span style=${{ color: T.colors[i], fontWeight: 500 }}>${g.neighborhood}</span>
                       </label>
                     `)}
                   </div>
@@ -966,7 +968,7 @@
       const labelColWidth = (100 - Math.floor(66 / nAreas) * nAreas) + '%';
       const thStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 13, fontWeight: 600,
-        color: i === 0 ? T.textTertiary : (areaColors || COLORS)[i - 1],
+        color: i === 0 ? T.textTertiary : (areaColors || T.colors)[i - 1],
         width: i === 0 ? labelColWidth : dataColWidth,
       });
       const subHeaderStyle = {
@@ -1033,7 +1035,7 @@
 
     function TopicRows({ topic, areas, areaData, areaColors, granularity }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       const tdStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '10px 12px', fontSize: 14,
         color: i === 0 ? T.textSecondary : T.textPrimary, fontVariantNumeric: 'tabular-nums',
@@ -1325,7 +1327,7 @@
 
     function WeatherChart({ areaData, areas, areaColors }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       const MONTHS = ['J','F','M','A','M','J','J','A','S','O','N','D'];
       const W = 600, H = 280, PAD_L = 32, PAD_R = 10, PAD_T = 12, PAD_B = 24;
@@ -1446,7 +1448,7 @@
 
     function PopGrowthChart({ areaData, areas, areaColors }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       const YEARS = areaData[0]?.population_growth?.years || [];
       const W = 600, H = 200, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
       const chartW = W - PAD_L - PAD_R, chartH = H - PAD_T - PAD_B;
@@ -1547,7 +1549,7 @@
 
     function HousingGrowthChart({ title, dataKey, areaData, areas, areaColors, marginTop }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       const dataLen = Math.max(...areaData.map(d => (d.housing?.[dataKey] || []).length));
       const YEARS = Array.from({length: dataLen}, (_, i) => 2000 + i);
       const W = 600, H = 180, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
@@ -1639,7 +1641,7 @@
 
     function HousingCharts({ areaData, areas, areaColors }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       return html`
         <div>
           <${HousingGrowthChart} title=${'Home Price Index (2000 = 100)'} dataKey="home_price_index" areaData=${areaData} areas=${areas} areaColors=${areaColors} />
@@ -1658,7 +1660,7 @@
 
     function PoliticsCharts({ areaData, areas, areaColors, granularity }) {
       const T = useTheme();
-      const C = areaColors || COLORS;
+      const C = areaColors || T.colors;
       const DEM = '#4A7FBF', REP = '#D4564E';
       const [hoverElection, setHoverElection] = useState(null);
       const [hoverCongress, setHoverCongress] = useState(null);

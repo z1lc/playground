@@ -96,6 +96,7 @@ This is a tool that compares statistical information between the states Californ
 - **HS Graduation Rate**: 4-year adjusted cohort graduation rate. State: NCES / state DOE. City: district-level (SFUSD, NYC Public Schools, Atlanta Public Schools).
 - **Pre-K Enrollment**: % of 4-year-olds in state-funded pre-K. Source: NIEER State of Preschool Yearbook 2024.
 - **NAEP Scores**: Average scale scores from National Assessment of Educational Progress (2024). 4th and 8th grade, math and reading. State: all 3 states. City: NYC and Atlanta via TUDA program; SF not available (SFUSD not a TUDA participant).
+- **Let Grow Ratings**: Two categorical ratings from Let Grow (letgrow.org/states/): CPS/Neglect Law Survey (when CPS can intervene) and Criminal Law Survey (laws enforced by police/courts). Three-level scale: "protects" (green, law protects children's independence), "discretion" (beige, law is open-ended), "punitive" (red, law is punitive toward independence). GA has "protects" on both (2025 Reasonable Childhood Independence law). CA, NY, WA all have "discretion" on both.
 - **Levels**: State (all metrics), City (graduation rate + NAEP where available)
 
 #### College Affordability (under Universities > Public)

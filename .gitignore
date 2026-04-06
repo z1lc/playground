@@ -1,4 +1,5 @@
 .idea/
 .claude/
+.sbx/
 .mcp.json
 node_modules/

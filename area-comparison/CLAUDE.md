@@ -206,6 +206,13 @@ This is a tool that compares statistical information between the states Californ
 - **Range**: 107th-119th Congress (2001-2025)
 - **Levels**: State only
 
+#### Voter Turnout
+- **Source (2010-2022)**: UF Election Lab (election.lab.ufl.edu), Dr. Michael McDonald — authoritative VEP (Voting Eligible Population) turnout rates. Downloaded directly from CSV files: Turnout_2022G_v0.1.csv, Turnout_2020G_v1.1.csv, Turnout_2018G_v1.0.csv, Turnout_2016G_v1.0.csv, Turnout_2014G_v1.0.csv, Turnout_2012G_v1.0.csv, Turnout_2010G_v1.0.csv.
+- **Source (2002-2008, 2024)**: Ballotpedia (ballotpedia.org/Voter_turnout_in_United_States_elections) — VEP turnout percentages sourced from the US Elections Project.
+- **Metric**: VEP turnout = total ballots counted / Voting Eligible Population. VEP excludes non-citizens and ineligible felons from the voting-age population.
+- **Chart**: Time series of VEP turnout (2002-2024), presidential elections as solid lines, midterms as dashed lines. Georgia starts at 2004 (2002 data not available from Ballotpedia).
+- **Levels**: State only (county-level VEP data not readily available from these sources)
+
 ## Statistical Atlas Source URLs
 
 https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Morningside---Lenox-Park/Overview

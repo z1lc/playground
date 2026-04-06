@@ -46,6 +46,12 @@ This is a tool that compares statistical information between the states Californ
 - **Notes**: Income tax is top marginal state+city. Sales tax is combined state+local. Property tax is effective rate. Capital gains matches income rate for all three states.
 - **Levels**: City only
 
+#### Paid Family Leave
+- **Source**: State agency websites — CA Employment Development Department (edd.ca.gov/disability/paid-family-leave), NY Workers' Compensation Board (paidfamilyleave.ny.gov), WA Employment Security Department (paidleave.wa.gov)
+- **Data**: paid_leave_weeks (maximum weeks of paid bonding leave for a new child), wage_replacement_pct (% of wages replaced)
+- **Notes**: GA has no state program; federal FMLA provides 12 weeks unpaid only. CA wage replacement is income-tiered (70–90% per SB 951, Jan 2025); 70% used as the representative rate for most workers. WA allows up to 16 weeks combined family+medical leave; 12 weeks reflects family leave only.
+- **Levels**: State only
+
 #### Tech & Startups
 - **VC Funding**: Crunchbase/Carta reports (2024)
 - **Unicorns**: Failory/Crunchbase

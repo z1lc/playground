@@ -59,6 +59,14 @@ This is a tool that compares statistical information between the states Californ
 - **Method**: Same as demographics scraping
 - **Levels**: State, City, Neighborhood
 
+#### Poverty
+- **Source**: Census ACS 2023 (1-year estimates), table S1701 (poverty status)
+- **API**: api.census.gov/data/2023/acs/acs1/subject, variables S1701_C03_001E (overall poverty rate) and S1701_C03_002E (under-18 poverty rate)
+- **Data**: overall_poverty_rate (% of total population below federal poverty line), child_poverty_rate (% of population under 18 below federal poverty line)
+- **State data**: State-level ACS estimates (FIPS: CA=06, NY=36, GA=13, WA=53)
+- **City data**: Metro area (MSA) figures for comparability with existing population data (SF-Oakland-Berkeley=41860, NYC-Newark-Jersey City=35620, Atlanta-Sandy Springs-Alpharetta=12060, Seattle-Tacoma-Bellevue=42660)
+- **Levels**: State, City
+
 #### Commute
 - **Source**: Census Reporter (censusreporter.org), ACS 2024 1-year estimates
 - **URLs**: censusreporter.org/profiles/04000US06-california/, etc.

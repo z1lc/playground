@@ -1,0 +1,624 @@
+{
+  "software-engineer": {
+    "companies": {
+      "google": {
+        "level": "L5",
+        "San Francisco": {
+          "median_total_comp": 438000,
+          "median_base": 238000,
+          "median_stock": 165000,
+          "median_bonus": 40000,
+          "p10_total_comp": 368000,
+          "p90_total_comp": 507000,
+          "sample_size": 32
+        },
+        "New York City": {
+          "median_total_comp": 427000,
+          "median_base": 242000,
+          "median_stock": 180000,
+          "median_bonus": 34000,
+          "p10_total_comp": 380000,
+          "p90_total_comp": 550000,
+          "sample_size": 9
+        },
+        "Atlanta": {
+          "median_total_comp": 326000,
+          "median_base": 180000,
+          "median_stock": 120000,
+          "median_bonus": 28350,
+          "p10_total_comp": 284766,
+          "p90_total_comp": 380000,
+          "sample_size": 20
+        },
+        "Seattle": {
+          "median_total_comp": 400000,
+          "median_base": 213000,
+          "median_stock": 150000,
+          "median_bonus": 35000,
+          "p10_total_comp": 346710,
+          "p90_total_comp": 457000,
+          "sample_size": 30
+        }
+      },
+      "meta": {
+        "level": "E5",
+        "San Francisco": {
+          "median_total_comp": 464539,
+          "median_base": 228000,
+          "median_stock": 200000,
+          "median_bonus": 35000,
+          "p10_total_comp": 390000,
+          "p90_total_comp": 566000,
+          "sample_size": 31
+        },
+        "New York City": {
+          "median_total_comp": 505000,
+          "median_base": 225000,
+          "median_stock": 250000,
+          "median_bonus": 30000,
+          "p10_total_comp": 396500,
+          "p90_total_comp": 582000,
+          "sample_size": 20
+        },
+        "Atlanta": {
+          "median_total_comp": 365000,
+          "median_base": 198000,
+          "median_stock": 150000,
+          "median_bonus": 27000,
+          "p10_total_comp": 240000,
+          "p90_total_comp": 547700,
+          "sample_size": 9
+        },
+        "Seattle": {
+          "median_total_comp": 514000,
+          "median_base": 222210,
+          "median_stock": 250000,
+          "median_bonus": 34000,
+          "p10_total_comp": 395000,
+          "p90_total_comp": 624420,
+          "sample_size": 23
+        }
+      },
+      "amazon": {
+        "level": "SDE III (L6)",
+        "San Francisco": {
+          "median_total_comp": 400000,
+          "median_base": 230000,
+          "median_stock": 162000,
+          "median_bonus": 0,
+          "p10_total_comp": 370900,
+          "p90_total_comp": 485000,
+          "sample_size": 12
+        },
+        "New York City": {
+          "median_total_comp": 380000,
+          "median_base": 225000,
+          "median_stock": 150000,
+          "median_bonus": 0,
+          "p10_total_comp": 300000,
+          "p90_total_comp": 484680,
+          "sample_size": 19
+        },
+        "Atlanta": {
+          "median_total_comp": 331700,
+          "median_base": 190000,
+          "median_stock": 130000,
+          "median_bonus": 0,
+          "p10_total_comp": 244000,
+          "p90_total_comp": 360000,
+          "sample_size": 9
+        },
+        "Seattle": {
+          "median_total_comp": 360000,
+          "median_base": 200000,
+          "median_stock": 163100,
+          "median_bonus": 0,
+          "p10_total_comp": 320000,
+          "p90_total_comp": 420000,
+          "sample_size": 48
+        }
+      },
+      "apple": {
+        "level": "ICT4",
+        "San Francisco": {
+          "median_total_comp": 335000,
+          "median_base": 215000,
+          "median_stock": 100000,
+          "median_bonus": 20000,
+          "p10_total_comp": 312000,
+          "p90_total_comp": 362500,
+          "sample_size": 11
+        },
+        "New York City": {
+          "median_total_comp": 375000,
+          "median_base": 220000,
+          "median_stock": 120000,
+          "median_bonus": 19009,
+          "p10_total_comp": 264509,
+          "p90_total_comp": 440000,
+          "sample_size": 21
+        },
+        "Atlanta": null,
+        "Seattle": {
+          "median_total_comp": 335000,
+          "median_base": 208000,
+          "median_stock": 100000,
+          "median_bonus": 20000,
+          "p10_total_comp": 317200,
+          "p90_total_comp": 442000,
+          "sample_size": 12
+        }
+      },
+      "microsoft": {
+        "level": "Senior SDE (63)",
+        "San Francisco": {
+          "median_total_comp": 261000,
+          "median_base": 197000,
+          "median_stock": 40000,
+          "median_bonus": 15000,
+          "p10_total_comp": 240000,
+          "p90_total_comp": 292000,
+          "sample_size": 21
+        },
+        "New York City": {
+          "median_total_comp": 255000,
+          "median_base": 198000,
+          "median_stock": 40000,
+          "median_bonus": 25000,
+          "p10_total_comp": 223000,
+          "p90_total_comp": 298000,
+          "sample_size": 16
+        },
+        "Atlanta": {
+          "median_total_comp": 215550,
+          "median_base": 157000,
+          "median_stock": 35000,
+          "median_bonus": 23000,
+          "p10_total_comp": 196115,
+          "p90_total_comp": 232400,
+          "sample_size": 15
+        },
+        "Seattle": {
+          "median_total_comp": 223000,
+          "median_base": 175711,
+          "median_stock": 30000,
+          "median_bonus": 20000,
+          "p10_total_comp": 212000,
+          "p90_total_comp": 260000,
+          "sample_size": 14
+        }
+      },
+      "stripe": {
+        "level": "L3",
+        "San Francisco": {
+          "median_total_comp": 440000,
+          "median_base": 240000,
+          "median_stock": 200000,
+          "median_bonus": 30000,
+          "p10_total_comp": 376237,
+          "p90_total_comp": 510000,
+          "sample_size": 12
+        },
+        "New York City": {
+          "median_total_comp": 393750,
+          "median_base": 210960,
+          "median_stock": 120000,
+          "median_bonus": 31640,
+          "p10_total_comp": 348000,
+          "p90_total_comp": 437250,
+          "sample_size": 10
+        },
+        "Atlanta": {
+          "median_total_comp": 438500,
+          "median_base": 207000,
+          "median_stock": 200000,
+          "median_bonus": 31500,
+          "p10_total_comp": 438500,
+          "p90_total_comp": 471500,
+          "sample_size": 2
+        },
+        "Seattle": {
+          "median_total_comp": 408000,
+          "median_base": 217000,
+          "median_stock": 197000,
+          "median_bonus": 30000,
+          "p10_total_comp": 315000,
+          "p90_total_comp": 495000,
+          "sample_size": 17
+        }
+      },
+      "netflix": {
+        "level": "L5",
+        "San Francisco": {
+          "median_total_comp": 600000,
+          "median_base": 600000,
+          "median_stock": 0,
+          "median_bonus": 0,
+          "p10_total_comp": 475000,
+          "p90_total_comp": 800000,
+          "sample_size": 16
+        },
+        "New York City": {
+          "median_total_comp": 540000,
+          "median_base": 540000,
+          "median_stock": 0,
+          "median_bonus": 0,
+          "p10_total_comp": 400000,
+          "p90_total_comp": 625000,
+          "sample_size": 17
+        },
+        "Atlanta": {
+          "median_total_comp": 450000,
+          "median_base": 450000,
+          "median_stock": 0,
+          "median_bonus": 0,
+          "p10_total_comp": 400000,
+          "p90_total_comp": 485000,
+          "sample_size": 7
+        },
+        "Seattle": {
+          "median_total_comp": 500000,
+          "median_base": 500000,
+          "median_stock": 0,
+          "median_bonus": 0,
+          "p10_total_comp": 435000,
+          "p90_total_comp": 585000,
+          "sample_size": 14
+        }
+      },
+      "uber": {
+        "level": "Senior (5a)",
+        "San Francisco": {
+          "median_total_comp": 465000,
+          "median_base": 220000,
+          "median_stock": 210000,
+          "median_bonus": 35000,
+          "p10_total_comp": 389750,
+          "p90_total_comp": 555800,
+          "sample_size": 17
+        },
+        "New York City": {
+          "median_total_comp": 445000,
+          "median_base": 215000,
+          "median_stock": 200000,
+          "median_bonus": 35000,
+          "p10_total_comp": 400000,
+          "p90_total_comp": 560000,
+          "sample_size": 14
+        },
+        "Atlanta": {
+          "median_total_comp": 372500,
+          "median_base": 172100,
+          "median_stock": 162500,
+          "median_bonus": 30000,
+          "p10_total_comp": 372500,
+          "p90_total_comp": 390725,
+          "sample_size": 2
+        },
+        "Seattle": {
+          "median_total_comp": 455000,
+          "median_base": 220000,
+          "median_stock": 200000,
+          "median_bonus": 35000,
+          "p10_total_comp": 420000,
+          "p90_total_comp": 525100,
+          "sample_size": 11
+        }
+      },
+      "airbnb": {
+        "level": "G9",
+        "San Francisco": {
+          "median_total_comp": 440000,
+          "median_base": 235000,
+          "median_stock": 180000,
+          "median_bonus": 45000,
+          "p10_total_comp": 377000,
+          "p90_total_comp": 500000,
+          "sample_size": 17
+        },
+        "New York City": {
+          "median_total_comp": 416618.66,
+          "median_base": 223000,
+          "median_stock": 150000,
+          "median_bonus": 45000,
+          "p10_total_comp": 340000,
+          "p90_total_comp": 473000,
+          "sample_size": 10
+        },
+        "Atlanta": {
+          "median_total_comp": 365000,
+          "median_base": 210000,
+          "median_stock": 125000,
+          "median_bonus": 30000,
+          "p10_total_comp": 300000,
+          "p90_total_comp": 437000,
+          "sample_size": 4
+        },
+        "Seattle": {
+          "median_total_comp": 453000,
+          "median_base": 225000,
+          "median_stock": 165000,
+          "median_bonus": 44000,
+          "p10_total_comp": 401500,
+          "p90_total_comp": 511000,
+          "sample_size": 14
+        }
+      }
+    }
+  },
+  "product-manager": {
+    "companies": {
+      "google": {
+        "level": "PM2 (L5)",
+        "San Francisco": {
+          "median_total_comp": 370000,
+          "median_base": 212000,
+          "median_stock": 130000,
+          "median_bonus": 32960,
+          "p10_total_comp": 322912,
+          "p90_total_comp": 449000,
+          "sample_size": 36
+        },
+        "New York City": {
+          "median_total_comp": 364538,
+          "median_base": 212000,
+          "median_stock": 114000,
+          "median_bonus": 32800,
+          "p10_total_comp": 305000,
+          "p90_total_comp": 454000,
+          "sample_size": 17
+        },
+        "Atlanta": null,
+        "Seattle": {
+          "median_total_comp": 373000,
+          "median_base": 182000,
+          "median_stock": 150000,
+          "median_bonus": 32000,
+          "p10_total_comp": 325000,
+          "p90_total_comp": 415000,
+          "sample_size": 9
+        }
+      },
+      "meta": {
+        "level": "L5 PM",
+        "San Francisco": {
+          "median_total_comp": 407000,
+          "median_base": 224000,
+          "median_stock": 137500,
+          "median_bonus": 35577,
+          "p10_total_comp": 324900,
+          "p90_total_comp": 530000,
+          "sample_size": 11
+        },
+        "New York City": {
+          "median_total_comp": 390000,
+          "median_base": 215000,
+          "median_stock": 132500,
+          "median_bonus": 33000,
+          "p10_total_comp": 338000,
+          "p90_total_comp": 465000,
+          "sample_size": 18
+        },
+        "Atlanta": {
+          "median_total_comp": 340800,
+          "median_base": 192000,
+          "median_stock": 120000,
+          "median_bonus": 0,
+          "p10_total_comp": 340800,
+          "p90_total_comp": 430000,
+          "sample_size": 2
+        },
+        "Seattle": {
+          "median_total_comp": 390000,
+          "median_base": 210000,
+          "median_stock": 137000,
+          "median_bonus": 30000,
+          "p10_total_comp": 352750,
+          "p90_total_comp": 600000,
+          "sample_size": 12
+        }
+      },
+      "amazon": {
+        "level": "Senior PM (L6)",
+        "San Francisco": {
+          "median_total_comp": 340000,
+          "median_base": 199000,
+          "median_stock": 131000,
+          "median_bonus": 0,
+          "p10_total_comp": 295000,
+          "p90_total_comp": 415250,
+          "sample_size": 11
+        },
+        "New York City": {
+          "median_total_comp": 285000,
+          "median_base": 180000,
+          "median_stock": 80000,
+          "median_bonus": 0,
+          "p10_total_comp": 239000,
+          "p90_total_comp": 346000,
+          "sample_size": 14
+        },
+        "Atlanta": {
+          "median_total_comp": 275000,
+          "median_base": 155000,
+          "median_stock": 115000,
+          "median_bonus": 0,
+          "p10_total_comp": 200125,
+          "p90_total_comp": 320000,
+          "sample_size": 10
+        },
+        "Seattle": {
+          "median_total_comp": 320000,
+          "median_base": 170000,
+          "median_stock": 140000,
+          "median_bonus": 0,
+          "p10_total_comp": 200000,
+          "p90_total_comp": 360000,
+          "sample_size": 12
+        }
+      },
+      "apple": {
+        "level": "ICT4",
+        "San Francisco": {
+          "median_total_comp": 310341,
+          "median_base": 193000,
+          "median_stock": 89000,
+          "median_bonus": 20000,
+          "p10_total_comp": 270000,
+          "p90_total_comp": 344000,
+          "sample_size": 16
+        },
+        "New York City": {
+          "median_total_comp": 250000,
+          "median_base": 198000,
+          "median_stock": 45000,
+          "median_bonus": 16500,
+          "p10_total_comp": 221500,
+          "p90_total_comp": 349656,
+          "sample_size": 9
+        },
+        "Atlanta": null,
+        "Seattle": {
+          "median_total_comp": 362500,
+          "median_base": 200000,
+          "median_stock": 131250,
+          "median_bonus": 31250,
+          "p10_total_comp": 316000,
+          "p90_total_comp": 400000,
+          "sample_size": 3
+        }
+      },
+      "microsoft": {
+        "level": "63",
+        "San Francisco": {
+          "median_total_comp": 243930,
+          "median_base": 185000,
+          "median_stock": 30800,
+          "median_bonus": 25000,
+          "p10_total_comp": 210000,
+          "p90_total_comp": 263500,
+          "sample_size": 21
+        },
+        "New York City": {
+          "median_total_comp": 245200,
+          "median_base": 190000,
+          "median_stock": 32000,
+          "median_bonus": 25000,
+          "p10_total_comp": 229700,
+          "p90_total_comp": 275000,
+          "sample_size": 14
+        },
+        "Atlanta": {
+          "median_total_comp": 207000,
+          "median_base": 150000,
+          "median_stock": 32000,
+          "median_bonus": 22000,
+          "p10_total_comp": 185000,
+          "p90_total_comp": 232500,
+          "sample_size": 10
+        },
+        "Seattle": {
+          "median_total_comp": 227300,
+          "median_base": 179836,
+          "median_stock": 32000,
+          "median_bonus": 22000,
+          "p10_total_comp": 218379.92,
+          "p90_total_comp": 260000,
+          "sample_size": 27
+        }
+      },
+      "stripe": {
+        "level": "L3",
+        "San Francisco": {
+          "median_total_comp": 440000,
+          "median_base": 220000,
+          "median_stock": 185000,
+          "median_bonus": 35000,
+          "p10_total_comp": 333000,
+          "p90_total_comp": 545000,
+          "sample_size": 21
+        },
+        "New York City": {
+          "median_total_comp": 344800,
+          "median_base": 217000,
+          "median_stock": 80000,
+          "median_bonus": 32500,
+          "p10_total_comp": 220000,
+          "p90_total_comp": 487500,
+          "sample_size": 10
+        },
+        "Atlanta": null,
+        "Seattle": {
+          "median_total_comp": 391750,
+          "median_base": 250000,
+          "median_stock": 90500,
+          "median_bonus": 51250,
+          "p10_total_comp": 356550,
+          "p90_total_comp": 650000,
+          "sample_size": 3
+        }
+      },
+      "netflix": {
+        "level": "Senior PM",
+        "San Francisco": {
+          "median_total_comp": 550000,
+          "median_base": 550000,
+          "median_stock": 0,
+          "median_bonus": 0,
+          "p10_total_comp": 500000,
+          "p90_total_comp": 725000,
+          "sample_size": 9
+        },
+        "New York City": null,
+        "Atlanta": null,
+        "Seattle": null
+      },
+      "uber": {
+        "level": "Senior PM (5a)",
+        "San Francisco": {
+          "median_total_comp": 385000,
+          "median_base": 200000,
+          "median_stock": 150000,
+          "median_bonus": 35000,
+          "p10_total_comp": 325000,
+          "p90_total_comp": 463400,
+          "sample_size": 11
+        },
+        "New York City": {
+          "median_total_comp": 310000,
+          "median_base": 196000,
+          "median_stock": 80000,
+          "median_bonus": 35000,
+          "p10_total_comp": 219000,
+          "p90_total_comp": 410000,
+          "sample_size": 20
+        },
+        "Atlanta": null,
+        "Seattle": {
+          "median_total_comp": 400000,
+          "median_base": 200000,
+          "median_stock": 162500,
+          "median_bonus": 40000,
+          "p10_total_comp": 310000,
+          "p90_total_comp": 620000,
+          "sample_size": 7
+        }
+      },
+      "airbnb": {
+        "level": "L5",
+        "San Francisco": {
+          "median_total_comp": 420000,
+          "median_base": 212000,
+          "median_stock": 175000,
+          "median_bonus": 40000,
+          "p10_total_comp": 343000,
+          "p90_total_comp": 580000,
+          "sample_size": 9
+        },
+        "New York City": null,
+        "Atlanta": null,
+        "Seattle": null
+      }
+    }
+  }
+}

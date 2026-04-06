@@ -26,12 +26,14 @@ AREAS: dict[str, str] = {
     "San Francisco": "place/California/San-Francisco",
     "New York City": "place/New-York/New-York",
     "Atlanta": "metro-area/Georgia/Atlanta",
+    "Seattle": "metro-area/Washington/Seattle",
     # Neighborhoods (individual, combined later)
     "North Panhandle": "neighborhood/California/San-Francisco/North-Panhandle",
     "Anza Vista": "neighborhood/California/San-Francisco/Anza-Vista",
     "Greenwich Village": "neighborhood/New-York/New-York/Greenwich-Village",
     "Virginia Highland": "neighborhood/Georgia/Atlanta/Virginia-Highland",
     "Morningside-Lenox Park": "neighborhood/Georgia/Atlanta/Morningside---Lenox-Park",
+    "Mercer Island": "place/Washington/Mercer-Island",
 }
 
 TOPICS = [
@@ -157,6 +159,7 @@ Use null for values not found.""",
 
 SCRIPT_DIR = Path(__file__).parent
 RAW_HTML_DIR = SCRIPT_DIR / "raw_html"
+EXTRACTED_DIR = SCRIPT_DIR / "extracted_json"
 
 
 def fetch_page(url: str, cache_key: str) -> str:
@@ -195,6 +198,22 @@ def extract_data(area_name: str, topic: str, page_text: str, client: anthropic.A
     start = response_text.index("{")
     end = response_text.rindex("}") + 1
     return json.loads(response_text[start:end])
+
+
+def load_extracted(area_name: str, topic: str) -> dict | None:
+    """Load previously extracted data from cache, or return None."""
+    cache_key = f"{area_name.replace(' ', '_').replace('+', '_')}_{topic}"
+    cache_path = EXTRACTED_DIR / f"{cache_key}.json"
+    if cache_path.exists():
+        return json.loads(cache_path.read_text())
+    return None
+
+
+def save_extracted(area_name: str, topic: str, data: dict) -> None:
+    """Save extracted data to cache."""
+    cache_key = f"{area_name.replace(' ', '_').replace('+', '_')}_{topic}"
+    cache_path = EXTRACTED_DIR / f"{cache_key}.json"
+    cache_path.write_text(json.dumps(data, indent=2))
 
 
 def combine_neighborhoods(nb1: dict, nb2: dict) -> dict:
@@ -251,7 +270,7 @@ def combine_neighborhoods(nb1: dict, nb2: dict) -> dict:
 def categorize_area(area_name: str) -> str:
     """Return 'states', 'cities', or 'neighborhoods'."""
     states = {"California", "New York", "Georgia"}
-    cities = {"San Francisco", "New York City", "Atlanta"}
+    cities = {"San Francisco", "New York City", "Atlanta", "Seattle"}
     if area_name in states:
         return "states"
     if area_name in cities:
@@ -261,7 +280,9 @@ def categorize_area(area_name: str) -> str:
 
 def main() -> None:
     RAW_HTML_DIR.mkdir(exist_ok=True)
-    client = anthropic.Anthropic()
+    EXTRACTED_DIR.mkdir(exist_ok=True)
+
+    client: anthropic.Anthropic | None = None  # lazy init, only if needed
 
     all_data: dict[str, dict] = {}
 
@@ -270,19 +291,30 @@ def main() -> None:
         area_result: dict = {}
 
         for topic in TOPICS:
+            topic_key = topic.lower().replace("-", "_")
+
+            # Check extracted JSON cache first
+            cached = load_extracted(area_name, topic)
+            if cached is not None:
+                area_result[topic_key] = cached
+                print(f"  {topic}: cached")
+                continue
+
+            # Need to fetch and extract
             url = f"{BASE_URL}/{url_path}/{topic}"
             cache_key = f"{url_path.replace('/', '_')}_{topic}"
-            print(f"  Fetching {topic}...", end=" ", flush=True)
+            print(f"  {topic}: fetching...", end=" ", flush=True)
 
             try:
                 page_text = fetch_page(url, cache_key)
+                if client is None:
+                    client = anthropic.Anthropic()
                 data = extract_data(area_name, topic, page_text, client)
-                topic_key = topic.lower().replace("-", "_")
                 area_result[topic_key] = data
+                save_extracted(area_name, topic, data)
                 print("OK")
             except Exception as e:
                 print(f"ERROR: {e}")
-                topic_key = topic.lower().replace("-", "_")
                 area_result[topic_key] = None
 
         all_data[area_name] = area_result
@@ -291,7 +323,7 @@ def main() -> None:
     output: dict = {
         "metadata": {
             "source": "statisticalatlas.com",
-            "fetched_date": "2026-03-30",
+            "fetched_date": "2026-04-06",
             "topics": TOPICS,
         },
         "areas": {

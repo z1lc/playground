@@ -215,7 +215,7 @@
         "commute": {"avg_commute_minutes":26.5,"drive_alone_percent":56.1,"carpool_percent":4.7,"public_transit_percent":5.8,"walk_percent":4.8,"bike_percent":1.0,"work_from_home_percent":25.6},
         "tax": {"income_tax":5.2,"sales_tax":8.9,"property_tax":1.09,"capital_gains_tax":5.2},
         "minimum_wage": {"hourly":7.25},
-        "tech_economy": {"vc_funding_billions":5,"unicorns":15,"swe_median_tc":145000,"swe_p90_tc":225800,"patents":3000,"fortune_500":[{"name":"Home Depot"},{"name":"Delta Air Lines"},{"name":"Coca-Cola"},{"name":"UPS"}]},
+        "tech_economy": {"vc_funding_billions":2.5,"unicorns":7,"swe_median_tc":145000,"swe_p90_tc":225800,"patents":3000,"fortune_500":[{"name":"Home Depot"},{"name":"Delta Air Lines"},{"name":"Coca-Cola"},{"name":"UPS"}]},
         "cost_of_living": {"rpp_index":100.1},
         "crime": {"violent_per_100k":702,"property_per_100k":3902},
         "transit": [{"mode":"Heavy Rail","system":"MARTA Rail","full":"Metropolitan Atlanta Rapid Transit Authority Rail","miles":48,"stations":38,"ridership_millions":29.5},{"mode":"Bus","system":"MARTA Bus","full":"Metropolitan Atlanta Rapid Transit Authority Bus","routes":113,"ridership_millions":34.6},{"mode":"Robotaxi","system":"Waymo","full":"Waymo autonomous ride-hail (via Uber)","status":"operating","statusColor":"#2E7D32"}],
@@ -224,6 +224,36 @@
         "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,97.5,107.5,135.0,152.9,176.7]},
         "k12": {"graduation_rate":88.4,"naep_4_math":32,"naep_4_reading":33,"naep_8_math":16,"naep_8_reading":25,"naep_coverage":"Atlanta Public Schools district (TUDA)"},
         "healthcare": {"life_expectancy":79.6,"uninsured_rate":10.0,"median_aqi":50,"good_air_days_pct":50.8}
+      },
+      "Seattle": {
+        "population": { "total_population": 4145494, "population_density_per_sq_mi": 706 },
+        "age_and_sex": { "senior_percent": 12.3, "older_adult_percent": 33.7, "younger_adult_percent": 27.3, "college_percent": 4.7, "children_percent": 22.1 },
+        "race_and_ethnicity": { "white_percent": 65.69, "hispanic_percent": 9.30, "black_percent": 5.56, "asian_percent": 12.41, "mixed_other_percent": 7.04 },
+        "national_origin": { "native_born_percent": 82.5, "foreign_born_percent": 17.5, "top_origins": [{"name":"Mexico","percent":2.4},{"name":"India","percent":1.5},{"name":"Philippines","percent":1.3}] },
+        "marital_status": { "never_married_percent": 27.2, "married_percent": 50.2, "separated_divorced_widowed_percent": 14.0 },
+        "household_income": { "median_household_income": 73044 },
+        "educational_attainment": { "graduate_degree_percent": 14.3, "bachelors_or_higher_percent": 49.3, "high_school_or_higher_percent": 92.0, "no_hs_diploma_percent": 8.0 },
+        "employment_status": { "employed_percent": 63.1, "unemployed_percent": 4.1, "not_in_labor_force_percent": 32.0 },
+        "walkability": { "walk_score": 99, "transit_score": 100, "bike_score": 63 },
+        "bikeability": {"bna_score":66,"bna_percentile":94,"cyclist_fatalities_10yr":20,"cyclist_fatality_rate":1.77,"fatality_coverage":"20 fatalities in Seattle city (FARS 2014\u20132023) / 11,273 bike commuters in Seattle city (ACS 2023 5yr)"},
+        "parks": {"parkscore_rank":8,"parkscore_rating":77.4,"park_access_pct":99,"parkland_pct":12.6},
+        "airports": { "list": [{"code":"SEA","name":"Seattle\u2013Tacoma International Airport","passengers_millions":52.6,"international_percent":12.5}] },
+        "weather": { "highs": [47,50,54,59,65,70,76,76,70,60,51,46], "lows": [37,37,39,42,47,52,56,56,52,45,40,36], "arid_percent": 97, "clear_sky_percent": 47, "dry_days_per_month": 18.0 },
+        "politics": { "presidential": [{"y":1988,"d":53.9,"r":44.8},{"y":1992,"d":50.2,"r":27.4},{"y":1996,"d":56.4,"r":31.4},{"y":2000,"d":60.0,"r":34.4},{"y":2004,"d":64.9,"r":33.7},{"y":2008,"d":70.0,"r":28.0},{"y":2012,"d":68.7,"r":28.4},{"y":2016,"d":69.9,"r":21.0},{"y":2020,"d":75.0,"r":22.2},{"y":2024,"d":73.7,"r":22.3}] },
+        "sports": [{"sport":"NFL","teams":[{"name":"Seahawks","color":"#002244","att":68660}]},{"sport":"NBA","teams":[]},{"sport":"MLB","teams":[{"name":"Mariners","color":"#0C2C56","att":31553}]},{"sport":"NHL","teams":[{"name":"Kraken","color":"#001628","att":17151}]},{"sport":"MLS","teams":[{"name":"Sounders","color":"#5D9741","att":30754}]}],
+        "housing": {"home_price_index":[100.0,106.3,112.1,115.8,122.9,136.1,160.0,181.2,184.4,162.5,147.0,135.2,121.1,123.4,139.4,149.3,168.0,187.0,211.6,225.7,232.3,263.2,309.2,317.9,324.0],"rent_index":[100.0,105.6,108.5,108.1,108.0,109.1,113.6,121.2,130.6,134.3,130.9,131.6,137.9,144.1,152.1,160.5,170.7,182.5,194.4,200.9,208.6,211.2,224.1,244.5,256.9],"home_price_cagr":5.0,"rent_cagr":4.0},
+        "commute": {"avg_commute_minutes":30.0,"drive_alone_percent":60.3,"carpool_percent":9.0,"public_transit_percent":6.3,"walk_percent":4.0,"bike_percent":1.0,"work_from_home_percent":18.5},
+        "tax": {"income_tax":0,"sales_tax":10.25,"property_tax":0.95,"capital_gains_tax":7.0},
+        "minimum_wage": {"hourly":20.76},
+        "tech_economy": {"vc_funding_billions":3,"unicorns":14,"swe_median_tc":249000,"swe_p90_tc":430000,"patents":6560,"fortune_500":[{"name":"Amazon"},{"name":"Microsoft"},{"name":"Costco"},{"name":"Starbucks"},{"name":"Paccar"},{"name":"Nordstrom"},{"name":"Expeditors"},{"name":"Weyerhaeuser"},{"name":"Alaska Air"}]},
+        "cost_of_living": {"rpp_index":111.1},
+        "crime": {"violent_per_100k":775,"property_per_100k":5008},
+        "inequality": {"gini":0.478},
+        "universities": {"public":[{"name":"UW","full":"University of Washington","loc":"Seattle, WA","rank":46,"ug":40684,"grad":16313,"cost":12973},{"name":"UW Tacoma","full":"University of Washington Tacoma","loc":"Tacoma, WA","rank":200,"est":true,"ug":4207,"grad":773,"cost":13168},{"name":"UW Bothell","full":"University of Washington Bothell","loc":"Bothell, WA","rank":200,"est":true,"ug":5478,"grad":586,"cost":12919}],"private":[{"name":"Seattle U","full":"Seattle University","loc":"Seattle, WA","rank":152,"ug":4103,"grad":3086,"cost":58965},{"name":"SPU","full":"Seattle Pacific University","loc":"Seattle, WA","rank":273,"ug":1776,"grad":485,"cost":44367},{"name":"UPS","full":"University of Puget Sound","loc":"Tacoma, WA","rank":150,"est":true,"ug":1594,"grad":270,"cost":65886}]},
+        "k12": {"graduation_rate":87.1},
+        "transit": [{"mode":"Heavy Rail","system":"Link Light Rail","full":"Sound Transit Link Light Rail","miles":43,"stations":43,"ridership_millions":30.4},{"mode":"Commuter Rail","system":"Sounder","full":"Sound Transit Sounder Commuter Rail","miles":82,"stations":12,"ridership_millions":1.9},{"mode":"Bus","system":"King County Metro","full":"King County Metro Transit Bus","routes":139,"ridership_millions":88.9},{"mode":"Robotaxi","system":"Waymo","full":"Waymo autonomous ride-hail (testing/planned)","status":"planned","statusColor":"#F9A825"}],
+        "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,113.0,143.0,169.9,194.1,215.2]},
+        "healthcare": {"life_expectancy":82.5,"uninsured_rate":5.5,"median_aqi":42,"good_air_days_pct":72}
       }
     },
     "neighborhoods": {
@@ -265,6 +295,19 @@
         "walkability": { "walk_score": 61, "transit_score": 37, "bike_score": 56 },
         "neighborhood_transit": {"walk":[{"line":"36","color":"#fff","bg":"#0075BF","full":"MARTA Bus Route 36 (N Decatur Rd / Virginia Highland) \u00B7 every 40 min"}],"bike":[{"line":"Blue","color":"#fff","bg":"#0075BF","full":"MARTA Blue Line \u2014 Inman Park station (~1.1mi) \u00B7 every 12 min"},{"line":"Green","color":"#fff","bg":"#00A651","full":"MARTA Green Line \u2014 Inman Park station (~1.1mi) \u00B7 every 12 min"},{"line":"Red","color":"#fff","bg":"#CE242B","full":"MARTA Red Line \u2014 Midtown station (~1.4mi) \u00B7 every 12 min"},{"line":"Gold","color":"#fff","bg":"#D4A843","full":"MARTA Gold Line \u2014 Midtown station (~1.4mi) \u00B7 every 12 min"}]},
         "housing": {"median_home_value_2br":540658,"median_home_value_3br":960798,"median_home_value_4br":1281859,"home_price_index":[100,109.3,117.0,119.6,121.1,129.2,137.9,146.6,148.1,142.4,134.4,129.0,129.2,144.0,162.2,177.3,193.6,198.4,211.6,217.7,221.8,239.1,265.7,284.8,302.6,310.6],"home_price_cagr":4.6}
+      },
+      "Mercer Island": {
+        "population": { "total_population": 24467, "population_density_per_sq_mi": 3853.42 },
+        "age_and_sex": { "senior_percent": 20.3, "older_adult_percent": 37.5, "younger_adult_percent": 15.4, "college_percent": 3.0, "children_percent": 23.9 },
+        "race_and_ethnicity": { "white_percent": 73.70, "hispanic_percent": 2.40, "black_percent": 1.80, "asian_percent": 18.50, "mixed_other_percent": 3.50 },
+        "national_origin": { "native_born_percent": 81.9, "foreign_born_percent": 18.1, "top_origins": [{"name":"China","percent":2.7},{"name":"Canada","percent":1.6},{"name":"India","percent":1.4}] },
+        "marital_status": { "never_married_percent": 20.0, "married_percent": 69.0, "separated_divorced_widowed_percent": 11.0 },
+        "household_income": { "median_household_income": 129348 },
+        "educational_attainment": { "graduate_degree_percent": 36.7, "bachelors_or_higher_percent": 78.2, "high_school_or_higher_percent": 98.3, "no_hs_diploma_percent": 1.7 },
+        "employment_status": { "employed_percent": 57.0, "unemployed_percent": 2.7, "not_in_labor_force_percent": 40.3 },
+        "walkability": { "walk_score": 44, "transit_score": 23, "bike_score": 27 },
+        "neighborhood_transit": {"walk":[{"line":"2","color":"#fff","bg":"#00A651","full":"Sound Transit Link 2 Line (light rail) \u2014 Mercer Island Station \u00B7 every 8\u201310 min"},{"line":"204","color":"#fff","bg":"#1D6AAF","full":"King County Metro Route 204 (DART) \u00B7 every 60 min"},{"line":"630","color":"#fff","bg":"#1D6AAF","full":"King County Metro Route 630 (peak express to Seattle) \u00B7 peak only"}],"bike":[]},
+        "housing": {"median_home_value_3br":1877537,"median_home_value_4br":2422218,"home_price_index":[100.0,105.1,105.3,109.4,119.7,142.0,160.0,165.2,149.2,133.6,121.2,114.4,115.3,129.2,139.2,156.3,173.1,197.5,212.0,208.6,233.2,286.3,307.9,301.9,326.8],"home_price_cagr":5.1}
       }
     }
   }
@@ -276,15 +319,23 @@
     const AREA_NAMES = {
       states: ['California', 'New York', 'Georgia'],
       cities: ['San Francisco', 'New York City', 'Atlanta'],
-      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside'],
+      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island'],
     };
     const AREA_NAMES_SHORT = {
       states: ['CA', 'NY', 'GA'],
       cities: ['SF', 'NYC', 'ATL'],
-      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS'],
+      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI'],
     };
 
-    const COLORS = ['#E8A735', '#1D428A', '#A71930'];
+    const COLORS = ['#E8A735', '#1D428A', '#A71930', '#2E7D32'];
+
+    // Each index maps across granularities: neighborhoods[i] → cities[i] → states[i]
+    const AREA_GROUPS = [
+      { neighborhood: 'North Panhandle + Anza Vista', city: 'San Francisco', state: 'California', shortNeighborhood: 'NoPa + AV', shortCity: 'SF', shortState: 'CA' },
+      { neighborhood: 'Greenwich Village', city: 'New York City', state: 'New York', shortNeighborhood: 'GV', shortCity: 'NYC', shortState: 'NY' },
+      { neighborhood: 'Virginia Highland + Morningside', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'ViHi + MS', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Mercer Island', city: 'Seattle', state: null, shortNeighborhood: 'MI', shortCity: 'SEA', shortState: null },
+    ];
 
     const SECTION_CONFIG = [
       {
@@ -427,9 +478,9 @@
         key: 'infrastructure', label: '\uD83C\uDFD7\uFE0F Infrastructure',
         topics: [
           { key: 'housing', label: '\uD83C\uDFE0 Housing', granularities: ['cities', 'neighborhoods'], metrics: [
-            { key: 'median_home_value_2br', label: 'Typical 2BR Value', format: 'currency', showBar: true, barMax: 7000000, tooltip: 'Zillow Home Value Index (2-bedroom) \u2014 average of last 12 months' },
-            { key: 'median_home_value_3br', label: 'Typical 3BR Value', format: 'currency', showBar: true, barMax: 7000000, tooltip: 'Zillow Home Value Index (3-bedroom) \u2014 average of last 12 months' },
-            { key: 'median_home_value_4br', label: 'Typical 4BR Value', format: 'currency', showBar: true, barMax: 7000000, tooltip: 'Zillow Home Value Index (4-bedroom) \u2014 average of last 12 months' },
+            { key: 'median_home_value_2br', label: 'Typical 2BR Value', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['median_home_value_2br','median_home_value_3br','median_home_value_4br'], tooltip: 'Zillow Home Value Index (2-bedroom) \u2014 average of last 12 months' },
+            { key: 'median_home_value_3br', label: 'Typical 3BR Value', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['median_home_value_2br','median_home_value_3br','median_home_value_4br'], tooltip: 'Zillow Home Value Index (3-bedroom) \u2014 average of last 12 months' },
+            { key: 'median_home_value_4br', label: 'Typical 4BR Value', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['median_home_value_2br','median_home_value_3br','median_home_value_4br'], tooltip: 'Zillow Home Value Index (4-bedroom) \u2014 average of last 12 months' },
             { key: 'home_price_cagr', label: 'Home Price CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
             { key: 'rent_cagr', label: 'Rent CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
           ], hasHousingCharts: true },
@@ -537,10 +588,19 @@
       const [granularity, setGranularity] = useState(init.granularity);
       const [expandedTopics, setExpandedTopics] = useState(init.expandedTopics);
       const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+      const [selectedIndices, setSelectedIndices] = useState(() => {
+        try { const s = JSON.parse(localStorage.getItem('area_comparison_selected')); if (Array.isArray(s) && s.length > 0) return s; } catch {}
+        return AREA_GROUPS.map((_, i) => i);
+      });
+      const [showSettings, setShowSettings] = useState(false);
 
       useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ granularity, expandedTopics }));
       }, [granularity, expandedTopics]);
+
+      useEffect(() => {
+        localStorage.setItem('area_comparison_selected', JSON.stringify(selectedIndices));
+      }, [selectedIndices]);
 
       useEffect(() => {
         const onResize = () => setIsMobile(window.innerWidth <= 640);
@@ -548,9 +608,41 @@
         return () => window.removeEventListener('resize', onResize);
       }, []);
 
-      const areas = AREA_NAMES[granularity];
-      const displayAreas = isMobile ? AREA_NAMES_SHORT[granularity] : areas;
+      useEffect(() => {
+        if (!showSettings) return;
+        const onClick = (e) => { if (!e.target.closest('.settings-dropdown')) setShowSettings(false); };
+        document.addEventListener('click', onClick);
+        return () => document.removeEventListener('click', onClick);
+      }, [showSettings]);
+
+      const toggleAreaIndex = (idx) => {
+        setSelectedIndices(prev => {
+          if (prev.includes(idx)) return prev.length > 1 ? prev.filter(i => i !== idx) : prev;
+          return [...prev, idx].sort();
+        });
+      };
+
+      // Filter areas based on selection and granularity
+      const activeGroups = selectedIndices.map(i => AREA_GROUPS[i]).filter(g => {
+        if (granularity === 'neighborhoods') return true;
+        if (granularity === 'cities') return g.city != null;
+        return g.state != null;
+      });
+      // Deduplicate (multiple neighborhoods could map to same city/state)
+      const seenKeys = new Set();
+      const dedupedGroups = activeGroups.filter(g => {
+        const key = granularity === 'neighborhoods' ? g.neighborhood : granularity === 'cities' ? g.city : g.state;
+        if (!key || seenKeys.has(key)) return false;
+        seenKeys.add(key);
+        return true;
+      });
+      const areas = dedupedGroups.map(g => granularity === 'neighborhoods' ? g.neighborhood : granularity === 'cities' ? g.city : g.state);
+      const displayAreas = isMobile ? dedupedGroups.map(g => granularity === 'neighborhoods' ? g.shortNeighborhood : granularity === 'cities' ? g.shortCity : g.shortState) : areas;
       const areaData = areas.map(name => DATA.areas[granularity][name]);
+      const areaColors = dedupedGroups.map((g, gi) => {
+        const origIdx = AREA_GROUPS.indexOf(g);
+        return COLORS[origIdx >= 0 ? origIdx : gi];
+      });
 
       const toggleSection = (sectionKey) => {
         setExpandedTopics(prev =>
@@ -563,7 +655,7 @@
         visibleTopics: section.topics.filter(t => !t.granularities || t.granularities.includes(granularity)),
       })).filter(s => s.visibleTopics.length > 0);
 
-      const containerStyle = { maxWidth: 900, margin: '0 auto' };
+      const containerStyle = { maxWidth: 1100, margin: '0 auto' };
       const titleStyle = { fontSize: 28, fontWeight: 700, color: '#1a1a1a', marginBottom: 24 };
       const tabRowStyle = {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24,
@@ -586,16 +678,32 @@
         <div style=${containerStyle}>
           <div class="page-title" style=${titleStyle}>Area Comparison</div>
           <div class="tab-row" style=${tabRowStyle}>
-            <div style=${{ display: 'flex', gap: 8 }}>
+            <div style=${{ display: 'flex', gap: 8, alignItems: 'center' }}>
               ${['states', 'cities', 'neighborhoods'].map(g => html`
                 <button key=${g} style=${tabStyle(granularity === g)} onClick=${() => setGranularity(g)}>
                   ${{states:'State',cities:'City',neighborhoods:'Neighborhood'}[g]}
                 </button>
               `)}
+              <div class="settings-dropdown" style=${{ position: 'relative', marginLeft: 4 }}>
+                <button style=${tabStyle(showSettings)} onClick=${(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}>\u2699\uFE0F</button>
+                ${showSettings ? html`
+                  <div style=${{ position: 'absolute', right: 0, top: 40, background: '#fff', border: '1px solid #e0d9cf', borderRadius: 8, padding: '12px 16px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, minWidth: 200 }}>
+                    <div style=${{ fontSize: 13, fontWeight: 600, color: '#3a3a3a', marginBottom: 8 }}>Compare areas</div>
+                    ${AREA_GROUPS.map((g, i) => html`
+                      <label key=${i} style=${{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 13, color: '#3a3a3a', cursor: 'pointer' }}>
+                        <input type="checkbox" checked=${selectedIndices.includes(i)} onChange=${() => toggleAreaIndex(i)} style=${{ accentColor: COLORS[i] }} />
+                        <span style=${{ color: COLORS[i], fontWeight: 500 }}>${g.neighborhood}</span>
+                      </label>
+                    `)}
+                  </div>
+                ` : null}
+              </div>
             </div>
-            <div class="expand-collapse" style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
-              <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
-              <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
+            <div style=${{ display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: '#8a8a8a' }}>
+              <span class="expand-collapse" style=${{ display: 'flex', gap: 12 }}>
+                <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics(visibleSections.map(s => s.key)); }}>expand all</a>
+                <a href="#" style=${{ color: '#8a8a8a', textDecoration: 'none' }} onClick=${(e) => { e.preventDefault(); setExpandedTopics([]); }}>collapse all</a>
+              </span>
             </div>
           </div>
           ${visibleSections.map(section => html`
@@ -604,6 +712,7 @@
               section=${section}
               areas=${displayAreas}
               areaData=${areaData}
+              areaColors=${areaColors}
               isMobile=${isMobile}
               granularity=${granularity}
               expanded=${expandedTopics.includes(section.key)}
@@ -667,7 +776,7 @@
       `;
     }
 
-    function SectionCard({ section, areas, areaData, expanded, onToggle, isMobile, granularity }) {
+    function SectionCard({ section, areas, areaData, areaColors, expanded, onToggle, isMobile, granularity }) {
       const cardStyle = {
         background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5',
         marginBottom: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden',
@@ -698,19 +807,22 @@
           </div>
           <div style=${bodyStyle}>
             <div class="card-body" style=${{ padding: '0 20px 16px' }}>
-              <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} showSubHeaders=${section.topics.length > 1} isMobile=${isMobile} granularity=${granularity} />
+              <${SectionTable} topics=${section.visibleTopics} areas=${areas} areaData=${areaData} areaColors=${areaColors} showSubHeaders=${section.topics.length > 1} isMobile=${isMobile} granularity=${granularity} />
             </div>
           </div>
         </div>
       `;
     }
 
-    function SectionTable({ topics, areas, areaData, showSubHeaders, isMobile, granularity }) {
+    function SectionTable({ topics, areas, areaData, areaColors, showSubHeaders, isMobile, granularity }) {
       const tableStyle = { width: '100%', borderCollapse: 'collapse' };
+      const nAreas = areas.length;
+      const dataColWidth = Math.floor(66 / nAreas) + '%';
+      const labelColWidth = (100 - Math.floor(66 / nAreas) * nAreas) + '%';
       const thStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '8px 12px', fontSize: 13, fontWeight: 600,
-        color: i === 0 ? '#8a8a8a' : COLORS[i - 1],
-        width: i === 0 ? '34%' : '22%',
+        color: i === 0 ? '#8a8a8a' : (areaColors || COLORS)[i - 1],
+        width: i === 0 ? labelColWidth : dataColWidth,
       });
       const subHeaderStyle = {
         fontSize: 15, fontWeight: 600, color: '#3a3a3a', padding: '18px 12px 8px',
@@ -749,10 +861,10 @@
       return html`
         ${topics.map((topic, ti) => html`
           <div key=${topic.key}>
-            ${topic.hasPopGrowthChart && areaData[0]?.population_growth ? html`<${PopGrowthChart} areaData=${areaData} areas=${areas} />` : null}
-            ${topic.hasWeatherChart ? html`<${WeatherChart} areaData=${areaData} areas=${areas} />` : null}
-            ${topic.hasHousingCharts ? html`<${HousingCharts} areaData=${areaData} areas=${areas} />` : null}
-            ${topic.hasPoliticsCharts ? html`<${PoliticsCharts} areaData=${areaData} areas=${areas} granularity=${granularity} />` : null}
+            ${topic.hasPopGrowthChart && areaData[0]?.population_growth ? html`<${PopGrowthChart} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
+            ${topic.hasWeatherChart ? html`<${WeatherChart} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
+            ${topic.hasHousingCharts ? html`<${HousingCharts} areaData=${areaData} areas=${areas} areaColors=${areaColors} />` : null}
+            ${topic.hasPoliticsCharts ? html`<${PoliticsCharts} areaData=${areaData} areas=${areas} areaColors=${areaColors} granularity=${granularity} />` : null}
           </div>
         `)}
         ${hasTableContent ? html`<table style=${tableStyle}>
@@ -764,17 +876,18 @@
               ${ti > 0 && showSubHeaders ? (needsHeader[ti]
                 ? headerRowWithLabel(topic.label)
                 : html`<tr key=${'subhdr_' + topic.key} class="subhdr">
-                    <td colSpan="4" style=${subHeaderStyle}>${topic.label}</td>
+                    <td colSpan=${nAreas + 1} style=${subHeaderStyle}>${topic.label}</td>
                   </tr>`
               ) : null}
-              <${TopicRows} key=${'rows_' + topic.key} topic=${topic} areas=${areas} areaData=${areaData} granularity=${granularity} />
+              <${TopicRows} key=${'rows_' + topic.key} topic=${topic} areas=${areas} areaData=${areaData} areaColors=${areaColors} granularity=${granularity} />
             `)}
           </tbody>
         </table>` : null}
       `;
     }
 
-    function TopicRows({ topic, areas, areaData, granularity }) {
+    function TopicRows({ topic, areas, areaData, areaColors, granularity }) {
+      const C = areaColors || COLORS;
       const tdStyle = (i) => ({
         textAlign: i === 0 ? 'left' : 'right', padding: '10px 12px', fontSize: 14,
         color: i === 0 ? '#5a5a5a' : '#1a1a1a', fontVariantNumeric: 'tabular-nums',
@@ -796,7 +909,7 @@
             ${topic.metrics.map(metric => {
               const values = areaData.map(d => (d[metric.dataKey || topic.key] || {})[metric.key]);
               if (values.every(v => v == null)) return null;
-              const maxVal = metric.barMax || Math.max(...values.filter(v => v != null && v > 0));
+              const maxVal = metric.barMax || (metric.barGroupKeys ? Math.max(...metric.barGroupKeys.flatMap(k => areaData.map(d => (d[metric.dataKey || topic.key] || {})[k])).filter(v => v != null && v > 0)) : Math.max(...values.filter(v => v != null && v > 0)));
               return html`
                 <tr key=${metric.key}>
                   <td style=${tdStyle(0)}>${metric.tooltip ? html`<${Tooltip} text=${metric.tooltip}>${metric.label}<//>` : metric.label}</td>
@@ -812,7 +925,7 @@
                         }}>
                           <div style=${{
                             width: ((metric.format === 'percent' && !metric.barMax && !metric.barRelative) ? val : (val / maxVal * 100)) + '%',
-                            height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7,
+                            height: '100%', borderRadius: 2, background: C[i], opacity: 0.7,
                           }} />
                         </div>
                       ` : null}
@@ -852,7 +965,7 @@
                   ${totals.map((t, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                     <div>${t.totalPax}M</div>
                     <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                      <div style=${{ width: (t.totalPax / maxPax * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                      <div style=${{ width: (t.totalPax / maxPax * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                     </div>
                   </td>`)}
                 </tr>
@@ -861,7 +974,7 @@
                   ${totals.map((t, i) => html`<td key=${i} style=${tdStyle(i + 1)}>
                     <div>${t.intlPax}M</div>
                     <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                      <div style=${{ width: (t.intlPax / maxIntl * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                      <div style=${{ width: (t.intlPax / maxIntl * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                     </div>
                   </td>`)}
                 </tr>
@@ -903,7 +1016,7 @@
                       ${avg != null ? html`
                         <div>${avg.toLocaleString('en-US')}</div>
                         <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                          <div style=${{ width: (avg / maxAtt * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                          <div style=${{ width: (avg / maxAtt * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : '\u2014'}
                     </td>`)}
@@ -937,7 +1050,7 @@
                         ${u && u.cost ? html`
                           <div style=${{ fontSize: 13, color: '#5a5a5a' }}>$${u.cost.toLocaleString('en-US')}</div>
                           <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                            <div style=${{ width: (u.cost / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                            <div style=${{ width: (u.cost / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                           </div>
                         ` : ''}
                       </td>`;
@@ -955,7 +1068,7 @@
                       ${val != null ? html`
                         <div style=${{ fontSize: 13, color: '#5a5a5a' }}>$${val.toLocaleString('en-US')}</div>
                         <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                          <div style=${{ width: (val / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                          <div style=${{ width: (val / maxCost * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : ''}
                     </td>`;
@@ -964,7 +1077,7 @@
               `;
               const costNote = granularity === 'states' ? 'Costs include tuition, fees, room & board' : 'Costs are tuition & fees only';
               return html`
-                <tr key="uni_cost_note"><td colSpan="4" style=${{ padding: '2px 12px 4px', fontSize: 12, color: '#8a8a8a', fontStyle: 'italic', borderBottom: 'none' }}>${costNote}${' \u00B7 '}For comparison (2014): Auburn #91, Pitt #62</td></tr>
+                <tr key="uni_cost_note"><td colSpan=${areas.length + 1} style=${{ padding: '2px 12px 4px', fontSize: 12, color: '#8a8a8a', fontStyle: 'italic', borderBottom: 'none' }}>${costNote}${' \u00B7 '}For comparison (2014): Auburn #91, Pitt #62</td></tr>
                 ${renderUniRows('public', 'pub', 'Public')}
                 ${hasAffordability ? html`
                   ${affordabilityRow('avg_net_price', 'Avg Net Price', 'Average annual net price at public 4-year institutions after grants/scholarships (College Scorecard 2023)')}
@@ -1015,7 +1128,7 @@
                       ${s && s.ridership_millions ? html`
                         <div><${Tooltip} text=${s.miles ? s.miles + ' route mi \u00B7 ' + s.stations + ' stations' : s.routes + ' routes'}>${s.ridership_millions.toLocaleString('en-US')}M<//></div>
                         <div style=${{ marginTop: 4, height: 4, borderRadius: 2, background: '#f0ebe3', overflow: 'hidden', display: 'flex', justifyContent: 'flex-end' }}>
-                          <div style=${{ width: (s.ridership_millions / maxRidership * 100) + '%', height: '100%', borderRadius: 2, background: COLORS[i], opacity: 0.7 }} />
+                          <div style=${{ width: (s.ridership_millions / maxRidership * 100) + '%', height: '100%', borderRadius: 2, background: C[i], opacity: 0.7 }} />
                         </div>
                       ` : '\u2014'}
                     </td>`)}
@@ -1051,7 +1164,7 @@
             ${topic.hasWeatherChart ? html`
               <tr key="sunrise_link">
                 <td style=${{ ...tdStyle(0), borderBottom: 'none' }}>Sunrise & Sunset</td>
-                <td colSpan="3" style=${{ ...tdStyle(1), borderBottom: 'none', textAlign: 'right' }}>
+                <td colSpan=${areas.length} style=${{ ...tdStyle(1), borderBottom: 'none', textAlign: 'right' }}>
                   <a href="../sunrise-sunset/" style=${{ color: '#E07A5F', textDecoration: 'none' }}>Compare daylight hours \u2192</a>
                 </td>
               </tr>
@@ -1059,7 +1172,8 @@
       `;
     }
 
-    function WeatherChart({ areaData, areas }) {
+    function WeatherChart({ areaData, areas, areaColors }) {
+      const C = areaColors || COLORS;
       const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       const MONTHS = ['J','F','M','A','M','J','J','A','S','O','N','D'];
       const W = 600, H = 280, PAD_L = 32, PAD_R = 10, PAD_T = 12, PAD_B = 24;
@@ -1126,9 +1240,9 @@
                 smoothPath(lowPts.slice().reverse()).slice(1) + ' Z';
               return html`
                 <g key=${'weather' + ci}>
-                  <path d=${bandPath} fill=${COLORS[ci]} opacity="0.15" />
-                  <path d=${highLine} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />
-                  <path d=${lowLine} fill="none" stroke=${COLORS[ci]} strokeWidth="1.5" opacity="0.4" strokeDasharray="4,3" />
+                  <path d=${bandPath} fill=${C[ci]} opacity="0.15" />
+                  <path d=${highLine} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />
+                  <path d=${lowLine} fill="none" stroke=${C[ci]} strokeWidth="1.5" opacity="0.4" strokeDasharray="4,3" />
                 </g>
               `;
             })}
@@ -1139,8 +1253,8 @@
                 if (!w) return null;
                 return html`
                   <g key=${'dots' + ci}>
-                    <circle cx=${toX(hoverMonth)} cy=${toY(w.highs[hoverMonth])} r="3.5" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />
-                    <circle cx=${toX(hoverMonth)} cy=${toY(w.lows[hoverMonth])} r="3" fill="none" stroke=${COLORS[ci]} strokeWidth="1.5" />
+                    <circle cx=${toX(hoverMonth)} cy=${toY(w.highs[hoverMonth])} r="3.5" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />
+                    <circle cx=${toX(hoverMonth)} cy=${toY(w.lows[hoverMonth])} r="3" fill="none" stroke=${C[ci]} strokeWidth="1.5" />
                   </g>
                 `;
               })}
@@ -1159,7 +1273,7 @@
                 if (!w) return null;
                 return html`
                   <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                    <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                    <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                     <span>${areas[ci]}: ${w.highs[hoverMonth]}\u00B0F / ${w.lows[hoverMonth]}\u00B0F</span>
                   </div>
                 `;
@@ -1170,7 +1284,7 @@
         <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 12, fontSize: 12, color: '#5a5a5a' }}>
           ${areas.map((name, i) => html`
             <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style=${{ width: 12, height: 3, background: COLORS[i], borderRadius: 1, display: 'inline-block' }} />
+              <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
               ${name}
             </span>
           `)}
@@ -1178,7 +1292,8 @@
       `;
     }
 
-    function PopGrowthChart({ areaData, areas }) {
+    function PopGrowthChart({ areaData, areas, areaColors }) {
+      const C = areaColors || COLORS;
       const YEARS = areaData[0]?.population_growth?.years || [];
       const W = 600, H = 200, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
       const chartW = W - PAD_L - PAD_R, chartH = H - PAD_T - PAD_B;
@@ -1232,14 +1347,14 @@
               ${areaData.map((d, ci) => {
                 const vals = d.population_growth?.index || [];
                 const pts = vals.map((v, i) => [toX(i), toY(v)]);
-                return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />`;
+                return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />`;
               })}
               ${hoverIdx != null ? html`
                 <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
                 ${areaData.map((d, ci) => {
                   const v = d.population_growth?.index?.[hoverIdx];
                   if (v == null) return null;
-                  return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
@@ -1257,7 +1372,7 @@
                   if (v == null) return null;
                   return html`
                     <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                       <span>${areas[ci]}: ${v.toFixed(0)} (${v >= 100 ? '+' : ''}${(v - 100).toFixed(1)}%)</span>
                     </div>
                   `;
@@ -1268,7 +1383,7 @@
           <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style=${{ width: 12, height: 3, background: COLORS[i], borderRadius: 1, display: 'inline-block' }} />
+                <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
                 ${name}
               </span>
             `)}
@@ -1277,7 +1392,8 @@
       `;
     }
 
-    function HousingGrowthChart({ title, dataKey, areaData, areas, marginTop }) {
+    function HousingGrowthChart({ title, dataKey, areaData, areas, areaColors, marginTop }) {
+      const C = areaColors || COLORS;
       const dataLen = Math.max(...areaData.map(d => (d.housing?.[dataKey] || []).length));
       const YEARS = Array.from({length: dataLen}, (_, i) => 2000 + i);
       const W = 600, H = 180, PAD_L = 36, PAD_R = 10, PAD_T = 10, PAD_B = 24;
@@ -1332,14 +1448,14 @@
             ${areaData.map((d, ci) => {
               const vals = d.housing?.[dataKey] || [];
               const pts = vals.map((v, i) => [toX(i), toY(v)]);
-              return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />`;
+              return html`<path key=${ci} d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />`;
             })}
             ${hoverIdx != null ? html`
               <line x1=${toX(hoverIdx)} y1=${PAD_T} x2=${toX(hoverIdx)} y2=${H - PAD_B} stroke="#888" strokeWidth="1" strokeDasharray="3,3" />
               ${areaData.map((d, ci) => {
                 const v = d.housing?.[dataKey]?.[hoverIdx];
                 if (v == null) return null;
-                return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                return html`<circle key=${ci} cx=${toX(hoverIdx)} cy=${toY(v)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
               })}
             ` : null}
           </svg>
@@ -1356,7 +1472,7 @@
                 if (v == null) return null;
                 return html`
                   <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                    <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                    <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                     <span>${areas[ci]}: ${v.toFixed(0)} (${v >= 100 ? '+' : ''}${(v - 100).toFixed(0)}%)</span>
                   </div>
                 `;
@@ -1367,15 +1483,16 @@
       `;
     }
 
-    function HousingCharts({ areaData, areas }) {
+    function HousingCharts({ areaData, areas, areaColors }) {
+      const C = areaColors || COLORS;
       return html`
         <div>
-          <${HousingGrowthChart} title=${'Home Price Index (2000 = 100)'} dataKey="home_price_index" areaData=${areaData} areas=${areas} />
-          ${areaData[0]?.housing?.rent_index ? html`<${HousingGrowthChart} title=${'Rent Index (2000 = 100)'} dataKey="rent_index" areaData=${areaData} areas=${areas} marginTop=${16} />` : null}
+          <${HousingGrowthChart} title=${'Home Price Index (2000 = 100)'} dataKey="home_price_index" areaData=${areaData} areas=${areas} areaColors=${areaColors} />
+          ${areaData[0]?.housing?.rent_index ? html`<${HousingGrowthChart} title=${'Rent Index (2000 = 100)'} dataKey="rent_index" areaData=${areaData} areas=${areas} areaColors=${areaColors} marginTop=${16} />` : null}
           <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style=${{ width: 12, height: 3, background: COLORS[i], borderRadius: 1, display: 'inline-block' }} />
+                <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
                 ${name}
               </span>
             `)}
@@ -1384,7 +1501,8 @@
       `;
     }
 
-    function PoliticsCharts({ areaData, areas, granularity }) {
+    function PoliticsCharts({ areaData, areas, areaColors, granularity }) {
+      const C = areaColors || COLORS;
       const DEM = '#4A7FBF', REP = '#D4564E';
       const [hoverElection, setHoverElection] = useState(null);
       const [hoverCongress, setHoverCongress] = useState(null);
@@ -1471,7 +1589,7 @@
                 const pts = pres.map((el, i) => [pToX(i), pToY(el.d - el.r)]);
                 return html`
                   <g key=${'pres' + ci}>
-                    <path d=${smoothPath(pts)} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />
+                    <path d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />
                   </g>
                 `;
               })}
@@ -1481,7 +1599,7 @@
                   const el = d.politics?.presidential?.[hoverElection];
                   if (!el) return null;
                   const margin = el.d - el.r;
-                  return html`<circle key=${ci} cx=${pToX(hoverElection)} cy=${pToY(margin)} r="4" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${pToX(hoverElection)} cy=${pToY(margin)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
@@ -1501,7 +1619,7 @@
                   const mStr = (margin > 0 ? 'D+' : 'R+') + Math.abs(margin).toFixed(1);
                   return html`
                     <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                       <span>${areas[ci]}: </span>
                       <span style=${{ color: margin > 0 ? DEM : REP, fontWeight: 600 }}>${mStr}</span>
                       <span style=${{ color: '#888', fontSize: 11 }}>(${el.d}\u2013${el.r})</span>
@@ -1514,7 +1632,7 @@
           <div style=${{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 8, fontSize: 12, color: '#5a5a5a' }}>
             ${areas.map((name, i) => html`
               <span key=${name} style=${{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style=${{ width: 12, height: 3, background: COLORS[i], borderRadius: 1, display: 'inline-block' }} />
+                <span style=${{ width: 12, height: 3, background: C[i], borderRadius: 1, display: 'inline-block' }} />
                 ${name}
               </span>
             `)}
@@ -1543,7 +1661,7 @@
                 const pts = cong.map((c, i) => { const td = c.d+(c.sd||0), tr = c.r+(c.sr||0); return [cToX(i), cToY((td-tr)/(td+tr)*100)]; });
                 return html`
                   <g key=${'cong' + ci}>
-                    <path d=${smoothPath(pts)} fill="none" stroke=${COLORS[ci]} strokeWidth="2" opacity="0.8" />
+                    <path d=${smoothPath(pts)} fill="none" stroke=${C[ci]} strokeWidth="2" opacity="0.8" />
                   </g>
                 `;
               })}
@@ -1553,7 +1671,7 @@
                   const c = d.politics?.congress?.[hoverCongress];
                   if (!c) return null;
                   const td = c.d+(c.sd||0), tr = c.r+(c.sr||0); const pct = (td-tr)/(td+tr)*100;
-                  return html`<circle key=${ci} cx=${cToX(hoverCongress)} cy=${cToY(pct)} r="4" fill=${COLORS[ci]} stroke="#fff" strokeWidth="1.5" />`;
+                  return html`<circle key=${ci} cx=${cToX(hoverCongress)} cy=${cToY(pct)} r="4" fill=${C[ci]} stroke="#fff" strokeWidth="1.5" />`;
                 })}
               ` : null}
             </svg>
@@ -1571,7 +1689,7 @@
                   if (!c) return null;
                   return html`
                     <div key=${ci} style=${{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: COLORS[ci], display: 'inline-block' }} />
+                      <span style=${{ width: 8, height: 8, borderRadius: '50%', background: C[ci], display: 'inline-block' }} />
                       <span>${areas[ci]}: </span>
                       ${(() => { const td=c.d+(c.sd||0), tr=c.r+(c.sr||0), m=Math.round((td-tr)/(td+tr)*100); return html`<span style=${{ fontWeight: 600, color: m > 0 ? DEM : REP }}>${(m>0?'D+':'R+')+Math.abs(m)}</span>`; })()}
                       <span style=${{ color: '#888', fontSize: 11 }}>${' ('}</span>

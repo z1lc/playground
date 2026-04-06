@@ -13,6 +13,13 @@ This is a tool that compares statistical information between the states Californ
 - **URLs**: See list at bottom of this file
 - **Notes**: City populations use metro area figures from Wikipedia for comparability (SF-Oakland-Berkeley MSA, NYC-Newark-Jersey City MSA, Atlanta-Sandy Springs-Alpharetta MSA). Neighborhood data combines paired neighborhoods (NP+AV, VH+ML) via population-weighted averaging. Mixed+Other race is the sum of mixed and other categories. Separated/Divorced/Widowed is combined. National origin top_origins percentages are expressed as % of total population (not % of foreign born).
 
+#### Net Domestic Migration
+- **Source**: Census Bureau Population Estimates Program (PEP), Vintage 2024
+- **Data**: Net domestic migration rate per 1,000 population (July 2023–July 2024). Negative = more people leaving for other US locations than arriving. Excludes international migration.
+- **State data**: Direct from PEP state-level tables (NST-EST2024-ALLDATA.csv, field RDOMESTICMIG2024)
+- **City data**: County-level PEP (CO-EST2024-ALLDATA.csv). SF County, NYC 5 boroughs summed, Fulton County for ATL, King County for SEA.
+- **Levels**: State, City
+
 #### Population Growth
 - **Source**: FRED (Federal Reserve Economic Data)
 - **Series**: State: CAPOP, NYPOP, GAPOP. City: CASANF0POP (SF County), NYNEWY1POP+NYKING7POP+NYQUEE1POP+NYBRON5POP+NYRICH5POP (NYC 5 boroughs summed), GAFULT1POP (Fulton County)
@@ -85,6 +92,7 @@ This is a tool that compares statistical information between the states Californ
 #### Parks & Green Space
 - **Source**: Trust for Public Land ParkScore 2025 (parkscore.tpl.org)
 - **Data**: ParkScore rank and rating (0-100), % residents within 10-min walk of park, parkland as % of city area
+- **Tree Canopy Coverage**: Percentage of city land area covered by tree canopy. Sources: city urban forest assessments (SF Planning Department, NYC Urban Forest Plan, Georgia Tech Urban Tree Canopy Assessment, City of Seattle 2021 Tree Canopy Assessment) and Tree Equity Score (treeequityscore.org).
 - **Levels**: City only
 
 #### Sports
@@ -114,6 +122,8 @@ This is a tool that compares statistical information between the states Californ
 #### Health
 - **AQI**: EPA Annual AQI by County 2024 (CSV: aqs.epa.gov/aqsweb/airdata/annual_aqi_by_county_2024.zip). State values are median of county medians. City values use county data (SF County, 5-borough avg for NYC, Fulton County for ATL).
 - **Obesity/Overweight/Smoking/Drinking/Exercise/Sedentary**: CDC BRFSS 2023 via API (data.cdc.gov/resource/hn4x-zwk7.json), stratificationcategory1='Total'
+- **Drug Overdose Death Rate**: CDC NCHS Quarterly Vital Statistics (data.cdc.gov, dataset 489q-934x). Age-adjusted rate per 100,000, 12 months ending Q1 2023. ICD-10 codes X40-X44, X60-X64, X85, Y10-Y14.
+- **Firearm Death Rate**: Same CDC NCHS source. Age-adjusted rate per 100,000. ICD-10 codes W32-W34 (accidental), X72-X74 (suicide), X93-X95 (homicide), Y22-Y24 (undetermined), Y35.0 (legal intervention). All intents combined.
 - **Levels**: State (all metrics), City (AQI only)
 
 #### Healthcare
@@ -123,7 +133,22 @@ This is a tool that compares statistical information between the states Californ
 - **Infant Mortality**: March of Dimes PeriStats (2023)
 - **Levels**: State (all), City (life expectancy + uninsured + AQI only)
 
+#### Natural Hazard Risk
+- **Source**: FEMA National Risk Index (NRI) v1.20 (December 2025), hazards.fema.gov/nri
+- **Data**: Composite Risk Index (0–100 percentile among US counties) plus individual hazard scores for Earthquake, Wildfire, Flooding (inland), Hurricane, and Tornado. null values for hazards that don't apply to a region (e.g., Hurricane is null for CA and WA).
+- **State data**: Unweighted averages of all county scores within each state.
+- **City data**: County-level scores. SF County, 5-borough average for NYC, Fulton County for ATL, King County for SEA.
+- **Method**: Queried via ArcGIS REST API at services.arcgis.com.
+- **Levels**: State, City
+
 ### Infrastructure Section
+
+#### Homeownership Rate
+- **Source**: Census ACS table B25003 (Tenure), 2023 ACS 5-Year estimates
+- **Data**: Percentage of occupied housing units that are owner-occupied.
+- **State/City data**: Census ACS place-level and state-level estimates.
+- **Neighborhood data**: Estimated from Statistical Atlas neighborhood-level data and Census tract aggregation. NP+AV population-weighted average (~14% NoPa, ~34% AV). Mercer Island uses place-level data.
+- **Levels**: State, City, Neighborhood
 
 #### Housing
 - **Home Price Index (cities)**: FRED FHFA All-Transactions House Price Index. Series: SFXRSA, NYXRSA, ATXRSA. Normalized to 100 at year 2000, annual values 2000-2024.
@@ -142,6 +167,20 @@ This is a tool that compares statistical information between the states Californ
 - **Source**: Wikipedia compilation of FBI UCR data (2023)
 - **Data**: Violent crime rate per 100K, property crime rate per 100K (2023)
 - **Levels**: City only
+
+#### Homelessness
+- **Source**: HUD Point-in-Time (PIT) Count, January 2024 (hudexchange.info/resource/3031/pit-and-hic-data-since-2007/)
+- **Data**: Total homeless count (pit_count), homeless per 10K population (per_10k), % unsheltered (unsheltered_pct).
+- **CoC mapping**: SF = CA-501, NYC = NY-600, Atlanta = GA-500, Seattle/King County = WA-500.
+- **State data**: State-level aggregates from HUD data / AHAR 2024.
+- **City data**: CoC-level PIT counts. Per-10K rates use metro population as denominator (from existing DATA), so city rates may be understated since CoCs cover smaller areas than full metros.
+- **Notes**: PIT count is a single-night snapshot (last 10 days of January) and is an inherent undercount. NY has very high count (158K) but very low unsheltered % (3.6%) due to right-to-shelter mandate.
+- **Levels**: State, City
+
+#### Internet / Broadband
+- **Source**: FCC Broadband Data Collection (BDC) via broadbandmap.fcc.gov, BroadbandNow (broadbandnow.com)
+- **Data**: broadband_pct (% of locations with 100+ Mbps download access), fiber_pct (% of locations with fiber-optic internet access).
+- **Levels**: State, City
 
 #### Public Transit
 - **Source**: National Transit Database (NTD), agency reports (MTA, SFMTA, BART, MARTA), 2024 data

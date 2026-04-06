@@ -13,13 +13,6 @@ This is a tool that compares statistical information between the states Californ
 - **URLs**: See list at bottom of this file
 - **Notes**: City populations use metro area figures from Wikipedia for comparability (SF-Oakland-Berkeley MSA, NYC-Newark-Jersey City MSA, Atlanta-Sandy Springs-Alpharetta MSA). Neighborhood data combines paired neighborhoods (NP+AV, VH+ML) via population-weighted averaging. Mixed+Other race is the sum of mixed and other categories. Separated/Divorced/Widowed is combined. National origin top_origins percentages are expressed as % of total population (not % of foreign born).
 
-#### Net Domestic Migration
-- **Source**: Census Bureau Population Estimates Program (PEP), Vintage 2024
-- **Data**: Net domestic migration rate per 1,000 population (July 2023–July 2024). Negative = more people leaving for other US locations than arriving. Excludes international migration.
-- **State data**: Direct from PEP state-level tables (NST-EST2024-ALLDATA.csv, field RDOMESTICMIG2024)
-- **City data**: County-level PEP (CO-EST2024-ALLDATA.csv). SF County, NYC 5 boroughs summed, Fulton County for ATL, King County for SEA.
-- **Levels**: State, City
-
 #### Population Growth
 - **Source**: FRED (Federal Reserve Economic Data)
 - **Series**: State: CAPOP, NYPOP, GAPOP. City: CASANF0POP (SF County), NYNEWY1POP+NYKING7POP+NYQUEE1POP+NYBRON5POP+NYRICH5POP (NYC 5 boroughs summed), GAFULT1POP (Fulton County)

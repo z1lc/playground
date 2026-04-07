@@ -290,6 +290,19 @@ This is a tool that compares statistical information between the states Californ
 - **Water Sources** (displayed as tooltip on topic header): SF — Hetch Hetchy Reservoir (Sierra Nevada snowmelt, unfiltered). NYC — Catskill/Delaware & Croton Watersheds (unfiltered for Catskill/Delaware). ATL — Chattahoochee River. SEA — Cedar River (~70%) & South Fork Tolt River (~30%), Cascade Range.
 - **Levels**: State (SDWA violations only), City (all other metrics)
 
+#### Noise Level
+- **Source**: DOT Bureau of Transportation Statistics (BTS) National Transportation Noise Map, with census-tract population exposure data from Seto & Huang 2023 (University of Washington).
+- **Access**: Tract-level shapefiles from deohs.washington.edu/national-transportation-noise-exposure-map-download (derived from BTS noise modeling + ACS population data).
+- **Metric**: LAeq (24-hour A-weighted equivalent sound level) — the standard metric for environmental noise assessment used by EPA, FHWA, FAA, and FRA. Represents approximate average noise energy from transportation sources over a 24-hour period.
+- **Data**: avg_db (population-weighted average LAeq in dB across census tracts), pct_above_50db (% of population above WHO 50 dB outdoor residential guideline), pct_above_65db (% of population above FHWA 65 dB noise abatement threshold), dominant_source (primary noise contributor: road/aviation/rail/mixed).
+- **State data**: Population-weighted average of all census-tract LAeq values within the state. FIPS: CA=06, NY=36, GA=13, WA=53. Tract-level values estimated from binned population exposure data using band midpoints (45-50→47.5, 50-60→55, 60-70→65, 70-80→75, 80-90→85, 90+→95 dB); population below 45 dB assigned 35 dB.
+- **City data**: County-level aggregation. SF County (06075), 5-borough average for NYC (36061+36047+36081+36005+36085), Fulton County (13121), King County (53033).
+- **Neighborhood data**: Census tracts selected by centroid coordinates within approximate neighborhood boundaries. NP+AV: 10 tracts in the Divisadero/Masonic/Geary area. GV: 7 Manhattan tracts in the 14th-to-Houston, Broadway-to-Hudson area. VH+ML: 6 Fulton County tracts. Mercer Island: 5 King County tracts.
+- **Threshold percentages**: pct_above_50db = population in 50-60 + 60-70 + 70-80 + 80-90 + 90+ dB bands, divided by total tract population. pct_above_65db approximated as 50% of 60-70 band + all higher bands (assumes uniform distribution within the 60-70 band).
+- **Reference thresholds**: 35 dB = quiet rural, 45 dB = quiet suburban, 50 dB = moderate (WHO outdoor residential guideline), 60 dB = busy road, 65 dB = FHWA noise abatement criterion, 70+ dB = near highway or under flight path.
+- **Notes**: Transportation noise only — excludes construction, industrial, and social noise. Census-tract resolution may mask block-level variation (e.g., one side of a block facing a highway vs. the other). All areas show road traffic as dominant source; aviation noise is significant only in tracts near major airport flight paths. Data vintage: BTS noise modeling ~2020, ACS population 2016-2020.
+- **Levels**: State, City, Neighborhood
+
 #### Public Transit
 - **Source**: National Transit Database (NTD), agency reports (MTA, SFMTA, BART, MARTA), 2024 data
 - **Transit Score**: WalkScore transit score (0-100), same source as Walkability section

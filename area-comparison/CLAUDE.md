@@ -117,6 +117,38 @@ This is a tool that compares statistical information between the states Californ
 - **Tree Canopy Coverage**: Percentage of city land area covered by tree canopy. Sources: city urban forest assessments (SF Planning Department, NYC Urban Forest Plan, Georgia Tech Urban Tree Canopy Assessment, City of Seattle 2021 Tree Canopy Assessment) and Tree Equity Score (treeequityscore.org).
 - **Levels**: City only
 
+#### Outdoor Recreation
+- **National Parks (3hr drive)**: NPS units (National Parks, Monuments, NRAs, Seashores) with significant outdoor recreation within a 3-hour non-rush-hour drive from city center. Excludes small urban historic sites. Hover shows individual park names.
+  - Source: NPS Find a Park (nps.gov/findapark/), Google Maps driving times
+  - SF (4): Golden Gate NRA, Muir Woods NM, Point Reyes NS, Pinnacles NP
+  - NYC (5): Gateway NRA, Delaware Water Gap NRA, Fire Island NS, Morristown NHP, Upper Delaware SRR
+  - ATL (7): Chattahoochee River NRA, Kennesaw Mountain NBP, Chickamauga & Chattanooga NMP, Little River Canyon NP, Ocmulgee Mounds NHP, Andersonville NHS, Appalachian NST (Springer Mtn)
+  - SEA (5): Mount Rainier NP, North Cascades NP, San Juan Island NHP, Ebey's Landing NHR, Fort Vancouver NHS
+- **State Parks (3hr drive)**: Major state parks (1,000+ acres) within a 3-hour non-rush-hour drive from city center. Hover shows individual park names.
+  - Sources: State park directories (parks.ca.gov, parks.ny.gov, gastateparks.org, parks.wa.gov), Google Maps driving times
+- **Ski Resorts (4hr drive)**: Operational ski resorts with 100+ skiable acres within a 4-hour non-rush-hour drive from city center.
+  - Sources: OnTheSnow (onthesnow.com), SkiCentral, individual resort websites, Google Maps driving times
+  - SF (12): Dodge Ridge, Boreal, Sugar Bowl, Northstar, Palisades Tahoe, Homewood, Diamond Peak, Mt. Rose, Heavenly, Bear Valley, Soda Springs, Donner Ski Ranch. The entire Lake Tahoe basin falls in the 3–4 hour window.
+  - NYC (19): Mountain Creek, Camelback, Blue Mountain, Shawnee, Jack Frost, Big Boulder, Hunter, Windham, Belleayre, Catamount, Mohawk, Butternut, Mount Snow, Stratton, Bromley, Magic Mountain, Gore Mountain, Jiminy Peak, Berkshire East. Southern Vermont enters range at 3.5–4 hours.
+  - ATL (0): Nearest NC resorts (Cataloochee ~50 acres, Sugar Mountain ~125 acres) are either under 100 skiable acres or over 4 hours.
+  - SEA (6): Summit at Snoqualmie, Stevens Pass, Crystal Mountain, White Pass, Mt. Baker, Mission Ridge. All within 3 hours; Mt. Hood resorts (OR) are just beyond 4 hours.
+- **Trail Miles per 10K Pop**: Total hiking/biking trail miles within the metro area (CBSA boundary) per 10,000 metro population.
+  - Source: AllTrails metro area data (alltrails.com)
+  - Denominator: Metro population from existing DATA.areas.cities population.total_population
+  - CBSA boundaries: SF-Oakland-Berkeley=41860, NYC-Newark-Jersey City=35620, Atlanta-Sandy Springs-Roswell=12060, Seattle-Tacoma-Bellevue=42660
+- **Closest Lakehouse (hr)**: Drive time in hours to the nearest area with a significant market of lakefront homes for purchase. Hover shows the destination lake and alternatives.
+  - SF (2.0 hr): Clear Lake, Lake County — 43,000 acres, largest natural freshwater lake entirely in CA. Lake Tahoe (~3.5 hr) is the premier but pricier option.
+  - NYC (1.0 hr): Lake Hopatcong, NJ — 2,685 acres, largest lake in NJ. Greenwood Lake (~1.25 hr) and Poconos lakes (~2 hr) also popular.
+  - ATL (0.8 hr): Lake Lanier — 38,000 acres, 690 mi shoreline. Massive lakefront property market. Lake Oconee (~1.5 hr), Lake Hartwell (~2 hr) also popular.
+  - SEA (0.8 hr): Lake Tapps (2,600 acres, ~40 min) and Lake Stevens (~45 min). Lake Chelan (~2.5 hr) is the classic PNW vacation lakehouse destination.
+  - Source: Real estate listings, Google Maps driving times
+- **Beach Access**: Categorical rating (Direct / Limited / None) based on proximity to ocean or major saltwater beaches.
+  - Direct: Ocean or sound beaches within city limits or immediate suburbs, accessible year-round (SF, SEA)
+  - Limited: Beaches exist within city limits but are primarily seasonal and transit-dependent (NYC — Coney Island, Rockaway Beach, ~May–September)
+  - None: No ocean or major saltwater beach within practical day-trip distance (ATL — nearest coast 4+ hours)
+  - Source: NOAA shoreline data, city geography
+- **Levels**: City only
+
 #### Sports
 - **Teams**: Common knowledge, verified against Wikipedia
 - **Attendance**: ESPN (NFL/NBA/MLB), Wikipedia (NHL/MLS). Most recent full regular season averages. Multi-team cities use average across teams.

@@ -219,10 +219,11 @@ This is a tool that compares statistical information between the states Californ
 
 #### Natural Hazard Risk
 - **Source**: FEMA National Risk Index (NRI) v1.20 (December 2025), hazards.fema.gov/nri
-- **Data**: Composite Risk Index (0–100 percentile among US counties) plus individual hazard scores for Earthquake, Wildfire, Flooding (inland), Hurricane, and Tornado. null values for hazards that don't apply to a region (e.g., Hurricane is null for CA and WA).
-- **State data**: Unweighted averages of all county scores within each state.
+- **Data**: Expected Annual Loss Rate (EALR) national percentile (0–100 among US counties). EALR measures average annual property loss as a share of total building value, making it comparable across areas with different property values. Single composite metric (no per-hazard breakdown).
+- **API field**: `ALR_NPCTL` (Expected Annual Loss Rate - National Percentile - Composite)
+- **State data**: Unweighted averages of all county EALR percentiles within each state.
 - **City data**: County-level scores. SF County, 5-borough average for NYC, Fulton County for ATL, King County for SEA.
-- **Method**: Queried via ArcGIS REST API at services.arcgis.com.
+- **Method**: Queried via ArcGIS REST API at services.arcgis.com. Script: `fetch_nri.py`.
 - **Levels**: State, City
 
 ### Arts & Culture Section

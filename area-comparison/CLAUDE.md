@@ -249,6 +249,16 @@ This is a tool that compares statistical information between the states Californ
 - **Notes**: SF Bay Area Bib Gourmand count (~55) is estimated from the California statewide total (~119) using historical Bay Area share (~47%). Seattle shows all zeros with a note that no Michelin restaurant guide covers the metro.
 - **Levels**: City only
 
+#### Restaurant Density
+- **Source**: Yelp Fusion API (api.yelp.com/v3/businesses/search), category=restaurants
+- **Script**: `fetch_restaurants.py` — reads `YELP_API_KEY` from env, paginates through results (50/page, offset+limit capped at 240), deduplicates by business ID
+- **Data**: restaurants_per_1k (total / pop × 1000), total_restaurants (from API `total` field), avg_rating (simple mean of Yelp 1–5 star ratings), avg_price_level (mean of $=1, $$=2, $$$=3, $$$$=4), pct_dollar_2_plus (% of priced restaurants at $$ or above)
+- **Search areas**: Circular radius centered on neighborhood centroids. NP+AV: (37.776, -122.438) r=800m. GV: (40.734, -73.999) r=600m. VH+MS: (33.787, -84.353) r=1200m. MI: (47.571, -122.222) r=2000m. Radii chosen to approximate each neighborhood's geographic footprint.
+- **Population denominators**: From existing DATA.areas.neighborhoods[name].population.total_population
+- **Price metrics**: Computed only from restaurants with a Yelp `price` attribute; restaurants without price excluded from price calculations
+- **Data vintage**: April 2026
+- **Levels**: Neighborhood only
+
 #### Live Music
 - **Source**: Songkick/Bandsintown venue databases, Wikipedia "List of music festivals" pages, manual curation
 - **Inclusion criteria (venues)**: Dedicated live music venues with 500+ person capacity regularly hosting concerts. Includes concert halls, large music clubs, and arenas used primarily for music events. Excludes performing arts venues (opera houses, symphony halls, Broadway theaters) which are counted under Performing Arts, and small bars/clubs under 500 capacity.

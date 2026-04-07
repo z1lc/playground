@@ -478,7 +478,8 @@
         "noise":{"avg_db":45.0,"pct_above_50db":33.7,"pct_above_65db":7.3,"dominant_source":"road","dominant_source_desc":"Geary Blvd (38/38R bus corridor), Masonic Ave, and Divisadero St are the primary noise sources. Interior residential blocks between arterials are quieter (40\u201345 dB)."},
         "commute": { "avg_commute_minutes": 30.8, "drive_alone_percent": 19.5, "carpool_percent": 3.4, "public_transit_percent": 21.2, "walk_percent": 8.7, "bike_percent": 6.2, "work_from_home_percent": 38.4 },
         "crime":{"violent_per_1k":16.1,"property_per_1k":157.0},
-        "air_quality":{"avg_pm25":6.7,"neighborhood_good_air_days_pct":76.0,"nearest_monitor_distance_mi":2.3,"monitor_name":"San Francisco","monitor_id":"06-075-0005"}
+        "air_quality":{"avg_pm25":6.7,"neighborhood_good_air_days_pct":76.0,"nearest_monitor_distance_mi":2.3,"monitor_name":"San Francisco","monitor_id":"06-075-0005"},
+        "restaurant_density":{"restaurants_per_1k":31.7,"total_restaurants":317,"avg_rating":4.2,"avg_price_level":2.1,"pct_dollar_2_plus":83.6}
       },
       "Greenwich Village": {
         "population": { "total_population": 23138, "population_density_per_sq_mi": 99743.08 },
@@ -498,7 +499,8 @@
         "noise":{"avg_db":48.0,"pct_above_50db":39.1,"pct_above_65db":2.9,"dominant_source":"road","dominant_source_desc":"Dense Manhattan street grid with heavy taxi, bus, and truck traffic. 6th Ave, 7th Ave, Broadway, and Houston St are the noisiest corridors. No major aviation or rail noise in the neighborhood."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 4.5, "carpool_percent": 0.5, "public_transit_percent": 38.8, "walk_percent": 19.1, "bike_percent": 3.6, "work_from_home_percent": 30.0 },
         "crime":{"violent_per_1k":14.5,"property_per_1k":143.3},
-        "air_quality":{"avg_pm25":7.7,"neighborhood_good_air_days_pct":73.6,"nearest_monitor_distance_mi":0.9,"monitor_name":"PS 19","monitor_id":"36-061-0128"}
+        "air_quality":{"avg_pm25":7.7,"neighborhood_good_air_days_pct":73.6,"nearest_monitor_distance_mi":0.9,"monitor_name":"PS 19","monitor_id":"36-061-0128"},
+        "restaurant_density":{"restaurants_per_1k":73.5,"total_restaurants":1700,"avg_rating":4.2,"avg_price_level":2.3,"pct_dollar_2_plus":92.8}
       },
       "Virginia Highland + Morningside": {
         "population": { "total_population": 16090, "population_density_per_sq_mi": 5711.25 },
@@ -518,7 +520,8 @@
         "noise":{"avg_db":37.6,"pct_above_50db":9.0,"pct_above_65db":0.7,"dominant_source":"road","dominant_source_desc":"Quiet residential neighborhoods. Ponce de Leon Ave and Highland Ave carry moderate traffic. Well-buffered from I-85 and I-75 by distance and topography."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 52.6, "carpool_percent": 3.7, "public_transit_percent": 2.0, "walk_percent": 3.5, "bike_percent": 2.6, "work_from_home_percent": 35.4 },
         "crime":{"violent_per_1k":8.1,"property_per_1k":112.7},
-        "air_quality":{"avg_pm25":8.7,"neighborhood_good_air_days_pct":59.0,"nearest_monitor_distance_mi":4.9,"monitor_name":"Fire Station #8","monitor_id":"13-121-0039"}
+        "air_quality":{"avg_pm25":8.7,"neighborhood_good_air_days_pct":59.0,"nearest_monitor_distance_mi":4.9,"monitor_name":"Fire Station #8","monitor_id":"13-121-0039"},
+        "restaurant_density":{"restaurants_per_1k":9.6,"total_restaurants":155,"avg_rating":3.3,"avg_price_level":1.9,"pct_dollar_2_plus":77.0}
       },
       "Mercer Island": {
         "population": { "total_population": 24467, "population_density_per_sq_mi": 3853.42 },
@@ -538,7 +541,8 @@
         "noise":{"avg_db":39.4,"pct_above_50db":14.0,"pct_above_65db":3.5,"dominant_source":"road","dominant_source_desc":"I-90 crosses the island via the Homer M. Hadley Memorial Bridge, creating a concentrated noise corridor. Residential areas away from I-90 are very quiet (35\u201340 dB)."},
         "commute": { "avg_commute_minutes": 23.6, "drive_alone_percent": 51.7, "carpool_percent": 3.8, "public_transit_percent": 3.1, "walk_percent": 1.6, "bike_percent": 0.1, "work_from_home_percent": 38.6 },
         "crime":{"violent_per_1k":0.4,"property_per_1k":12.4},
-        "air_quality":{"avg_pm25":4.2,"neighborhood_good_air_days_pct":94.2,"nearest_monitor_distance_mi":4.1,"monitor_name":"Seattle - Beacon Hill","monitor_id":"53-033-0080"}
+        "air_quality":{"avg_pm25":4.2,"neighborhood_good_air_days_pct":94.2,"nearest_monitor_distance_mi":4.1,"monitor_name":"Seattle - Beacon Hill","monitor_id":"53-033-0080"},
+        "restaurant_density":{"restaurants_per_1k":3.3,"total_restaurants":80,"avg_rating":3.7,"avg_price_level":1.6,"pct_dollar_2_plus":57.5}
       }
     }
   }
@@ -761,6 +765,13 @@
             { key: 'bib_gourmand', label: 'Bib Gourmand', format: 'number', showBar: true, barRelative: true, tooltip: 'Michelin Bib Gourmand \u2014 good quality, good value meals' },
             { key: 'starred_per_million', label: 'Starred per Million', format: 'number', showBar: true, barRelative: true, tooltip: 'Total Michelin-starred restaurants (1+2+3 star) per million metro population' },
             { key: 'bib_per_million', label: 'Bib Gourmand per Million', format: 'number', showBar: true, barRelative: true, tooltip: 'Bib Gourmand restaurants per million metro population' },
+          ] },
+          { key: 'restaurant_density', label: '\uD83C\uDF7D\uFE0F Restaurant Density', granularities: ['neighborhoods'], metrics: [
+            { key: 'restaurants_per_1k', label: 'Restaurants per 1K', format: 'number', decimals: 1, showBar: true, barRelative: true, tooltip: 'Yelp-listed restaurants within neighborhood radius per 1,000 residents. Source: Yelp Fusion API (Apr 2026).' },
+            { key: 'total_restaurants', label: 'Total Restaurants', format: 'number', showBar: true, barRelative: true, tooltip: 'Raw count of Yelp-listed restaurants within search radius.' },
+            { key: 'avg_rating', label: 'Avg Rating (1\u20135)', format: 'number', decimals: 1, showBar: true, barMax: 5, tooltip: 'Simple mean of Yelp star ratings across all restaurants in the neighborhood.' },
+            { key: 'avg_price_level', label: 'Avg Price Level', format: 'number', decimals: 1, showBar: true, barMax: 4, tooltip: 'Average Yelp price level ($=1, $$=2, $$$=3, $$$$=4). Only includes restaurants with a price attribute.' },
+            { key: 'pct_dollar_2_plus', label: '$$ or Above', format: 'percent', showBar: true, tooltip: 'Percentage of priced restaurants at $$ or higher price level.' },
           ] },
         ],
       },

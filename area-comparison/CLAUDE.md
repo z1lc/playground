@@ -31,6 +31,15 @@ This is a tool that compares statistical information between the states Californ
 - **Source**: minimumwage.com, state/city labor department websites
 - **Levels**: State, City
 
+#### Living Wage
+- **Source**: MIT Living Wage Calculator (livingwage.mit.edu)
+- **Family configuration**: 2 Adults, 3 Children — shown for both single-earner and dual-earner households
+- **Data**: single_income (annual living wage for 1 working adult), dual_income (annual living wage per working adult when both work). Hourly rate × 2,080 hours/year.
+- **State data**: FIPS codes — CA=06, NY=36, GA=13, WA=53. URLs: livingwage.mit.edu/states/{FIPS}
+- **City data**: Metro (CBSA) codes — SF=41860, NYC=35620, ATL=12060, SEA=42660. URLs: livingwage.mit.edu/metros/{CBSA}
+- **Data vintage**: February 2026
+- **Levels**: State, City
+
 #### Cost of Living (Price Level / RPP)
 - **Source**: FRED Regional Price Parities
 - **Series**: Metro: RPPALL41860 (SF), RPPALL35620 (NYC), RPPALL12060 (ATL). State: CARPPALL, NYRPPALL, GARPPALL

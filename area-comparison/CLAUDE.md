@@ -203,6 +203,8 @@ This is a tool that compares statistical information between the states Californ
 - **CAGR**: Computed from index start/end values over 24-25 years.
 - **Typical Home Values (neighborhoods)**: Zillow ZHVI bedroom-specific CSVs, average of last 12 months. 2BR: Neighborhood_zhvi_bdrmcnt_2_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv. 3BR: bdrmcnt_3. 4BR: bdrmcnt_4. NP+AV and VH+ML averaged where both available. AV missing from 3BR (uses NP only). NP+AV both missing from 4BR.
 - **Levels**: City (price+rent index, CAGR), Neighborhood (price index, CAGR, 2BR/3BR/4BR values)
+- **Units Permitted / Permits per 1K**: Census Building Permits Survey (BPS), 2024 annual data. File: census.gov/construction/bps/ → CBSA annual data (cbsa2024a.txt). Total new privately-owned housing units authorized by building permits (all structure types: 1-unit, 2-unit, 3-4 unit, 5+ unit). CBSA codes: SF-Oakland-Berkeley=41860, NYC-Newark-Jersey City=35620, Atlanta-Sandy Springs-Roswell=12060, Seattle-Tacoma-Bellevue=42660. Permits per 1K = total units permitted / existing housing units × 1000. Existing housing unit counts from Census ACS 2023 1-Year Estimates, table B25001 (total housing units by MSA).
+- **Levels**: City only (BPS provides MSA-level data; state and neighborhood not applicable)
 
 #### Airports
 - **Source**: Wikipedia (passenger counts, international percentages from airport annual reports and BTS)

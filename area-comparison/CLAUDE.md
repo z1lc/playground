@@ -261,6 +261,15 @@ This is a tool that compares statistical information between the states Californ
 - **Chart**: Time series of VEP turnout (2002-2024), presidential elections as solid lines, midterms as dashed lines. Georgia starts at 2004 (2002 data not available from Ballotpedia).
 - **Levels**: State only (county-level VEP data not readily available from these sources)
 
+#### State Policy Environment
+- **Cannabis Legality**: NORML (norml.org/laws), verified against state statutes. Status categories: Legal (adult-use recreational), Medical Only (medical program only), Decriminalized (reduced penalties), Illegal (criminal penalties). Current as of 2025.
+- **Gun Law Grade**: Giffords Law Center Annual Gun Law Scorecard 2024 (giffords.org/lawcenter/resources/scorecard/). Letter grade (A through F) based on comprehensive evaluation of state gun legislation across background checks, permits, extreme risk laws, domestic violence protections, and other policy areas.
+- **LGBTQ+ Policy Tally**: Movement Advancement Project (MAP) Equality Maps (lgbtmap.org/equality-maps). Composite score (0–47 possible points) covering non-discrimination laws, religious exemptions, family law, youth protections, healthcare, criminal justice, and identity document policies. Higher = more protective. Current as of 2025.
+- **Death Penalty Status**: Death Penalty Information Center (deathpenaltyinfo.org). Categories: Abolished (removed by law or court ruling), Moratorium (executive halt on executions), Active (executions carried out). Current as of 2025.
+- **Minimum Paid Sick Days**: National Partnership for Women & Families (nationalpartnership.org) and state labor department websites. Minimum annual paid sick leave days required by state law. States without a mandate show 0.
+- **Abortion Access**: Guttmacher Institute (guttmacher.org), Center for Reproductive Rights, and state law tracking. Categories: No Limit (no gestational ban), Viability (~24 weeks), Restricted (banned at or before ~6 weeks). Post-Dobbs (2022) landscape. Current as of 2025.
+- **Levels**: State only
+
 ### Religion Section
 
 #### Religious Affiliation (Christian, Other Religion, Unaffiliated)

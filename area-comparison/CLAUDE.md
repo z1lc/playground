@@ -248,6 +248,33 @@ This is a tool that compares statistical information between the states Californ
 - **City data**: Computed from Christian/Other/Unaffiliated shares with estimated Protestant/Catholic split
 - **Levels**: State, City
 
+### Civic & Community Section
+
+#### Volunteering
+- **Source**: AmeriCorps CPS Civic Engagement and Volunteering (CEV) Supplement 2023, conducted by U.S. Census Bureau in partnership with AmeriCorps (September 2023, covering Sep 2022–Sep 2023)
+- **Data**: formal_volunteer_rate (% who volunteered through/for an organization), informal_helping_rate (% who helped neighbors informally), avg_hours_per_volunteer (total hours / number of volunteers, computed from state profile data)
+- **State profiles**: americorps.gov/about/our-impact/volunteering-civic-life/{state} (ca, ny, ga, wa)
+- **API dataset**: data.americorps.gov/resource/4r6x-re58.json ("2017-2023 CEV Findings: State-Level Rates of All Measures")
+- **Notes**: Median volunteer hours are only published at the national level (24 hours in 2023). State-level averages are computed from total hours / volunteer count on state profile pages. NY state profile shows 21.7% formal rate vs. 25.5% in the API dataset; state profile value used as it is the official public-facing figure.
+- **Levels**: State only
+
+#### Charitable Giving
+- **Source**: IRS Statistics of Income (SOI), Tax Year 2022 — Historic Table 2 ("Individual Income Tax Returns with Itemized Deductions")
+- **Data**: charitable_pct_agi (total charitable deductions / total AGI across all filers), charitable_return_pct (% of returns claiming charitable deduction)
+- **Download**: irs.gov/pub/irs-soi/22in55cmcsv.csv
+- **Cross-reference**: Tax Policy Center compilation (taxpolicycenter.org, Tax Year 2021)
+- **Notes**: Post-2017 TCJA nearly doubled the standard deduction, dramatically reducing itemizers (~7.6% of returns nationally claim charitable deductions vs. ~30% pre-TCJA). This metric now primarily reflects higher-income giving behavior. CA has unusually high itemization rate (12.4%) driven by high cost of living / property values.
+- **Levels**: State only
+
+#### Libraries
+- **Source**: IMLS Public Libraries Survey (PLS), Fiscal Year 2022 (released June 2024)
+- **Data file**: imls.gov/sites/default/files/2024-06/pls_fy2022_csv.zip, file PLS_FY22_AE_pud22i.csv
+- **Data**: library_visits_per_capita (VISITS / POPU_LSA), libraries_per_100k ((CENTLIB + BRANLIB + BKMOB) / POPU_LSA * 100000), library_programs_per_1k (TOTPRO / POPU_LSA * 1000)
+- **State data**: Aggregated from all library systems within each state
+- **City data**: SF Public Library, NYC (NYPL + Brooklyn PL + Queens Borough PL combined), Atlanta-Fulton County Library System, Seattle Public Library
+- **Notes**: NY state programs/1K (18.89) and NYC programs/1K (12.70) are notably high. Seattle programs/1K (1.11) is low — only 849 total programs reported for FY 2022, possibly reflecting reporting methodology or post-COVID recovery timing.
+- **Levels**: State, City
+
 ## Statistical Atlas Source URLs
 
 https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Morningside---Lenox-Park/Overview

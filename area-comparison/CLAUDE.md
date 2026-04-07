@@ -187,6 +187,14 @@ This is a tool that compares statistical information between the states Californ
 - **Notes**: SF Bay Area Bib Gourmand count (~55) is estimated from the California statewide total (~119) using historical Bay Area share (~47%). Seattle shows all zeros with a note that no Michelin restaurant guide covers the metro.
 - **Levels**: City only
 
+#### Live Music
+- **Source**: Songkick/Bandsintown venue databases, Wikipedia "List of music festivals" pages, manual curation
+- **Inclusion criteria (venues)**: Dedicated live music venues with 500+ person capacity regularly hosting concerts. Includes concert halls, large music clubs, and arenas used primarily for music events. Excludes performing arts venues (opera houses, symphony halls, Broadway theaters) which are counted under Performing Arts, and small bars/clubs under 500 capacity.
+- **Inclusion criteria (festivals)**: Significant recurring annual music festivals in the metro area with substantial attendance. Includes multi-day outdoor festivals, free city-sponsored events, and notable genre-specific festivals.
+- **Data**: major_venues (count), notable_festivals (count), venue_list (array of {name, type, capacity}), festival_list (array of {name, type, note})
+- **Notes**: Some venues (e.g., Madison Square Garden, Climate Pledge Arena) are multi-purpose arenas also used for sports; they are included here if they host a significant number of concerts annually. The distinction from Performing Arts is genre-based: live_music covers popular music (rock, pop, hip-hop, electronic, jazz clubs), while performing_arts covers classical/theatrical (opera, symphony, ballet, Broadway).
+- **Levels**: City only
+
 ### Infrastructure Section
 
 #### Homeownership Rate

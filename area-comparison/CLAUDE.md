@@ -221,7 +221,7 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: Total homeless count (pit_count), homeless per 10K population (per_10k), % unsheltered (unsheltered_pct).
 - **CoC mapping**: SF = CA-501, NYC = NY-600, Atlanta = GA-500, Seattle/King County = WA-500.
 - **State data**: State-level aggregates from HUD data / AHAR 2024.
-- **City data**: CoC-level PIT counts. Per-10K rates use metro population as denominator (from existing DATA), so city rates may be understated since CoCs cover smaller areas than full metros.
+- **City data**: CoC-level PIT counts. Per-10K rates use CoC-area population as denominator (Census 2024 estimates): SF County (830,235) for CA-501, NYC 5 boroughs (8,478,000) for NY-600, City of Atlanta (520,070) for GA-500, King County (2,317,959) for WA-500.
 - **Notes**: PIT count is a single-night snapshot (last 10 days of January) and is an inherent undercount. NY has very high count (158K) but very low unsheltered % (3.6%) due to right-to-shelter mandate.
 - **Levels**: State, City
 

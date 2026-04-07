@@ -219,6 +219,26 @@ This is a tool that compares statistical information between the states Californ
 - **Chart**: Time series of VEP turnout (2002-2024), presidential elections as solid lines, midterms as dashed lines. Georgia starts at 2004 (2002 data not available from Ballotpedia).
 - **Levels**: State only (county-level VEP data not readily available from these sources)
 
+### Religion Section
+
+#### Religious Affiliation (Christian, Other Religion, Unaffiliated)
+- **Source (states)**: Pew Religious Landscape Study, compiled via uscanadainfo.com (sources: Pew Research Center, US Census, ARDA)
+- **Source (cities)**: Pew Religious Landscape Study 2014 and 2023-24 (metro-level data)
+- **Data**: christian_percent (all Christian traditions), other_religion_percent (all non-Christian religions: Jewish, Muslim, Hindu, Buddhist, Sikh, etc.), unaffiliated_percent (atheist, agnostic, "nothing in particular")
+- **City data**: SF and SEA from Pew 2023-24. NYC from Pew 2014. ATL from Pew 2023-24.
+- **Levels**: State, City
+
+#### Religiosity (Importance, Attendance)
+- **Source**: Pew Religious Landscape Study 2014 (via Wikipedia "List of U.S. states and territories by religiosity")
+- **Data**: religion_important_percent (% saying religion is "very important"), weekly_attendance_percent (% attending weekly or more)
+- **Levels**: State only (metro-level religiosity data not reliably available)
+
+#### Religious Diversity Index
+- **Method**: Computed using Herfindahl-based formula: RDI = 10 × (1 − Σ(share_i²)) with 4 categories (Protestant, Catholic, Other Religion, Unaffiliated). Scale 0–10, higher = more diverse.
+- **State data**: Computed from detailed denomination breakdown (Evangelical, Mainline, Historically Black, Catholic, Other Christian → combined into Protestant and Other Christian)
+- **City data**: Computed from Christian/Other/Unaffiliated shares with estimated Protestant/Catholic split
+- **Levels**: State, City
+
 ## Statistical Atlas Source URLs
 
 https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Morningside---Lenox-Park/Overview

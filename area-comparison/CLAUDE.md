@@ -61,6 +61,17 @@ This is a tool that compares statistical information between the states Californ
 - **Notes**: GA has no state program; federal FMLA provides 12 weeks unpaid only. CA wage replacement is income-tiered (70–90% per SB 951, Jan 2025); 70% used as the representative rate for most workers. WA allows up to 16 weeks combined family+medical leave; 12 weeks reflects family leave only.
 - **Levels**: State only
 
+#### Childcare Costs
+- **Source (states)**: Child Care Aware of America (CCAoA), "Child Care in America: 2024 Price & Supply Report" (childcareaware.org/price-landscape24), state fact sheets. Center-based care only.
+- **Source (cities)**: DOL Women's Bureau National Database of Childcare Prices (NDCP) 2022, county-level data (dol.gov/agencies/wb/topics/childcare). NYC data from NYC Comptroller's Office (2024), citing NY OCFS market rate survey.
+- **Data**: infant_annual (center-based, age 0–1), toddler_annual (age 1–2), four_year_old_annual (preschool age), pct_of_income (infant cost / median household income × 100, using existing median_household_income from DATA)
+- **State data**: CCAoA 2024 fact sheets. CA infant=$22,628, NY=$20,439, GA=$11,066, WA=$21,348. CA toddler ($14,100) estimated from DOL NDCP 2022 state-level toddler/infant ratio (0.623) scaled by CCA/DOL inflation factor — CCAoA does not publish CA toddler rates (CA licensing categories differ). 4-year-old costs derived from CCAoA "2-child annual center cost" (infant + 4yr) minus infant cost.
+- **City data**: DOL NDCP 2022 county-level median weekly prices × 52. SF County (FIPS 06075), Fulton County (13121), King County (53033). NYC from NYC Comptroller Jan 2025 report (OCFS 2024 market rates): infant=$26,000, toddler=$23,400, 4yr=$16,900.
+- **Care type**: Center-based only (most common formal arrangement, most consistent pricing data)
+- **Data vintage**: State: 2024 (CCAoA). City: 2022 (DOL NDCP) except NYC 2024 (Comptroller).
+- **Notes**: Costs are annual. Infant care is typically most expensive due to lower caregiver-to-child ratios required by licensing. SF 4-year-old cost ($24,806) exceeds toddler cost ($22,539), an anomaly likely reflecting SF's premium structured pre-K programs.
+- **Levels**: State, City
+
 #### Tech & Startups
 - **VC Funding**: Crunchbase/Carta reports (2024)
 - **Unicorns**: Failory/Crunchbase

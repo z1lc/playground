@@ -577,15 +577,6 @@
             { key: 'sales_tax', label: 'Sales Tax', format: 'percent', showBar: true, barMax: 15 },
             { key: 'property_tax', label: 'Property Tax Rate', format: 'percent', showBar: true, barMax: 15, tooltip: 'Effective rate as % of home value' },
           ] },
-          { key: 'tech_economy', label: '\uD83D\uDE80 Tech & Startups', granularities: ['cities'], metrics: [
-            { key: 'vc_funding_billions', label: 'VC Funding ($B, 2024)', format: 'number', showBar: true, tooltip: 'Total metro area venture capital investment in 2024' },
-            { key: 'unicorns', label: 'Unicorn Companies', format: 'number', showBar: true, tooltip: 'Private companies valued at $1B+' },
-            { key: 'swe_median_tc', label: 'SWE Median Total Comp', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Software engineer median total compensation (Levels.fyi)' },
-            { key: 'swe_p90_tc', label: 'SWE 90th Pctile TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Software engineer 90th percentile total compensation (Levels.fyi)' },
-            { key: 'swe_senior_tc', label: 'Senior SWE Median TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Weighted avg median total comp across 9 major tech companies (Google L5, Meta E5, Amazon SDE III, Apple ICT4, Microsoft 63, Stripe L3, Netflix L5, Uber 5a, Airbnb G9). Weighted by sample size. Source: Levels.fyi.' },
-            { key: 'pm_senior_tc', label: 'Senior PM Median TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Weighted avg median total comp for Product Managers across major tech companies (Google PM2, Meta L5, Amazon Sr PM, Apple ICT4, Microsoft 63, Stripe L3, Netflix Sr PM, Uber Sr PM, Airbnb L5). Weighted by sample size. Source: Levels.fyi.' },
-            { key: 'patents', label: 'Patent Filings', format: 'number', showBar: true, tooltip: 'State-level USPTO patent filings (FY 2024)' },
-          ], hasFortune500List: true },
           { key: 'employment_status', label: '\uD83D\uDCBC Employment Status', metrics: [
             { key: 'employed_percent', label: 'Employed', format: 'percent', showBar: true },
             { key: 'unemployed_percent', label: 'Unemployed', format: 'percent', showBar: true },
@@ -595,9 +586,10 @@
             { key: 'overall_poverty_rate', label: 'Overall Poverty Rate', format: 'percent', showBar: true, barRelative: true, barGroupKeys: ['overall_poverty_rate', 'child_poverty_rate'], tooltip: 'Percentage of population with income below the federal poverty line (Census ACS 2023). The US average is ~12.4%.' },
             { key: 'child_poverty_rate', label: 'Child Poverty Rate', format: 'percent', showBar: true, barRelative: true, barGroupKeys: ['overall_poverty_rate', 'child_poverty_rate'], tooltip: 'Percentage of children under 18 with family income below the federal poverty line (Census ACS 2023). The US average is ~16.2%.' },
           ] },
-          { key: 'family_leave', label: '\uD83D\uDC76 Paid Family Leave', granularities: ['states'], metrics: [
-            { key: 'paid_leave_weeks', label: 'Paid Leave (weeks)', format: 'number', showBar: true, barMax: 16, tooltip: 'Maximum weeks of state-mandated paid family leave for bonding with a new child (birth, adoption, or foster placement). Georgia has no state program; federal FMLA provides 12 weeks unpaid only. Sources: CA EDD, NY Workers\u2019 Compensation Board, WA Employment Security Dept.' },
-            { key: 'wage_replacement_pct', label: 'Wage Replacement', format: 'percent', showBar: true, barMax: 100, tooltip: 'Percentage of wages replaced during paid family leave. CA: 70\u201390% depending on income tier (SB 951, Jan 2025); most workers get 70%, lower earners get 90%. NY: 67% of NY average weekly wage. WA: 90% of wages up to state average weekly wage, 50% above that cap.' },
+          { key: 'homelessness', label: '\uD83C\uDFDA\uFE0F Homelessness', granularities: ['states', 'cities'], metrics: [
+            { key: 'pit_count', label: 'Homeless Count (PIT)', format: 'number', showBar: true, barRelative: true, tooltip: 'HUD Point-in-Time count (January 2024). Single-night snapshot of sheltered and unsheltered homeless individuals.' },
+            { key: 'per_10k', label: 'Homeless per 10K', format: 'number', showBar: true, barRelative: true, tooltip: 'Homeless individuals per 10,000 population. City rates use CoC-area population as denominator.' },
+            { key: 'unsheltered_pct', label: 'Unsheltered', format: 'percent', showBar: true, tooltip: '% of homeless population that is unsheltered (not in emergency shelter or transitional housing)' },
           ] },
           { key: 'childcare_costs', label: '\uD83E\uDDD2 Childcare Costs', granularities: ['states', 'cities'], metrics: [
             { key: 'infant_annual', label: 'Infant Care (annual)', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['infant_annual', 'toddler_annual', 'four_year_old_annual'], tooltip: 'Annual cost of center-based childcare for an infant (age 0\u20131). State: Child Care Aware 2024. City: DOL NDCP 2022 (county-level) / NYC Comptroller 2024.' },
@@ -605,10 +597,80 @@
             { key: 'four_year_old_annual', label: '4-Year-Old Care (annual)', format: 'currency', showBar: true, barRelative: true, barGroupKeys: ['infant_annual', 'toddler_annual', 'four_year_old_annual'], tooltip: 'Annual cost of center-based childcare for a 4-year-old (preschool age). State: Child Care Aware 2024. City: DOL NDCP 2022 (county-level) / NYC Comptroller 2024.' },
             { key: 'pct_of_income', label: 'Cost as % of Income', format: 'percent', showBar: true, barRelative: true, tooltip: 'Infant center-based care cost as a percentage of median household income.' },
           ] },
+          { key: 'family_leave', label: '\uD83D\uDC76 Paid Family Leave', granularities: ['states'], metrics: [
+            { key: 'paid_leave_weeks', label: 'Paid Leave (weeks)', format: 'number', showBar: true, barMax: 16, tooltip: 'Maximum weeks of state-mandated paid family leave for bonding with a new child (birth, adoption, or foster placement). Georgia has no state program; federal FMLA provides 12 weeks unpaid only. Sources: CA EDD, NY Workers\u2019 Compensation Board, WA Employment Security Dept.' },
+            { key: 'wage_replacement_pct', label: 'Wage Replacement', format: 'percent', showBar: true, barMax: 100, tooltip: 'Percentage of wages replaced during paid family leave. CA: 70\u201390% depending on income tier (SB 951, Jan 2025); most workers get 70%, lower earners get 90%. NY: 67% of NY average weekly wage. WA: 90% of wages up to state average weekly wage, 50% above that cap.' },
+          ] },
+          { key: 'tech_economy', label: '\uD83D\uDE80 Tech & Startups', granularities: ['cities'], metrics: [
+            { key: 'vc_funding_billions', label: 'VC Funding ($B, 2024)', format: 'number', showBar: true, tooltip: 'Total metro area venture capital investment in 2024' },
+            { key: 'unicorns', label: 'Unicorn Companies', format: 'number', showBar: true, tooltip: 'Private companies valued at $1B+' },
+            { key: 'swe_median_tc', label: 'SWE Median Total Comp', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Software engineer median total compensation (Levels.fyi)' },
+            { key: 'swe_p90_tc', label: 'SWE 90th Pctile TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Software engineer 90th percentile total compensation (Levels.fyi)' },
+            { key: 'swe_senior_tc', label: 'Senior SWE Median TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Weighted avg median total comp across 9 major tech companies (Google L5, Meta E5, Amazon SDE III, Apple ICT4, Microsoft 63, Stripe L3, Netflix L5, Uber 5a, Airbnb G9). Weighted by sample size. Source: Levels.fyi.' },
+            { key: 'pm_senior_tc', label: 'Senior PM Median TC', format: 'currency', showBar: true, barMax: 500000, tooltip: 'Weighted avg median total comp for Product Managers across major tech companies (Google PM2, Meta L5, Amazon Sr PM, Apple ICT4, Microsoft 63, Stripe L3, Netflix Sr PM, Uber Sr PM, Airbnb L5). Weighted by sample size. Source: Levels.fyi.' },
+            { key: 'patents', label: 'Patent Filings', format: 'number', showBar: true, tooltip: 'State-level USPTO patent filings (FY 2024)' },
+          ], hasFortune500List: true },
         ],
       },
       {
-        key: 'lifestyle', label: '\uD83C\uDFD9\uFE0F Lifestyle',
+        key: 'education', label: '\uD83C\uDF93 Education',
+        topics: [
+          { key: 'educational_attainment', label: '\uD83D\uDCDC Educational Attainment', metrics: [
+            { key: 'graduate_degree_percent', label: 'Graduate Degree', format: 'percent', showBar: true },
+            { key: 'bachelors_or_higher_percent', label: "Bachelor's or Higher", format: 'percent', showBar: true },
+            { key: 'high_school_or_higher_percent', label: 'High School or Higher', format: 'percent', showBar: true },
+            { key: 'no_hs_diploma_percent', label: 'No HS Diploma', format: 'percent', showBar: true },
+          ] },
+          { key: 'k12', label: '\uD83C\uDF92 K-12', granularities: ['states', 'cities'], metrics: [
+            { key: 'prek_enrollment_rate', label: 'Pre-K Enrollment', format: 'percent', showBar: true, tooltip: '% of 4-year-olds in state-funded pre-K (NIEER 2024)' },
+            { key: 'let_grow_cps', label: 'Let Grow: CPS/Neglect', format: 'rating', tooltip: 'Let Grow rates state laws on when Child Protective Services can intervene in families suspected of neglect. Green = law protects children\'s independence. Red = law is punitive. Beige = law confers discretion to restrict independence.' },
+            { key: 'let_grow_criminal', label: 'Let Grow: Criminal', format: 'rating', tooltip: 'Let Grow rates state criminal laws enforced by police and courts regarding child supervision. Green = law protects children\'s independence. Red = law is punitive. Beige = law confers discretion to restrict independence.' },
+            { key: 'naep_4_math', label: 'NAEP 4th Math', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 4th graders at or above Proficient in math (NAEP 2024). National avg: 40%.' },
+            { key: 'naep_4_reading', label: 'NAEP 4th Reading', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 4th graders at or above Proficient in reading (NAEP 2024). National avg: 30%.' },
+            { key: 'naep_8_math', label: 'NAEP 8th Math', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 8th graders at or above Proficient in math (NAEP 2024). National avg: 27%.' },
+            { key: 'naep_8_reading', label: 'NAEP 8th Reading', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 8th graders at or above Proficient in reading (NAEP 2024). National avg: 29%.' },
+            { key: 'graduation_rate', label: 'HS Graduation Rate', format: 'percent', showBar: true, tooltip: '4-year adjusted cohort graduation rate (NCES / state DOE)' },
+          ] },
+          { key: 'universities', label: '\uD83C\uDF93 Universities', granularities: ['states', 'cities'], metrics: [], hasUniversityList: true },
+        ],
+      },
+      {
+        key: 'health_safety', label: '\uD83C\uDFE5 Health & Safety',
+        topics: [
+          { key: 'health', label: '\uD83D\uDCAA Health', granularities: ['states', 'cities'], metrics: [
+            { key: 'median_aqi', label: 'Median AQI', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Annual median Air Quality Index (EPA 2024). Lower is better.' },
+            { key: 'good_air_days_pct', label: 'Good Air Quality Days', format: 'percent', showBar: true, dataKey: 'healthcare', tooltip: 'Percentage of monitored days rated Good (AQI \u2264 50)' },
+            { key: 'overweight_or_obese_rate', label: 'Overweight or Obese', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'obesity_rate', label: 'Obesity Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'smoking_rate', label: 'Smoking Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'binge_drinking_rate', label: 'Binge Drinking', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'exercise_rate', label: 'Meets Exercise Guidelines', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'no_exercise_rate', label: 'Sedentary (No Leisure Activity)', format: 'percent', showBar: true, dataKey: 'healthcare' },
+            { key: 'overdose_death_rate', label: 'Drug Overdose Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted drug overdose death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes accidental, intentional, and undetermined intent.' },
+            { key: 'gun_death_rate', label: 'Firearm Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted firearm death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes homicide, suicide, accidental, and legal intervention.' },
+          ] },
+          { key: 'healthcare', label: '\uD83C\uDFE5 Healthcare', granularities: ['states', 'cities'], metrics: [
+            { key: 'life_expectancy', label: 'Life Expectancy (yrs)', format: 'number', showBar: true, barMax: 90 },
+            { key: 'physicians_per_100k', label: 'Physicians / 100K', format: 'number', showBar: true },
+            { key: 'uninsured_rate', label: 'Uninsured Rate', format: 'percent', showBar: true, barRelative: true },
+            { key: 'infant_mortality', label: 'Infant Mortality / 1K', format: 'number', showBar: true },
+          ] },
+          { key: 'crime', label: '\uD83D\uDD12 Crime', granularities: ['cities'], metrics: [
+            { key: 'violent_per_100k', label: 'Violent Crime / 100K', format: 'number', showBar: true, tooltip: 'Murder, rape, robbery, and aggravated assault' },
+            { key: 'property_per_100k', label: 'Property Crime / 100K', format: 'number', showBar: true, tooltip: 'Burglary, larceny-theft, motor vehicle theft, and arson' },
+          ] },
+          { key: 'natural_hazards', label: '\u26A0\uFE0F Natural Hazard Risk', granularities: ['states', 'cities'], metrics: [
+            { key: 'risk_index', label: 'Overall Risk Index', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA National Risk Index composite score (0\u2013100 percentile among US counties). Accounts for expected annual loss, social vulnerability, and community resilience. State values are county averages.' },
+            { key: 'earthquake_score', label: 'Earthquake', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI earthquake hazard percentile score (0\u2013100)' },
+            { key: 'wildfire_score', label: 'Wildfire', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI wildfire hazard percentile score (0\u2013100)' },
+            { key: 'flood_score', label: 'Flooding', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI inland flooding hazard percentile score (0\u2013100)' },
+            { key: 'hurricane_score', label: 'Hurricane', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI hurricane hazard percentile score (0\u2013100). null for CA and WA (not hurricane-prone).' },
+            { key: 'tornado_score', label: 'Tornado', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI tornado hazard percentile score (0\u2013100)' },
+          ] },
+        ],
+      },
+      {
+        key: 'outdoors_rec', label: '\u26F0\uFE0F Outdoors & Recreation',
         topics: [
           { key: 'weather', label: '\u26C5 Weather & Time', granularities: ['cities'], metrics: [
             { key: 'arid_percent', label: 'Arid', format: 'percent', showBar: true, tooltip: 'Percentage of days that don\u2019t feel humid (dew point below 65\u00B0F)' },
@@ -630,32 +692,6 @@
             { key: 'beach_access', label: 'Beach Access', format: 'rating', tooltip: 'Direct = ocean/sound beaches within city or immediate suburbs, year-round. Limited = beaches within city but seasonal or transit-dependent. None = no coast within day-trip distance.' },
           ] },
           { key: 'sports', label: '\uD83C\uDFDF\uFE0F Sports', granularities: ['cities'], metrics: [], hasTeamList: true },
-          { key: 'health', label: '\uD83D\uDCAA Health', granularities: ['states', 'cities'], metrics: [
-            { key: 'median_aqi', label: 'Median AQI', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Annual median Air Quality Index (EPA 2024). Lower is better.' },
-            { key: 'good_air_days_pct', label: 'Good Air Quality Days', format: 'percent', showBar: true, dataKey: 'healthcare', tooltip: 'Percentage of monitored days rated Good (AQI \u2264 50)' },
-            { key: 'overweight_or_obese_rate', label: 'Overweight or Obese', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'obesity_rate', label: 'Obesity Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'smoking_rate', label: 'Smoking Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'binge_drinking_rate', label: 'Binge Drinking', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'exercise_rate', label: 'Meets Exercise Guidelines', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'no_exercise_rate', label: 'Sedentary (No Leisure Activity)', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'overdose_death_rate', label: 'Drug Overdose Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted drug overdose death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes accidental, intentional, and undetermined intent.' },
-            { key: 'gun_death_rate', label: 'Firearm Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted firearm death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes homicide, suicide, accidental, and legal intervention.' },
-          ] },
-          { key: 'healthcare', label: '\uD83C\uDFE5 Healthcare', granularities: ['states', 'cities'], metrics: [
-            { key: 'life_expectancy', label: 'Life Expectancy (yrs)', format: 'number', showBar: true, barMax: 90 },
-            { key: 'physicians_per_100k', label: 'Physicians / 100K', format: 'number', showBar: true },
-            { key: 'uninsured_rate', label: 'Uninsured Rate', format: 'percent', showBar: true, barRelative: true },
-            { key: 'infant_mortality', label: 'Infant Mortality / 1K', format: 'number', showBar: true },
-          ] },
-          { key: 'natural_hazards', label: '\u26A0\uFE0F Natural Hazard Risk', granularities: ['states', 'cities'], metrics: [
-            { key: 'risk_index', label: 'Overall Risk Index', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA National Risk Index composite score (0\u2013100 percentile among US counties). Accounts for expected annual loss, social vulnerability, and community resilience. State values are county averages.' },
-            { key: 'earthquake_score', label: 'Earthquake', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI earthquake hazard percentile score (0\u2013100)' },
-            { key: 'wildfire_score', label: 'Wildfire', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI wildfire hazard percentile score (0\u2013100)' },
-            { key: 'flood_score', label: 'Flooding', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI inland flooding hazard percentile score (0\u2013100)' },
-            { key: 'hurricane_score', label: 'Hurricane', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI hurricane hazard percentile score (0\u2013100). null for CA and WA (not hurricane-prone).' },
-            { key: 'tornado_score', label: 'Tornado', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI tornado hazard percentile score (0\u2013100)' },
-          ] },
         ],
       },
       {
@@ -681,28 +717,6 @@
             { key: 'starred_per_million', label: 'Starred per Million', format: 'number', showBar: true, barRelative: true, tooltip: 'Total Michelin-starred restaurants (1+2+3 star) per million metro population' },
             { key: 'bib_per_million', label: 'Bib Gourmand per Million', format: 'number', showBar: true, barRelative: true, tooltip: 'Bib Gourmand restaurants per million metro population' },
           ] },
-        ],
-      },
-      {
-        key: 'education', label: '\uD83C\uDF93 Education',
-        topics: [
-          { key: 'educational_attainment', label: '\uD83D\uDCDC Educational Attainment', metrics: [
-            { key: 'graduate_degree_percent', label: 'Graduate Degree', format: 'percent', showBar: true },
-            { key: 'bachelors_or_higher_percent', label: "Bachelor's or Higher", format: 'percent', showBar: true },
-            { key: 'high_school_or_higher_percent', label: 'High School or Higher', format: 'percent', showBar: true },
-            { key: 'no_hs_diploma_percent', label: 'No HS Diploma', format: 'percent', showBar: true },
-          ] },
-          { key: 'k12', label: '\uD83C\uDF92 K-12', granularities: ['states', 'cities'], metrics: [
-            { key: 'prek_enrollment_rate', label: 'Pre-K Enrollment', format: 'percent', showBar: true, tooltip: '% of 4-year-olds in state-funded pre-K (NIEER 2024)' },
-            { key: 'let_grow_cps', label: 'Let Grow: CPS/Neglect', format: 'rating', tooltip: 'Let Grow rates state laws on when Child Protective Services can intervene in families suspected of neglect. Green = law protects children\'s independence. Red = law is punitive. Beige = law confers discretion to restrict independence.' },
-            { key: 'let_grow_criminal', label: 'Let Grow: Criminal', format: 'rating', tooltip: 'Let Grow rates state criminal laws enforced by police and courts regarding child supervision. Green = law protects children\'s independence. Red = law is punitive. Beige = law confers discretion to restrict independence.' },
-            { key: 'naep_4_math', label: 'NAEP 4th Math', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 4th graders at or above Proficient in math (NAEP 2024). National avg: 40%.' },
-            { key: 'naep_4_reading', label: 'NAEP 4th Reading', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 4th graders at or above Proficient in reading (NAEP 2024). National avg: 30%.' },
-            { key: 'naep_8_math', label: 'NAEP 8th Math', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 8th graders at or above Proficient in math (NAEP 2024). National avg: 27%.' },
-            { key: 'naep_8_reading', label: 'NAEP 8th Reading', format: 'percent', showBar: true, barRelative: true, tooltip: '% of 8th graders at or above Proficient in reading (NAEP 2024). National avg: 29%.' },
-            { key: 'graduation_rate', label: 'HS Graduation Rate', format: 'percent', showBar: true, tooltip: '4-year adjusted cohort graduation rate (NCES / state DOE)' },
-          ] },
-          { key: 'universities', label: '\uD83C\uDF93 Universities', granularities: ['states', 'cities'], metrics: [], hasUniversityList: true },
         ],
       },
       {
@@ -746,15 +760,6 @@
             { key: 'rent_cagr', label: 'Rent CAGR (2000\u20132024)', format: 'percent', showBar: true, barMax: 5 },
             { key: 'units_permitted', label: 'Units Permitted (2024)', format: 'number', showBar: true, barRelative: true, tooltip: 'Total new housing units authorized by building permits in 2024 (Census Building Permits Survey, annual MSA data). Includes all structure types.' },
             { key: 'permits_per_1k', label: 'Permits per 1K Units', format: 'number', showBar: true, barRelative: true, tooltip: 'New housing units permitted per 1,000 existing housing units (Census BPS 2024 / ACS 2023 total housing units). Higher = more active construction relative to existing stock.' },
-          ] },
-          { key: 'crime', label: '\uD83D\uDD12 Crime', granularities: ['cities'], metrics: [
-            { key: 'violent_per_100k', label: 'Violent Crime / 100K', format: 'number', showBar: true, tooltip: 'Murder, rape, robbery, and aggravated assault' },
-            { key: 'property_per_100k', label: 'Property Crime / 100K', format: 'number', showBar: true, tooltip: 'Burglary, larceny-theft, motor vehicle theft, and arson' },
-          ] },
-          { key: 'homelessness', label: '🏚️ Homelessness', granularities: ['states', 'cities'], metrics: [
-            { key: 'pit_count', label: 'Homeless Count (PIT)', format: 'number', showBar: true, barRelative: true, tooltip: 'HUD Point-in-Time count (January 2024). Single-night snapshot of sheltered and unsheltered homeless individuals.' },
-            { key: 'per_10k', label: 'Homeless per 10K', format: 'number', showBar: true, barRelative: true, tooltip: 'Homeless individuals per 10,000 population. City rates use CoC-area population as denominator.' },
-            { key: 'unsheltered_pct', label: 'Unsheltered', format: 'percent', showBar: true, tooltip: '% of homeless population that is unsheltered (not in emergency shelter or transitional housing)' },
           ] },
           { key: 'broadband', label: '📡 Internet', granularities: ['states', 'cities'], metrics: [
             { key: 'broadband_pct', label: 'Broadband Access (100+ Mbps)', format: 'percent', showBar: true, tooltip: '% of locations with access to 100+ Mbps download speed (FCC Broadband Data Collection / BroadbandNow)' },

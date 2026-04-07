@@ -148,6 +148,30 @@ This is a tool that compares statistical information between the states Californ
 - **Method**: Queried via ArcGIS REST API at services.arcgis.com.
 - **Levels**: State, City
 
+### Arts & Culture Section
+
+#### Museums
+- **Source**: Wikipedia "List of museums in [city]" pages, cross-referenced with TripAdvisor and Google Maps
+- **Inclusion criteria**: Nationally/internationally recognized museums with substantial permanent collections or exhibition programs. Includes art, science, natural history, history, and notable specialty museums. Excludes small galleries, house museums, and university-only galleries (though university-affiliated museums with national recognition are included, e.g., Cantor Arts Center, Carlos Museum, Henry Art Gallery).
+- **Data**: major_museums (count), museums_per_million (major museums per million metro population), list (array of {name, full, type})
+- **Per-capita denominator**: Metro population from existing population.total_population
+- **Levels**: City only
+
+#### Performing Arts
+- **Source**: Wikipedia, venue websites
+- **Inclusion criteria**: Major performing arts venues with 500+ seats used for professional productions — opera houses, symphony halls, large theaters, performing arts centers. Excludes comedy clubs, small black-box theaters, movie theaters, and sports arenas.
+- **Data**: major_venues (count), venues_per_million (per million metro population), list (array of {name, type, seats})
+- **Notes**: NYC count (55) includes all 41 designated Broadway theaters (each 500+ seats) plus 14 major institutional venues (Lincoln Center complex, Carnegie Hall, BAM, Radio City, etc.). The "Notable" list shows only the most significant venues, not all 55.
+- **Levels**: City only
+
+#### Michelin Dining
+- **Source**: Michelin Guide (guide.michelin.com), verified via Wikipedia and culinary press
+- **Guide coverage**: California (covers SF Bay Area — long-standing), New York (long-standing), American South (covers Atlanta — added 2023). Seattle/Washington State is NOT covered by the Michelin restaurant guide (only hotel keys awarded 2024).
+- **Data**: three_star, two_star, one_star, bib_gourmand (raw counts), starred_per_million (total 1+2+3 star per million metro pop), bib_per_million (Bib Gourmand per million metro pop)
+- **Data vintage**: 2025 guide year (California ceremony Jun 2025, NYC/Northeast Nov 2024, American South Nov 2025)
+- **Notes**: SF Bay Area Bib Gourmand count (~55) is estimated from the California statewide total (~119) using historical Bay Area share (~47%). Seattle shows all zeros with a note that no Michelin restaurant guide covers the metro.
+- **Levels**: City only
+
 ### Infrastructure Section
 
 #### Homeownership Rate

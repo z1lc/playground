@@ -197,6 +197,19 @@ This is a tool that compares statistical information between the states Californ
 - **Firearm Death Rate**: Same CDC NCHS source. Age-adjusted rate per 100,000. ICD-10 codes W32-W34 (accidental), X72-X74 (suicide), X93-X95 (homicide), Y22-Y24 (undetermined), Y35.0 (legal intervention). All intents combined.
 - **Levels**: State (all metrics), City (AQI only)
 
+#### Air Quality (Hyperlocal)
+- **Source**: EPA Air Quality System (AQS) API, annual and daily data for 2024
+- **Endpoints**: aqs.epa.gov/data/api/annualData/bySite (annual mean PM2.5), aqs.epa.gov/data/api/dailyData/bySite (daily AQI for good-days calculation), aqs.epa.gov/data/api/monitors/byCounty (monitor identification)
+- **Parameter**: 88101 (PM2.5 - Local Conditions, FRM/FEM)
+- **Data**: avg_pm25 (annual arithmetic mean PM2.5 in µg/m³), neighborhood_good_air_days_pct (% of monitored days with AQI ≤ 50), nearest_monitor_distance_mi (miles from neighborhood centroid to monitor)
+- **Monitor selection**: Nearest active PM2.5 monitor to each neighborhood centroid, preferring NEIGHBORHOOD-scale POPULATION EXPOSURE monitors over MICROSCALE/SOURCE ORIENTED (near-road) monitors.
+  - NP+AV: 06-075-0005 "San Francisco" (10 Arkansas St), 2.3 mi from centroid (37.776, -122.440). BAM-1020, 334 days monitored.
+  - GV: 36-061-0128 "PS 19" (185 1st Ave), 0.9 mi from centroid (40.734, -74.000). Gravimetric, 121 days monitored (every-3-day schedule).
+  - VH+MS: 13-121-0039 "Fire Station #8" (1711 Marietta Blvd), 4.9 mi from centroid (33.789, -84.352). Gravimetric, 122 days monitored. Note: closer monitor 13-121-0056 (NR-GA Tech, 2.4 mi) was excluded because it is a MICROSCALE near-road monitor that would overstate neighborhood PM2.5.
+  - MI: 53-033-0080 "Seattle - Beacon Hill" (4103 Beacon Hill S), 4.1 mi from centroid (47.572, -122.222). BAM-1022, 346 days monitored.
+- **Notes**: PM2.5 is the pollutant with the greatest spatial variation and health impact at neighborhood scale. EPA revised the annual PM2.5 standard to 9.0 µg/m³ in 2024 (down from 12.0). All four neighborhoods are below the new standard. Monitor distances range from 0.9 to 4.9 miles.
+- **Levels**: Neighborhood
+
 #### Healthcare
 - **Life Expectancy**: State: Wikipedia List of U.S. states by life expectancy (2021). City: County Health Rankings (county-level).
 - **Physicians per 100K**: HRSA State of the Health Workforce Report 2024

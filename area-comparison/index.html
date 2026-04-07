@@ -477,7 +477,8 @@
         "parks":{"tree_canopy_pct":17.1},
         "noise":{"avg_db":45.0,"pct_above_50db":33.7,"pct_above_65db":7.3,"dominant_source":"road","dominant_source_desc":"Geary Blvd (38/38R bus corridor), Masonic Ave, and Divisadero St are the primary noise sources. Interior residential blocks between arterials are quieter (40\u201345 dB)."},
         "commute": { "avg_commute_minutes": 30.8, "drive_alone_percent": 19.5, "carpool_percent": 3.4, "public_transit_percent": 21.2, "walk_percent": 8.7, "bike_percent": 6.2, "work_from_home_percent": 38.4 },
-        "crime":{"violent_per_1k":16.1,"property_per_1k":157.0}
+        "crime":{"violent_per_1k":16.1,"property_per_1k":157.0},
+        "air_quality":{"avg_pm25":6.7,"neighborhood_good_air_days_pct":76.0,"nearest_monitor_distance_mi":2.3,"monitor_name":"San Francisco","monitor_id":"06-075-0005"}
       },
       "Greenwich Village": {
         "population": { "total_population": 23138, "population_density_per_sq_mi": 99743.08 },
@@ -496,7 +497,8 @@
         "parks":{"tree_canopy_pct":25.6},
         "noise":{"avg_db":48.0,"pct_above_50db":39.1,"pct_above_65db":2.9,"dominant_source":"road","dominant_source_desc":"Dense Manhattan street grid with heavy taxi, bus, and truck traffic. 6th Ave, 7th Ave, Broadway, and Houston St are the noisiest corridors. No major aviation or rail noise in the neighborhood."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 4.5, "carpool_percent": 0.5, "public_transit_percent": 38.8, "walk_percent": 19.1, "bike_percent": 3.6, "work_from_home_percent": 30.0 },
-        "crime":{"violent_per_1k":14.5,"property_per_1k":143.3}
+        "crime":{"violent_per_1k":14.5,"property_per_1k":143.3},
+        "air_quality":{"avg_pm25":7.7,"neighborhood_good_air_days_pct":73.6,"nearest_monitor_distance_mi":0.9,"monitor_name":"PS 19","monitor_id":"36-061-0128"}
       },
       "Virginia Highland + Morningside": {
         "population": { "total_population": 16090, "population_density_per_sq_mi": 5711.25 },
@@ -515,7 +517,8 @@
         "parks":{"tree_canopy_pct":59.3},
         "noise":{"avg_db":37.6,"pct_above_50db":9.0,"pct_above_65db":0.7,"dominant_source":"road","dominant_source_desc":"Quiet residential neighborhoods. Ponce de Leon Ave and Highland Ave carry moderate traffic. Well-buffered from I-85 and I-75 by distance and topography."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 52.6, "carpool_percent": 3.7, "public_transit_percent": 2.0, "walk_percent": 3.5, "bike_percent": 2.6, "work_from_home_percent": 35.4 },
-        "crime":{"violent_per_1k":8.1,"property_per_1k":112.7}
+        "crime":{"violent_per_1k":8.1,"property_per_1k":112.7},
+        "air_quality":{"avg_pm25":8.7,"neighborhood_good_air_days_pct":59.0,"nearest_monitor_distance_mi":4.9,"monitor_name":"Fire Station #8","monitor_id":"13-121-0039"}
       },
       "Mercer Island": {
         "population": { "total_population": 24467, "population_density_per_sq_mi": 3853.42 },
@@ -534,7 +537,8 @@
         "parks":{"tree_canopy_pct":25.5},
         "noise":{"avg_db":39.4,"pct_above_50db":14.0,"pct_above_65db":3.5,"dominant_source":"road","dominant_source_desc":"I-90 crosses the island via the Homer M. Hadley Memorial Bridge, creating a concentrated noise corridor. Residential areas away from I-90 are very quiet (35\u201340 dB)."},
         "commute": { "avg_commute_minutes": 23.6, "drive_alone_percent": 51.7, "carpool_percent": 3.8, "public_transit_percent": 3.1, "walk_percent": 1.6, "bike_percent": 0.1, "work_from_home_percent": 38.6 },
-        "crime":{"violent_per_1k":0.4,"property_per_1k":12.4}
+        "crime":{"violent_per_1k":0.4,"property_per_1k":12.4},
+        "air_quality":{"avg_pm25":4.2,"neighborhood_good_air_days_pct":94.2,"nearest_monitor_distance_mi":4.1,"monitor_name":"Seattle - Beacon Hill","monitor_id":"53-033-0080"}
       }
     }
   }
@@ -673,17 +677,20 @@
       {
         key: 'health_safety', label: '\uD83C\uDFE5 Health & Safety',
         topics: [
-          { key: 'health', label: '\uD83D\uDCAA Health', granularities: ['states', 'cities'], metrics: [
-            { key: 'median_aqi', label: 'Median AQI', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Annual median Air Quality Index (EPA 2024). Lower is better.' },
-            { key: 'good_air_days_pct', label: 'Good Air Quality Days', format: 'percent', showBar: true, dataKey: 'healthcare', tooltip: 'Percentage of monitored days rated Good (AQI \u2264 50)' },
-            { key: 'overweight_or_obese_rate', label: 'Overweight or Obese', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'obesity_rate', label: 'Obesity Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'smoking_rate', label: 'Smoking Rate', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'binge_drinking_rate', label: 'Binge Drinking', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'exercise_rate', label: 'Meets Exercise Guidelines', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'no_exercise_rate', label: 'Sedentary (No Leisure Activity)', format: 'percent', showBar: true, dataKey: 'healthcare' },
-            { key: 'overdose_death_rate', label: 'Drug Overdose Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted drug overdose death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes accidental, intentional, and undetermined intent.' },
-            { key: 'gun_death_rate', label: 'Firearm Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', tooltip: 'Age-adjusted firearm death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes homicide, suicide, accidental, and legal intervention.' },
+          { key: 'health', label: '\uD83D\uDCAA Health', granularities: ['states', 'cities', 'neighborhoods'], metrics: [
+            { key: 'median_aqi', label: 'Median AQI', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', granularities: ['states', 'cities'], tooltip: 'Annual median Air Quality Index (EPA 2024). Lower is better.' },
+            { key: 'good_air_days_pct', label: 'Good Air Quality Days', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'], tooltip: 'Percentage of monitored days rated Good (AQI \u2264 50)' },
+            { key: 'avg_pm25', label: 'Avg PM2.5 (\u00B5g/m\u00B3)', format: 'number', showBar: true, barRelative: true, dataKey: 'air_quality', granularities: ['neighborhoods'], tooltip: 'Annual average PM2.5 concentration from nearest EPA regulatory monitor (2024). EPA annual standard: 9.0 \u00B5g/m\u00B3. Lower is better.' },
+            { key: 'neighborhood_good_air_days_pct', label: 'Good Air Quality Days', format: 'percent', showBar: true, dataKey: 'air_quality', granularities: ['neighborhoods'], tooltip: 'Percentage of monitored days with AQI \u2264 50 at nearest EPA PM2.5 monitor (2024).' },
+            { key: 'nearest_monitor_distance_mi', label: 'Nearest Monitor (mi)', format: 'number', showBar: true, barRelative: true, dataKey: 'air_quality', granularities: ['neighborhoods'], tooltip: 'Distance from neighborhood centroid to nearest EPA PM2.5 monitor. Closer monitors provide more representative readings.' },
+            { key: 'overweight_or_obese_rate', label: 'Overweight or Obese', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'obesity_rate', label: 'Obesity Rate', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'smoking_rate', label: 'Smoking Rate', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'binge_drinking_rate', label: 'Binge Drinking', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'exercise_rate', label: 'Meets Exercise Guidelines', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'no_exercise_rate', label: 'Sedentary (No Leisure Activity)', format: 'percent', showBar: true, dataKey: 'healthcare', granularities: ['states', 'cities'] },
+            { key: 'overdose_death_rate', label: 'Drug Overdose Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', granularities: ['states', 'cities'], tooltip: 'Age-adjusted drug overdose death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes accidental, intentional, and undetermined intent.' },
+            { key: 'gun_death_rate', label: 'Firearm Deaths / 100K', format: 'number', showBar: true, barRelative: true, dataKey: 'healthcare', granularities: ['states', 'cities'], tooltip: 'Age-adjusted firearm death rate per 100,000 (CDC NCHS, 2022\u20132023). Includes homicide, suicide, accidental, and legal intervention.' },
           ] },
           { key: 'healthcare', label: '\uD83C\uDFE5 Healthcare', granularities: ['states', 'cities'], metrics: [
             { key: 'life_expectancy', label: 'Life Expectancy (yrs)', format: 'number', showBar: true, barMax: 90 },

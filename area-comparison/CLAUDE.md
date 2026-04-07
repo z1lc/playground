@@ -189,6 +189,15 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: broadband_pct (% of locations with 100+ Mbps download access), fiber_pct (% of locations with fiber-optic internet access).
 - **Levels**: State, City
 
+#### Water Quality
+- **Contaminants Detected / Above Health Guidelines**: EWG Tap Water Database (ewg.org/tapwater), 2021-2023 testing data. Per-utility contaminant counts. PWS IDs: CA3810001 (SF Regional Water System), NY7003493 (NYC System), GA1210001 (Atlanta), WA5377050 (Seattle Public Utilities). EWG health guidelines are stricter than EPA legal limits; no system exceeds EPA MCLs. Seattle total contaminants count (15) is estimated from individually identified EWG subpages, as the main page was inaccessible.
+- **Lead (90th percentile)**: City annual Consumer Confidence Reports (CCRs), required by EPA for all public water systems. SF: 5 ppb (2024 CCR). NYC: 1.9 ppb (2023 sampling in 2024 CCR). ATL: ~8 ppb (Hydroviv analysis of ~2020 sampling data). SEA: 4 ppb (recent monitoring). EPA action level is 15 ppb.
+- **Water Hardness**: City CCRs and USGS data. All four cities have soft water (0-60 ppm range). SF: ~25 ppm (Hetch Hetchy blend), NYC: ~31 ppm (1.8 grains/gallon citywide avg), ATL: ~22 ppm, SEA: ~22 ppm.
+- **Avg Monthly Water Bill**: City utility rate schedules and survey data (LawnStarter, Bluefield Research). Water + sewer combined for typical single-family residential usage. SF: $142/mo, NYC: $98/mo, ATL: $105/mo, SEA: $53/mo.
+- **SDWA Violations / System**: America's Health Rankings (americashealthrankings.org), sourced from EPA SDWIS/ECHO (2024). Average health-based violations per community water system. National average: 2.5. CA: 2.3, NY: 1.9, GA: 2.3, WA: 1.8.
+- **Water Sources** (displayed as tooltip on topic header): SF — Hetch Hetchy Reservoir (Sierra Nevada snowmelt, unfiltered). NYC — Catskill/Delaware & Croton Watersheds (unfiltered for Catskill/Delaware). ATL — Chattahoochee River. SEA — Cedar River (~70%) & South Fork Tolt River (~30%), Cascade Range.
+- **Levels**: State (SDWA violations only), City (all other metrics)
+
 #### Public Transit
 - **Source**: National Transit Database (NTD), agency reports (MTA, SFMTA, BART, MARTA), 2024 data
 - **Transit Score**: WalkScore transit score (0-100), same source as Walkability section

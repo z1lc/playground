@@ -263,10 +263,38 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: Per-airport code, full name, total passengers (millions), international percent (2024)
 - **Levels**: City only
 
-#### Crime
+#### Crime (City)
 - **Source**: Wikipedia compilation of FBI UCR data (2023)
-- **Data**: Violent crime rate per 100K, property crime rate per 100K (2023)
+- **Data**: violent_per_100k, property_per_100k (2023)
 - **Levels**: City only
+
+#### Crime (Neighborhood)
+- **Data**: violent_per_1k (violent crime incidents per 1,000 residents), property_per_1k (property crime incidents per 1,000 residents)
+- **SF (North Panhandle + Anza Vista)**:
+  - Source: DataSF SFPD Incident Reports (dataset wg3w-h783), filtered by Analysis Neighborhood = "Western Addition"
+  - Year: 2024. Violent: 161 incidents (Aggravated Assault 85, Robbery 75, Rape 1, Homicide 0). Property: 1,570 (Larceny Theft 1,231, Motor Vehicle Theft 199, Burglary 132, Arson 8).
+  - Note on methodology: SFPD incident_category "Assault" includes both Simple Assault (186) and Aggravated Assault (85). Only Aggravated Assault is UCR Part 1; simple assault excluded from violent total.
+  - Population denominator: 10,003
+  - Note: SFPD "Western Addition" neighborhood boundary is slightly larger than NoPa + Anza Vista.
+- **NYC (Greenwich Village)**:
+  - Source: NYPD Complaint Data Historic (NYC Open Data, dataset qgea-i56i), filtered to 6th Precinct felonies
+  - Year: 2024. Violent: 335 (Felony Assault 170, Robbery 156, Rape 8, Murder 1). Property: 3,315 (Petit Larceny 1,897, Grand Larceny 1,140, Burglary 246, Grand Larceny Auto 32).
+  - Note on methodology: Initial query filtered to felonies only, which excluded Petit Larceny (misdemeanor, <$1K). Added back to match UCR larceny-theft which counts all values.
+  - Population denominator: 23,138
+  - Note: 6th Precinct covers Greenwich Village + West Village; high daytime/visitor population inflates per-resident rates.
+- **ATL (Virginia Highland + Morningside)**:
+  - Source: Fulton County / City of Atlanta Crime Incidents (Socrata dataset 9w3w-ynjw on sharefulton.fultoncountyga.gov), filtered by NPU F + NPU N
+  - Year: 2021 (latest available; APD open data has a gap between 2021 Socrata dataset and new Axon RMS system).
+  - Violent: 130 (Aggravated Assault 85, Robbery 40, Homicide 5). Property: 1,814 (Larceny from Vehicle 1,135, Larceny Non-Vehicle 327, Motor Vehicle Theft 223, Burglary 129).
+  - Population denominator: 16,090
+  - Note: Arson not available in this dataset. NPU-F (Virginia Highland) + NPU-N (Morningside-Lenox Park) boundaries are approximate match.
+- **Mercer Island**:
+  - Source: FBI UCR data (2024), confirmed via PlainCrime and AreaVibes aggregators
+  - Year: 2024. Violent: 9 (Robbery 4, Aggravated Assault 4, Rape 1, Murder 0). Property: 303 (Larceny-Theft 226, Burglary 56, Motor Vehicle Theft 21, Arson 0).
+  - Population denominator: 24,467
+  - Note: City-level data (Mercer Island is a single jurisdiction). Very low violent crime count makes rate volatile year-to-year.
+- **Notes**: Per-1K rates used at neighborhood level (vs per-100K at city level) because small population denominators make per-100K rates misleadingly large. Crime categories mapped to approximate UCR equivalents from each department's local classification.
+- **Levels**: Neighborhood only
 
 #### Homelessness
 - **Source**: HUD Point-in-Time (PIT) Count, January 2024 (hudexchange.info/resource/3031/pit-and-hic-data-since-2007/)

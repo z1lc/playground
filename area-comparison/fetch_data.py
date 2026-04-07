@@ -249,7 +249,7 @@ def combine_neighborhoods(nb1: dict, nb2: dict) -> dict:
                     merged[key] = round((v1 * pop1 + v2 * pop2) / total_pop, 2)
                 else:
                     merged[key] = round((v1 + v2) / 2, 2)
-            elif "density" in key:
+            elif "density" in key or "minutes" in key:
                 # Weighted average by population (approximation)
                 if total_pop > 0:
                     merged[key] = round((v1 * pop1 + v2 * pop2) / total_pop, 2)

@@ -94,10 +94,11 @@ This is a tool that compares statistical information between the states Californ
 - **Levels**: State, City
 
 #### Commute
-- **Source**: Census Reporter (censusreporter.org), ACS 2024 1-year estimates
-- **URLs**: censusreporter.org/profiles/04000US06-california/, etc.
+- **Source (states, cities)**: Census Reporter (censusreporter.org), ACS 2024 1-year estimates
+- **Source (neighborhoods)**: Census Reporter, ACS 2024 5-year estimates, ZIP code and place-level profiles as proxies for neighborhoods. NP+AV uses ZIP 94117, GV uses ZIP 10011, VH+ML uses ZIP 30306, Mercer Island uses place-level data (16000US5345005).
+- **URLs**: censusreporter.org/profiles/04000US06-california/, censusreporter.org/profiles/86000US94117-94117/, etc.
 - **Data**: avg_commute_minutes, drive_alone_percent, carpool_percent, public_transit_percent, walk_percent, bike_percent, work_from_home_percent
-- **Levels**: State, City
+- **Levels**: State, City, Neighborhood
 
 #### Road Quality & Traffic Congestion
 - **% Roads in Poor/Mediocre Condition**: TRIP national transportation research nonprofit (tripnet.org), based on FHWA Highway Statistics 2023 (tables HM-63 and HM-64). Percentage of major state- and locally-owned roads and highways rated in poor or mediocre condition (combined). CA: 50% (from "Keeping California Mobile" Sep 2025), NY: 45% (from "New York Transportation by the Numbers" Jan 2025), GA: 23% (from TRIP Key Facts July 2025), WA: 61% (from TRIP Key Facts July 2025). Note: Full reports for CA and NY break out poor (CA 28%, NY 25%) vs. mediocre separately; GA and WA fact sheets only provide the combined figure, so combined "poor or mediocre" is used for all states for consistency.

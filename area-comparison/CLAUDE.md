@@ -263,6 +263,18 @@ This is a tool that compares statistical information between the states Californ
 - **Units Permitted / Permits per 1K**: Census Building Permits Survey (BPS), 2024 annual data. File: census.gov/construction/bps/ → CBSA annual data (cbsa2024a.txt). Total new privately-owned housing units authorized by building permits (all structure types: 1-unit, 2-unit, 3-4 unit, 5+ unit). CBSA codes: SF-Oakland-Berkeley=41860, NYC-Newark-Jersey City=35620, Atlanta-Sandy Springs-Roswell=12060, Seattle-Tacoma-Bellevue=42660. Permits per 1K = total units permitted / existing housing units × 1000. Existing housing unit counts from Census ACS 2023 1-Year Estimates, table B25001 (total housing units by MSA).
 - **Levels**: City only (BPS provides MSA-level data; state and neighborhood not applicable)
 
+#### Housing Age & Type Mix
+- **Source**: Census ACS Tables B25034 (Year Structure Built) and B25024 (Units in Structure)
+- **State/City data**: ACS 2023 1-year estimates. States by FIPS (CA=06, NY=36, GA=13, WA=53). Cities by CBSA (SF=41860, NYC=35620, ATL=12060, SEA=42660).
+- **Neighborhood data**: ACS 2023 5-year estimates at census tract level, same tracts as tree canopy.
+  - NoPa+AV: Tracts 164, 165, 167, 157.02, 158.01 in SF County (06075)
+  - GV: Tracts 63, 65, 71, 73 in New York County (36061)
+  - VH+MS: Tracts 1, 2.02, 15.02 in Fulton County (13121) + Tracts 201, 202, 224.01 in DeKalb County (13089)
+  - MI: Tracts 243.01, 243.02, 244, 245, 246.01, 246.02 in King County (53033)
+- **Data**: median_year_built (estimated median from binned data via linear interpolation within the bin containing the 50th percentile; "1939 or earlier" bin uses 1900-1939 range), pct_single_family (1-unit detached + attached / total), pct_multi_family (2+ units / total), pct_post_1950 (built 1950 or later / total)
+- **Notes**: Mobile homes and boat/RV/van excluded from both single-family and multi-family (so percentages may not sum to 100%). Neighborhood data sums raw tract counts before computing percentages.
+- **Levels**: State, City, Neighborhood
+
 #### Airports
 - **Source**: Wikipedia (passenger counts, international percentages from airport annual reports and BTS)
 - **Data**: Per-airport code, full name, total passengers (millions), international percent (2024)

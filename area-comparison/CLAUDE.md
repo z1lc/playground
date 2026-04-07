@@ -126,8 +126,13 @@ This is a tool that compares statistical information between the states Californ
 #### Parks & Green Space
 - **Source**: Trust for Public Land ParkScore 2025 (parkscore.tpl.org)
 - **Data**: ParkScore rank and rating (0-100), % residents within 10-min walk of park, parkland as % of city area
-- **Tree Canopy Coverage**: Percentage of city land area covered by tree canopy. Sources: city urban forest assessments (SF Planning Department, NYC Urban Forest Plan, Georgia Tech Urban Tree Canopy Assessment, City of Seattle 2021 Tree Canopy Assessment) and Tree Equity Score (treeequityscore.org).
-- **Levels**: City only
+- **Tree Canopy Coverage (cities)**: Percentage of city land area covered by tree canopy. Sources: city urban forest assessments (SF Planning Department, NYC Urban Forest Plan, Georgia Tech Urban Tree Canopy Assessment, City of Seattle 2021 Tree Canopy Assessment) and Tree Equity Score (treeequityscore.org).
+- **Tree Canopy Coverage (neighborhoods)**: Census-block-group-level tree canopy percentage from American Forests / USDA Community Forestry ArcGIS feature service (Census_Block_Groups_Land_Cover_and_Tree_Canopy_Analysis), using the `To_TC_Pct` field (Total Tree Canopy Over Impervious and Pervious Area Percent). Aggregated to neighborhoods via area-weighted averaging of all block groups within overlapping census tracts. Census tracts identified via Census Bureau geocoder point sampling within each neighborhood boundary.
+  - NP+AV: Tracts 164, 165, 167 (North Panhandle) + 157.02, 158.01 (Anza Vista) in SF County (06075). Area-weighted: 17.1%.
+  - GV: Tracts 63, 65, 71, 73 in New York County (36061). Area-weighted: 25.6%.
+  - VH+MS: Tracts 1, 2.02, 15.02 in Fulton County (13121) + Tracts 201, 202, 224.01 in DeKalb County (13089). Area-weighted: 59.3%.
+  - MI: Tracts 243.01, 243.02, 244, 245, 246.01, 246.02 in King County (53033). Area-weighted: 25.5%.
+- **Levels**: City, Neighborhood
 
 #### Outdoor Recreation
 - **National Parks (3hr drive)**: NPS units (National Parks, Monuments, NRAs, Seashores) with significant outdoor recreation within a 3-hour non-rush-hour drive from city center. Excludes small urban historic sites. Hover shows individual park names.

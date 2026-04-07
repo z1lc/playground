@@ -88,6 +88,12 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: avg_commute_minutes, drive_alone_percent, carpool_percent, public_transit_percent, walk_percent, bike_percent, work_from_home_percent
 - **Levels**: State, City
 
+#### Road Quality & Traffic Congestion
+- **% Roads in Poor/Mediocre Condition**: TRIP national transportation research nonprofit (tripnet.org), based on FHWA Highway Statistics 2023 (tables HM-63 and HM-64). Percentage of major state- and locally-owned roads and highways rated in poor or mediocre condition (combined). CA: 50% (from "Keeping California Mobile" Sep 2025), NY: 45% (from "New York Transportation by the Numbers" Jan 2025), GA: 23% (from TRIP Key Facts July 2025), WA: 61% (from TRIP Key Facts July 2025). Note: Full reports for CA and NY break out poor (CA 28%, NY 25%) vs. mediocre separately; GA and WA fact sheets only provide the combined figure, so combined "poor or mediocre" is used for all states for consistency.
+- **Annual Hours of Delay per Auto Commuter**: Texas A&M Transportation Institute (TTI) Urban Mobility Report 2025 (2024 data). Metro-level congestion data. SF-Oakland: 134 hrs (#2 nationally), NY-Newark: 99 hrs (#3), Atlanta: 87 hrs (#9 tied), Seattle: 87 hrs (#9 tied). Source: static.tti.tamu.edu/tti.tamu.edu/documents/mobility-report-2025.pdf
+- **Traffic Fatality Rate per 100K**: NHTSA Fatality Analysis Reporting System (FARS) 2022 (final release). Total traffic fatalities per 100,000 population. State: CA 11.3, NY 6.0, GA 16.5, WA 9.4. City: SF County 5.2 (42 fatalities / 808K pop), NYC 5-borough 2.9 (238 / 8.34M), Fulton County 15.0 (160 / 1.07M), King County 6.6 (150 / 2.27M). Cross-validated against IIHS Fatality Facts state-by-state data. FARS is already used in this project for cyclist fatalities.
+- **Levels**: State (poor_road_pct, traffic_fatality_rate), City (annual_delay_hours, traffic_fatality_rate)
+
 ### Lifestyle Section
 
 #### Weather & Time

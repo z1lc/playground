@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Tech Employment (2011–2025)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 32px;
+    }
+    .chart-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 16px 16px;
+    }
+    .recharts-default-tooltip {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      border-radius: 8px !important;
+    }
+    @media (max-width: 640px) {
+      body { padding: 20px 10px 40px; }
+      h1 { font-size: 1.3rem; }
+      .chart-card { padding: 12px 4px 8px; }
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.2.0",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+      "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useMemo } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+    import htm from 'htm';
+    const html = htm.bind(React.createElement);
+
+    const DATA = [
+      { year: 2011, microsoft: 90000, google: 32467, apple: 60400, oracle: 108000, tesla: 1417, meta: 3200, nvidia: 6029, netflix: 2348 },
+      { year: 2012, microsoft: 94000, google: 53861, apple: 72800, oracle: 115000, tesla: 2964, meta: 4619, nvidia: 7133, netflix: 2045 },
+      { year: 2013, microsoft: 99000, google: 47756, apple: 80300, oracle: 120000, tesla: 5859, meta: 6337, nvidia: 7974, netflix: 2022 },
+      { year: 2014, microsoft: 128000, google: 53600, apple: 92600, oracle: 122000, tesla: 10161, meta: 9199, nvidia: 8808, netflix: 2189 },
+      { year: 2015, microsoft: 118000, google: 61814, apple: 110000, oracle: 132000, tesla: 13058, meta: 12691, nvidia: 9228, netflix: 3500 },
+      { year: 2016, microsoft: 114000, google: 72053, apple: 116000, oracle: 136000, tesla: 17782, meta: 17048, nvidia: 9227, netflix: 4500 },
+      { year: 2017, microsoft: 124000, google: 80110, apple: 123000, oracle: 138000, tesla: 37543, meta: 25105, nvidia: 10299, netflix: 5400 },
+      { year: 2018, microsoft: 131000, google: 98771, apple: 132000, oracle: 137000, tesla: 48817, meta: 35587, nvidia: 11528, netflix: 7100 },
+      { year: 2019, microsoft: 144000, google: 118899, apple: 137000, oracle: 136000, tesla: 48016, meta: 44942, nvidia: 13277, netflix: 8600 },
+      { year: 2020, microsoft: 163000, google: 135301, apple: 147000, oracle: 135000, tesla: 70757, meta: 58604, nvidia: 13775, netflix: 9400 },
+      { year: 2021, microsoft: 181000, google: 156500, apple: 154000, oracle: 132000, tesla: 99290, meta: 71970, nvidia: 18975, netflix: 11300 },
+      { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, nvidia: 22473, netflix: 12800 },
+      { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, nvidia: 26196, netflix: 13000 },
+      { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, nvidia: 29600, netflix: 14000 },
+      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, nvidia: 36000, netflix: 16000 },
+    ];
+
+    const COMPANIES = [
+      { key: 'microsoft', name: 'Microsoft', color: '#4FC3F7' },
+      { key: 'google',    name: 'Google',    color: '#34A853' },
+      { key: 'apple',     name: 'Apple',     color: '#A3AAAE' },
+      { key: 'oracle',    name: 'Oracle',    color: '#F44336' },
+      { key: 'tesla',     name: 'Tesla',     color: '#E040FB' },
+      { key: 'meta',      name: 'Meta',      color: '#1877F2' },
+      { key: 'nvidia',    name: 'Nvidia',    color: '#76B900' },
+      { key: 'netflix',   name: 'Netflix',   color: '#FF9800' },
+    ];
+
+    const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
+    const formatNum = (v) => v.toLocaleString();
+
+    function CustomTooltip({ active, payload, label }) {
+      if (!active || !payload || !payload.length) return null;
+      const total = payload.reduce((s, p) => s + (p.value || 0), 0);
+      const sorted = [...payload].reverse();
+      return html`
+        <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
+          <div style=${{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>${label}</div>
+          ${sorted.map(p => html`
+            <div key=${p.dataKey} style=${{ display: 'flex', justifyContent: 'space-between', gap: 24, padding: '2px 0' }}>
+              <span style=${{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style=${{ width: 10, height: 10, borderRadius: 2, background: p.color, display: 'inline-block' }} />
+                ${p.name}
+              </span>
+              <span style=${{ fontFamily: 'monospace', fontWeight: 500 }}>${formatNum(p.value)}</span>
+            </div>
+          `)}
+          <div style=${{ borderTop: '1px solid #475569', marginTop: 6, paddingTop: 6, display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
+            <span>Total</span>
+            <span style=${{ fontFamily: 'monospace' }}>${formatNum(total)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function App() {
+      const lastCompany = COMPANIES[COMPANIES.length - 1];
+      return html`
+        <div class="container">
+          <h1>Big Tech Employment (2011–2025)</h1>
+          <p class="subtitle">Full-time employee headcount from SEC 10-K filings</p>
+          <div class="chart-card">
+            <${ResponsiveContainer} width="100%" height=${500}>
+              <${BarChart} data=${DATA} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
+                <${XAxis} dataKey="year" tick=${{ fill: '#94a3b8', fontSize: 12 }} />
+                <${YAxis} tickFormatter=${formatK} tick=${{ fill: '#94a3b8', fontSize: 12 }} width=${55} />
+                <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} />
+                <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8 }} />
+                ${COMPANIES.map((c, i) => html`
+                  <${Bar}
+                    key=${c.key}
+                    dataKey=${c.key}
+                    name=${c.name}
+                    stackId="a"
+                    fill=${c.color}
+                    radius=${c.key === lastCompany.key ? [3, 3, 0, 0] : [0, 0, 0, 0]}
+                  />
+                `)}
+              <//>
+            <//>
+          </div>
+        </div>
+      `;
+    }
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

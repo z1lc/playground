@@ -36,17 +36,15 @@
 
     const PYTHON_LINES = [
       { id: 0,  indent: 0, text: "def sliding_window_max(nums, k):" },
-      { id: 1,  indent: 1, text: "if not nums:" },
-      { id: 2,  indent: 2, text: "return []" },
-      { id: 3,  indent: 1, text: "dq, ret = deque(), []" },
-      { id: 4,  indent: 1, text: "for i, n in enumerate(nums):" },
-      { id: 5,  indent: 2, text: "while dq and dq[0] <= i - k:" },
-      { id: 6,  indent: 3, text: "dq.popleft()" },
-      { id: 7,  indent: 2, text: "while dq and nums[dq[-1]] <= n:" },
-      { id: 8,  indent: 3, text: "dq.pop()" },
-      { id: 9,  indent: 2, text: "dq.append(i)" },
-      { id: 10, indent: 2, text: "if i >= k - 1:" },
-      { id: 11, indent: 3, text: "ret.append(nums[dq[0]])" },
+      { id: 1,  indent: 1, text: "dq, ret = deque(), []" },
+      { id: 2,  indent: 1, text: "for i, n in enumerate(nums):" },
+      { id: 3,  indent: 2, text: "while dq and dq[0] <= i - k:" },
+      { id: 4,  indent: 3, text: "dq.popleft()" },
+      { id: 5,  indent: 2, text: "while dq and nums[dq[-1]] <= n:" },
+      { id: 6,  indent: 3, text: "dq.pop()" },
+      { id: 7,  indent: 2, text: "dq.append(i)" },
+      { id: 8,  indent: 2, text: "if i >= k - 1:" },
+      { id: 9,  indent: 3, text: "ret.append(nums[dq[0]])" },
     ];
 
     function computeSteps(nums, k) {
@@ -57,7 +55,7 @@
 
       steps.push({
         i: -1, n: null, nums, k, dq: [], ret: [],
-        activeLines: [0, 3],
+        activeLines: [0, 1],
         desc: "Initialize empty deque and result list",
         phase: "init",
       });
@@ -67,7 +65,7 @@
 
         steps.push({
           i, n, nums, k, dq: [...dq], ret: [...ret],
-          activeLines: [4],
+          activeLines: [2],
           desc: `Start iteration: i = ${i}, n = nums[${i}] = ${n}`,
           phase: "loop-start",
         });
@@ -78,7 +76,7 @@
           const removed = dq[0];
           steps.push({
             i, n, nums, k, dq: [...dq], ret: [...ret],
-            activeLines: [5, 6],
+            activeLines: [3, 4],
             desc: `dq[0] = ${removed} <= ${i} - ${k} = ${i - k} \u2192 remove ${removed} from front`,
             phase: "remove-front",
             highlightDequeIdx: 0,
@@ -90,14 +88,14 @@
           if (dq.length === 0) {
             steps.push({
               i, n, nums, k, dq: [...dq], ret: [...ret],
-              activeLines: [5],
+              activeLines: [3],
               desc: `Deque is empty \u2192 skip front removal`,
               phase: "skip-front",
             });
           } else {
             steps.push({
               i, n, nums, k, dq: [...dq], ret: [...ret],
-              activeLines: [5],
+              activeLines: [3],
               desc: `dq[0] = ${dq[0]} > ${i} - ${k} = ${i - k} \u2192 front is still in window`,
               phase: "skip-front",
             });
@@ -110,7 +108,7 @@
           const removed = dq[dq.length - 1];
           steps.push({
             i, n, nums, k, dq: [...dq], ret: [...ret],
-            activeLines: [7, 8],
+            activeLines: [5, 6],
             desc: `nums[dq[-1]] = nums[${removed}] = ${nums[removed]} \u2264 ${n} \u2192 remove ${removed} from back`,
             phase: "remove-back",
             highlightDequeIdx: dq.length - 1,
@@ -122,14 +120,14 @@
           if (dq.length === 0) {
             steps.push({
               i, n, nums, k, dq: [...dq], ret: [...ret],
-              activeLines: [7],
+              activeLines: [5],
               desc: `Deque is empty \u2192 skip back removal`,
               phase: "skip-back",
             });
           } else {
             steps.push({
               i, n, nums, k, dq: [...dq], ret: [...ret],
-              activeLines: [7],
+              activeLines: [5],
               desc: `nums[dq[-1]] = nums[${dq[dq.length - 1]}] = ${nums[dq[dq.length - 1]]} > ${n} \u2192 keep it`,
               phase: "skip-back",
             });
@@ -140,7 +138,7 @@
         dq.push(i);
         steps.push({
           i, n, nums, k, dq: [...dq], ret: [...ret],
-          activeLines: [9],
+          activeLines: [7],
           desc: `Append index ${i} to deque \u2192 dq = [${dq.join(", ")}]`,
           phase: "append",
           highlightDequeIdx: dq.length - 1,
@@ -151,7 +149,7 @@
           ret.push(nums[dq[0]]);
           steps.push({
             i, n, nums, k, dq: [...dq], ret: [...ret],
-            activeLines: [10, 11],
+            activeLines: [8, 9],
             desc: `i = ${i} \u2265 k - 1 = ${k - 1} \u2192 window full, max = nums[dq[0]] = nums[${dq[0]}] = ${nums[dq[0]]}`,
             phase: "output",
             newResult: true,
@@ -159,7 +157,7 @@
         } else {
           steps.push({
             i, n, nums, k, dq: [...dq], ret: [...ret],
-            activeLines: [10],
+            activeLines: [8],
             desc: `i = ${i} < k - 1 = ${k - 1} \u2192 window not yet full, no output`,
             phase: "no-output",
           });

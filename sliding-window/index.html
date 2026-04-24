@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sliding Window Maximum Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0f; }
+    input:focus { outline: none; border-color: #3b82f6 !important; }
+    button { border: none; font-family: inherit; }
+    button:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useMemo, useCallback, useRef, useEffect } = React;
+
+    const EXAMPLES = [
+      { nums: [1, 3, -1, -3, 5, 3, 6, 7], k: 3 },
+      { nums: [1, 3, 1, 2, 0, 5], k: 3 },
+      { nums: [7, 2, 4], k: 2 },
+      { nums: [4, 3, 2, 1, 5], k: 3 },
+      { nums: [1, -1], k: 1 },
+    ];
+
+    const PYTHON_LINES = [
+      { id: 0,  indent: 0, text: "def sliding_window_max(nums, k):" },
+      { id: 1,  indent: 1, text: "if not nums:" },
+      { id: 2,  indent: 2, text: "return []" },
+      { id: 3,  indent: 1, text: "dq, ret = deque(), []" },
+      { id: 4,  indent: 1, text: "for i, n in enumerate(nums):" },
+      { id: 5,  indent: 2, text: "while dq and dq[0] <= i - k:" },
+      { id: 6,  indent: 3, text: "dq.popleft()" },
+      { id: 7,  indent: 2, text: "while dq and nums[dq[-1]] <= n:" },
+      { id: 8,  indent: 3, text: "dq.pop()" },
+      { id: 9,  indent: 2, text: "dq.append(i)" },
+      { id: 10, indent: 2, text: "if i >= k - 1:" },
+      { id: 11, indent: 3, text: "ret.append(nums[dq[0]])" },
+    ];
+
+    function computeSteps(nums, k) {
+      if (!nums.length) return { steps: [], nums, k };
+      const steps = [];
+      const dq = [];
+      const ret = [];
+
+      steps.push({
+        i: -1, n: null, nums, k, dq: [], ret: [],
+        activeLines: [0, 3],
+        desc: "Initialize empty deque and result list",
+        phase: "init",
+      });
+
+      for (let i = 0; i < nums.length; i++) {
+        const n = nums[i];
+
+        steps.push({
+          i, n, nums, k, dq: [...dq], ret: [...ret],
+          activeLines: [4],
+          desc: `Start iteration: i = ${i}, n = nums[${i}] = ${n}`,
+          phase: "loop-start",
+        });
+
+        // Phase 1: remove from front if out of window
+        let removedFront = false;
+        while (dq.length > 0 && dq[0] <= i - k) {
+          const removed = dq[0];
+          steps.push({
+            i, n, nums, k, dq: [...dq], ret: [...ret],
+            activeLines: [5, 6],
+            desc: `dq[0] = ${removed} <= ${i} - ${k} = ${i - k} \u2192 remove ${removed} from front`,
+            phase: "remove-front",
+            highlightDequeIdx: 0,
+          });
+          dq.shift();
+          removedFront = true;
+        }
+        if (!removedFront) {
+          if (dq.length === 0) {
+            steps.push({
+              i, n, nums, k, dq: [...dq], ret: [...ret],
+              activeLines: [5],
+              desc: `Deque is empty \u2192 skip front removal`,
+              phase: "skip-front",
+            });
+          } else {
+            steps.push({
+              i, n, nums, k, dq: [...dq], ret: [...ret],
+              activeLines: [5],
+              desc: `dq[0] = ${dq[0]} > ${i} - ${k} = ${i - k} \u2192 front is still in window`,
+              phase: "skip-front",
+            });
+          }
+        }
+
+        // Phase 2: remove from back if <= current
+        let removedBack = false;
+        while (dq.length > 0 && nums[dq[dq.length - 1]] <= n) {
+          const removed = dq[dq.length - 1];
+          steps.push({
+            i, n, nums, k, dq: [...dq], ret: [...ret],
+            activeLines: [7, 8],
+            desc: `nums[dq[-1]] = nums[${removed}] = ${nums[removed]} \u2264 ${n} \u2192 remove ${removed} from back`,
+            phase: "remove-back",
+            highlightDequeIdx: dq.length - 1,
+          });
+          dq.pop();
+          removedBack = true;
+        }
+        if (!removedBack) {
+          if (dq.length === 0) {
+            steps.push({
+              i, n, nums, k, dq: [...dq], ret: [...ret],
+              activeLines: [7],
+              desc: `Deque is empty \u2192 skip back removal`,
+              phase: "skip-back",
+            });
+          } else {
+            steps.push({
+              i, n, nums, k, dq: [...dq], ret: [...ret],
+              activeLines: [7],
+              desc: `nums[dq[-1]] = nums[${dq[dq.length - 1]}] = ${nums[dq[dq.length - 1]]} > ${n} \u2192 keep it`,
+              phase: "skip-back",
+            });
+          }
+        }
+
+        // Phase 3: append current index
+        dq.push(i);
+        steps.push({
+          i, n, nums, k, dq: [...dq], ret: [...ret],
+          activeLines: [9],
+          desc: `Append index ${i} to deque \u2192 dq = [${dq.join(", ")}]`,
+          phase: "append",
+          highlightDequeIdx: dq.length - 1,
+        });
+
+        // Phase 4: check if window is full
+        if (i >= k - 1) {
+          ret.push(nums[dq[0]]);
+          steps.push({
+            i, n, nums, k, dq: [...dq], ret: [...ret],
+            activeLines: [10, 11],
+            desc: `i = ${i} \u2265 k - 1 = ${k - 1} \u2192 window full, max = nums[dq[0]] = nums[${dq[0]}] = ${nums[dq[0]]}`,
+            phase: "output",
+            newResult: true,
+          });
+        } else {
+          steps.push({
+            i, n, nums, k, dq: [...dq], ret: [...ret],
+            activeLines: [10],
+            desc: `i = ${i} < k - 1 = ${k - 1} \u2192 window not yet full, no output`,
+            phase: "no-output",
+          });
+        }
+      }
+
+      return { steps, nums, k, finalResult: ret };
+    }
+
+    function NumCell({ value, idx, isCurrent, inWindow, inDeque, isDequeMax }) {
+      let bg = "rgba(255,255,255,0.03)";
+      let border = "1px solid rgba(255,255,255,0.08)";
+      let color = "rgba(255,255,255,0.7)";
+      let fontWeight = 500;
+
+      if (inWindow) {
+        bg = "rgba(59,130,246,0.08)";
+        border = "1px solid rgba(59,130,246,0.25)";
+      }
+      if (inDeque) {
+        bg = "rgba(139,92,246,0.15)";
+        border = "1px solid rgba(139,92,246,0.4)";
+        color = "#c4b5fd";
+      }
+      if (isDequeMax) {
+        bg = "rgba(245,158,11,0.2)";
+        border = "2px solid rgba(245,158,11,0.6)";
+        color = "#fbbf24";
+        fontWeight = 700;
+      }
+      if (isCurrent) {
+        bg = "rgba(16,185,129,0.25)";
+        border = "2px solid #10b981";
+        color = "#6ee7b7";
+        fontWeight = 700;
+      }
+
+      return (
+        <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 3, minWidth: 44 }}>
+          <div style={{
+            fontSize: 9, fontFamily: "'JetBrains Mono', monospace",
+            color: "rgba(255,255,255,0.25)", height: 12,
+          }}>{idx}</div>
+          <div style={{
+            width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+            border, borderRadius: 8, background: bg, color, fontWeight,
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 16,
+            transition: "all 0.25s ease",
+          }}>{value}</div>
+        </div>
+      );
+    }
+
+    function DequeViz({ dq, nums, highlightIdx }) {
+      if (dq.length === 0) {
+        return (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            height: 54, color: "rgba(255,255,255,0.2)",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
+            fontStyle: "italic",
+          }}>empty</div>
+        );
+      }
+      return (
+        <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <div style={{
+            fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'JetBrains Mono', monospace",
+            marginRight: 4, writingMode: "vertical-rl", textOrientation: "mixed", letterSpacing: "0.05em",
+          }}>front</div>
+          {dq.map((idx, pos) => {
+            const isFirst = pos === 0;
+            const isHighlight = pos === highlightIdx;
+            return (
+              <div key={pos + "-" + idx} style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+              }}>
+                <div style={{
+                  width: 42, height: 42, display: "flex", flexDirection: "column",
+                  alignItems: "center", justifyContent: "center",
+                  borderRadius: 8,
+                  background: isHighlight ? "rgba(239,68,68,0.2)"
+                    : isFirst ? "rgba(245,158,11,0.15)" : "rgba(139,92,246,0.1)",
+                  border: isHighlight ? "2px solid rgba(239,68,68,0.5)"
+                    : isFirst ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(139,92,246,0.3)",
+                  transition: "all 0.25s ease",
+                }}>
+                  <div style={{
+                    fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: 600,
+                    color: isFirst ? "#fbbf24" : "#c4b5fd",
+                  }}>{nums[idx]}</div>
+                  <div style={{
+                    fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
+                    color: "rgba(255,255,255,0.3)",
+                  }}>i={idx}</div>
+                </div>
+              </div>
+            );
+          })}
+          <div style={{
+            fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'JetBrains Mono', monospace",
+            marginLeft: 4, writingMode: "vertical-rl", textOrientation: "mixed", letterSpacing: "0.05em",
+          }}>back</div>
+        </div>
+      );
+    }
+
+    function ResultViz({ ret, newResult }) {
+      if (ret.length === 0) {
+        return (
+          <div style={{
+            display: "flex", alignItems: "center", height: 36,
+            color: "rgba(255,255,255,0.2)",
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
+            fontStyle: "italic",
+          }}>[]</div>
+        );
+      }
+      return (
+        <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: "rgba(255,255,255,0.3)" }}>[</span>
+          {ret.map((v, idx) => {
+            const isNew = newResult && idx === ret.length - 1;
+            return (
+              <React.Fragment key={idx}>
+                {idx > 0 && <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: "rgba(255,255,255,0.2)" }}>,</span>}
+                <div style={{
+                  minWidth: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  borderRadius: 6,
+                  background: isNew ? "rgba(16,185,129,0.2)" : "rgba(255,255,255,0.04)",
+                  border: isNew ? "1px solid rgba(16,185,129,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: isNew ? 700 : 500,
+                  color: isNew ? "#6ee7b7" : "rgba(255,255,255,0.6)",
+                  padding: "0 6px",
+                  transition: "all 0.25s ease",
+                }}>{v}</div>
+              </React.Fragment>
+            );
+          })}
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: "rgba(255,255,255,0.3)" }}>]</span>
+        </div>
+      );
+    }
+
+    function PythonLine({ line, active }) {
+      return (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "3px 0", paddingLeft: line.indent * 20,
+          transition: "all 0.2s ease", opacity: active ? 1 : 0.55,
+        }}>
+          <div style={{
+            width: 4, height: 18, borderRadius: 2, flexShrink: 0,
+            background: active ? "#3b82f6" : "transparent",
+            transition: "all 0.2s ease",
+          }} />
+          <code style={{
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 12, lineHeight: 1.5,
+            color: active ? "#93c5fd" : "rgba(255,255,255,0.55)",
+            fontWeight: active ? 600 : 400, transition: "all 0.2s ease",
+            whiteSpace: "pre",
+          }}>{line.text}</code>
+        </div>
+      );
+    }
+
+    function App() {
+      const [numsStr, setNumsStr] = useState("1, 3, -1, -3, 5, 3, 6, 7");
+      const [kStr, setKStr] = useState("3");
+      const [stepIdx, setStepIdx] = useState(0);
+      const [playing, setPlaying] = useState(false);
+      const playRef = useRef(null);
+      const scrollRef = useRef(null);
+
+      const parsed = useMemo(() => {
+        const nums = numsStr.split(",").map(s => s.trim()).filter(s => s !== "").map(Number).filter(n => !isNaN(n));
+        const k = parseInt(kStr, 10);
+        return { nums, k: isNaN(k) || k < 1 ? 1 : k };
+      }, [numsStr, kStr]);
+
+      const data = useMemo(() => computeSteps(parsed.nums, parsed.k), [parsed.nums, parsed.k]);
+      const { steps } = data;
+      const total = steps.length;
+      const step = total > 0 ? steps[Math.min(stepIdx, total - 1)] : null;
+
+      useEffect(() => { setStepIdx(0); setPlaying(false); }, [numsStr, kStr]);
+
+      useEffect(() => {
+        if (playing && total > 0) {
+          playRef.current = setInterval(() => {
+            setStepIdx((prev) => {
+              if (prev >= total - 1) { setPlaying(false); return prev; }
+              return prev + 1;
+            });
+          }, 1200);
+        }
+        return () => clearInterval(playRef.current);
+      }, [playing, total]);
+
+      useEffect(() => {
+        if (scrollRef.current && step) {
+          const c = scrollRef.current;
+          c.scrollTo({ left: step.i * 48 - c.clientWidth / 2, behavior: "smooth" });
+        }
+      }, [step && step.i]);
+
+      const selectExample = (ex) => {
+        setNumsStr(ex.nums.join(", "));
+        setKStr(String(ex.k));
+      };
+
+      const isExampleActive = (ex) => {
+        return numsStr === ex.nums.join(", ") && kStr === String(ex.k);
+      };
+
+      const windowStart = step ? Math.max(0, step.i - parsed.k + 1) : 0;
+      const windowEnd = step ? step.i : -1;
+
+      const btn = (disabled) => ({
+        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 8, padding: "7px 14px",
+        color: disabled ? "rgba(255,255,255,0.15)" : "#e8e8e8",
+        cursor: disabled ? "default" : "pointer", fontSize: 13, fontWeight: 500,
+      });
+
+      return (
+        <div style={{
+          minHeight: "100vh", background: "#0a0a0f", color: "#e8e8e8",
+          fontFamily: "'IBM Plex Sans', -apple-system, sans-serif",
+          padding: "28px 20px", display: "flex", flexDirection: "column", alignItems: "center",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 26 }}>
+            <h1 style={{
+              fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em", margin: 0,
+              background: "linear-gradient(135deg, #3b82f6, #8b5cf6, #10b981)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            }}>Sliding Window Maximum</h1>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 5, fontWeight: 300 }}>
+              Step through the monotonic deque approach &middot; watch each line execute
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap", justifyContent: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>nums:</label>
+              <input type="text" value={numsStr}
+                onChange={(e) => setNumsStr(e.target.value)}
+                placeholder="1, 3, -1, ..."
+                style={{
+                  background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 8, padding: "8px 12px", color: "#f0f0f0",
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: 13, width: 240,
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>k:</label>
+              <input type="text" value={kStr}
+                onChange={(e) => setKStr(e.target.value)}
+                style={{
+                  background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 8, padding: "8px 12px", color: "#f0f0f0",
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: 13, width: 50,
+                }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 5, marginBottom: 22, flexWrap: "wrap", justifyContent: "center" }}>
+            {EXAMPLES.map((ex, idx) => (
+              <button key={idx} onClick={() => selectExample(ex)} style={{
+                background: isExampleActive(ex) ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.04)",
+                border: isExampleActive(ex) ? "1px solid rgba(59,130,246,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 6, padding: "5px 9px",
+                color: isExampleActive(ex) ? "#60a5fa" : "rgba(255,255,255,0.5)",
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 10, cursor: "pointer",
+              }}>[{ex.nums.join(",")}] k={ex.k}</button>
+            ))}
+          </div>
+
+          {!step ? <p style={{ color: "rgba(255,255,255,0.3)" }}>Enter numbers to begin.</p> : (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap", justifyContent: "center" }}>
+                <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} disabled={stepIdx === 0} style={btn(stepIdx === 0)}>{"\u25C0"} Prev</button>
+                <button onClick={() => setPlaying((p) => !p)} style={{
+                  background: playing ? "rgba(239,68,68,0.2)" : "rgba(59,130,246,0.15)",
+                  border: playing ? "1px solid rgba(239,68,68,0.4)" : "1px solid rgba(59,130,246,0.3)",
+                  borderRadius: 8, padding: "7px 18px",
+                  color: playing ? "#ef4444" : "#60a5fa", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                }}>{playing ? "\u23F8 Pause" : "\u25B6 Play"}</button>
+                <button onClick={() => setStepIdx((p) => Math.min(total - 1, p + 1))} disabled={stepIdx >= total - 1} style={btn(stepIdx >= total - 1)}>Next {"\u25B6"}</button>
+                <button onClick={() => { setStepIdx(0); setPlaying(false); }} style={{ ...btn(false), color: "rgba(255,255,255,0.4)" }}>{"\u21BA"}</button>
+              </div>
+
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginBottom: 14, fontVariantNumeric: "tabular-nums" }}>
+                Step {stepIdx + 1} / {total}
+                {step.i >= 0 && <> &middot; i = {step.i} &middot; n = {step.n} &middot; k = {parsed.k}</>}
+              </div>
+
+              {/* nums array */}
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 14, padding: "20px 16px", width: "100%", maxWidth: 780, marginBottom: 14,
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 8 }}>
+                  nums[]
+                </div>
+                <div ref={scrollRef} style={{ display: "flex", gap: 4, overflowX: "auto", paddingBottom: 6 }}>
+                  {parsed.nums.map((v, idx) => {
+                    const isCurrent = idx === step.i;
+                    const inWindow = step.i >= 0 && idx >= windowStart && idx <= windowEnd && !isCurrent;
+                    const inDeque = step.dq.includes(idx) && !isCurrent;
+                    const isDequeMax = step.dq.length > 0 && step.dq[0] === idx && !isCurrent;
+                    return <NumCell key={idx} value={v} idx={idx} isCurrent={isCurrent} inWindow={inWindow} inDeque={inDeque} isDequeMax={isDequeMax} />;
+                  })}
+                </div>
+                {/* Window bracket */}
+                {step.i >= 0 && (
+                  <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+                    {parsed.nums.map((_, idx) => {
+                      const inWin = idx >= windowStart && idx <= windowEnd;
+                      const isStart = idx === windowStart;
+                      const isEnd = idx === windowEnd;
+                      return (
+                        <div key={idx} style={{
+                          minWidth: 44, height: 4, borderRadius: 2,
+                          background: inWin ? "rgba(59,130,246,0.35)" : "transparent",
+                          borderLeft: isStart ? "2px solid rgba(59,130,246,0.7)" : "none",
+                          borderRight: isEnd ? "2px solid rgba(59,130,246,0.7)" : "none",
+                        }} />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Deque */}
+              <div style={{
+                background: "rgba(139,92,246,0.03)", border: "1px solid rgba(139,92,246,0.1)",
+                borderRadius: 14, padding: "16px 16px", width: "100%", maxWidth: 780, marginBottom: 14,
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(139,92,246,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 8 }}>
+                  Monotonic Deque (indices &rarr; values)
+                </div>
+                <DequeViz dq={step.dq} nums={parsed.nums} highlightIdx={step.highlightDequeIdx} />
+              </div>
+
+              {/* Result */}
+              <div style={{
+                background: "rgba(16,185,129,0.03)", border: "1px solid rgba(16,185,129,0.1)",
+                borderRadius: 14, padding: "16px 16px", width: "100%", maxWidth: 780, marginBottom: 14,
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(16,185,129,0.5)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 8 }}>
+                  Result
+                </div>
+                <ResultViz ret={step.ret} newResult={step.newResult} />
+              </div>
+
+              {/* Description */}
+              <div style={{
+                background: "rgba(59,130,246,0.04)", border: "1px solid rgba(59,130,246,0.12)",
+                borderRadius: 10, padding: "11px 16px", width: "100%", maxWidth: 780, marginBottom: 14,
+              }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: "#93c5fd", lineHeight: 1.6 }}>
+                  {"\u2192"} {step.desc}
+                </div>
+              </div>
+
+              {/* Python code */}
+              <div style={{
+                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 14, padding: "18px 20px", width: "100%", maxWidth: 780, marginBottom: 20,
+                overflowX: "auto",
+              }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: 10 }}>
+                  Python Implementation
+                </div>
+                {PYTHON_LINES.map((line) => (
+                  <PythonLine key={line.id} line={line} active={step.activeLines.includes(line.id)} />
+                ))}
+              </div>
+
+              {/* Legend */}
+              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", marginBottom: 20 }}>
+                {[
+                  { color: "#10b981", label: "Current element" },
+                  { color: "#3b82f6", label: "Window" },
+                  { color: "#8b5cf6", label: "In deque" },
+                  { color: "#f59e0b", label: "Deque max" },
+                  { color: "#ef4444", label: "Being removed" },
+                ].map(({ color, label }) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "rgba(255,255,255,0.4)" }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 3, background: color }} />{label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Final result banner */}
+              {stepIdx >= total - 1 && data.finalResult && data.finalResult.length > 0 && (
+                <div style={{
+                  background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(16,185,129,0.08))",
+                  border: "1px solid rgba(59,130,246,0.2)", borderRadius: 12,
+                  padding: "14px 22px", textAlign: "center", maxWidth: 780, width: "100%",
+                }}>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+                    Final Result
+                  </div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: "#60a5fa" }}>
+                    [{data.finalResult.join(", ")}]
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

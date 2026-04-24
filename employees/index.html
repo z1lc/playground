@@ -38,7 +38,7 @@
       border: 1px solid #334155 !important;
       border-radius: 8px !important;
     }
-    @media (max-width: 640px) {
+@media (max-width: 640px) {
       body { padding: 20px 10px 40px; }
       h1 { font-size: 1.3rem; }
       .chart-card { padding: 12px 4px 8px; }
@@ -66,21 +66,21 @@
     const html = htm.bind(React.createElement);
 
     const DATA = [
-      { year: 2011, microsoft: 90000, google: 32467, apple: 60400, oracle: 108000, tesla: 1417, meta: 3200, nvidia: 6029, netflix: 2348 },
-      { year: 2012, microsoft: 94000, google: 53861, apple: 72800, oracle: 115000, tesla: 2964, meta: 4619, nvidia: 7133, netflix: 2045 },
-      { year: 2013, microsoft: 99000, google: 47756, apple: 80300, oracle: 120000, tesla: 5859, meta: 6337, nvidia: 7974, netflix: 2022 },
-      { year: 2014, microsoft: 128000, google: 53600, apple: 92600, oracle: 122000, tesla: 10161, meta: 9199, nvidia: 8808, netflix: 2189 },
-      { year: 2015, microsoft: 118000, google: 61814, apple: 110000, oracle: 132000, tesla: 13058, meta: 12691, nvidia: 9228, netflix: 3500 },
-      { year: 2016, microsoft: 114000, google: 72053, apple: 116000, oracle: 136000, tesla: 17782, meta: 17048, nvidia: 9227, netflix: 4500 },
-      { year: 2017, microsoft: 124000, google: 80110, apple: 123000, oracle: 138000, tesla: 37543, meta: 25105, nvidia: 10299, netflix: 5400 },
-      { year: 2018, microsoft: 131000, google: 98771, apple: 132000, oracle: 137000, tesla: 48817, meta: 35587, nvidia: 11528, netflix: 7100 },
-      { year: 2019, microsoft: 144000, google: 118899, apple: 137000, oracle: 136000, tesla: 48016, meta: 44942, nvidia: 13277, netflix: 8600 },
-      { year: 2020, microsoft: 163000, google: 135301, apple: 147000, oracle: 135000, tesla: 70757, meta: 58604, nvidia: 13775, netflix: 9400 },
-      { year: 2021, microsoft: 181000, google: 156500, apple: 154000, oracle: 132000, tesla: 99290, meta: 71970, nvidia: 18975, netflix: 11300 },
-      { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, nvidia: 22473, netflix: 12800 },
-      { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, nvidia: 26196, netflix: 13000 },
-      { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, nvidia: 29600, netflix: 14000 },
-      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, nvidia: 36000, netflix: 16000 },
+      { year: 2011, microsoft: 90000, google: 32467, apple: 60400, oracle: 108000, tesla: 1417, meta: 3200, salesforce: 5306, nvidia: 6029, netflix: 2348 },
+      { year: 2012, microsoft: 94000, google: 53861, apple: 72800, oracle: 115000, tesla: 2964, meta: 4619, salesforce: 7785, nvidia: 7133, netflix: 2045 },
+      { year: 2013, microsoft: 99000, google: 47756, apple: 80300, oracle: 120000, tesla: 5859, meta: 6337, salesforce: 9800, nvidia: 7974, netflix: 2022 },
+      { year: 2014, microsoft: 128000, google: 53600, apple: 92600, oracle: 122000, tesla: 10161, meta: 9199, salesforce: 13300, nvidia: 8808, netflix: 2189 },
+      { year: 2015, microsoft: 118000, google: 61814, apple: 110000, oracle: 132000, tesla: 13058, meta: 12691, salesforce: 16000, nvidia: 9228, netflix: 3500 },
+      { year: 2016, microsoft: 114000, google: 72053, apple: 116000, oracle: 136000, tesla: 17782, meta: 17048, salesforce: 19000, nvidia: 9227, netflix: 4500 },
+      { year: 2017, microsoft: 124000, google: 80110, apple: 123000, oracle: 138000, tesla: 37543, meta: 25105, salesforce: 25000, nvidia: 10299, netflix: 5400 },
+      { year: 2018, microsoft: 131000, google: 98771, apple: 132000, oracle: 137000, tesla: 48817, meta: 35587, salesforce: 29000, nvidia: 11528, netflix: 7100 },
+      { year: 2019, microsoft: 144000, google: 118899, apple: 137000, oracle: 136000, tesla: 48016, meta: 44942, salesforce: 35000, nvidia: 13277, netflix: 8600 },
+      { year: 2020, microsoft: 163000, google: 135301, apple: 147000, oracle: 135000, tesla: 70757, meta: 58604, salesforce: 49000, nvidia: 13775, netflix: 9400 },
+      { year: 2021, microsoft: 181000, google: 156500, apple: 154000, oracle: 132000, tesla: 99290, meta: 71970, salesforce: 56606, nvidia: 18975, netflix: 11300 },
+      { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, salesforce: 73541, nvidia: 22473, netflix: 12800 },
+      { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, salesforce: 79390, nvidia: 26196, netflix: 13000 },
+      { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, salesforce: 72682, nvidia: 29600, netflix: 14000 },
+      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000 },
     ];
 
     const COMPANIES = [
@@ -89,13 +89,21 @@
       { key: 'apple',     name: 'Apple',     color: '#A3AAAE' },
       { key: 'oracle',    name: 'Oracle',    color: '#F44336' },
       { key: 'tesla',     name: 'Tesla',     color: '#E040FB' },
-      { key: 'meta',      name: 'Meta',      color: '#1877F2' },
-      { key: 'nvidia',    name: 'Nvidia',    color: '#76B900' },
+      { key: 'meta',      name: 'Meta',       color: '#1877F2' },
+      { key: 'salesforce', name: 'Salesforce', color: '#26C6DA' },
+      { key: 'nvidia',    name: 'Nvidia',     color: '#76B900' },
       { key: 'netflix',   name: 'Netflix',   color: '#FF9800' },
     ];
 
     const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
     const formatNum = (v) => v.toLocaleString();
+    const cagrPct = (start, end, years) => ((Math.pow(end / start, 1 / years) - 1) * 100).toFixed(1);
+    const sum = (d) => COMPANIES.reduce((s, c) => s + d[c.key], 0);
+    const total2011 = sum(DATA[0]);
+    const total2022 = sum(DATA.find(d => d.year === 2022));
+    const total2025 = sum(DATA[DATA.length - 1]);
+    const cagr1 = cagrPct(total2011, total2022, 11);
+    const cagr2 = cagrPct(total2022, total2025, 3);
 
     function CustomTooltip({ active, payload, label }) {
       if (!active || !payload || !payload.length) return null;
@@ -126,14 +134,14 @@
       return html`
         <div class="container">
           <h1>Big Tech Employment (2011–2025)</h1>
-          <p class="subtitle">Full-time employee headcount from SEC 10-K filings</p>
+          <p class="subtitle">Full-time employee headcount from SEC 10-K filings. Combined CAGR: +${cagr1}% (2011–2022), +${cagr2}% (2022–2025).</p>
           <div class="chart-card">
             <${ResponsiveContainer} width="100%" height=${500}>
               <${BarChart} data=${DATA} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
                 <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
                 <${XAxis} dataKey="year" tick=${{ fill: '#94a3b8', fontSize: 12 }} />
                 <${YAxis} tickFormatter=${formatK} tick=${{ fill: '#94a3b8', fontSize: 12 }} width=${55} />
-                <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} />
+                <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} cursor=${{ fill: 'rgba(255,255,255,0.05)' }} />
                 <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8 }} />
                 ${COMPANIES.map((c, i) => html`
                   <${Bar}

@@ -213,19 +213,28 @@
     const STORAGE_KEY = 'employees.selectedRate';
     const DEFAULT_RATE = 'fedRate';
 
-    const BASELINES = [
-      { key: '2011-2019', label: 'Pre-COVID (2011–2019)', startYear: 2011, endYear: 2019 },
-      { key: '2011-2021', label: 'Pre-pandemic surge (2011–2021)', startYear: 2011, endYear: 2021 },
-      { key: '2011-2022', label: 'Including pandemic (2011–2022)', startYear: 2011, endYear: 2022 },
-    ];
-    const BASELINES_BY_KEY = Object.fromEntries(BASELINES.map(b => [b.key, b]));
-    const BASELINE_STORAGE_KEY = 'employees.selectedBaseline';
-    const DEFAULT_BASELINE = '2011-2019';
+    const BASELINE_START = 2011;
+    const BASELINE_END = 2019;
 
     const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
     const formatNum = (v) => v.toLocaleString();
     const cagrPct = (start, end, years) => ((Math.pow(end / start, 1 / years) - 1) * 100).toFixed(1);
     const sum = (d) => COMPANIES.reduce((s, c) => s + d[c.key], 0);
+
+    const baselineStartTotal = sum(DATA.find(d => d.year === BASELINE_START));
+    const baselineEndTotal = sum(DATA.find(d => d.year === BASELINE_END));
+    const baselineCagr = cagrPct(baselineStartTotal, baselineEndTotal, BASELINE_END - BASELINE_START);
+    const baselineGrowthRate = Math.pow(baselineEndTotal / baselineStartTotal, 1 / (BASELINE_END - BASELINE_START));
+    const MISSING_LABEL = `Missing (vs. ${BASELINE_START}–${BASELINE_END} CAGR)`;
+    const BASE_CHART_DATA = DATA.map(d => {
+      let missing = 0;
+      if (d.year > BASELINE_END) {
+        const projected = baselineEndTotal * Math.pow(baselineGrowthRate, d.year - BASELINE_END);
+        const actual = sum(d);
+        missing = Math.max(0, Math.round(projected - actual));
+      }
+      return { ...d, missing };
+    });
 
     function CustomTooltip({ active, payload, label, rate }) {
       if (!active || !payload || !payload.length) return null;
@@ -278,58 +287,27 @@
       });
       useEffect(() => { localStorage.setItem(STORAGE_KEY, selectedKey); }, [selectedKey]);
 
-      const [baselineKey, setBaselineKey] = useState(() => {
-        const saved = localStorage.getItem(BASELINE_STORAGE_KEY);
-        return saved && BASELINES_BY_KEY[saved] ? saved : DEFAULT_BASELINE;
-      });
-      useEffect(() => { localStorage.setItem(BASELINE_STORAGE_KEY, baselineKey); }, [baselineKey]);
-
       const selected = RATES_BY_KEY[selectedKey];
       const showRate = selected.key !== 'none';
-      const baseline = BASELINES_BY_KEY[baselineKey];
-
-      const baselineCagr = useMemo(() => {
-        const startTotal = sum(DATA.find(d => d.year === baseline.startYear));
-        const endTotal = sum(DATA.find(d => d.year === baseline.endYear));
-        return cagrPct(startTotal, endTotal, baseline.endYear - baseline.startYear);
-      }, [baseline.startYear, baseline.endYear]);
 
       const chartData = useMemo(() => {
-        const startTotal = sum(DATA.find(d => d.year === baseline.startYear));
-        const endTotal = sum(DATA.find(d => d.year === baseline.endYear));
-        const growthRate = Math.pow(endTotal / startTotal, 1 / (baseline.endYear - baseline.startYear));
-        return DATA.map(d => {
-          let missing = 0;
-          if (d.year > baseline.endYear) {
-            const projected = endTotal * Math.pow(growthRate, d.year - baseline.endYear);
-            const actual = sum(d);
-            missing = Math.max(0, Math.round(projected - actual));
-          }
-          return showRate
-            ? { ...d, missing, rateValue: d[selected.key] }
-            : { ...d, missing };
-        });
-      }, [baseline.startYear, baseline.endYear, selected.key, showRate]);
-
-      const missingLabel = `Missing (vs. ${baseline.startYear}–${baseline.endYear} CAGR)`;
+        if (!showRate) return BASE_CHART_DATA;
+        return BASE_CHART_DATA.map(d => ({ ...d, rateValue: d[selected.key] }));
+      }, [selected.key, showRate]);
 
       return html`
         <div class="container">
           <h1>Big Tech Employment (2011–2025)</h1>
           <p class="subtitle">
             Full-time employee headcount from SEC 10-K filings.
-            Combined headcount CAGR: +${baselineCagr}% (${baseline.startYear}–${baseline.endYear}).
-            Striped segments show jobs that <em>would</em> exist in ${baseline.endYear + 1}+ if that CAGR had continued.
+            Combined headcount CAGR: +${baselineCagr}% (${BASELINE_START}–${BASELINE_END}).
+            Striped segments show jobs that <em>would</em> exist in ${BASELINE_END + 1}+ if that pre-COVID CAGR had continued.
           </p>
           <div class="chart-card">
             <div class="controls">
               <label for="rate-select">Compare with:</label>
               <select id="rate-select" value=${selectedKey} onChange=${(e) => setSelectedKey(e.target.value)}>
                 ${RATES.map(r => html`<option key=${r.key} value=${r.key}>${r.label}</option>`)}
-              </select>
-              <label for="baseline-select" style=${{ marginLeft: 12 }}>Missing baseline:</label>
-              <select id="baseline-select" value=${baselineKey} onChange=${(e) => setBaselineKey(e.target.value)}>
-                ${BASELINES.map(b => html`<option key=${b.key} value=${b.key}>${b.label}</option>`)}
               </select>
             </div>
             ${showRate && html`<p class="rate-description">${selected.description}</p>`}
@@ -386,7 +364,7 @@
                 `)}
                 <${Bar}
                   dataKey="missing"
-                  name=${missingLabel}
+                  name=${MISSING_LABEL}
                   stackId="a"
                   fill="url(#missingPattern)"
                   radius=${[3, 3, 0, 0]}

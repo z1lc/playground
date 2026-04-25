@@ -38,7 +38,38 @@
       border: 1px solid #334155 !important;
       border-radius: 8px !important;
     }
-@media (max-width: 640px) {
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 0 8px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .controls select {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .controls select:hover { border-color: #475569; }
+    .controls select:focus { border-color: #fbbf24; }
+    .rate-description {
+      font-size: 12px;
+      color: #64748b;
+      padding: 0 8px 12px;
+      margin-top: -8px;
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) {
       body { padding: 20px 10px 40px; }
       h1 { font-size: 1.3rem; }
       .chart-card { padding: 12px 4px 8px; }
@@ -59,28 +90,33 @@
 <body>
   <div id="root"></div>
   <script type="module">
-    import React, { useMemo } from 'react';
+    import React, { useMemo, useState, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
-    import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+    import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from 'recharts';
     import htm from 'htm';
     const html = htm.bind(React.createElement);
 
+    // fedRate: FRED FEDFUNDS, calendar-year avg.  t10y: FRED DGS10, calendar-year avg.
+    // vc: US VC investment ($B), PitchBook–NVCA Venture Monitor (full-year totals).
+    // adGrowth: US digital ad spending YoY % (IAB/PwC actuals 2011–2024; eMarketer estimate for 2025).
+    // revPerEmp: combined revenue across all 9 companies / combined year-end headcount, in $K (10-Ks).
+    // capex: combined capex across all 9 companies, $B (cash-flow-statement "Purchases of property and equipment").
     const DATA = [
-      { year: 2011, microsoft: 90000, google: 32467, apple: 60400, oracle: 108000, tesla: 1417, meta: 3200, salesforce: 5306, nvidia: 6029, netflix: 2348 },
-      { year: 2012, microsoft: 94000, google: 53861, apple: 72800, oracle: 115000, tesla: 2964, meta: 4619, salesforce: 7785, nvidia: 7133, netflix: 2045 },
-      { year: 2013, microsoft: 99000, google: 47756, apple: 80300, oracle: 120000, tesla: 5859, meta: 6337, salesforce: 9800, nvidia: 7974, netflix: 2022 },
-      { year: 2014, microsoft: 128000, google: 53600, apple: 92600, oracle: 122000, tesla: 10161, meta: 9199, salesforce: 13300, nvidia: 8808, netflix: 2189 },
-      { year: 2015, microsoft: 118000, google: 61814, apple: 110000, oracle: 132000, tesla: 13058, meta: 12691, salesforce: 16000, nvidia: 9228, netflix: 3500 },
-      { year: 2016, microsoft: 114000, google: 72053, apple: 116000, oracle: 136000, tesla: 17782, meta: 17048, salesforce: 19000, nvidia: 9227, netflix: 4500 },
-      { year: 2017, microsoft: 124000, google: 80110, apple: 123000, oracle: 138000, tesla: 37543, meta: 25105, salesforce: 25000, nvidia: 10299, netflix: 5400 },
-      { year: 2018, microsoft: 131000, google: 98771, apple: 132000, oracle: 137000, tesla: 48817, meta: 35587, salesforce: 29000, nvidia: 11528, netflix: 7100 },
-      { year: 2019, microsoft: 144000, google: 118899, apple: 137000, oracle: 136000, tesla: 48016, meta: 44942, salesforce: 35000, nvidia: 13277, netflix: 8600 },
-      { year: 2020, microsoft: 163000, google: 135301, apple: 147000, oracle: 135000, tesla: 70757, meta: 58604, salesforce: 49000, nvidia: 13775, netflix: 9400 },
-      { year: 2021, microsoft: 181000, google: 156500, apple: 154000, oracle: 132000, tesla: 99290, meta: 71970, salesforce: 56606, nvidia: 18975, netflix: 11300 },
-      { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, salesforce: 73541, nvidia: 22473, netflix: 12800 },
-      { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, salesforce: 79390, nvidia: 26196, netflix: 13000 },
-      { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, salesforce: 72682, nvidia: 29600, netflix: 14000 },
-      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000 },
+      { year: 2011, microsoft: 90000, google: 32467, apple: 60400, oracle: 108000, tesla: 1417, meta: 3200, salesforce: 5306, nvidia: 6029, netflix: 2348, fedRate: 0.10, t10y: 2.78, vc: 30.0, adGrowth: 21.9, revPerEmp: 854, capex: 15.1 },
+      { year: 2012, microsoft: 94000, google: 53861, apple: 72800, oracle: 115000, tesla: 2964, meta: 4619, salesforce: 7785, nvidia: 7133, netflix: 2045, fedRate: 0.14, t10y: 1.80, vc: 33.1, adGrowth: 15.5, revPerEmp: 913, capex: 17.5 },
+      { year: 2013, microsoft: 99000, google: 47756, apple: 80300, oracle: 120000, tesla: 5859, meta: 6337, salesforce: 9800, nvidia: 7974, netflix: 2022, fedRate: 0.11, t10y: 2.35, vc: 47.7, adGrowth: 16.9, revPerEmp: 958, capex: 23.5 },
+      { year: 2014, microsoft: 128000, google: 53600, apple: 92600, oracle: 122000, tesla: 10161, meta: 9199, salesforce: 13300, nvidia: 8808, netflix: 2189, fedRate: 0.09, t10y: 2.54, vc: 73.6, adGrowth: 15.7, revPerEmp: 917, capex: 30.4 },
+      { year: 2015, microsoft: 118000, google: 61814, apple: 110000, oracle: 132000, tesla: 13058, meta: 12691, salesforce: 16000, nvidia: 9228, netflix: 3500, fedRate: 0.13, t10y: 2.14, vc: 79.3, adGrowth: 20.4, revPerEmp: 1007, capex: 33.6 },
+      { year: 2016, microsoft: 114000, google: 72053, apple: 116000, oracle: 136000, tesla: 17782, meta: 17048, salesforce: 19000, nvidia: 9227, netflix: 4500, fedRate: 0.40, t10y: 1.84, vc: 74.0, adGrowth: 21.6, revPerEmp: 968, capex: 40.2 },
+      { year: 2017, microsoft: 124000, google: 80110, apple: 123000, oracle: 138000, tesla: 37543, meta: 25105, salesforce: 25000, nvidia: 10299, netflix: 5400, fedRate: 1.00, t10y: 2.33, vc: 84.2, adGrowth: 21.4, revPerEmp: 974, capex: 47.8 },
+      { year: 2018, microsoft: 131000, google: 98771, apple: 132000, oracle: 137000, tesla: 48817, meta: 35587, salesforce: 29000, nvidia: 11528, netflix: 7100, fedRate: 1.83, t10y: 2.91, vc: 130.9, adGrowth: 22.2, revPerEmp: 1055, capex: 69.5 },
+      { year: 2019, microsoft: 144000, google: 118899, apple: 137000, oracle: 136000, tesla: 48016, meta: 44942, salesforce: 35000, nvidia: 13277, netflix: 8600, fedRate: 2.16, t10y: 2.14, vc: 146.6, adGrowth: 15.9, revPerEmp: 1061, capex: 67.8 },
+      { year: 2020, microsoft: 163000, google: 135301, apple: 147000, oracle: 135000, tesla: 70757, meta: 58604, salesforce: 49000, nvidia: 13775, netflix: 9400, fedRate: 0.38, t10y: 0.89, vc: 166.6, adGrowth: 12.2, revPerEmp: 1036, capex: 66.6 },
+      { year: 2021, microsoft: 181000, google: 156500, apple: 154000, oracle: 132000, tesla: 99290, meta: 71970, salesforce: 56606, nvidia: 18975, netflix: 11300, fedRate: 0.08, t10y: 1.45, vc: 329.9, adGrowth: 35.4, revPerEmp: 1215, capex: 87.5 },
+      { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, salesforce: 73541, nvidia: 22473, netflix: 12800, fedRate: 1.68, t10y: 2.95, vc: 238.3, adGrowth: 10.8, revPerEmp: 1153, capex: 111.3 },
+      { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, salesforce: 79390, nvidia: 26196, netflix: 13000, fedRate: 5.03, t10y: 3.96, vc: 170.6, adGrowth: 7.3, revPerEmp: 1210, capex: 119.2 },
+      { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, salesforce: 72682, nvidia: 29600, netflix: 14000, fedRate: 5.15, t10y: 4.21, vc: 213.2, adGrowth: 14.9, revPerEmp: 1367, capex: 164.2 },
+      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000, fedRate: 4.50, t10y: 4.29, vc: 339.4, adGrowth: 9.5, revPerEmp: 1531, capex: 272.8 },
     ];
 
     const COMPANIES = [
@@ -95,29 +131,109 @@
       { key: 'netflix',   name: 'Netflix',   color: '#FF9800' },
     ];
 
+    const RATE_COLOR = '#fbbf24';
+
+    // Compute CAGR for ad-spend over a year range from chained YoY %s.
+    // adGrowth[year] = growth from (year-1) -> year, so range start..end uses years (start+1)..end.
+    const adCagr = (start, end) => {
+      let cumulative = 1;
+      for (let y = start + 1; y <= end; y++) {
+        const row = DATA.find(d => d.year === y);
+        cumulative *= 1 + row.adGrowth / 100;
+      }
+      return ((Math.pow(cumulative, 1 / (end - start)) - 1) * 100).toFixed(1);
+    };
+    const adCagr1 = adCagr(2011, 2021);
+    const adCagr2 = adCagr(2021, 2025);
+
+    const RATES = [
+      { key: 'none', label: 'None' },
+      {
+        key: 'fedRate',
+        label: 'Effective Federal Funds Rate',
+        legendName: 'Effective Federal Funds Rate',
+        tooltipLabel: 'Fed funds rate',
+        domain: [0, 6],
+        axisFormat: (v) => v.toFixed(1) + '%',
+        tooltipFormat: (v) => v.toFixed(2) + '%',
+        description: 'Yellow line is the calendar-year average Effective Federal Funds Rate (FRED FEDFUNDS).',
+      },
+      {
+        key: 't10y',
+        label: '10-Year Treasury Yield',
+        legendName: '10-Year Treasury Yield',
+        tooltipLabel: '10Y Treasury yield',
+        domain: [0, 5],
+        axisFormat: (v) => v.toFixed(1) + '%',
+        tooltipFormat: (v) => v.toFixed(2) + '%',
+        description: 'Yellow line is the calendar-year average 10-Year Treasury Constant Maturity Rate (FRED DGS10).',
+      },
+      {
+        key: 'vc',
+        label: 'US VC Investment',
+        legendName: 'US VC Investment ($B/yr)',
+        tooltipLabel: 'US VC investment',
+        domain: [0, 360],
+        axisFormat: (v) => '$' + v + 'B',
+        tooltipFormat: (v) => '$' + v.toFixed(1) + 'B',
+        description: 'Yellow line is total annual U.S. venture capital investment, in billions of dollars (PitchBook–NVCA Venture Monitor).',
+      },
+      {
+        key: 'revPerEmp',
+        label: 'Revenue per Employee',
+        legendName: 'Revenue per Employee (combined)',
+        tooltipLabel: 'Revenue per employee',
+        domain: [800, 1600],
+        axisFormat: (v) => '$' + (v / 1000).toFixed(1) + 'M',
+        tooltipFormat: (v) => '$' + (v / 1000).toFixed(2) + 'M',
+        description: 'Yellow line is combined annual revenue divided by combined year-end headcount across all 9 companies (sourced from each company\'s 10-K). Rising sharply post-2022 — the empirical signature of deliberate efficiency, not an under-hiring slump.',
+      },
+      {
+        key: 'capex',
+        label: 'Combined Capex',
+        legendName: 'Combined Capex ($B/yr)',
+        tooltipLabel: 'Combined capex',
+        domain: [0, 300],
+        axisFormat: (v) => '$' + v + 'B',
+        tooltipFormat: (v) => '$' + v.toFixed(0) + 'B',
+        description: 'Yellow line is combined annual capital expenditures across all 9 companies, in billions of dollars (cash-flow-statement capex from each 10-K). The post-2022 vertical climb is overwhelmingly AI/data-center spending at MSFT, GOOG, META, and NVDA.',
+      },
+      {
+        key: 'adGrowth',
+        label: 'US Digital Ad Spending YoY %',
+        legendName: 'US Digital Ad Spending YoY %',
+        tooltipLabel: 'Digital ad spend YoY',
+        domain: [0, 40],
+        axisFormat: (v) => v + '%',
+        tooltipFormat: (v) => '+' + v.toFixed(1) + '%',
+        description: `Yellow line is the year-over-year % growth in U.S. digital ad spending (IAB/PwC Internet Advertising Revenue Report; 2025 is an eMarketer estimate). CAGR: +${adCagr1}% (2011–2021), +${adCagr2}% (2021–2025).`,
+      },
+    ];
+    const RATES_BY_KEY = Object.fromEntries(RATES.map(r => [r.key, r]));
+    const STORAGE_KEY = 'employees.selectedRate';
+    const DEFAULT_RATE = 'fedRate';
+
+    const BASELINES = [
+      { key: '2011-2019', label: 'Pre-COVID (2011–2019)', startYear: 2011, endYear: 2019 },
+      { key: '2011-2021', label: 'Pre-pandemic surge (2011–2021)', startYear: 2011, endYear: 2021 },
+      { key: '2011-2022', label: 'Including pandemic (2011–2022)', startYear: 2011, endYear: 2022 },
+    ];
+    const BASELINES_BY_KEY = Object.fromEntries(BASELINES.map(b => [b.key, b]));
+    const BASELINE_STORAGE_KEY = 'employees.selectedBaseline';
+    const DEFAULT_BASELINE = '2011-2019';
+
     const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
     const formatNum = (v) => v.toLocaleString();
     const cagrPct = (start, end, years) => ((Math.pow(end / start, 1 / years) - 1) * 100).toFixed(1);
     const sum = (d) => COMPANIES.reduce((s, c) => s + d[c.key], 0);
-    const total2011 = sum(DATA[0]);
-    const total2022 = sum(DATA.find(d => d.year === 2022));
-    const total2025 = sum(DATA[DATA.length - 1]);
-    const cagr1 = cagrPct(total2011, total2022, 11);
-    const cagr2 = cagrPct(total2022, total2025, 3);
 
-    const growthRate = Math.pow(total2022 / total2011, 1 / 11);
-    const CHART_DATA = DATA.map(d => {
-      if (d.year <= 2022) return { ...d, missing: 0 };
-      const projected = total2022 * Math.pow(growthRate, d.year - 2022);
-      const actual = sum(d);
-      return { ...d, missing: Math.max(0, Math.round(projected - actual)) };
-    });
-
-    function CustomTooltip({ active, payload, label }) {
+    function CustomTooltip({ active, payload, label, rate }) {
       if (!active || !payload || !payload.length) return null;
-      const real = payload.filter(p => p.dataKey !== 'missing');
+      const real = payload.filter(p => p.dataKey !== 'missing' && p.dataKey !== 'rateValue');
       const missingEntry = payload.find(p => p.dataKey === 'missing');
+      const rateEntry = rate ? payload.find(p => p.dataKey === 'rateValue') : null;
       const missing = missingEntry?.value || 0;
+      const rateValue = rateEntry?.value;
       const total = real.reduce((s, p) => s + (p.value || 0), 0);
       const sorted = [...real].reverse();
       return html`
@@ -142,18 +258,83 @@
               <span style=${{ fontFamily: 'monospace' }}>${formatNum(missing)}</span>
             </div>
           `}
+          ${rate && rateValue !== undefined && html`
+            <div style=${{ display: 'flex', justifyContent: 'space-between', gap: 24, marginTop: 4, paddingTop: 4, borderTop: '1px dashed #475569' }}>
+              <span style=${{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style=${{ width: 10, height: 2, background: RATE_COLOR, display: 'inline-block' }} />
+                ${rate.tooltipLabel}
+              </span>
+              <span style=${{ fontFamily: 'monospace', fontWeight: 500, color: RATE_COLOR }}>${rate.tooltipFormat(rateValue)}</span>
+            </div>
+          `}
         </div>
       `;
     }
 
     function App() {
+      const [selectedKey, setSelectedKey] = useState(() => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved && RATES_BY_KEY[saved] ? saved : DEFAULT_RATE;
+      });
+      useEffect(() => { localStorage.setItem(STORAGE_KEY, selectedKey); }, [selectedKey]);
+
+      const [baselineKey, setBaselineKey] = useState(() => {
+        const saved = localStorage.getItem(BASELINE_STORAGE_KEY);
+        return saved && BASELINES_BY_KEY[saved] ? saved : DEFAULT_BASELINE;
+      });
+      useEffect(() => { localStorage.setItem(BASELINE_STORAGE_KEY, baselineKey); }, [baselineKey]);
+
+      const selected = RATES_BY_KEY[selectedKey];
+      const showRate = selected.key !== 'none';
+      const baseline = BASELINES_BY_KEY[baselineKey];
+
+      const baselineCagr = useMemo(() => {
+        const startTotal = sum(DATA.find(d => d.year === baseline.startYear));
+        const endTotal = sum(DATA.find(d => d.year === baseline.endYear));
+        return cagrPct(startTotal, endTotal, baseline.endYear - baseline.startYear);
+      }, [baseline.startYear, baseline.endYear]);
+
+      const chartData = useMemo(() => {
+        const startTotal = sum(DATA.find(d => d.year === baseline.startYear));
+        const endTotal = sum(DATA.find(d => d.year === baseline.endYear));
+        const growthRate = Math.pow(endTotal / startTotal, 1 / (baseline.endYear - baseline.startYear));
+        return DATA.map(d => {
+          let missing = 0;
+          if (d.year > baseline.endYear) {
+            const projected = endTotal * Math.pow(growthRate, d.year - baseline.endYear);
+            const actual = sum(d);
+            missing = Math.max(0, Math.round(projected - actual));
+          }
+          return showRate
+            ? { ...d, missing, rateValue: d[selected.key] }
+            : { ...d, missing };
+        });
+      }, [baseline.startYear, baseline.endYear, selected.key, showRate]);
+
+      const missingLabel = `Missing (vs. ${baseline.startYear}–${baseline.endYear} CAGR)`;
+
       return html`
         <div class="container">
           <h1>Big Tech Employment (2011–2025)</h1>
-          <p class="subtitle">Full-time employee headcount from SEC 10-K filings. Combined CAGR: +${cagr1}% (2011–2022), +${cagr2}% (2022–2025). Striped segments show jobs that <em>would</em> exist in 2023+ if the 2011–2022 CAGR had continued.</p>
+          <p class="subtitle">
+            Full-time employee headcount from SEC 10-K filings.
+            Combined headcount CAGR: +${baselineCagr}% (${baseline.startYear}–${baseline.endYear}).
+            Striped segments show jobs that <em>would</em> exist in ${baseline.endYear + 1}+ if that CAGR had continued.
+          </p>
           <div class="chart-card">
+            <div class="controls">
+              <label for="rate-select">Compare with:</label>
+              <select id="rate-select" value=${selectedKey} onChange=${(e) => setSelectedKey(e.target.value)}>
+                ${RATES.map(r => html`<option key=${r.key} value=${r.key}>${r.label}</option>`)}
+              </select>
+              <label for="baseline-select" style=${{ marginLeft: 12 }}>Missing baseline:</label>
+              <select id="baseline-select" value=${baselineKey} onChange=${(e) => setBaselineKey(e.target.value)}>
+                ${BASELINES.map(b => html`<option key=${b.key} value=${b.key}>${b.label}</option>`)}
+              </select>
+            </div>
+            ${showRate && html`<p class="rate-description">${selected.description}</p>`}
             <${ResponsiveContainer} width="100%" height=${500}>
-              <${BarChart} data=${CHART_DATA} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
+              <${ComposedChart} data=${chartData} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
                 <defs>
                   <pattern id="missingPattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
                     <rect width="6" height="6" fill="rgba(148,163,184,0.15)" />
@@ -163,8 +344,37 @@
                 <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
                 <${XAxis} dataKey="year" tick=${{ fill: '#94a3b8', fontSize: 12 }} />
                 <${YAxis} tickFormatter=${formatK} tick=${{ fill: '#94a3b8', fontSize: 12 }} width=${55} />
-                <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} cursor=${{ fill: 'rgba(255,255,255,0.05)' }} />
+                ${showRate && html`
+                  <${YAxis}
+                    yAxisId="rate"
+                    orientation="right"
+                    domain=${selected.domain}
+                    tickFormatter=${selected.axisFormat}
+                    tick=${{ fill: RATE_COLOR, fontSize: 12 }}
+                    width=${55}
+                  />
+                `}
+                <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} rate=${showRate ? selected : null} />`} cursor=${{ fill: 'rgba(255,255,255,0.05)' }} />
                 <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8 }} />
+                <${ReferenceLine}
+                  x=${2022}
+                  stroke="#94a3b8"
+                  strokeDasharray="5 4"
+                  strokeWidth=${1.5}
+                  ifOverflow="extendDomain"
+                  label=${({ viewBox }) => {
+                    const tx = viewBox.x - 6;
+                    const ty = viewBox.y + 12;
+                    return html`
+                      <text x=${tx} y=${ty} fill="#94a3b8" fontSize=${11} textAnchor="end">
+                        <tspan x=${tx} dy="0">ChatGPT</tspan>
+                        <tspan x=${tx} dy="13">launch (Nov 2022)</tspan>
+                        <tspan x=${tx} dy="20" fill="#64748b">TCJA §174 effective</tspan>
+                        <tspan x=${tx} dy="13" fill="#64748b">(Jan 2022)</tspan>
+                      </text>
+                    `;
+                  }}
+                />
                 ${COMPANIES.map(c => html`
                   <${Bar}
                     key=${c.key}
@@ -176,11 +386,26 @@
                 `)}
                 <${Bar}
                   dataKey="missing"
-                  name="Missing (vs. 2011–2022 CAGR)"
+                  name=${missingLabel}
                   stackId="a"
                   fill="url(#missingPattern)"
                   radius=${[3, 3, 0, 0]}
                 />
+                ${showRate && html`
+                  <${Line}
+                    yAxisId="rate"
+                    type="monotone"
+                    dataKey="rateValue"
+                    name=${selected.legendName}
+                    stroke=${RATE_COLOR}
+                    strokeWidth=${2.5}
+                    dot=${false}
+                    activeDot=${{ r: 5, fill: RATE_COLOR, stroke: '#0f172a', strokeWidth: 1 }}
+                    isAnimationActive=${true}
+                    animationDuration=${600}
+                    animationEasing="ease-in-out"
+                  />
+                `}
               <//>
             <//>
           </div>

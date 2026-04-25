@@ -8,11 +8,46 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #FAF9F6;
+      --surface: #FFFFFF;
+      --border: #E8E0D8;
+      --text: #1a1a1a;
+      --text-secondary: #3a3a3a;
+      --text-muted: #6B5B4F;
+      --text-faint: #9B8E83;
+      --code-bg: #F0EDE8;
+      --accent: #D97757;
+      --accent-hover: #C4623F;
+      --pass: #2D8659;
+      --pass-bg: #E8F5EE;
+      --fail: #C4432B;
+      --test-border: #F0EDE8;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a1a;
+        --surface: #242424;
+        --border: #3a3a3a;
+        --text: #e8e8e8;
+        --text-secondary: #cccccc;
+        --text-muted: #999999;
+        --text-faint: #777777;
+        --code-bg: #2e2e2e;
+        --accent: #E08862;
+        --accent-hover: #D97757;
+        --pass: #4eca8b;
+        --pass-bg: #1e3a2a;
+        --fail: #ef6b5b;
+        --test-border: #333333;
+      }
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body, #root { height: 100%; overflow: hidden; }
     body {
-      background: #FAF9F6;
-      color: #1a1a1a;
+      background: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     .app { display: flex; flex-direction: column; height: 100%; }
@@ -21,17 +56,17 @@
     .header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 24px;
-      border-bottom: 1px solid #E8E0D8;
-      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
       flex-shrink: 0;
     }
     .header-title { font-size: 1.1rem; font-weight: 600; }
     .kata-select {
-      padding: 6px 12px; border: 1px solid #E8E0D8; border-radius: 8px;
-      background: #FFFFFF; color: #1a1a1a; font-size: 0.9rem;
+      padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text); font-size: 0.9rem;
       cursor: pointer; outline: none;
     }
-    .kata-select:focus { border-color: #D97757; }
+    .kata-select:focus { border-color: var(--accent); }
 
     /* Split pane */
     .split-pane { display: flex; flex: 1; min-height: 0; }
@@ -39,23 +74,23 @@
     /* Problem panel */
     .problem-panel {
       width: 380px; min-width: 320px;
-      border-right: 1px solid #E8E0D8;
-      overflow-y: auto; padding: 24px; background: #FFFFFF;
+      border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 24px; background: var(--surface);
     }
     .problem-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
     .difficulty-badge {
       display: inline-block; padding: 2px 10px; border-radius: 12px;
       font-size: 0.75rem; font-weight: 600; margin-bottom: 16px;
-      background: #E8F5EE; color: #2D8659;
+      background: var(--pass-bg); color: var(--pass);
     }
-    .problem-description { font-size: 0.95rem; line-height: 1.7; color: #3a3a3a; }
+    .problem-description { font-size: 0.95rem; line-height: 1.7; color: var(--text-secondary); }
     .problem-description p { margin-bottom: 12px; }
     .problem-description h4 {
-      font-size: 0.9rem; font-weight: 600; color: #6B5B4F;
+      font-size: 0.9rem; font-weight: 600; color: var(--text-muted);
       margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;
     }
     .problem-description pre {
-      background: #F0EDE8; border-radius: 8px;
+      background: var(--code-bg); border-radius: 8px;
       padding: 12px 16px; overflow-x: auto; margin-bottom: 12px;
     }
     .problem-description code {
@@ -64,67 +99,67 @@
     /* Editor panel */
     .editor-panel {
       flex: 1; display: flex; flex-direction: column;
-      min-width: 0; background: #FAF9F6;
+      min-width: 0; background: var(--bg);
     }
     .editor-wrapper { flex: 1; min-height: 200px; overflow: hidden; }
     .editor-wrapper .cm-editor { height: 100%; }
     .editor-wrapper .cm-scroller {
       font-family: 'JetBrains Mono', monospace !important;
-      font-size: 14px !important;
+      font-size: 16px !important;
     }
 
     /* Button bar */
     .button-bar {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 16px; border-top: 1px solid #E8E0D8;
-      background: #FFFFFF; flex-shrink: 0;
+      padding: 10px 16px; border-top: 1px solid var(--border);
+      background: var(--surface); flex-shrink: 0;
     }
     .btn {
       padding: 8px 20px; border: none; border-radius: 8px;
       font-size: 0.9rem; font-weight: 600; cursor: pointer;
       transition: all 0.15s;
     }
-    .btn-primary { background: #D97757; color: #FFFFFF; }
-    .btn-primary:hover:not(:disabled) { background: #C4623F; }
+    .btn-primary { background: var(--accent); color: #FFFFFF; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: transparent; color: #6B5B4F; border: 1px solid #E8E0D8; }
-    .btn-secondary:hover { background: #F0EDE8; }
-    .status-text { font-size: 0.8rem; color: #9B8E83; margin-left: auto; }
-    .status-text.loading { color: #D97757; }
+    .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--code-bg); }
+    .status-text { font-size: 0.8rem; color: var(--text-faint); margin-left: auto; }
+    .status-text.loading { color: var(--accent); }
 
     /* Results panel */
     .results-panel {
       min-height: 100px; max-height: 280px; overflow-y: auto;
-      padding: 16px; border-top: 1px solid #E8E0D8;
-      background: #FFFFFF; flex-shrink: 0;
+      padding: 16px; border-top: 1px solid var(--border);
+      background: var(--surface); flex-shrink: 0;
     }
-    .results-summary { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: #6B5B4F; }
-    .results-summary.all-pass { color: #2D8659; }
+    .results-summary { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: var(--text-muted); }
+    .results-summary.all-pass { color: var(--pass); }
     .test-case {
       display: flex; align-items: flex-start; gap: 8px;
-      padding: 8px 0; border-bottom: 1px solid #F0EDE8;
+      padding: 8px 0; border-bottom: 1px solid var(--test-border);
     }
     .test-case:last-child { border-bottom: none; }
     .test-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
-    .test-icon.pass { color: #2D8659; }
-    .test-icon.fail { color: #C4432B; }
+    .test-icon.pass { color: var(--pass); }
+    .test-icon.fail { color: var(--fail); }
     .test-label { font-size: 0.85rem; font-weight: 500; }
     .test-detail {
-      font-size: 0.8rem; color: #6B5B4F;
+      font-size: 0.8rem; color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace; margin-top: 4px;
     }
     .test-error {
-      font-size: 0.8rem; color: #C4432B;
+      font-size: 0.8rem; color: var(--fail);
       font-family: 'JetBrains Mono', monospace; margin-top: 4px;
       white-space: pre-wrap;
     }
-    .empty-results { color: #9B8E83; font-size: 0.85rem; font-style: italic; }
+    .empty-results { color: var(--text-faint); font-size: 0.85rem; font-style: italic; }
 
     @media (max-width: 768px) {
       .split-pane { flex-direction: column; }
       .problem-panel {
         width: 100%; min-width: unset; max-height: 40vh;
-        border-right: none; border-bottom: 1px solid #E8E0D8;
+        border-right: none; border-bottom: 1px solid var(--border);
       }
     }
   </style>
@@ -147,7 +182,8 @@
       "@codemirror/search": "https://esm.sh/@codemirror/search@6.5.6?external=@codemirror/state,@codemirror/view",
       "@codemirror/lint": "https://esm.sh/@codemirror/lint@6.8.2?external=@codemirror/state,@codemirror/view",
       "codemirror": "https://esm.sh/codemirror@6.0.1?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/commands,@codemirror/autocomplete,@codemirror/search,@codemirror/lint",
-      "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6.1.6?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/autocomplete,@lezer/common,@lezer/highlight,@lezer/lr"
+      "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6.1.6?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/autocomplete,@lezer/common,@lezer/highlight,@lezer/lr",
+      "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6.1.2?external=@codemirror/state,@codemirror/view,@codemirror/language,@lezer/highlight"
     }
   }
   </script>
@@ -166,9 +202,11 @@ import { python, pythonLanguage } from "@codemirror/lang-python";
 
 import { indentUnit } from "@codemirror/language";
 import { autocompletion } from "@codemirror/autocomplete";
+import { oneDark } from "@codemirror/theme-one-dark";
 
 const { useState, useEffect, useRef, useCallback } = React;
 const html = htm.bind(React.createElement);
+const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 // ─── Kata Definitions ───────────────────────────────────────────
 
@@ -359,6 +397,7 @@ function CodeEditor({ value, onChange, onRun }) {
         basicSetup,
         python(),
         autocompletion({ override: [() => null] }),
+        ...(isDark ? [oneDark] : []),
         indentUnit.of("    "),
         EditorState.tabSize.of(4),
         EditorView.updateListener.of((update) => {

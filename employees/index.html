@@ -105,10 +105,21 @@
     const cagr1 = cagrPct(total2011, total2022, 11);
     const cagr2 = cagrPct(total2022, total2025, 3);
 
+    const growthRate = Math.pow(total2022 / total2011, 1 / 11);
+    const CHART_DATA = DATA.map(d => {
+      if (d.year <= 2022) return { ...d, missing: 0 };
+      const projected = total2022 * Math.pow(growthRate, d.year - 2022);
+      const actual = sum(d);
+      return { ...d, missing: Math.max(0, Math.round(projected - actual)) };
+    });
+
     function CustomTooltip({ active, payload, label }) {
       if (!active || !payload || !payload.length) return null;
-      const total = payload.reduce((s, p) => s + (p.value || 0), 0);
-      const sorted = [...payload].reverse();
+      const real = payload.filter(p => p.dataKey !== 'missing');
+      const missingEntry = payload.find(p => p.dataKey === 'missing');
+      const missing = missingEntry?.value || 0;
+      const total = real.reduce((s, p) => s + (p.value || 0), 0);
+      const sorted = [...real].reverse();
       return html`
         <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
           <div style=${{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>${label}</div>
@@ -125,34 +136,51 @@
             <span>Total</span>
             <span style=${{ fontFamily: 'monospace' }}>${formatNum(total)}</span>
           </div>
+          ${missing > 0 && html`
+            <div style=${{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontStyle: 'italic' }}>
+              <span>Missing</span>
+              <span style=${{ fontFamily: 'monospace' }}>${formatNum(missing)}</span>
+            </div>
+          `}
         </div>
       `;
     }
 
     function App() {
-      const lastCompany = COMPANIES[COMPANIES.length - 1];
       return html`
         <div class="container">
           <h1>Big Tech Employment (2011–2025)</h1>
-          <p class="subtitle">Full-time employee headcount from SEC 10-K filings. Combined CAGR: +${cagr1}% (2011–2022), +${cagr2}% (2022–2025).</p>
+          <p class="subtitle">Full-time employee headcount from SEC 10-K filings. Combined CAGR: +${cagr1}% (2011–2022), +${cagr2}% (2022–2025). Striped segments show jobs that <em>would</em> exist in 2023+ if the 2011–2022 CAGR had continued.</p>
           <div class="chart-card">
             <${ResponsiveContainer} width="100%" height=${500}>
-              <${BarChart} data=${DATA} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
+              <${BarChart} data=${CHART_DATA} margin=${{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                <defs>
+                  <pattern id="missingPattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                    <rect width="6" height="6" fill="rgba(148,163,184,0.15)" />
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(148,163,184,0.7)" strokeWidth="2" />
+                  </pattern>
+                </defs>
                 <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
                 <${XAxis} dataKey="year" tick=${{ fill: '#94a3b8', fontSize: 12 }} />
                 <${YAxis} tickFormatter=${formatK} tick=${{ fill: '#94a3b8', fontSize: 12 }} width=${55} />
                 <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} />`} cursor=${{ fill: 'rgba(255,255,255,0.05)' }} />
                 <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8 }} />
-                ${COMPANIES.map((c, i) => html`
+                ${COMPANIES.map(c => html`
                   <${Bar}
                     key=${c.key}
                     dataKey=${c.key}
                     name=${c.name}
                     stackId="a"
                     fill=${c.color}
-                    radius=${c.key === lastCompany.key ? [3, 3, 0, 0] : [0, 0, 0, 0]}
                   />
                 `)}
+                <${Bar}
+                  dataKey="missing"
+                  name="Missing (vs. 2011–2022 CAGR)"
+                  stackId="a"
+                  fill="url(#missingPattern)"
+                  radius=${[3, 3, 0, 0]}
+                />
               <//>
             <//>
           </div>

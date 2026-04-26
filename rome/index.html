@@ -265,6 +265,10 @@
       const era = ERAS.find(e => e.id === selectedEra);
       const target = useMemo(() => computeViewBox(era?.bbox), [selectedEra]);
       const viewBox = useAnimatedViewBox(target);
+      const capitalNames = useMemo(
+        () => new Set((era?.stats?.capitals || []).map(c => c.name)),
+        [selectedEra]
+      );
       // Zoom factor relative to full world: used for counter-scaling city dots
       // and labels so they stay roughly the same visual size at any zoom.
       const zoom = W.projection.width / viewBox[2];
@@ -314,19 +318,37 @@
                       stroke="rgba(218,165,32,0.28)" strokeWidth="0.6"
                       vectorEffect="non-scaling-stroke"/>)}
 
-              {/* Cities — counter-scaled so dots/labels stay constant visual size */}
-              {projectedCities.map(c => (
-                <g key={c.name}>
-                  <circle cx={c.x} cy={c.y} r={cityR}
-                          fill="#DAA520" stroke="#1a1210"
-                          strokeWidth={cityR * 0.35}
-                          vectorEffect="non-scaling-stroke"/>
-                  <text x={c.x + cityOffset} y={c.y + cityFont * 0.3}
-                        fill="#F0E6D3" fontSize={cityFont} fontFamily="Cinzel, serif">
-                    {c.name}
-                  </text>
-                </g>
-              ))}
+              {/* Cities — counter-scaled so dots/labels stay constant visual size.
+                  Capitals of the selected era are emphasized: larger gold dot
+                  with a halo ring, bolder/lighter label. */}
+              {projectedCities.map(c => {
+                const isCapital = capitalNames.has(c.name);
+                const r = isCapital ? cityR * 1.5 : cityR;
+                const off = (isCapital ? cityR * 1.5 : cityR) + 1.5;
+                const fSize = isCapital ? cityFont * 1.15 : cityFont;
+                return (
+                  <g key={c.name} style={{ transition: 'all 0.5s ease' }}>
+                    {isCapital && (
+                      <circle cx={c.x} cy={c.y} r={r * 1.9}
+                              fill="none" stroke="#FFD75A" strokeOpacity="0.55"
+                              strokeWidth={r * 0.4}
+                              vectorEffect="non-scaling-stroke"/>
+                    )}
+                    <circle cx={c.x} cy={c.y} r={r}
+                            fill={isCapital ? '#FFE066' : '#DAA520'}
+                            stroke="#1a1210"
+                            strokeWidth={r * 0.35}
+                            vectorEffect="non-scaling-stroke"/>
+                    <text x={c.x + off} y={c.y + fSize * 0.3}
+                          fill={isCapital ? '#FFE9A8' : '#F0E6D3'}
+                          fontSize={fSize}
+                          fontWeight={isCapital ? '700' : '400'}
+                          fontFamily="Cinzel, serif">
+                      {c.name}
+                    </text>
+                  </g>
+                );
+              })}
             </svg>
           </div>
           <div className="map-caption">
@@ -348,8 +370,14 @@
             <div className="stat-value">{era.stats.territory}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Capital</div>
-            <div className="stat-value">{era.stats.capital}</div>
+            <div className="stat-label">{era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
+            <div className="stat-value">
+              {era.stats.capitals.map((c, i) => (
+                <div key={i}>
+                  <strong>{c.name}</strong>{c.dates && <span style={{ color: 'rgba(240,230,211,0.55)' }}> ({c.dates})</span>}
+                </div>
+              ))}
+            </div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Notable Leaders</div>

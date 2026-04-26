@@ -13,7 +13,8 @@ window.__CITIES__ = [
   { name: 'Corduba',        lon: -4.7794, lat: 37.8882 },
   { name: 'Antioch',        lon: 36.1611, lat: 36.2021 },
   { name: 'Hierosolyma',    lon: 35.2137, lat: 31.7683 },
-  { name: 'Ravenna',        lon: 12.2035, lat: 44.4173 }
+  { name: 'Ravenna',        lon: 12.2035, lat: 44.4173 },
+  { name: 'Mediolanum',     lon:  9.1900, lat: 45.4642 }
 ];
 
 window.__ERAS__ = [
@@ -23,8 +24,8 @@ window.__ERAS__ = [
     bbox: [4, 38, 20, 47],     // Italy + immediate surroundings — show the city-state clearly
     stats: {
       population: '~30,000 (city of Rome)',
-      territory: '~2,500 km²',
-      capital: 'Rome',
+      territory: '~2,500 km² (≈ Luxembourg)',
+      capitals: [{ name: 'Rome' }],
       leaders: ['Romulus', 'Numa Pompilius', 'Servius Tullius', 'Tarquinius Superbus']
     },
     bluf: 'The Roman Kingdom was the foundational era when Rome grew from a mythical settlement on the Tiber into a structured city-state governed by seven kings over roughly 244 years.',
@@ -43,9 +44,9 @@ window.__ERAS__ = [
     startYear: -509, endYear: -27, color: '#C41E3A', row: 0,
     bbox: [-10, 28, 42, 52],   // Mediterranean basin (Iberia → Anatolia, Sahara → Gaul)
     stats: {
-      population: '~55 million',
-      territory: '~1.9 million km²',
-      capital: 'Rome',
+      population: '~55 million (≈ 25% of world)',
+      territory: '~1.9 million km² (≈ Mexico)',
+      capitals: [{ name: 'Rome' }],
       leaders: ['Scipio Africanus', 'Gaius Marius', 'Sulla', 'Cicero', 'Julius Caesar']
     },
     bluf: 'The Roman Republic transformed Rome from a regional Italian city-state into the dominant power of the entire Mediterranean world through a unique system of elected magistrates, senatorial governance, and relentless military expansion.',
@@ -74,9 +75,12 @@ window.__ERAS__ = [
     startYear: -27, endYear: 395, color: '#DAA520', row: 0,
     bbox: [-11, 25, 50, 56],   // Full extent: Britain → Mesopotamia, Sahara → Hadrian's Wall
     stats: {
-      population: '~55–70 million',
-      territory: '~5 million km² (under Trajan)',
-      capital: 'Rome, later also Constantinople',
+      population: '~70 million (≈ 30% of world)',
+      territory: '~5 million km² (≈ half the U.S.)',
+      capitals: [
+        { name: 'Rome', dates: '27 BC – 330 AD' },
+        { name: 'Constantinople', dates: '330 – 395 AD' }
+      ],
       leaders: ['Augustus', 'Trajan', 'Hadrian', 'Marcus Aurelius', 'Constantine I']
     },
     bluf: 'The Roman Empire represented the zenith of Roman civilization, a period when a single state governed the entire Mediterranean world and beyond, achieving unprecedented levels of urbanization, legal sophistication, and cultural integration across three continents.',
@@ -97,9 +101,12 @@ window.__ERAS__ = [
     startYear: 395, endYear: 476, color: '#8B0000', row: 0,
     bbox: [-11, 30, 24, 56],   // Western half + Britain
     stats: {
-      population: '~25 million (declining)',
-      territory: '~2.4 million km²',
-      capital: 'Ravenna (from 402 AD)',
+      population: '~25 million (≈ 13% of world, declining)',
+      territory: '~2.4 million km² (≈ Algeria)',
+      capitals: [
+        { name: 'Mediolanum', dates: '286 – 402 AD' },
+        { name: 'Ravenna', dates: '402 – 476 AD' }
+      ],
       leaders: ['Honorius', 'Valentinian III', 'Flavius Aetius', 'Romulus Augustulus']
     },
     bluf: 'The Western Roman Empire endured a rapid 81-year decline as barbarian migrations, economic collapse, and political instability reduced the once-mighty western half of Rome to a rump state before its final dissolution in 476 AD.',
@@ -120,9 +127,9 @@ window.__ERAS__ = [
     startYear: 395, endYear: 1453, color: '#6A0DAD', row: 1,
     bbox: [-9, 24, 46, 49],    // Eastern Med + Justinian reconquests (Italy, N. Africa, SE Spain)
     stats: {
-      population: '~26 million (under Justinian)',
-      territory: '~3.5 million km² (under Justinian)',
-      capital: 'Constantinople',
+      population: '~26 million (≈ 13% of world, under Justinian)',
+      territory: '~3.5 million km² (≈ India, under Justinian)',
+      capitals: [{ name: 'Constantinople' }],
       leaders: ['Justinian I', 'Heraclius', 'Basil II', 'Constantine XI']
     },
     bluf: 'The Eastern Roman Empire, later known as the Byzantine Empire, preserved and transformed Roman civilization for over a thousand years, serving as Christendom’s bulwark against successive waves of Persian, Arab, and Turkish expansion until its fall to the Ottoman Turks in 1453.',

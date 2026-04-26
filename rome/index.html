@@ -55,11 +55,6 @@
       content: ''; position: absolute; top: -6px; left: 50%;
       width: 1px; height: 4px; background: rgba(240,230,211,0.18);
     }
-    .row-label {
-      position: absolute; left: -2px; top: 50%; transform: translateY(-50%);
-      font-size: 0.55rem; color: rgba(240,230,211,0.25); letter-spacing: 1px;
-      text-transform: uppercase; writing-mode: vertical-rl; display: none;
-    }
 
     /* Content */
     .content { display: flex; gap: 28px; }
@@ -69,10 +64,7 @@
       position: relative; background: #0d1b2a; border: 1px solid rgba(218,165,32,0.15);
       border-radius: 8px; overflow: hidden; margin-bottom: 14px;
     }
-    .map-container img { display: block; width: 100%; height: auto; }
-    .map-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    }
+    .map-container svg { display: block; width: 100%; height: auto; }
     .map-caption {
       font-size: 0.65rem; color: rgba(240,230,211,0.25); text-align: right;
       margin-top: -10px; margin-bottom: 14px; padding-right: 4px;
@@ -105,9 +97,7 @@
       font-size: 0.92rem; line-height: 1.75; color: rgba(240,230,211,0.72);
       margin-bottom: 14px; text-align: justify;
     }
-    .header-row {
-      position: relative; margin-bottom: 6px;
-    }
+    .header-row { position: relative; margin-bottom: 6px; }
     .back-link {
       position: absolute; left: 0; top: 50%; transform: translateY(-50%);
       color: rgba(240,230,211,0.4);
@@ -122,124 +112,46 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-  <script src="land-paths.js"></script>
+  <script src="world-data.js"></script>
+  <script src="eras-data.js"></script>
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useMemo } = React;
+
+    // ── Projection ────────────────────────────────────────────────────
+    // Lambert Conformal Conic. Same parameters as the pre-baked coastlines
+    // in world-data.js, so cities and territory polygons line up exactly.
+    const W = window.__WORLD__;
+    const RAD = Math.PI / 180;
+    const _P = W.projection;
+    const _phi1 = _P.lat1*RAD, _phi2 = _P.lat2*RAD, _phi0 = _P.lat0*RAD, _lam0 = _P.lon0*RAD;
+    const _n = Math.log(Math.cos(_phi1)/Math.cos(_phi2)) /
+               Math.log(Math.tan(Math.PI/4 + _phi2/2)/Math.tan(Math.PI/4 + _phi1/2));
+    const _F = Math.cos(_phi1) * Math.pow(Math.tan(Math.PI/4 + _phi1/2), _n) / _n;
+    const _rho0 = _F / Math.pow(Math.tan(Math.PI/4 + _phi0/2), _n);
+
+    function project([lon, lat]) {
+      const phi = lat*RAD, lam = lon*RAD;
+      const rho = _F / Math.pow(Math.tan(Math.PI/4 + phi/2), _n);
+      const x = rho * Math.sin(_n*(lam - _lam0));
+      // d3/SVG: y grows down. Negate the textbook LCC y to match.
+      const y = rho * Math.cos(_n*(lam - _lam0)) - _rho0;
+      return [x*_P.scale + _P.tx, y*_P.scale + _P.ty];
+    }
 
     // ── Data ──────────────────────────────────────────────────────────
+    const ERAS = window.__ERAS__;
+    const CITIES = window.__CITIES__;
     const TIMELINE_MIN = -753;
     const TIMELINE_MAX = 1453;
     const TIMELINE_RANGE = TIMELINE_MAX - TIMELINE_MIN;
     const STORAGE_KEY = 'rome.selectedEra';
+    const AXIS_TICKS = [-750, -500, -250, 0, 250, 500, 750, 1000, 1250, 1450];
 
     function formatYear(y) {
       if (y < 0) return Math.abs(y) + ' BC';
       if (y === 0) return '1 BC';
       return y + ' AD';
     }
-
-    const ERAS = [
-      {
-        id: 'kingdom', name: 'Roman Kingdom', shortName: 'Kingdom',
-        startYear: -753, endYear: -509, color: '#8B6914', row: 0,
-        stats: {
-          population: '~30,000 (city of Rome)',
-          territory: '~2,500 km²',
-          capital: 'Rome',
-          leaders: ['Romulus', 'Numa Pompilius', 'Servius Tullius', 'Tarquinius Superbus']
-        },
-        bluf: 'The Roman Kingdom was the foundational era when Rome grew from a mythical settlement on the Tiber into a structured city-state governed by seven kings over roughly 244 years.',
-        summary: [
-          'According to tradition, Rome was founded in 753 BC by Romulus, who became its first king after killing his twin brother Remus in a dispute over the city\'s location. While the historical accuracy of Rome\'s earliest kings is debated, archaeological evidence confirms that a significant settlement existed on the Palatine Hill by the 8th century BC. The monarchy established many of Rome\'s foundational institutions, including the Senate (originally an advisory council of elders), the division of the populace into patricians and plebeians, and the first religious practices that would persist for centuries.',
-          'The seven kings of Rome \u2014 Romulus, Numa Pompilius, Tullus Hostilius, Ancus Marcius, Tarquinius Priscus, Servius Tullius, and Tarquinius Superbus \u2014 each contributed to the city\'s development. Numa established Rome\'s religious calendar and priestly colleges. Servius Tullius reorganized the army and created the census. Under the later Etruscan-influenced kings, Rome expanded its territory across Latium and grew into a genuine urban center with monumental architecture, including the first Forum buildings and the great sewer, the Cloaca Maxima.',
-          'The monarchy ended in 509 BC when the last king, Tarquinius Superbus ("Tarquin the Proud"), was overthrown in a revolt triggered by the rape of Lucretia by the king\'s son. The Romans replaced the monarchy with a republic, vowing never again to be ruled by a king \u2014 a sentiment so deeply embedded in Roman culture that it persisted for nearly five centuries and made the word "rex" (king) politically toxic in Roman society.'
-        ],
-        territory: ['194.4,99.6 202.6,98.8 207.0,101.2 209.2,105.2 207.0,109.5 202.6,112.6 197.1,112.2 192.2,109.9 190.0,105.6 191.1,101.6']
-      },
-      {
-        id: 'republic', name: 'Roman Republic', shortName: 'Republic',
-        startYear: -509, endYear: -27, color: '#C41E3A', row: 0,
-        stats: {
-          population: '~55 million',
-          territory: '~1.9 million km²',
-          capital: 'Rome',
-          leaders: ['Scipio Africanus', 'Gaius Marius', 'Sulla', 'Cicero', 'Julius Caesar']
-        },
-        bluf: 'The Roman Republic transformed Rome from a regional Italian city-state into the dominant power of the entire Mediterranean world through a unique system of elected magistrates, senatorial governance, and relentless military expansion.',
-        summary: [
-          'Following the expulsion of the kings, Rome established a system of government based on annually elected magistrates, chief among them two consuls who shared executive power. The early Republic was defined by the Struggle of the Orders, a prolonged political conflict between the patrician aristocracy and the plebeian commoners that gradually expanded political rights through concessions like the creation of tribunes of the plebs and the codification of law in the Twelve Tables (450 BC). This internal political evolution, more than any single military victory, gave the Republic its resilience and ability to mobilize its population for war.',
-          'Rome\'s expansion was staggering in its scope: first dominating the Italian peninsula through wars against the Samnites, Etruscans, and Greek colonies, then defeating Carthage in three Punic Wars (264\u2013146 BC) to gain control of the western Mediterranean. The destruction of Carthage and Corinth in 146 BC marked Rome\'s emergence as an unchallenged superpower. By the late Republic, Roman territory stretched from Spain to Anatolia, with generals like Pompey conquering the eastern Mediterranean and Julius Caesar subjugating Gaul.',
-          'Yet the Republic\'s very success undermined its institutions. Wealth inequality, the displacement of small farmers by slave-worked latifundia, and the rise of powerful generals with personal armies led to a century of civil wars. The conflicts between Marius and Sulla, Caesar and Pompey, and finally Octavian and Mark Antony tore the Republic apart. When Octavian defeated Antony at Actium in 31 BC and received the title Augustus from the Senate in 27 BC, the Republic effectively ended.'
-        ],
-        territory: [
-          '63.3,52.7 87.4,29.9 115.9,42.6 141.5,57.5 170.0,57.5 199.9,77.4 235.7,77.4 269.0,82.1 305.5,89.2 337.4,103.6 363.0,127.3 385.1,158.4 392.4,182.1 363.0,201.5 326.7,196.8 290.4,194.5 247.6,190.6 200.0,186.7 145.0,178.8 90.0,162.9 65.0,154.2 50.0,138.3 41.5,108.4 47.0,84.7'
-        ]
-      },
-      {
-        id: 'empire', name: 'Roman Empire', shortName: 'Empire',
-        startYear: -27, endYear: 395, color: '#DAA520', row: 0,
-        stats: {
-          population: '~55\u201370 million',
-          territory: '~5 million km² (under Trajan)',
-          capital: 'Rome, later also Constantinople',
-          leaders: ['Augustus', 'Trajan', 'Hadrian', 'Marcus Aurelius', 'Constantine I']
-        },
-        bluf: 'The Roman Empire represented the zenith of Roman civilization, a period when a single state governed the entire Mediterranean world and beyond, achieving unprecedented levels of urbanization, legal sophistication, and cultural integration across three continents.',
-        summary: [
-          'Augustus, the first emperor, established the principate \u2014 a system that preserved republican forms while concentrating real power in the emperor. The early Imperial period, known as the Pax Romana (27 BC \u2013 180 AD), brought roughly two centuries of relative peace and prosperity to the Mediterranean world. During this era, the empire reached its maximum territorial extent under Emperor Trajan (117 AD), encompassing some 5 million square kilometers from Britain to Mesopotamia. Roman infrastructure \u2014 roads, aqueducts, harbors, and cities \u2014 knitted this vast territory into a functional whole.',
-          'The empire\'s population peaked at an estimated 55\u201370 million people, roughly one-quarter of the world\'s population at the time. Cities like Rome (with over 1 million inhabitants), Alexandria, Antioch, and Carthage were among the largest in the world. Latin in the west and Greek in the east served as common languages of administration and culture. The empire facilitated trade networks stretching from Britain to India and China, and its cultural achievements \u2014 from the Colosseum and Pantheon to the legal codes later compiled under Justinian \u2014 would shape Western civilization for millennia.',
-          'The Crisis of the Third Century (235\u2013284 AD) nearly destroyed the empire, with civil wars, plague, and barbarian invasions fragmenting Roman power. Emperor Diocletian (284\u2013305 AD) stabilized the situation through radical reforms, including dividing the empire into eastern and western administrative halves under the Tetrarchy. Constantine the Great reunified the empire, founded Constantinople as a new eastern capital, and legalized Christianity. However, the structural division between east and west deepened, and in 395 AD, upon the death of Emperor Theodosius I, the empire was permanently divided between his two sons.'
-        ],
-        territory: [
-          '43.6,90.9 87.2,90.9 101.8,71.2 123.6,31.6 141.7,23.7 159.9,31.6 167.2,47.5 174.4,55.4 188.9,51.4 228.2,53.7 247.2,55.4 283.5,55.4 305.3,59.3 316.2,71.2 323.5,79.1 410.7,106.7 421.6,118.6 443.4,130.5 450.7,158.2 458.0,197.7 450.7,197.7 428.9,189.8 385.3,197.7 356.2,205.6 348.9,213.5 348.9,245.1 290.8,213.5 261.7,197.7 203.5,197.7 174.4,174.0 130.8,174.0 58.2,189.8 43.6,181.8 65.4,150.2 43.6,142.4 43.6,110.7',
-          '69.1,39.5 119.5,31.6 119.5,15.8 98.1,0 87.2,0 72.7,19.8 69.1,35.6'
-        ]
-      },
-      {
-        id: 'western', name: 'Western Roman Empire', shortName: 'Western',
-        startYear: 395, endYear: 476, color: '#8B0000', row: 0,
-        stats: {
-          population: '~25 million (declining)',
-          territory: '~2.4 million km²',
-          capital: 'Ravenna (from 402 AD)',
-          leaders: ['Honorius', 'Valentinian III', 'Flavius Aetius', 'Romulus Augustulus']
-        },
-        bluf: 'The Western Roman Empire endured a rapid 81-year decline as barbarian migrations, economic collapse, and political instability reduced the once-mighty western half of Rome to a rump state before its final dissolution in 476 AD.',
-        summary: [
-          'From the moment of its formal separation in 395 AD, the Western Empire faced existential threats that its eastern counterpart largely avoided. The west was more vulnerable to Germanic migrations across the Rhine and Danube frontiers, had a less developed urban economy, and generated less tax revenue. The Visigothic sack of Rome in 410 AD \u2014 the first time the city had fallen to a foreign enemy in 800 years \u2014 sent shockwaves through the Roman world. St. Jerome famously wrote, "The city which had taken the whole world was itself taken."',
-          'The fifth century saw the progressive loss of western provinces: Britain was abandoned around 410 AD, the Vandals seized North Africa (Rome\'s crucial grain supply) in 439 AD, and Gaul and Spain fragmented among Visigoths, Burgundians, and Franks. Competent military commanders like Stilicho and Aetius (who defeated Attila\'s Huns at the Battle of the Catalaunian Plains in 451 AD) could delay but not reverse the empire\'s contraction. By the 460s, the western emperor controlled little more than Italy itself.',
-          'The end came in 476 AD when the Germanic chieftain Odoacer deposed the last western emperor, the teenaged Romulus Augustulus, and sent the imperial regalia to Constantinople. While contemporaries did not necessarily view this as the "fall of Rome" \u2014 the eastern empire continued and theoretically still claimed authority over the west \u2014 it marked the definitive end of centralized Roman governance in western Europe and is conventionally regarded as one of history\'s great turning points, ushering in the early medieval period.'
-        ],
-        territory: [
-          '76.3,51.4 98.1,43.5 127.2,31.6 138.1,29.3 163.6,39.5 169.4,55.4 189.0,49.0 218.1,53.8 243.5,59.3 250.8,79.1 250.8,94.9 247.1,106.8 269.0,177.9 221.7,189.8 185.4,174.0 145.4,154.2 94.5,162.1 65.4,158.2 47.2,146.3 40.0,130.5 43.6,102.8 54.5,89.4 98.1,90.9 98.1,71.2 87.2,59.3',
-          '72.7,39.5 87.2,27.7 87.2,11.9 87.2,1.6 98.1,0.8 112.7,15.8 119.9,27.7 94.5,35.6'
-        ]
-      },
-      {
-        id: 'eastern', name: 'Eastern Roman Empire', shortName: 'Byzantine',
-        startYear: 395, endYear: 1453, color: '#6A0DAD', row: 1,
-        stats: {
-          population: '~26 million (under Justinian)',
-          territory: '~3.5 million km² (under Justinian)',
-          capital: 'Constantinople',
-          leaders: ['Justinian I', 'Heraclius', 'Basil II', 'Constantine XI']
-        },
-        bluf: 'The Eastern Roman Empire, later known as the Byzantine Empire, preserved and transformed Roman civilization for over a thousand years, serving as Christendom\'s bulwark against successive waves of Persian, Arab, and Turkish expansion until its fall to the Ottoman Turks in 1453.',
-        summary: [
-          'Unlike its western counterpart, the Eastern Empire possessed tremendous structural advantages: wealthier and more urbanized provinces, the virtually impregnable capital of Constantinople (protected by the famous Theodosian Walls and its strategic position on the Bosporus), a more developed bureaucracy, and a strong monetary economy based on the gold solidus \u2014 the dollar of the medieval world. Under Emperor Justinian I (527\u2013565 AD), the empire experienced a dramatic resurgence, reconquering North Africa, Italy, and southern Spain, codifying Roman law in the Corpus Juris Civilis (which remains the foundation of civil law in much of Europe today), and constructing the Hagia Sophia.',
-          'The centuries following Justinian brought existential crises: devastating wars with Sassanid Persia, the sudden loss of the wealthy eastern provinces (Syria, Egypt, North Africa) to the Arab conquests of the 7th century, and the Iconoclasm controversy that divided Byzantine society. Yet the empire proved remarkably resilient, reinventing itself around its Anatolian and Balkan heartlands. The Macedonian dynasty (867\u20131056) presided over a cultural and military renaissance, pushing the frontier deep into Syria and the Balkans.',
-          'The empire\'s long decline began with the catastrophic defeat at Manzikert (1071), which opened Anatolia to Turkish settlement. The Fourth Crusade\'s sack of Constantinople in 1204 shattered the empire into competing successor states. Though the Byzantines recaptured their capital in 1261, the restored empire was a shadow of its former self. The final siege by Ottoman Sultan Mehmed II began on April 6, 1453, and the city fell on May 29, ending 1,123 years of continuous Roman governance in the east and marking the conventional end of the Middle Ages.'
-        ],
-        territory: [
-          '225.3,87.0 247.1,79.1 261.7,80.7 283.5,87.0 312.6,91.0 327.1,106.7 363.4,106.7 399.8,110.6 414.3,126.5 407.0,142.3 378.0,150.2 378.0,174.0 356.2,197.7 348.9,245.1 334.4,213.5 327.1,189.8 290.8,185.8 269.0,177.9 254.4,189.8 269.0,146.3 283.5,134.7 276.2,118.6 269.0,110.6 250.7,102.7 232.6,94.9',
-          '207.2,73.6 218.0,87.0 225.3,102.7 239.9,118.6 218.0,138.7 218.0,145.0 199.9,138.7 196.3,125.0 196.3,110.6 181.7,94.9 170.8,83.0',
-          '145.4,145.0 167.2,140.3 188.9,142.3 188.9,158.1 210.8,177.1 225.3,185.8 181.7,173.9 145.4,158.1',
-          '65.4,138.7 76.4,134.7 94.5,129.2 101.8,137.7 87.2,145.0 65.4,146.9'
-        ]
-      }
-    ];
-
-    const AXIS_TICKS = [-750, -500, -250, 0, 250, 500, 750, 1000, 1250, 1450];
 
     // ── Components ────────────────────────────────────────────────────
 
@@ -279,53 +191,74 @@
       );
     }
 
-    const CITIES = [
-      { name: 'Rome', x: 199.9, y: 103.6 },
-      { name: 'Constantinople', x: 319.7, y: 110.6 },
-      { name: 'Alexandria', x: 326.4, y: 188.2 },
-      { name: 'Carthage', x: 184.1, y: 143.5 },
-      { name: 'Athens', x: 281.5, y: 134.5 }
-    ];
-
     function RomeMap({ selectedEra }) {
+      // Project each era's territory rings once.
+      const projectedEras = useMemo(() => ERAS.map(era => ({
+        ...era,
+        projectedRings: era.territory.map(ring =>
+          ring.map(p => project(p).join(',')).join(' ')
+        )
+      })), []);
+
+      // Project city positions once.
+      const projectedCities = useMemo(() => CITIES.map(c => {
+        const [x, y] = project([c.lon, c.lat]);
+        return { ...c, x, y };
+      }), []);
+
       return (
         <React.Fragment>
           <div className="map-container">
-            <img src="base-map.svg" alt="Mediterranean map" />
-            <svg className="map-overlay" viewBox="0 0 472.47028 253.05507" preserveAspectRatio="xMidYMid meet">
+            <svg viewBox={`0 0 ${W.projection.width} ${W.projection.height}`} preserveAspectRatio="xMidYMid meet">
               <defs>
                 <mask id="land-mask" maskUnits="userSpaceOnUse"
-                      x="0" y="0" width="472.47028" height="253.05507">
-                  <g transform="translate(254.000019,-100.07440)">
-                    {(window.__LAND_PATHS__ || []).map((d, i) => (
-                      <path key={i} d={d} fill="#fff" />
-                    ))}
-                  </g>
+                      x="0" y="0" width={W.projection.width} height={W.projection.height}>
+                  <rect width="100%" height="100%" fill="black"/>
+                  {W.landPaths.map((d, i) =>
+                    <path key={i} d={d} fill="white" fillRule="evenodd"/>)}
                 </mask>
               </defs>
+
+              {/* Sea */}
+              <rect width="100%" height="100%" fill="#0d1b2a"/>
+
+              {/* Land base color */}
+              {W.landPaths.map((d, i) =>
+                <path key={i} d={d} fill="#2a2018" fillRule="evenodd"/>)}
+
+              {/* Territory overlays — masked to land */}
               <g mask="url(#land-mask)">
-                {ERAS.map(era => (
-                  <g key={era.id} opacity={era.id === selectedEra ? 0.75 : 0}
+                {projectedEras.map(era => (
+                  <g key={era.id}
+                     opacity={era.id === selectedEra ? 0.7 : 0}
                      style={{ transition: 'opacity 0.5s ease' }}>
-                    {era.territory.map((pts, i) => (
-                      <polygon key={i} points={pts} fill={era.color} />
-                    ))}
+                    {era.projectedRings.map((points, i) =>
+                      <polygon key={i} points={points} fill={era.color}/>)}
                   </g>
                 ))}
               </g>
-              {CITIES.map(city => (
-                <g key={city.name}>
-                  <circle cx={city.x} cy={city.y} r="2.5"
-                    fill="#DAA520" stroke="#1a1210" strokeWidth="0.8" />
-                  <text x={city.x + 4} y={city.y + 1.5}
-                    fill="#F0E6D3" fontSize="6" fontFamily="Cinzel, serif">
-                    {city.name}
+
+              {/* Coastline outline for crispness */}
+              {W.landPaths.map((d, i) =>
+                <path key={i} d={d} fill="none"
+                      stroke="rgba(218,165,32,0.28)" strokeWidth="0.6"/>)}
+
+              {/* Cities */}
+              {projectedCities.map(c => (
+                <g key={c.name}>
+                  <circle cx={c.x} cy={c.y} r="2.6"
+                          fill="#DAA520" stroke="#1a1210" strokeWidth="0.9"/>
+                  <text x={c.x + 4.5} y={c.y + 1.8}
+                        fill="#F0E6D3" fontSize="8.5" fontFamily="Cinzel, serif">
+                    {c.name}
                   </text>
                 </g>
               ))}
             </svg>
           </div>
-          <div className="map-caption">Base map: Wikimedia Commons (CC0)</div>
+          <div className="map-caption">
+            Coastlines: Natural Earth 1:50m (public domain). Lambert Conformal Conic projection.
+          </div>
         </React.Fragment>
       );
     }

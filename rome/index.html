@@ -144,6 +144,7 @@
     }
     .city-marker {
       position: absolute;
+      transition: opacity 0.5s ease;
     }
     .city-dot {
       position: absolute; left: 0; top: 0;
@@ -382,6 +383,14 @@
         () => new Set((era?.stats?.capitals || []).map(c => c.name)),
         [selectedEra]
       );
+      // A city is "always shown" if it served as a capital in any era; the
+      // overlay still renders all cities but fades out ones not relevant to
+      // the selected era.
+      const everCapital = useMemo(() => {
+        const set = new Set();
+        for (const e of ERAS) for (const c of (e.stats?.capitals || [])) set.add(c.name);
+        return set;
+      }, []);
 
       // Track the map container's pixel size so we can position HTML
       // city markers exactly on top of their projected SVG positions.
@@ -468,14 +477,22 @@
                     vectorEffect="non-scaling-stroke"/>)}
           </svg>
 
-          {/* Cities — HTML overlay so labels stay readable at any zoom */}
+          {/* Cities — HTML overlay so labels stay readable at any zoom.
+              Capitals (in any era) are always shown; other cities fade in
+              only for the eras they were significant in. */}
           <div className="city-overlay">
             {cityScreen.map(c => {
               const isCapital = capitalNames.has(c.name);
+              const visible = everCapital.has(c.name)
+                || (c.eras && c.eras.includes(selectedEra));
               return (
                 <div key={c.name}
                      className={`city-marker${isCapital ? ' capital' : ''}`}
-                     style={{ left: `${c.sx}px`, top: `${c.sy}px` }}>
+                     style={{
+                       left: `${c.sx}px`,
+                       top: `${c.sy}px`,
+                       opacity: visible ? 1 : 0
+                     }}>
                   <div className="city-dot" />
                   <div className="city-label">{c.name}</div>
                 </div>

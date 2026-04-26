@@ -2,19 +2,24 @@
 // these via Lambert Conformal Conic to match the pre-baked coastlines in
 // world-data.js — same projection params, so everything aligns.
 
+// `eras` lists the eras in which a non-capital city is important enough to
+// display. Cities that ever served as a capital (Rome, Constantinople,
+// Mediolanum, Ravenna) are always shown — no `eras` field needed for those.
 window.__CITIES__ = [
+  // Capitals (always visible)
   { name: 'Rome',           lon: 12.4964, lat: 41.9028 },
   { name: 'Constantinople', lon: 28.9784, lat: 41.0082 },
-  { name: 'Alexandria',     lon: 29.9187, lat: 31.2001 },
-  { name: 'Carthage',       lon: 10.3236, lat: 36.8585 },
-  { name: 'Athens',         lon: 23.7275, lat: 37.9838 },
-  { name: 'Massalia',       lon:  5.3698, lat: 43.2965 },
-  { name: 'Londinium',      lon: -0.1276, lat: 51.5074 },
-  { name: 'Corduba',        lon: -4.7794, lat: 37.8882 },
-  { name: 'Antioch',        lon: 36.1611, lat: 36.2021 },
-  { name: 'Hierosolyma',    lon: 35.2137, lat: 31.7683 },
+  { name: 'Mediolanum',     lon:  9.1900, lat: 45.4642 },
   { name: 'Ravenna',        lon: 12.2035, lat: 44.4173 },
-  { name: 'Mediolanum',     lon:  9.1900, lat: 45.4642 }
+  // Non-capitals
+  { name: 'Carthage',     lon: 10.3236, lat: 36.8585, eras: ['republic', 'empire', 'western', 'eastern'] },
+  { name: 'Athens',       lon: 23.7275, lat: 37.9838, eras: ['republic', 'empire', 'eastern'] },
+  { name: 'Alexandria',   lon: 29.9187, lat: 31.2001, eras: ['republic', 'empire', 'eastern'] },
+  { name: 'Antioch',      lon: 36.1611, lat: 36.2021, eras: ['republic', 'empire', 'eastern'] },
+  { name: 'Hierosolyma',  lon: 35.2137, lat: 31.7683, eras: ['republic', 'empire', 'eastern'] },
+  { name: 'Massalia',     lon:  5.3698, lat: 43.2965, eras: ['republic', 'empire', 'western'] },
+  { name: 'Corduba',      lon: -4.7794, lat: 37.8882, eras: ['republic', 'empire', 'western'] },
+  { name: 'Londinium',    lon: -0.1276, lat: 51.5074, eras: ['empire', 'western'] }
 ];
 
 window.__ERAS__ = [

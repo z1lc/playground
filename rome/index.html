@@ -293,7 +293,10 @@
           <div className="timeline-axis">
             {AXIS_TICKS.map(year => (
               <div key={year} className="axis-tick" style={{ left: pct(year) + '%' }}>
-                {year === 0 ? '1 AD' : formatYear(year)}
+                {year === 0 ? '1 AD'
+                  : year < 0 ? Math.abs(year) + ' BC'
+                  : year >= 1000 ? String(year)
+                  : year + ' AD'}
               </div>
             ))}
           </div>

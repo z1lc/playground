@@ -7,34 +7,67 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
     body {
       background: #1a1210;
       color: #F0E6D3;
       font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
-      min-height: 100vh;
-      padding: 40px 30px;
     }
     h1, h2, h3, .cinzel { font-family: 'Cinzel', 'Palatino Linotype', Georgia, serif; }
-    .container { max-width: 1400px; margin: 0 auto; }
-    .page-title {
-      text-align: center; font-size: 2.4rem; color: #DAA520;
-      letter-spacing: 6px; text-transform: uppercase; margin-bottom: 6px; font-weight: 700;
+
+    /* ── Pane layout ─────────────────────────────────────────────────── */
+    .app {
+      display: flex; flex-direction: column;
+      gap: 14px; padding: 14px;
+      height: 100vh;
     }
-    .page-subtitle {
-      text-align: center; font-size: 0.85rem; color: rgba(240,230,211,0.35);
-      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 28px;
+    .top-row    { display: flex; gap: 14px; flex: 0 0 auto; }
+    .bottom-row { display: flex; gap: 14px; flex: 1 1 auto; min-height: 0; }
+
+    .pane {
+      background: #2a2018;
+      border: 1px solid rgba(218,165,32,0.15);
+      border-radius: 8px;
     }
 
-    /* Timeline */
-    .timeline {
-      background: #2a2018; border: 1px solid rgba(218,165,32,0.15);
-      border-radius: 8px; padding: 18px 20px 10px; margin-bottom: 28px;
+    .title-pane {
+      flex: 0 0 200px;
+      padding: 10px 14px;
+      display: flex; flex-direction: column; justify-content: center; gap: 4px;
     }
-    .timeline-row { position: relative; height: 40px; margin-bottom: 4px; }
+    .title-pane .back-link {
+      color: rgba(240,230,211,0.4);
+      text-decoration: none; font-size: 0.7rem; transition: color 0.2s;
+    }
+    .title-pane .back-link:hover { color: #DAA520; }
+    .title-pane .page-title {
+      font-family: 'Cinzel', serif; font-weight: 700;
+      font-size: 0.95rem; color: #DAA520;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    .timeline-pane {
+      flex: 1 1 auto; min-width: 0;
+      padding: 12px 16px 6px;
+    }
+
+    .left-pane {
+      flex: 0 0 380px; min-height: 0;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .summary-pane {
+      flex: 1 1 auto; min-width: 0;
+      padding: 22px 26px;
+      overflow-y: auto;
+    }
+
+    /* ── Timeline ────────────────────────────────────────────────────── */
+    .timeline-row { position: relative; height: 36px; margin-bottom: 4px; }
     .era-bar {
       position: absolute; height: 100%; border-radius: 5px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 600;
+      font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 600;
       color: rgba(255,255,255,0.9); transition: all 0.2s; overflow: hidden;
       white-space: nowrap; text-overflow: ellipsis; padding: 0 8px;
       border: 2px solid transparent;
@@ -44,67 +77,72 @@
       border-color: #DAA520; box-shadow: 0 0 14px rgba(218,165,32,0.45); z-index: 2;
     }
     .timeline-axis {
-      position: relative; height: 22px; margin-top: 6px;
+      position: relative; height: 20px; margin-top: 4px;
       border-top: 1px solid rgba(240,230,211,0.12);
     }
     .axis-tick {
       position: absolute; transform: translateX(-50%);
-      font-size: 0.65rem; color: rgba(240,230,211,0.35); top: 5px;
+      font-size: 0.62rem; color: rgba(240,230,211,0.35); top: 4px;
     }
     .axis-tick::before {
       content: ''; position: absolute; top: -6px; left: 50%;
       width: 1px; height: 4px; background: rgba(240,230,211,0.18);
     }
 
-    /* Content */
-    .content { display: flex; gap: 28px; }
-    .map-pane { flex: 0 0 46%; }
-    .summary-pane { flex: 1; min-width: 0; }
+    /* ── Map ─────────────────────────────────────────────────────────── */
     .map-container {
-      position: relative; background: #0d1b2a; border: 1px solid rgba(218,165,32,0.15);
-      border-radius: 8px; overflow: hidden; margin-bottom: 14px;
+      position: relative; background: #0d1b2a;
+      border: 1px solid rgba(218,165,32,0.15);
+      border-radius: 8px; overflow: hidden;
+      flex: 0 0 auto;
+      aspect-ratio: 16 / 9;
+      width: 100%;
     }
-    .map-container svg { display: block; width: 100%; height: auto; }
+    .map-container svg { display: block; width: 100%; height: 100%; }
     .map-caption {
-      font-size: 0.65rem; color: rgba(240,230,211,0.25); text-align: right;
-      margin-top: -10px; margin-bottom: 14px; padding-right: 4px;
+      position: absolute; bottom: 4px; right: 6px;
+      font-size: 0.55rem; color: rgba(240,230,211,0.32);
+      pointer-events: none;
     }
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* ── Stats grid ──────────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      flex: 0 0 auto;
+    }
     .stat-card {
       background: #2a2018; border: 1px solid rgba(218,165,32,0.1);
-      border-radius: 6px; padding: 12px;
+      border-radius: 6px; padding: 10px;
     }
     .stat-label {
-      font-family: 'Cinzel', serif; font-size: 0.6rem; text-transform: uppercase;
-      letter-spacing: 2px; color: rgba(240,230,211,0.35); margin-bottom: 5px;
+      font-family: 'Cinzel', serif; font-size: 0.55rem; text-transform: uppercase;
+      letter-spacing: 1.5px; color: rgba(240,230,211,0.35); margin-bottom: 4px;
     }
-    .stat-value { font-size: 0.9rem; color: #F0E6D3; }
-    .stat-card.full-width { grid-column: 1 / -1; }
-    .leaders-list { list-style: none; font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 2px 14px; }
+    .stat-value { font-size: 0.82rem; color: #F0E6D3; line-height: 1.35; }
+    .leaders-list { list-style: none; font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 1px 10px; }
     .leaders-list li::before { content: '· '; color: #DAA520; font-weight: bold; }
 
-    /* Summary */
-    .era-title { font-size: 1.7rem; color: #DAA520; margin-bottom: 4px; }
+    /* ── Summary content ─────────────────────────────────────────────── */
+    .era-title { font-size: 1.6rem; color: #DAA520; margin-bottom: 4px; }
     .era-dates {
-      font-size: 0.85rem; color: rgba(240,230,211,0.35); margin-bottom: 18px; letter-spacing: 1px;
+      font-size: 0.8rem; color: rgba(240,230,211,0.35); margin-bottom: 16px; letter-spacing: 1px;
     }
     .bluf {
-      font-size: 1rem; font-weight: 600; color: #F0E6D3; line-height: 1.65;
-      margin-bottom: 18px; padding-left: 14px; border-left: 3px solid #C41E3A;
+      font-size: 0.98rem; font-weight: 600; color: #F0E6D3; line-height: 1.6;
+      margin-bottom: 16px; padding-left: 14px; border-left: 3px solid #C41E3A;
     }
     .summary-text p {
-      font-size: 0.92rem; line-height: 1.75; color: rgba(240,230,211,0.72);
-      margin-bottom: 14px; text-align: justify;
+      font-size: 0.9rem; line-height: 1.7; color: rgba(240,230,211,0.72);
+      margin-bottom: 12px; text-align: justify;
     }
-    .header-row { position: relative; margin-bottom: 6px; }
-    .back-link {
-      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-      color: rgba(240,230,211,0.4);
-      text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
+
+    /* Custom scrollbar for the summary pane */
+    .summary-pane::-webkit-scrollbar { width: 8px; }
+    .summary-pane::-webkit-scrollbar-track { background: transparent; }
+    .summary-pane::-webkit-scrollbar-thumb {
+      background: rgba(218,165,32,0.18); border-radius: 4px;
     }
-    .header-row .page-title { margin-bottom: 0; }
-    .back-link:hover { color: #DAA520; }
+    .summary-pane::-webkit-scrollbar-thumb:hover { background: rgba(218,165,32,0.32); }
   </style>
 </head>
 <body>
@@ -277,9 +315,8 @@
       const cityOffset = cityR + 1.5;
 
       return (
-        <React.Fragment>
-          <div className="map-container">
-            <svg viewBox={viewBox.join(' ')} preserveAspectRatio="xMidYMid meet">
+        <div className="map-container">
+          <svg viewBox={viewBox.join(' ')} preserveAspectRatio="xMidYMid meet">
               <defs>
                 <mask id="land-mask" maskUnits="userSpaceOnUse"
                       x={-W.projection.width} y={-W.projection.height}
@@ -349,12 +386,9 @@
                   </g>
                 );
               })}
-            </svg>
-          </div>
-          <div className="map-caption">
-            Coastlines: Natural Earth 1:50m (public domain). Lambert Conformal Conic projection.
-          </div>
-        </React.Fragment>
+          </svg>
+          <div className="map-caption">Natural Earth 1:50m · Lambert Conformal Conic</div>
+        </div>
       );
     }
 
@@ -391,7 +425,7 @@
 
     function SummaryPane({ era }) {
       return (
-        <div className="summary-pane">
+        <div className="pane summary-pane">
           <h2 className="era-title">{era.name}</h2>
           <div className="era-dates">{formatYear(era.startYear)} &mdash; {formatYear(era.endYear)}</div>
           <div className="bluf">{era.bluf}</div>
@@ -418,15 +452,18 @@
       const era = ERAS.find(e => e.id === selectedEra);
 
       return (
-        <div className="container">
-          <div className="header-row">
-            <a href="../" className="back-link">&larr; Back to Playground</a>
-            <h1 className="page-title cinzel">Stages of Rome</h1>
+        <div className="app">
+          <div className="top-row">
+            <div className="pane title-pane">
+              <a href="../" className="back-link">&larr; Playground</a>
+              <div className="page-title">Stages of Rome</div>
+            </div>
+            <div className="pane timeline-pane">
+              <Timeline selectedEra={selectedEra} onSelect={setSelectedEra} />
+            </div>
           </div>
-          <p className="page-subtitle">From Kingdom to Empire &mdash; 753 BC to 1453 AD</p>
-          <Timeline selectedEra={selectedEra} onSelect={setSelectedEra} />
-          <div className="content">
-            <div className="map-pane">
+          <div className="bottom-row">
+            <div className="left-pane">
               <RomeMap selectedEra={selectedEra} />
               <EraStats era={era} />
             </div>

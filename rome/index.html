@@ -605,7 +605,13 @@
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗣️</span> Languages</div>
-            <div className="stat-value">{era.stats.languages}</div>
+            {era.stats.languages.length === 1 ? (
+              <div className="stat-value">{era.stats.languages[0]}</div>
+            ) : (
+              <ul className="bulleted-list">
+                {era.stats.languages.map((l, i) => <li key={i}>{l}</li>)}
+              </ul>
+            )}
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>

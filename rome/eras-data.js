@@ -32,7 +32,7 @@ window.__ERAS__ = [
       population: '~30,000 (city of Rome)',
       territory: '~2,500 km² (≈ Luxembourg)',
       capitals: [{ name: 'Rome' }],
-      languages: 'Old Latin',
+      languages: ['Old Latin'],
       government: [
         { label: 'Elective monarchy', description: 'Seven kings ruled in succession, chosen by an interrex and confirmed by the curiate assembly. Power was significant but not hereditary, and a king could be overthrown.' }
       ],
@@ -73,7 +73,7 @@ window.__ERAS__ = [
       population: '~55 million (≈ 25% of world)',
       territory: '~1.9 million km² (≈ Mexico)',
       capitals: [{ name: 'Rome' }],
-      languages: 'Latin',
+      languages: ['Latin'],
       government: [
         { label: 'Mixed republic', description: 'Power split among annually elected magistrates (consuls, praetors, etc.), the aristocratic Senate, and popular assemblies. Designed to prevent any one faction from dominating; held together for nearly 500 years.' }
       ],
@@ -145,7 +145,7 @@ window.__ERAS__ = [
         { name: 'Rome', dates: '27 BC – 330 AD' },
         { name: 'Constantinople', dates: '330 – 395 AD' }
       ],
-      languages: 'Latin & Greek',
+      languages: ['Latin (West)', 'Greek (East)'],
       government: [
         { label: 'Principate', description: 'Augustus’s compromise (from 27 BC): outwardly preserved Republican forms while concentrating real power in the princeps (“first citizen”). Lasted until Diocletian.' },
         { label: 'Dominate', description: 'From Diocletian (284 AD) onward, the emperor was openly addressed as dominus (lord). Court ceremony, bureaucracy, and tax collection were drastically expanded.' }
@@ -196,7 +196,7 @@ window.__ERAS__ = [
         { name: 'Mediolanum', dates: '286 – 402 AD' },
         { name: 'Ravenna', dates: '402 – 476 AD' }
       ],
-      languages: 'Latin',
+      languages: ['Latin'],
       government: [
         { label: 'Late Dominate', description: 'The autocratic system of Diocletian and Constantine, but in slow disintegration. Western emperors increasingly dominated by their generals (Stilicho, Aetius, Ricimer — often barbarian magistri militum).' }
       ],
@@ -248,7 +248,7 @@ window.__ERAS__ = [
       population: '~26 million (≈ 13% of world)',
       territory: '~3.5 million km² (≈ India)',
       capitals: [{ name: 'Constantinople' }],
-      languages: 'Greek (Latin until ~610 AD)',
+      languages: ['Greek', 'Latin (until ~610 AD)'],
       government: [
         { label: 'Dominate', description: 'The autocratic late-Roman system inherited from Diocletian and Constantine. Strong central bureaucracy, elaborate court ceremony, and a sacralized emperor.' },
         { label: 'Theme system', description: 'From the 7th century, Heraclius reorganized the empire into themes — military districts where soldiers held land in exchange for service. The foundation of medieval Byzantine power.' }

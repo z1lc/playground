@@ -27,6 +27,7 @@ window.__ERAS__ = [
     id: 'kingdom', name: 'Roman Kingdom', shortName: 'Kingdom',
     startYear: -753, endYear: -509, color: '#8B6914', row: 0,
     bbox: [4, 38, 20, 47],     // Italy + immediate surroundings — show the city-state clearly
+    peakDate: 'Final extent · ~509 BC',
     stats: {
       population: '~30,000 (city of Rome)',
       territory: '~2,500 km² (≈ Luxembourg)',
@@ -53,6 +54,7 @@ window.__ERAS__ = [
     id: 'republic', name: 'Roman Republic', shortName: 'Republic',
     startYear: -509, endYear: -27, color: '#C41E3A', row: 0,
     bbox: [-10, 28, 42, 52],   // Mediterranean basin (Iberia → Anatolia, Sahara → Gaul)
+    peakDate: 'Peak extent · 44 BC (death of Caesar)',
     stats: {
       population: '~55 million (≈ 25% of world)',
       territory: '~1.9 million km² (≈ Mexico)',
@@ -105,6 +107,7 @@ window.__ERAS__ = [
     id: 'empire', name: 'Roman Empire', shortName: 'Empire',
     startYear: -27, endYear: 395, color: '#DAA520', row: 0,
     bbox: [-11, 25, 50, 56],   // Full extent: Britain → Mesopotamia, Sahara → Hadrian's Wall
+    peakDate: 'Peak extent · 117 AD (under Trajan)',
     stats: {
       population: '~70 million (≈ 30% of world)',
       territory: '~5 million km² (≈ half the U.S.)',
@@ -136,6 +139,7 @@ window.__ERAS__ = [
     id: 'western', name: 'Western Roman Empire', shortName: 'Western',
     startYear: 395, endYear: 476, color: '#8B0000', row: 0,
     bbox: [-11, 30, 24, 56],   // Western half + Britain
+    peakDate: 'Extent c. 418 AD (post-split)',
     stats: {
       population: '~25 million (≈ 13% of world, declining)',
       territory: '~2.4 million km² (≈ Algeria)',
@@ -175,6 +179,7 @@ window.__ERAS__ = [
     id: 'eastern', name: 'Eastern Roman Empire', shortName: 'Byzantine',
     startYear: 395, endYear: 1453, color: '#6A0DAD', row: 1,
     bbox: [-9, 24, 46, 49],    // Eastern Med + Justinian reconquests (Italy, N. Africa, SE Spain)
+    peakDate: 'Peak extent · ~555 AD (under Justinian)',
     stats: {
       population: '~26 million (≈ 13% of world, under Justinian)',
       territory: '~3.5 million km² (≈ India, under Justinian)',

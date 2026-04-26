@@ -136,6 +136,14 @@
       width: 100%;
     }
     .map-container svg { display: block; width: 100%; height: 100%; }
+    .map-caption {
+      position: absolute; bottom: 5px; right: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem; letter-spacing: 1px;
+      color: rgba(240,230,211,0.45);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+      pointer-events: none;
+    }
 
     /* City markers — HTML overlay so labels stay readable at any zoom */
     .city-overlay {
@@ -476,6 +484,10 @@
                     stroke="rgba(218,165,32,0.28)" strokeWidth="0.6"
                     vectorEffect="non-scaling-stroke"/>)}
           </svg>
+
+          {era?.peakDate && (
+            <div className="map-caption">{era.peakDate}</div>
+          )}
 
           {/* Cities — HTML overlay so labels stay readable at any zoom.
               Capitals (in any era) are always shown; other cities fade in

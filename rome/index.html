@@ -582,6 +582,7 @@
     }
     const labelKey = it => it.label;
     const nameKey  = it => it.name;
+    const plur = (arr, sing, plural) => arr.length > 1 ? plural : sing;
 
     function EraStats({ era }) {
       return (
@@ -595,11 +596,11 @@
             <div className="stat-value">{era.stats.territory}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🛐</span> State Religion</div>
+            <div className="stat-label"><span className="stat-emoji">🛐</span> {plur(era.stats.religion, 'State Religion', 'State Religions')}</div>
             <TooltipList items={era.stats.religion} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">📍</span> {era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
+            <div className="stat-label"><span className="stat-emoji">📍</span> {plur(era.stats.capitals, 'Capital', 'Capitals')}</div>
             <div className="stat-value">
               {era.stats.capitals.map((c, i) => (
                 <div key={i}>
@@ -609,11 +610,11 @@
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🏛️</span> Government</div>
+            <div className="stat-label"><span className="stat-emoji">🏛️</span> {plur(era.stats.government, 'Government', 'Governments')}</div>
             <TooltipList items={era.stats.government} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🗣️</span> Languages</div>
+            <div className="stat-label"><span className="stat-emoji">🗣️</span> {plur(era.stats.languages, 'Language', 'Languages')}</div>
             {era.stats.languages.length === 1 ? (
               <div className="stat-value">{era.stats.languages[0]}</div>
             ) : (
@@ -623,7 +624,7 @@
             )}
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">⚔️</span> {era.stats.rival.length > 1 ? 'Chief Rivals' : 'Chief Rival'}</div>
+            <div className="stat-label"><span className="stat-emoji">⚔️</span> {plur(era.stats.rival, 'Chief Rival', 'Chief Rivals')}</div>
             <TooltipList items={era.stats.rival} getLabel={r => (
               <React.Fragment>
                 {r.label}
@@ -632,11 +633,11 @@
             )}/>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🗿</span> {era.stats.monument.length > 1 ? 'Signature Works' : 'Signature Work'}</div>
+            <div className="stat-label"><span className="stat-emoji">🗿</span> {plur(era.stats.monument, 'Signature Work', 'Signature Works')}</div>
             <TooltipList items={era.stats.monument} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">👑</span> Notable Leaders</div>
+            <div className="stat-label"><span className="stat-emoji">👑</span> {plur(era.stats.leaders, 'Notable Leader', 'Notable Leaders')}</div>
             <TooltipList items={era.stats.leaders} getLabel={nameKey}/>
           </div>
         </div>

@@ -110,14 +110,14 @@
       margin-bottom: 14px; text-align: justify;
     }
     .header-row {
-      display: flex; align-items: baseline; margin-bottom: 6px;
+      position: relative; margin-bottom: 6px;
     }
     .back-link {
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
       color: rgba(240,230,211,0.4);
       text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
-      flex-shrink: 0;
     }
-    .header-row .page-title { flex: 1; margin-bottom: 0; }
+    .header-row .page-title { margin-bottom: 0; }
     .back-link:hover { color: #DAA520; }
   </style>
 </head>

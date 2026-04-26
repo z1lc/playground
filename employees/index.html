@@ -69,10 +69,44 @@
       margin-top: -8px;
       line-height: 1.5;
     }
+    .summary-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .summary-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+    .summary-card .summary-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+    .summary-card p { margin-bottom: 12px; }
+    .summary-card p:last-child { margin-bottom: 0; }
+    .summary-card strong { color: #fbbf24; font-weight: 600; }
+    .summary-card ol {
+      padding-left: 22px;
+      margin: 8px 0 12px;
+    }
+    .summary-card ol li {
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+    .summary-card em { color: #94a3b8; }
     @media (max-width: 640px) {
       body { padding: 20px 10px 40px; }
       h1 { font-size: 1.3rem; }
       .chart-card { padding: 12px 4px 8px; }
+      .summary-card { padding: 16px 18px; font-size: 13px; }
     }
   </style>
   <script type="importmap">
@@ -89,6 +123,56 @@
 </head>
 <body>
   <div id="root"></div>
+  <div class="container">
+    <div class="summary-card">
+      <h2>What happened to Big Tech hiring</h2>
+      <div class="summary-sub">A short narrative of the 2011–2025 arc. Written April 2026.</div>
+
+      <p>
+        From 2011 through 2019, the nine companies above grew headcount at roughly 11% per year — the steady
+        compounding of a maturing platform era built on smartphones, cloud, and digital advertising. Then COVID hit,
+        e-commerce and remote work surged, and CEOs read the spike as permanent. <strong>Meta nearly doubled
+        headcount from 2019 to 2022; Alphabet added 71,000 (+72%); Microsoft added ~80,000.</strong>
+      </p>
+
+      <p>
+        The reversal in 2022–2023 came from several forces compounding at once:
+      </p>
+      <ol>
+        <li>
+          <strong>Pandemic over-hiring correction.</strong> The surge didn't translate into the predicted permanent
+          demand. Apple's App Tracking Transparency hit Meta for ~$10B in 2022 revenue, and the ad market softened
+          broadly — Meta posted three consecutive quarters of YoY revenue declines, the first ever.
+        </li>
+        <li>
+          <strong>Activist pressure and the "Year of Efficiency" cascade.</strong> Brad Gerstner's October 2022 letter
+          to Zuckerberg and Chris Hohn's parallel letter to Pichai demanded specific headcount cuts. Meta's February
+          2023 Year-of-Efficiency announcement was rewarded with a ~20% single-day stock pop, signaling to every other
+          CEO that capital markets would pay for layoffs. The cascade played out in weeks: Meta (Nov 9), Amazon
+          (Nov 14), Salesforce (Jan 4), Microsoft (Jan 18), Google (Jan 20).
+        </li>
+        <li>
+          <strong>Post-ChatGPT capital reallocation.</strong> ChatGPT launched two weeks after Meta's first cuts.
+          Within a year, the operative question shifted from "how many engineers" to "how many GPUs." The hyperscalers
+          now spend $300B+/yr combined on AI capex while keeping headcount roughly flat — capital substituting for
+          labor at unprecedented scale.
+        </li>
+        <li>
+          <strong>Macro backdrop.</strong> The end of zero rates re-rated growth equities, dried up VC funding (down
+          ~50% by 2023), and eliminated the startup wage competition that had let Big Tech treat headcount as cheap.
+          TCJA Section 174 (R&amp;D capitalization, effective 2022) added a real cash-tax hit — Microsoft's cash taxes
+          jumped ~$7B — though it was repealed for domestic R&amp;D in July 2025.
+        </li>
+      </ol>
+
+      <p>
+        Two empirical signals confirm this is a deliberate efficiency correction rather than a slump: <strong>revenue
+        per employee is climbing sharply</strong> (Meta +57% in FY24), and <strong>without Nvidia's AI-boom hiring,
+        the other 8 companies collectively added approximately zero from 2022 onward.</strong> The platform-era growth
+        machine has matured; the next chapter is being written in compute, not headcount.
+      </p>
+    </div>
+  </div>
   <script type="module">
     import React, { useMemo, useState, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
@@ -130,6 +214,8 @@
       { key: 'nvidia',    name: 'Nvidia',     color: '#76B900' },
       { key: 'netflix',   name: 'Netflix',   color: '#FF9800' },
     ];
+    const COMPANY_KEYS = COMPANIES.map(c => c.key);
+    const VISIBLE_STORAGE_KEY = 'employees.visibleCompanies';
 
     const RATE_COLOR = '#fbbf24';
 
@@ -219,22 +305,8 @@
     const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
     const formatNum = (v) => v.toLocaleString();
     const cagrPct = (start, end, years) => ((Math.pow(end / start, 1 / years) - 1) * 100).toFixed(1);
-    const sum = (d) => COMPANIES.reduce((s, c) => s + d[c.key], 0);
-
-    const baselineStartTotal = sum(DATA.find(d => d.year === BASELINE_START));
-    const baselineEndTotal = sum(DATA.find(d => d.year === BASELINE_END));
-    const baselineCagr = cagrPct(baselineStartTotal, baselineEndTotal, BASELINE_END - BASELINE_START);
-    const baselineGrowthRate = Math.pow(baselineEndTotal / baselineStartTotal, 1 / (BASELINE_END - BASELINE_START));
+    const sumKeys = (d, keys) => keys.reduce((s, k) => s + d[k], 0);
     const MISSING_LABEL = `Missing (vs. ${BASELINE_START}–${BASELINE_END} CAGR)`;
-    const BASE_CHART_DATA = DATA.map(d => {
-      let missing = 0;
-      if (d.year > BASELINE_END) {
-        const projected = baselineEndTotal * Math.pow(baselineGrowthRate, d.year - BASELINE_END);
-        const actual = sum(d);
-        missing = Math.max(0, Math.round(projected - actual));
-      }
-      return { ...d, missing };
-    });
 
     function CustomTooltip({ active, payload, label, rate }) {
       if (!active || !payload || !payload.length) return null;
@@ -287,13 +359,80 @@
       });
       useEffect(() => { localStorage.setItem(STORAGE_KEY, selectedKey); }, [selectedKey]);
 
+      const [visibleSet, setVisibleSet] = useState(() => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(VISIBLE_STORAGE_KEY) || 'null');
+          if (Array.isArray(saved)) {
+            const filtered = saved.filter(k => COMPANY_KEYS.includes(k));
+            if (filtered.length > 0) return new Set(filtered);
+          }
+        } catch {}
+        return new Set(COMPANY_KEYS);
+      });
+      useEffect(() => {
+        localStorage.setItem(VISIBLE_STORAGE_KEY, JSON.stringify([...visibleSet]));
+      }, [visibleSet]);
+
+      const toggleCompany = (key) => {
+        setVisibleSet(prev => {
+          const next = new Set(prev);
+          if (next.has(key)) {
+            if (next.size === 1) return prev;
+            next.delete(key);
+          } else {
+            next.add(key);
+          }
+          return next;
+        });
+      };
+
       const selected = RATES_BY_KEY[selectedKey];
       const showRate = selected.key !== 'none';
 
+      const visibleCompanies = useMemo(
+        () => COMPANIES.filter(c => visibleSet.has(c.key)),
+        [visibleSet]
+      );
+
+      const { chartDataNoRate, baselineCagr } = useMemo(() => {
+        const visibleKeys = visibleCompanies.map(c => c.key);
+        const startRow = DATA.find(d => d.year === BASELINE_START);
+        const endRow = DATA.find(d => d.year === BASELINE_END);
+        const startTotal = sumKeys(startRow, visibleKeys);
+        const endTotal = sumKeys(endRow, visibleKeys);
+        const cagr = cagrPct(startTotal, endTotal, BASELINE_END - BASELINE_START);
+        const growthRate = Math.pow(endTotal / startTotal, 1 / (BASELINE_END - BASELINE_START));
+        const data = DATA.map(d => {
+          let missing = 0;
+          if (d.year > BASELINE_END) {
+            const projected = endTotal * Math.pow(growthRate, d.year - BASELINE_END);
+            const actual = sumKeys(d, visibleKeys);
+            missing = Math.max(0, Math.round(projected - actual));
+          }
+          return { ...d, missing };
+        });
+        return { chartDataNoRate: data, baselineCagr: cagr };
+      }, [visibleCompanies]);
+
       const chartData = useMemo(() => {
-        if (!showRate) return BASE_CHART_DATA;
-        return BASE_CHART_DATA.map(d => ({ ...d, rateValue: d[selected.key] }));
-      }, [selected.key, showRate]);
+        if (!showRate) return chartDataNoRate;
+        return chartDataNoRate.map(d => ({ ...d, rateValue: d[selected.key] }));
+      }, [chartDataNoRate, selected.key, showRate]);
+
+      const legendPayload = useMemo(() => {
+        const items = COMPANIES.map(c => ({
+          value: c.name,
+          type: 'square',
+          id: c.key,
+          color: c.color,
+          inactive: !visibleSet.has(c.key),
+        }));
+        items.push({ value: MISSING_LABEL, type: 'square', id: '__missing', color: '#94a3b8' });
+        if (showRate) {
+          items.push({ value: selected.legendName, type: 'line', id: '__rate', color: RATE_COLOR });
+        }
+        return items;
+      }, [visibleSet, showRate, selected.legendName]);
 
       return html`
         <div class="container">
@@ -333,7 +472,17 @@
                   />
                 `}
                 <${Tooltip} content=${(props) => html`<${CustomTooltip} ...${props} rate=${showRate ? selected : null} />`} cursor=${{ fill: 'rgba(255,255,255,0.05)' }} />
-                <${Legend} wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8 }} />
+                <${Legend}
+                  payload=${legendPayload}
+                  wrapperStyle=${{ fontSize: 13, color: '#94a3b8', paddingTop: 8, cursor: 'pointer' }}
+                  onClick=${(entry) => {
+                    if (entry.id && COMPANY_KEYS.includes(entry.id)) toggleCompany(entry.id);
+                  }}
+                  formatter=${(value, entry) => html`<span style=${{
+                    color: entry.inactive ? '#475569' : '#94a3b8',
+                    textDecoration: entry.inactive ? 'line-through' : 'none',
+                  }}>${value}</span>`}
+                />
                 <${ReferenceLine}
                   x=${2022}
                   stroke="#94a3b8"
@@ -353,7 +502,7 @@
                     `;
                   }}
                 />
-                ${COMPANIES.map(c => html`
+                ${visibleCompanies.map(c => html`
                   <${Bar}
                     key=${c.key}
                     dataKey=${c.key}

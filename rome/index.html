@@ -586,8 +586,8 @@
             <div className="stat-value">{era.stats.territory}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🏛️</span> Government</div>
-            <TooltipList items={era.stats.government} getLabel={labelKey}/>
+            <div className="stat-label"><span className="stat-emoji">🛐</span> State Religion</div>
+            <TooltipList items={era.stats.religion} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">📍</span> {era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
@@ -600,16 +600,16 @@
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🛐</span> State Religion</div>
-            <TooltipList items={era.stats.religion} getLabel={labelKey}/>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>
-            <TooltipList items={era.stats.rival} getLabel={labelKey}/>
+            <div className="stat-label"><span className="stat-emoji">🏛️</span> Government</div>
+            <TooltipList items={era.stats.government} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗣️</span> Languages</div>
             <div className="stat-value">{era.stats.languages}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>
+            <TooltipList items={era.stats.rival} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗿</span> Signature Work</div>

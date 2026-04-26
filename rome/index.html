@@ -66,11 +66,13 @@
     .map-pane { flex: 0 0 46%; }
     .summary-pane { flex: 1; min-width: 0; }
     .map-container {
-      background: #0d1b2a; border: 1px solid rgba(218,165,32,0.15);
+      position: relative; background: #0d1b2a; border: 1px solid rgba(218,165,32,0.15);
       border-radius: 8px; overflow: hidden; margin-bottom: 14px;
-      min-height: 200px;
     }
-    .map-container svg { display: block; width: 100%; height: auto; }
+    .map-container img { display: block; width: 100%; height: auto; }
+    .map-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    }
     .map-caption {
       font-size: 0.65rem; color: rgba(240,230,211,0.25); text-align: right;
       margin-top: -10px; margin-bottom: 14px; padding-right: 4px;
@@ -275,117 +277,41 @@
       );
     }
 
+    const CITIES = [
+      { name: 'Rome', x: 199.9, y: 103.6 },
+      { name: 'Constantinople', x: 282.7, y: 95.9 },
+      { name: 'Alexandria', x: 291.5, y: 138.3 },
+      { name: 'Carthage', x: 139.6, y: 121.5 },
+      { name: 'Athens', x: 247.3, y: 108.3 }
+    ];
+
     function RomeMap({ selectedEra }) {
-      const containerRef = React.useRef(null);
-      const [ready, setReady] = useState(false);
-
-      useEffect(() => {
-        fetch('base-map.svg')
-          .then(r => r.text())
-          .then(svgText => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(svgText, 'image/svg+xml');
-            const svg = doc.documentElement;
-            if (svg.tagName !== 'svg') return;
-
-            const container = containerRef.current;
-            container.innerHTML = '';
-            container.appendChild(document.importNode(svg, true));
-            const injected = container.querySelector('svg');
-
-            // Sea color
-            const seaRect = injected.querySelector('#g1966 > rect');
-            if (seaRect) seaRect.setAttribute('style', 'fill:#0d1b2a;fill-opacity:1');
-
-            // Land color
-            const landGroup = injected.querySelector('#g1860');
-            if (!landGroup) return;
-            landGroup.querySelectorAll('path').forEach(p => {
-              p.setAttribute('style', 'fill:#2a2018');
-            });
-
-            // Create clip path from land geometry
-            // Cumulative transform: layer1(14.55,34.21) + g1966(242.93,-50.09) + g1860(-3.48,-84.19) = (254,-100.074)
-            const defs = injected.querySelector('defs');
-            const clipEl = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-            clipEl.setAttribute('id', 'land-clip');
-            const cloned = landGroup.cloneNode(true);
-            cloned.removeAttribute('id');
-            cloned.removeAttribute('clip-path');
-            cloned.setAttribute('transform', 'translate(254.000019,-100.07440)');
-            clipEl.appendChild(cloned);
-            defs.appendChild(clipEl);
-
-            // Territory overlay group clipped to land
-            const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            overlay.setAttribute('clip-path', 'url(#land-clip)');
-            ERAS.forEach(era => {
-              const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-              g.setAttribute('id', 'terr-' + era.id);
-              g.setAttribute('opacity', '0');
-              g.style.transition = 'opacity 0.5s ease';
-              era.territory.forEach(pts => {
-                const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                poly.setAttribute('points', pts);
-                poly.setAttribute('fill', era.color);
-                g.appendChild(poly);
-              });
-              overlay.appendChild(g);
-            });
-            injected.appendChild(overlay);
-
-            // City markers
-            const cities = [
-              { name: 'Rome', x: 199.9, y: 103.6 },
-              { name: 'Constantinople', x: 282.7, y: 95.9 },
-              { name: 'Alexandria', x: 291.5, y: 138.3 },
-              { name: 'Carthage', x: 139.6, y: 121.5 },
-              { name: 'Athens', x: 247.3, y: 108.3 }
-            ];
-            const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            markerGroup.setAttribute('class', 'city-markers');
-            cities.forEach(city => {
-              const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-              circle.setAttribute('cx', city.x);
-              circle.setAttribute('cy', city.y);
-              circle.setAttribute('r', '2.5');
-              circle.setAttribute('fill', '#DAA520');
-              circle.setAttribute('stroke', '#1a1210');
-              circle.setAttribute('stroke-width', '0.8');
-              markerGroup.appendChild(circle);
-
-              const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-              label.setAttribute('x', city.x + 4);
-              label.setAttribute('y', city.y + 1.5);
-              label.setAttribute('fill', '#F0E6D3');
-              label.setAttribute('font-size', '6');
-              label.setAttribute('font-family', 'Cinzel, serif');
-              label.textContent = city.name;
-              markerGroup.appendChild(label);
-            });
-            injected.appendChild(markerGroup);
-
-            setReady(true);
-          })
-          .catch(err => {
-            console.error('Failed to load map:', err);
-          });
-      }, []);
-
-      useEffect(() => {
-        if (!ready) return;
-        ERAS.forEach(era => {
-          const el = document.getElementById('terr-' + era.id);
-          if (el) el.setAttribute('opacity', era.id === selectedEra ? '0.55' : '0');
-        });
-      }, [selectedEra, ready]);
-
       return (
         <React.Fragment>
-          <div ref={containerRef} className="map-container" />
-          <div className="map-caption">
-            Base map: Wikimedia Commons (CC0)
+          <div className="map-container">
+            <img src="base-map.svg" alt="Mediterranean map" />
+            <svg className="map-overlay" viewBox="0 0 472.47028 253.05507" preserveAspectRatio="xMidYMid meet">
+              {ERAS.map(era => (
+                <g key={era.id} opacity={era.id === selectedEra ? 0.5 : 0}
+                   style={{ transition: 'opacity 0.5s ease' }}>
+                  {era.territory.map((pts, i) => (
+                    <polygon key={i} points={pts} fill={era.color} />
+                  ))}
+                </g>
+              ))}
+              {CITIES.map(city => (
+                <g key={city.name}>
+                  <circle cx={city.x} cy={city.y} r="2.5"
+                    fill="#DAA520" stroke="#1a1210" strokeWidth="0.8" />
+                  <text x={city.x + 4} y={city.y + 1.5}
+                    fill="#F0E6D3" fontSize="6" fontFamily="Cinzel, serif">
+                    {city.name}
+                  </text>
+                </g>
+              ))}
+            </svg>
           </div>
+          <div className="map-caption">Base map: Wikimedia Commons (CC0)</div>
         </React.Fragment>
       );
     }

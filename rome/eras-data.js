@@ -26,7 +26,12 @@ window.__ERAS__ = [
       population: '~30,000 (city of Rome)',
       territory: '~2,500 km² (≈ Luxembourg)',
       capitals: [{ name: 'Rome' }],
-      leaders: ['Romulus', 'Numa Pompilius', 'Servius Tullius', 'Tarquinius Superbus']
+      leaders: ['Romulus', 'Numa Pompilius', 'Servius Tullius', 'Tarquinius Superbus'],
+      government: 'Elective monarchy',
+      rival: 'Etruscans, Sabines',
+      religion: 'Roman polytheism',
+      monument: 'Cloaca Maxima',
+      languages: 'Old Latin'
     },
     bluf: 'The Roman Kingdom was the foundational era when Rome grew from a mythical settlement on the Tiber into a structured city-state governed by seven kings over roughly 244 years.',
     summary: [
@@ -47,7 +52,12 @@ window.__ERAS__ = [
       population: '~55 million (≈ 25% of world)',
       territory: '~1.9 million km² (≈ Mexico)',
       capitals: [{ name: 'Rome' }],
-      leaders: ['Scipio Africanus', 'Gaius Marius', 'Sulla', 'Cicero', 'Julius Caesar']
+      leaders: ['Scipio Africanus', 'Gaius Marius', 'Sulla', 'Cicero', 'Julius Caesar'],
+      government: 'Mixed republic',
+      rival: 'Carthage, then Parthia',
+      religion: 'Roman polytheism',
+      monument: 'Twelve Tables, Appian Way',
+      languages: 'Latin'
     },
     bluf: 'The Roman Republic transformed Rome from a regional Italian city-state into the dominant power of the entire Mediterranean world through a unique system of elected magistrates, senatorial governance, and relentless military expansion.',
     summary: [
@@ -97,7 +107,12 @@ window.__ERAS__ = [
         { name: 'Rome', dates: '27 BC – 330 AD' },
         { name: 'Constantinople', dates: '330 – 395 AD' }
       ],
-      leaders: ['Augustus', 'Trajan', 'Hadrian', 'Marcus Aurelius', 'Constantine I']
+      leaders: ['Augustus', 'Trajan', 'Hadrian', 'Marcus Aurelius', 'Constantine I'],
+      government: 'Principate → Dominate',
+      rival: 'Parthia → Sassanid Persia',
+      religion: 'Pagan → Christianity (official 380 AD)',
+      monument: 'Colosseum, Pantheon, Hadrian’s Wall',
+      languages: 'Latin & Greek'
     },
     bluf: 'The Roman Empire represented the zenith of Roman civilization, a period when a single state governed the entire Mediterranean world and beyond, achieving unprecedented levels of urbanization, legal sophistication, and cultural integration across three continents.',
     summary: [
@@ -123,7 +138,12 @@ window.__ERAS__ = [
         { name: 'Mediolanum', dates: '286 – 402 AD' },
         { name: 'Ravenna', dates: '402 – 476 AD' }
       ],
-      leaders: ['Honorius', 'Valentinian III', 'Flavius Aetius', 'Romulus Augustulus']
+      leaders: ['Honorius', 'Valentinian III', 'Flavius Aetius', 'Romulus Augustulus'],
+      government: 'Late Dominate',
+      rival: 'Visigoths, Vandals, Huns',
+      religion: 'Nicene Christianity',
+      monument: 'Notitia Dignitatum (c. 400 AD)',
+      languages: 'Latin'
     },
     bluf: 'The Western Roman Empire endured a rapid 81-year decline as barbarian migrations, economic collapse, and political instability reduced the once-mighty western half of Rome to a rump state before its final dissolution in 476 AD.',
     summary: [
@@ -154,7 +174,12 @@ window.__ERAS__ = [
       population: '~26 million (≈ 13% of world, under Justinian)',
       territory: '~3.5 million km² (≈ India, under Justinian)',
       capitals: [{ name: 'Constantinople' }],
-      leaders: ['Justinian I', 'Heraclius', 'Basil II', 'Constantine XI']
+      leaders: ['Justinian I', 'Heraclius', 'Basil II', 'Constantine XI'],
+      government: 'Dominate → Theme system',
+      rival: 'Sassanids, Caliphate, Ottomans',
+      religion: 'Orthodox Christianity',
+      monument: 'Hagia Sophia, Corpus Juris Civilis',
+      languages: 'Greek (Latin until ~610 AD)'
     },
     bluf: 'The Eastern Roman Empire, later known as the Byzantine Empire, preserved and transformed Roman civilization for over a thousand years, serving as Christendom’s bulwark against successive waves of Persian, Arab, and Turkish expansion until its fall to the Ottoman Turks in 1453.',
     summary: [

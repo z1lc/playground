@@ -177,19 +177,21 @@
 
     /* ── Stats grid ──────────────────────────────────────────────────── */
     .stats-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
       flex: 0 0 auto;
     }
     .stat-card {
       background: #2a2018; border: 1px solid rgba(218,165,32,0.1);
-      border-radius: 6px; padding: 10px;
+      border-radius: 6px; padding: 9px 10px;
     }
     .stat-label {
       font-family: 'Cinzel', serif; font-size: 0.55rem; text-transform: uppercase;
-      letter-spacing: 1.5px; color: rgba(240,230,211,0.35); margin-bottom: 4px;
+      letter-spacing: 1.3px; color: rgba(240,230,211,0.4); margin-bottom: 4px;
+      display: flex; align-items: center; gap: 5px;
     }
-    .stat-value { font-size: 0.82rem; color: #F0E6D3; line-height: 1.35; }
-    .leaders-list { list-style: none; font-size: 0.78rem; display: flex; flex-wrap: wrap; gap: 1px 10px; }
+    .stat-emoji { font-size: 0.85rem; line-height: 1; letter-spacing: 0; }
+    .stat-value { font-size: 0.78rem; color: #F0E6D3; line-height: 1.35; }
+    .leaders-list { list-style: none; font-size: 0.74rem; display: flex; flex-wrap: wrap; gap: 1px 8px; }
     .leaders-list li::before { content: '· '; color: #DAA520; font-weight: bold; }
 
     /* ── Summary content ─────────────────────────────────────────────── */
@@ -485,15 +487,19 @@
       return (
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-label">Peak Population</div>
+            <div className="stat-label"><span className="stat-emoji">👥</span> Peak Population</div>
             <div className="stat-value">{era.stats.population}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Territory</div>
+            <div className="stat-label"><span className="stat-emoji">🗺️</span> Territory</div>
             <div className="stat-value">{era.stats.territory}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">{era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
+            <div className="stat-label"><span className="stat-emoji">🏛️</span> Government</div>
+            <div className="stat-value">{era.stats.government}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">📍</span> {era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
             <div className="stat-value">
               {era.stats.capitals.map((c, i) => (
                 <div key={i}>
@@ -503,7 +509,23 @@
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-label">Notable Leaders</div>
+            <div className="stat-label"><span className="stat-emoji">🛐</span> State Religion</div>
+            <div className="stat-value">{era.stats.religion}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>
+            <div className="stat-value">{era.stats.rival}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">🗣️</span> Languages</div>
+            <div className="stat-value">{era.stats.languages}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">🗿</span> Signature Work</div>
+            <div className="stat-value">{era.stats.monument}</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label"><span className="stat-emoji">👑</span> Notable Leaders</div>
             <ul className="leaders-list">
               {era.stats.leaders.map((l, i) => <li key={i}>{l}</li>)}
             </ul>

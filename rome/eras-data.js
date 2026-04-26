@@ -116,8 +116,16 @@ window.__ERAS__ = [
       'The end came in 476 AD when the Germanic chieftain Odoacer deposed the last western emperor, the teenaged Romulus Augustulus, and sent the imperial regalia to Constantinople. While contemporaries did not necessarily view this as the "fall of Rome" — the eastern empire continued and theoretically still claimed authority over the west — it marked the definitive end of centralized Roman governance in western Europe and is conventionally regarded as one of history’s great turning points, ushering in the early medieval period.'
     ],
     territory: [
-      // Continental: Iberia + Gaul + Italy + Pannonia + Dalmatia + Roman Africa
-      [[-9.0,43.0],[-5.0,43.5],[-1.5,43.5],[3.0,42.5],[3.5,46.0],[7.0,47.5],[8.5,49.0],[6.5,51.0],[3.0,51.0],[-1.0,49.0],[-5.0,48.0],[-1.0,45.0],[2.0,46.5],[7.5,44.0],[12.5,45.5],[14.0,45.0],[19.5,46.0],[19.0,42.5],[18.5,40.0],[12.5,36.7],[10.0,33.5],[-2.0,34.5],[-9.5,35.5],[-9.5,38.5],[-9.5,42.0]],
+      // Continental: Iberia → Gaul → Rhine → Alps → Italy → Pannonia/Dalmatia
+      // → Adriatic → Sicily → Roman Africa → Atlantic Morocco → Atlantic Iberia.
+      // Single clockwise traversal, no self-intersections.
+      [
+        [-9.5,42.5], [-2.0,43.5], [1.0,46.0], [-5.0,48.5], [0.0,49.5],
+        [4.0,51.0], [6.5,51.5], [8.0,50.0], [8.0,47.5], [11.0,47.0],
+        [14.0,46.0], [19.0,46.0], [19.0,43.5], [18.0,41.0], [17.0,38.5],
+        [15.5,37.0], [12.5,37.5], [10.5,36.5], [11.0,33.0], [16.0,31.5],
+        [3.0,30.5], [-3.0,30.5], [-9.5,32.0], [-9.5,36.5], [-9.5,39.5]
+      ],
       // Britannia (officially Western until ~410)
       [[-5.5,50.0],[-4.5,53.0],[-2.0,55.5],[0.0,55.5],[1.5,53.0],[1.5,51.5],[-0.5,50.5],[-3.0,50.0]]
     ]

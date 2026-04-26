@@ -624,7 +624,12 @@
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">⚔️</span> {era.stats.rival.length > 1 ? 'Chief Rivals' : 'Chief Rival'}</div>
-            <TooltipList items={era.stats.rival} getLabel={labelKey}/>
+            <TooltipList items={era.stats.rival} getLabel={r => (
+              <React.Fragment>
+                {r.label}
+                {r.region && <span style={{ color: 'rgba(240,230,211,0.55)' }}> ({r.region})</span>}
+              </React.Fragment>
+            )}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗿</span> {era.stats.monument.length > 1 ? 'Signature Works' : 'Signature Work'}</div>

@@ -43,8 +43,8 @@ window.__ERAS__ = [
         { label: 'Cloaca Maxima', description: 'The “Great Drain” — one of the world’s earliest sewer systems, built under the Etruscan kings in the 6th century BC to drain the marsh between the hills. Still in active use today.' }
       ],
       rival: [
-        { label: 'Etruscans', description: 'The dominant civilization of central Italy before Rome. Three of Rome’s seven kings (the Tarquins) were Etruscan; their expulsion in 509 BC ended the monarchy.' },
-        { label: 'Sabines', description: 'Italic neighbors to Rome’s northeast, source of the legendary “Rape of the Sabine Women” under Romulus. Eventually merged into the Roman citizenry.' }
+        { label: 'Etruscans', region: 'northern Italy', description: 'The dominant civilization of central Italy before Rome. Three of Rome’s seven kings (the Tarquins) were Etruscan; their expulsion in 509 BC ended the monarchy.' },
+        { label: 'Sabines', region: 'central Apennines', description: 'Italic neighbors to Rome’s northeast, source of the legendary “Rape of the Sabine Women” under Romulus. Eventually merged into the Roman citizenry.' }
       ],
       leaders: [
         { name: 'Romulus', description: 'Legendary founder and first king (753 BC); created the Senate and Rome’s original institutions after killing his twin Remus over the city’s site.' },
@@ -85,8 +85,8 @@ window.__ERAS__ = [
         { label: 'Appian Way', description: 'The first major paved Roman military road (begun 312 BC), running from Rome to Brundisium. Pioneered Roman engineering and the imperial road network that followed.' }
       ],
       rival: [
-        { label: 'Carthage', description: 'Phoenician maritime empire centered on modern Tunisia. Three Punic Wars (264–146 BC) ended with Carthage’s destruction; Hannibal’s invasion of Italy nearly broke Rome.' },
-        { label: 'Parthia', description: 'Iranian empire that succeeded the Seleucids in the East. Defeated Crassus at Carrhae (53 BC), ending Roman expansion eastward and remaining Rome’s principal eastern foe for two centuries.' }
+        { label: 'Carthage', region: 'North Africa', description: 'Phoenician maritime empire centered on modern Tunisia. Three Punic Wars (264–146 BC) ended with Carthage’s destruction; Hannibal’s invasion of Italy nearly broke Rome.' },
+        { label: 'Parthia', region: 'Iran / Mesopotamia', description: 'Iranian empire that succeeded the Seleucids in the East. Defeated Crassus at Carrhae (53 BC), ending Roman expansion eastward and remaining Rome’s principal eastern foe for two centuries.' }
       ],
       leaders: [
         { name: 'Scipio Africanus', description: 'General who defeated Hannibal at Zama (202 BC), ending the Second Punic War and breaking Carthage’s power.' },
@@ -160,8 +160,8 @@ window.__ERAS__ = [
         { label: 'Hadrian’s Wall', description: '73-mile fortification across northern Britain (begun 122 AD), marking the empire’s permanent northwest frontier with the Caledonian tribes.' }
       ],
       rival: [
-        { label: 'Parthia', description: 'Iranian empire that had been Rome’s eastern rival since the late Republic. Trajan briefly conquered Mesopotamia in 116 AD before withdrawal.' },
-        { label: 'Sassanid Persia', description: 'Replaced Parthia as the eastern superpower in 224 AD. Crippled Rome at Edessa (260 AD) by capturing emperor Valerian; persistent rival for four centuries.' }
+        { label: 'Parthia', region: 'Iran / Mesopotamia', description: 'Iranian empire that had been Rome’s eastern rival since the late Republic. Trajan briefly conquered Mesopotamia in 116 AD before withdrawal.' },
+        { label: 'Sassanid Persia', region: 'Iran', description: 'Replaced Parthia as the eastern superpower in 224 AD. Crippled Rome at Edessa (260 AD) by capturing emperor Valerian; persistent rival for four centuries.' }
       ],
       leaders: [
         { name: 'Augustus', description: 'First emperor (27 BC – 14 AD); founded the Principate, consolidated borders, and presided over the start of the Pax Romana — two centuries of relative peace.' },
@@ -207,9 +207,9 @@ window.__ERAS__ = [
         { label: 'Notitia Dignitatum', description: 'An illustrated administrative register from c. 400 AD listing every imperial office, military unit, and frontier post — our richest single source on the late Roman state.' }
       ],
       rival: [
-        { label: 'Visigoths', description: 'Sacked Rome itself in 410 under Alaric — the first time in 800 years — then carved out a kingdom in southern Gaul and Iberia.' },
-        { label: 'Vandals', description: 'Crossed Gaul, Spain, and into North Africa (429); from Carthage they sacked Rome in 455 and severed the grain supply that fed Italy.' },
-        { label: 'Huns', description: 'Steppe confederation under Attila that pillaged the Balkans and Gaul (440s–453); defeated at the Catalaunian Plains (451) by Aetius and his Visigothic allies.' }
+        { label: 'Visigoths', region: 'Danube → SW Gaul, Iberia', description: 'Sacked Rome itself in 410 under Alaric — the first time in 800 years — then carved out a kingdom in southern Gaul and Iberia.' },
+        { label: 'Vandals', region: 'Rhine → North Africa', description: 'Crossed Gaul, Spain, and into North Africa (429); from Carthage they sacked Rome in 455 and severed the grain supply that fed Italy.' },
+        { label: 'Huns', region: 'Eurasian steppe', description: 'Steppe confederation under Attila that pillaged the Balkans and Gaul (440s–453); defeated at the Catalaunian Plains (451) by Aetius and his Visigothic allies.' }
       ],
       leaders: [
         { name: 'Honorius', description: 'Western emperor 393–423; recalled the legions from Britain (~410) and presided over the Visigothic sack of Rome. Ineffectual; effective power lay with his general Stilicho.' },
@@ -261,9 +261,9 @@ window.__ERAS__ = [
         { label: 'Corpus Juris Civilis', description: 'Justinian’s compilation of Roman law (529–534), distilling 1,000+ years of jurisprudence into a coherent code. The foundation of civil-law systems across modern Europe.' }
       ],
       rival: [
-        { label: 'Sassanid Persia', description: 'The eastern superpower since 224 AD. Climactic war 602–628 left both empires exhausted; Persia fell to the Arabs within twenty years.' },
-        { label: 'Caliphate', description: 'Arab Islamic state that conquered Syria, Egypt, and North Africa from Byzantium in the 630s–640s, halving the empire’s territory in a single generation.' },
-        { label: 'Ottoman Turks', description: 'Anatolian Turkish dynasty that gradually swallowed Byzantine territory through the 14th–15th centuries. Took Constantinople in 1453 under Mehmed II, ending the empire.' }
+        { label: 'Sassanid Persia', region: 'Iran', description: 'The eastern superpower since 224 AD. Climactic war 602–628 left both empires exhausted; Persia fell to the Arabs within twenty years.' },
+        { label: 'Caliphate', region: 'Arabia / Levant', description: 'Arab Islamic state that conquered Syria, Egypt, and North Africa from Byzantium in the 630s–640s, halving the empire’s territory in a single generation.' },
+        { label: 'Ottoman Turks', region: 'Anatolia', description: 'Anatolian Turkish dynasty that gradually swallowed Byzantine territory through the 14th–15th centuries. Took Constantinople in 1453 under Mehmed II, ending the empire.' }
       ],
       leaders: [
         { name: 'Justinian I', description: 'Reigned 527–565. Reconquered Italy, Africa, and southern Spain, codified Roman law, and built the Hagia Sophia. The empire’s greatest reach after the western collapse.' },

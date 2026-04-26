@@ -67,20 +67,14 @@
     .summary-pane { flex: 1; min-width: 0; }
     .map-container {
       background: #0d1b2a; border: 1px solid rgba(218,165,32,0.15);
-      border-radius: 8px; overflow: hidden; margin-bottom: 4px;
-      min-height: 260px; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; overflow: hidden; margin-bottom: 14px;
+      min-height: 200px;
     }
-    .map-container img {
-      display: block; width: 100%; height: auto; opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    .map-container img.loaded { opacity: 1; }
+    .map-container svg { display: block; width: 100%; height: auto; }
     .map-caption {
-      font-size: 0.7rem; color: rgba(240,230,211,0.3); text-align: right;
-      margin-bottom: 14px; padding-right: 4px;
+      font-size: 0.65rem; color: rgba(240,230,211,0.25); text-align: right;
+      margin-top: -10px; margin-bottom: 14px; padding-right: 4px;
     }
-    .map-caption a { color: rgba(240,230,211,0.35); text-decoration: none; }
-    .map-caption a:hover { color: #DAA520; }
 
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .stat-card {
@@ -157,8 +151,7 @@
           'The seven kings of Rome \u2014 Romulus, Numa Pompilius, Tullus Hostilius, Ancus Marcius, Tarquinius Priscus, Servius Tullius, and Tarquinius Superbus \u2014 each contributed to the city\'s development. Numa established Rome\'s religious calendar and priestly colleges. Servius Tullius reorganized the army and created the census. Under the later Etruscan-influenced kings, Rome expanded its territory across Latium and grew into a genuine urban center with monumental architecture, including the first Forum buildings and the great sewer, the Cloaca Maxima.',
           'The monarchy ended in 509 BC when the last king, Tarquinius Superbus ("Tarquin the Proud"), was overthrown in a revolt triggered by the rape of Lucretia by the king\'s son. The Romans replaced the monarchy with a republic, vowing never again to be ruled by a king \u2014 a sentiment so deeply embedded in Roman culture that it persisted for nearly five centuries and made the word "rex" (king) politically toxic in Roman society.'
         ],
-        mapUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Roma_Antiga_-_500_a.C..svg',
-        mapCaption: 'Roman territory c. 500 BC'
+        territory: ['183,94 213,90 220,118 204,122 185,112']
       },
       {
         id: 'republic', name: 'Roman Republic', shortName: 'Republic',
@@ -175,8 +168,9 @@
           'Rome\'s expansion was staggering in its scope: first dominating the Italian peninsula through wars against the Samnites, Etruscans, and Greek colonies, then defeating Carthage in three Punic Wars (264\u2013146 BC) to gain control of the western Mediterranean. The destruction of Carthage and Corinth in 146 BC marked Rome\'s emergence as an unchallenged superpower. By the late Republic, Roman territory stretched from Spain to Anatolia, with generals like Pompey conquering the eastern Mediterranean and Julius Caesar subjugating Gaul.',
           'Yet the Republic\'s very success undermined its institutions. Wealth inequality, the displacement of small farmers by slave-worked latifundia, and the rise of powerful generals with personal armies led to a century of civil wars. The conflicts between Marius and Sulla, Caesar and Pompey, and finally Octavian and Mark Antony tore the Republic apart. When Octavian defeated Antony at Actium in 31 BC and received the title Augustus from the Senate in 27 BC, the Republic effectively ended.'
         ],
-        mapUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Roman_Republic_44_bC.svg',
-        mapCaption: 'Roman Republic territory, 44 BC'
+        territory: [
+          '35,82 100,82 135,90 155,84 178,70 212,74 250,90 285,102 325,110 355,118 380,132 392,168 372,198 340,198 270,182 200,178 70,158 44,142 35,108'
+        ]
       },
       {
         id: 'empire', name: 'Roman Empire', shortName: 'Empire',
@@ -193,8 +187,10 @@
           'The empire\'s population peaked at an estimated 55\u201370 million people, roughly one-quarter of the world\'s population at the time. Cities like Rome (with over 1 million inhabitants), Alexandria, Antioch, and Carthage were among the largest in the world. Latin in the west and Greek in the east served as common languages of administration and culture. The empire facilitated trade networks stretching from Britain to India and China, and its cultural achievements \u2014 from the Colosseum and Pantheon to the legal codes later compiled under Justinian \u2014 would shape Western civilization for millennia.',
           'The Crisis of the Third Century (235\u2013284 AD) nearly destroyed the empire, with civil wars, plague, and barbarian invasions fragmenting Roman power. Emperor Diocletian (284\u2013305 AD) stabilized the situation through radical reforms, including dividing the empire into eastern and western administrative halves under the Tetrarchy. Constantine the Great reunified the empire, founded Constantinople as a new eastern capital, and legalized Christianity. However, the structural division between east and west deepened, and in 395 AD, upon the death of Emperor Theodosius I, the empire was permanently divided between his two sons.'
         ],
-        mapUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/RomanEmpire_117.svg',
-        mapCaption: 'Roman Empire at greatest extent under Trajan, 117 AD'
+        territory: [
+          '10,50 50,12 100,0 180,20 260,28 320,38 370,52 410,72 440,105 450,138 430,172 392,198 340,200 200,180 70,160 20,135',
+          '78,2 118,0 122,42 110,52 92,48 82,28'
+        ]
       },
       {
         id: 'western', name: 'Western Roman Empire', shortName: 'Western',
@@ -211,8 +207,10 @@
           'The fifth century saw the progressive loss of western provinces: Britain was abandoned around 410 AD, the Vandals seized North Africa (Rome\'s crucial grain supply) in 439 AD, and Gaul and Spain fragmented among Visigoths, Burgundians, and Franks. Competent military commanders like Stilicho and Aetius (who defeated Attila\'s Huns at the Battle of the Catalaunian Plains in 451 AD) could delay but not reverse the empire\'s contraction. By the 460s, the western emperor controlled little more than Italy itself.',
           'The end came in 476 AD when the Germanic chieftain Odoacer deposed the last western emperor, the teenaged Romulus Augustulus, and sent the imperial regalia to Constantinople. While contemporaries did not necessarily view this as the "fall of Rome" \u2014 the eastern empire continued and theoretically still claimed authority over the west \u2014 it marked the definitive end of centralized Roman governance in western Europe and is conventionally regarded as one of history\'s great turning points, ushering in the early medieval period.'
         ],
-        mapUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Western_and_Eastern_Roman_Empires_476AD%283%29.svg',
-        mapCaption: 'Western & Eastern Roman Empires, 476 AD'
+        territory: [
+          '10,50 50,12 100,0 180,20 235,32 245,78 252,120 240,158 200,180 70,160 20,135',
+          '78,2 118,0 122,42 110,52 92,48 82,28'
+        ]
       },
       {
         id: 'eastern', name: 'Eastern Roman Empire', shortName: 'Byzantine',
@@ -229,8 +227,11 @@
           'The centuries following Justinian brought existential crises: devastating wars with Sassanid Persia, the sudden loss of the wealthy eastern provinces (Syria, Egypt, North Africa) to the Arab conquests of the 7th century, and the Iconoclasm controversy that divided Byzantine society. Yet the empire proved remarkably resilient, reinventing itself around its Anatolian and Balkan heartlands. The Macedonian dynasty (867\u20131056) presided over a cultural and military renaissance, pushing the frontier deep into Syria and the Balkans.',
           'The empire\'s long decline began with the catastrophic defeat at Manzikert (1071), which opened Anatolia to Turkish settlement. The Fourth Crusade\'s sack of Constantinople in 1204 shattered the empire into competing successor states. Though the Byzantines recaptured their capital in 1261, the restored empire was a shadow of its former self. The final siege by Ottoman Sultan Mehmed II began on April 6, 1453, and the city fell on May 29, ending 1,123 years of continuous Roman governance in the east and marking the conventional end of the Middle Ages.'
         ],
-        mapUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Justinian555AD.png',
-        mapCaption: 'Byzantine Empire at greatest extent under Justinian, 555 AD'
+        territory: [
+          '210,58 320,38 370,52 410,72 440,105 405,155 392,198 340,200 290,188 230,180 215,140 210,100',
+          '178,70 212,74 252,120 228,140 195,118 178,84',
+          '100,160 200,158 275,172 290,188 200,180 70,162'
+        ]
       }
     ];
 
@@ -275,22 +276,115 @@
     }
 
     function RomeMap({ selectedEra }) {
-      const era = ERAS.find(e => e.id === selectedEra);
-      const [loaded, setLoaded] = useState({});
+      const containerRef = React.useRef(null);
+      const [ready, setReady] = useState(false);
+
+      useEffect(() => {
+        fetch('base-map.svg')
+          .then(r => r.text())
+          .then(svgText => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgText, 'image/svg+xml');
+            const svg = doc.documentElement;
+            if (svg.tagName !== 'svg') return;
+
+            const container = containerRef.current;
+            container.innerHTML = '';
+            container.appendChild(document.importNode(svg, true));
+            const injected = container.querySelector('svg');
+
+            // Sea color
+            const seaRect = injected.querySelector('#g1966 > rect');
+            if (seaRect) seaRect.setAttribute('style', 'fill:#0d1b2a;fill-opacity:1');
+
+            // Land color
+            const landGroup = injected.querySelector('#g1860');
+            if (!landGroup) return;
+            landGroup.querySelectorAll('path').forEach(p => {
+              p.setAttribute('style', 'fill:#2a2018');
+            });
+
+            // Create clip path from land geometry
+            // Cumulative transform: layer1(14.55,34.21) + g1966(242.93,-50.09) + g1860(-3.48,-84.19) = (254,-100.074)
+            const defs = injected.querySelector('defs');
+            const clipEl = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+            clipEl.setAttribute('id', 'land-clip');
+            const cloned = landGroup.cloneNode(true);
+            cloned.removeAttribute('id');
+            cloned.removeAttribute('clip-path');
+            cloned.setAttribute('transform', 'translate(254.000019,-100.07440)');
+            clipEl.appendChild(cloned);
+            defs.appendChild(clipEl);
+
+            // Territory overlay group clipped to land
+            const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            overlay.setAttribute('clip-path', 'url(#land-clip)');
+            ERAS.forEach(era => {
+              const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+              g.setAttribute('id', 'terr-' + era.id);
+              g.setAttribute('opacity', '0');
+              g.style.transition = 'opacity 0.5s ease';
+              era.territory.forEach(pts => {
+                const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                poly.setAttribute('points', pts);
+                poly.setAttribute('fill', era.color);
+                g.appendChild(poly);
+              });
+              overlay.appendChild(g);
+            });
+            injected.appendChild(overlay);
+
+            // City markers
+            const cities = [
+              { name: 'Rome', x: 199.9, y: 103.6 },
+              { name: 'Constantinople', x: 282.7, y: 95.9 },
+              { name: 'Alexandria', x: 291.5, y: 138.3 },
+              { name: 'Carthage', x: 139.6, y: 121.5 },
+              { name: 'Athens', x: 247.3, y: 108.3 }
+            ];
+            const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            markerGroup.setAttribute('class', 'city-markers');
+            cities.forEach(city => {
+              const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              circle.setAttribute('cx', city.x);
+              circle.setAttribute('cy', city.y);
+              circle.setAttribute('r', '2.5');
+              circle.setAttribute('fill', '#DAA520');
+              circle.setAttribute('stroke', '#1a1210');
+              circle.setAttribute('stroke-width', '0.8');
+              markerGroup.appendChild(circle);
+
+              const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+              label.setAttribute('x', city.x + 4);
+              label.setAttribute('y', city.y + 1.5);
+              label.setAttribute('fill', '#F0E6D3');
+              label.setAttribute('font-size', '6');
+              label.setAttribute('font-family', 'Cinzel, serif');
+              label.textContent = city.name;
+              markerGroup.appendChild(label);
+            });
+            injected.appendChild(markerGroup);
+
+            setReady(true);
+          })
+          .catch(err => {
+            console.error('Failed to load map:', err);
+          });
+      }, []);
+
+      useEffect(() => {
+        if (!ready) return;
+        ERAS.forEach(era => {
+          const el = document.getElementById('terr-' + era.id);
+          if (el) el.setAttribute('opacity', era.id === selectedEra ? '0.55' : '0');
+        });
+      }, [selectedEra, ready]);
 
       return (
         <React.Fragment>
-          <div className="map-container">
-            <img
-              key={era.id}
-              src={era.mapUrl}
-              alt={era.mapCaption}
-              className={loaded[era.id] ? 'loaded' : ''}
-              onLoad={() => setLoaded(prev => ({ ...prev, [era.id]: true }))}
-            />
-          </div>
+          <div ref={containerRef} className="map-container" />
           <div className="map-caption">
-            {era.mapCaption} &mdash; <a href={era.mapUrl} target="_blank" rel="noopener">Wikimedia Commons</a>
+            Base map: Wikimedia Commons (CC0)
           </div>
         </React.Fragment>
       );

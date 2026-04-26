@@ -73,10 +73,6 @@
     .map-overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     }
-    .territory-layer {
-      -webkit-mask: url(mask-map.svg) center / 100% 100% no-repeat;
-              mask: url(mask-map.svg) center / 100% 100% no-repeat;
-    }
     .map-caption {
       font-size: 0.65rem; color: rgba(240,230,211,0.25); text-align: right;
       margin-top: -10px; margin-bottom: 14px; padding-right: 4px;
@@ -126,6 +122,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script src="land-paths.js"></script>
   <script type="text/babel">
     const { useState, useEffect } = React;
 
@@ -295,7 +292,17 @@
           <div className="map-container">
             <img src="base-map.svg" alt="Mediterranean map" />
             <svg className="map-overlay" viewBox="0 0 472.47028 253.05507" preserveAspectRatio="xMidYMid meet">
-              <g className="territory-layer">
+              <defs>
+                <mask id="land-mask" maskUnits="userSpaceOnUse"
+                      x="0" y="0" width="472.47028" height="253.05507">
+                  <g transform="translate(254.000019,-100.07440)">
+                    {(window.__LAND_PATHS__ || []).map((d, i) => (
+                      <path key={i} d={d} fill="#fff" />
+                    ))}
+                  </g>
+                </mask>
+              </defs>
+              <g mask="url(#land-mask)">
                 {ERAS.map(era => (
                   <g key={era.id} opacity={era.id === selectedEra ? 0.75 : 0}
                      style={{ transition: 'opacity 0.5s ease' }}>

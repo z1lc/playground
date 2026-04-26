@@ -200,8 +200,51 @@
     }
     .stat-emoji { font-size: 0.85rem; line-height: 1; letter-spacing: 0; }
     .stat-value { font-size: 0.78rem; color: #F0E6D3; line-height: 1.35; }
-    .leaders-list { list-style: none; font-size: 0.74rem; display: flex; flex-wrap: wrap; gap: 1px 8px; }
-    .leaders-list li::before { content: '· '; color: #DAA520; font-weight: bold; }
+
+    /* Bulleted list with red SPQR-crimson markers — used for the five
+       cards that have hover-tooltip explanations on each item. */
+    .bulleted-list {
+      list-style: none; margin: 0; padding: 0;
+      font-size: 0.78rem; line-height: 1.4; color: #F0E6D3;
+    }
+    .bulleted-list li {
+      position: relative; padding-left: 11px;
+    }
+    .bulleted-list li + li { margin-top: 2px; }
+    .bulleted-list li::before {
+      content: '•';
+      position: absolute; left: 0; top: 0;
+      color: #C41E3A;  /* SPQR crimson */
+      font-weight: 700;
+    }
+
+    /* Tooltip — pure CSS via data-tip attribute */
+    .tipped { cursor: help; }
+    .tipped::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      width: max-content; max-width: 260px;
+      padding: 8px 10px;
+      background: #1a1210;
+      border: 1px solid rgba(218,165,32,0.45);
+      border-radius: 4px;
+      font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+      font-size: 11.5px; font-weight: 400;
+      line-height: 1.45; letter-spacing: 0;
+      color: #F0E6D3; text-align: left; white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-50%) translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 30;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.65);
+    }
+    .tipped:hover::after, .tipped:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
     /* ── Summary content ─────────────────────────────────────────────── */
     .era-title { font-size: 1.6rem; color: #DAA520; margin-bottom: 4px; }
@@ -515,6 +558,22 @@
       );
     }
 
+    // Renders a list of {label/name, description} items as a red-bulleted
+     // list where each item has a hover tooltip showing its description.
+    function TooltipList({ items, getLabel }) {
+      return (
+        <ul className="bulleted-list">
+          {items.map((it, i) => (
+            <li key={i} className="tipped" data-tip={it.description} tabIndex="0">
+              {getLabel(it)}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    const labelKey = it => it.label;
+    const nameKey  = it => it.name;
+
     function EraStats({ era }) {
       return (
         <div className="stats-grid">
@@ -528,7 +587,7 @@
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🏛️</span> Government</div>
-            <div className="stat-value">{era.stats.government}</div>
+            <TooltipList items={era.stats.government} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">📍</span> {era.stats.capitals.length > 1 ? 'Capitals' : 'Capital'}</div>
@@ -542,11 +601,11 @@
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🛐</span> State Religion</div>
-            <div className="stat-value">{era.stats.religion}</div>
+            <TooltipList items={era.stats.religion} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>
-            <div className="stat-value">{era.stats.rival}</div>
+            <TooltipList items={era.stats.rival} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗣️</span> Languages</div>
@@ -554,13 +613,11 @@
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">🗿</span> Signature Work</div>
-            <div className="stat-value">{era.stats.monument}</div>
+            <TooltipList items={era.stats.monument} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
             <div className="stat-label"><span className="stat-emoji">👑</span> Notable Leaders</div>
-            <ul className="leaders-list">
-              {era.stats.leaders.map((l, i) => <li key={i}>{l}</li>)}
-            </ul>
+            <TooltipList items={era.stats.leaders} getLabel={nameKey}/>
           </div>
         </div>
       );

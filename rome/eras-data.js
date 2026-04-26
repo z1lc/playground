@@ -32,12 +32,26 @@ window.__ERAS__ = [
       population: '~30,000 (city of Rome)',
       territory: '~2,500 km² (≈ Luxembourg)',
       capitals: [{ name: 'Rome' }],
-      leaders: ['Romulus', 'Numa Pompilius', 'Servius Tullius', 'Tarquinius Superbus'],
-      government: 'Elective monarchy',
-      rival: 'Etruscans, Sabines',
-      religion: 'Roman polytheism',
-      monument: 'Cloaca Maxima',
-      languages: 'Old Latin'
+      languages: 'Old Latin',
+      government: [
+        { label: 'Elective monarchy', description: 'Seven kings ruled in succession, chosen by an interrex and confirmed by the curiate assembly. Power was significant but not hereditary, and a king could be overthrown.' }
+      ],
+      religion: [
+        { label: 'Roman polytheism', description: 'Worship of a pantheon led by Jupiter, Juno, and Mars. Ritual practice was deeply civic, run by priestly colleges (pontifices, augurs, vestals) woven into political life.' }
+      ],
+      monument: [
+        { label: 'Cloaca Maxima', description: 'The “Great Drain” — one of the world’s earliest sewer systems, built under the Etruscan kings in the 6th century BC to drain the marsh between the hills. Still in active use today.' }
+      ],
+      rival: [
+        { label: 'Etruscans', description: 'The dominant civilization of central Italy before Rome. Three of Rome’s seven kings (the Tarquins) were Etruscan; their expulsion in 509 BC ended the monarchy.' },
+        { label: 'Sabines', description: 'Italic neighbors to Rome’s northeast, source of the legendary “Rape of the Sabine Women” under Romulus. Eventually merged into the Roman citizenry.' }
+      ],
+      leaders: [
+        { name: 'Romulus', description: 'Legendary founder and first king (753 BC); created the Senate and Rome’s original institutions after killing his twin Remus over the city’s site.' },
+        { name: 'Numa Pompilius', description: 'Second king (715–673 BC); established Rome’s religious calendar and the priestly colleges. Tradition credits him with the temples of Janus and Vesta.' },
+        { name: 'Servius Tullius', description: 'Sixth king (575–535 BC); reorganized the army into property classes, instituted the census, and expanded Roman territory across Latium.' },
+        { name: 'Tarquinius Superbus', description: 'Seventh and last king (535–509 BC). His tyranny — and the rape of Lucretia by his son — triggered the revolt that ended the monarchy.' }
+      ]
     },
     bluf: 'The Roman Kingdom was the foundational era when Rome grew from a mythical settlement on the Tiber into a structured city-state governed by seven kings over roughly 244 years.',
     summary: [
@@ -59,12 +73,28 @@ window.__ERAS__ = [
       population: '~55 million (≈ 25% of world)',
       territory: '~1.9 million km² (≈ Mexico)',
       capitals: [{ name: 'Rome' }],
-      leaders: ['Scipio Africanus', 'Gaius Marius', 'Sulla', 'Cicero', 'Julius Caesar'],
-      government: 'Mixed republic',
-      rival: 'Carthage, then Parthia',
-      religion: 'Roman polytheism',
-      monument: 'Twelve Tables, Appian Way',
-      languages: 'Latin'
+      languages: 'Latin',
+      government: [
+        { label: 'Mixed republic', description: 'Power split among annually elected magistrates (consuls, praetors, etc.), the aristocratic Senate, and popular assemblies. Designed to prevent any one faction from dominating; held together for nearly 500 years.' }
+      ],
+      religion: [
+        { label: 'Roman polytheism', description: 'Inherited from the kings, but the Republic added the elected office of Pontifex Maximus, integrating religion directly into political competition.' }
+      ],
+      monument: [
+        { label: 'Twelve Tables', description: 'Rome’s first written legal code (450 BC), produced after pressure from the plebeians. Established equality before the law and remained the foundation of Roman jurisprudence for centuries.' },
+        { label: 'Appian Way', description: 'The first major paved Roman military road (begun 312 BC), running from Rome to Brundisium. Pioneered Roman engineering and the imperial road network that followed.' }
+      ],
+      rival: [
+        { label: 'Carthage', description: 'Phoenician maritime empire centered on modern Tunisia. Three Punic Wars (264–146 BC) ended with Carthage’s destruction; Hannibal’s invasion of Italy nearly broke Rome.' },
+        { label: 'Parthia', description: 'Iranian empire that succeeded the Seleucids in the East. Defeated Crassus at Carrhae (53 BC), ending Roman expansion eastward and remaining Rome’s principal eastern foe for two centuries.' }
+      ],
+      leaders: [
+        { name: 'Scipio Africanus', description: 'General who defeated Hannibal at Zama (202 BC), ending the Second Punic War and breaking Carthage’s power.' },
+        { name: 'Gaius Marius', description: 'Reformer who opened the legions to landless citizens (107 BC), creating professional armies loyal to their generals — a structural change that doomed the Republic.' },
+        { name: 'Sulla', description: 'Marched on Rome twice (88, 82 BC), the first Roman to do so; ruled as dictator and proscribed his enemies. Set the precedent for later civil-war strongmen.' },
+        { name: 'Cicero', description: 'Orator, lawyer, and statesman; consul in 63 BC. His writings preserved Roman political philosophy and shaped later Western rhetoric and law.' },
+        { name: 'Julius Caesar', description: 'Conquered Gaul (58–51 BC), crossed the Rubicon, and won the civil war against Pompey. His assassination in 44 BC triggered the wars that ended the Republic.' }
+      ]
     },
     bluf: 'The Roman Republic transformed Rome from a regional Italian city-state into the dominant power of the entire Mediterranean world through a unique system of elected magistrates, senatorial governance, and relentless military expansion.',
     summary: [
@@ -115,12 +145,31 @@ window.__ERAS__ = [
         { name: 'Rome', dates: '27 BC – 330 AD' },
         { name: 'Constantinople', dates: '330 – 395 AD' }
       ],
-      leaders: ['Augustus', 'Trajan', 'Hadrian', 'Marcus Aurelius', 'Constantine I'],
-      government: 'Principate → Dominate',
-      rival: 'Parthia → Sassanid Persia',
-      religion: 'Pagan → Christianity (official 380 AD)',
-      monument: 'Colosseum, Pantheon, Hadrian’s Wall',
-      languages: 'Latin & Greek'
+      languages: 'Latin & Greek',
+      government: [
+        { label: 'Principate', description: 'Augustus’s compromise (from 27 BC): outwardly preserved Republican forms while concentrating real power in the princeps (“first citizen”). Lasted until Diocletian.' },
+        { label: 'Dominate', description: 'From Diocletian (284 AD) onward, the emperor was openly addressed as dominus (lord). Court ceremony, bureaucracy, and tax collection were drastically expanded.' }
+      ],
+      religion: [
+        { label: 'Roman polytheism', description: 'Continued from the Republic; emperors were sometimes deified after death, and the imperial cult became a touchstone of loyalty across the provinces.' },
+        { label: 'Christianity', description: 'Legalized by Constantine’s Edict of Milan (313 AD); proclaimed the official state religion by Theodosius I in 380. Drove a fundamental cultural transformation.' }
+      ],
+      monument: [
+        { label: 'Colosseum', description: 'The Flavian Amphitheatre, completed 80 AD under Titus. Held ~50,000 spectators for gladiatorial games; the largest ancient amphitheater ever built.' },
+        { label: 'Pantheon', description: 'Hadrian’s temple to all gods (~126 AD), with a 43m unreinforced concrete dome — an engineering benchmark unsurpassed for over 1,000 years.' },
+        { label: 'Hadrian’s Wall', description: '73-mile fortification across northern Britain (begun 122 AD), marking the empire’s permanent northwest frontier with the Caledonian tribes.' }
+      ],
+      rival: [
+        { label: 'Parthia', description: 'Iranian empire that had been Rome’s eastern rival since the late Republic. Trajan briefly conquered Mesopotamia in 116 AD before withdrawal.' },
+        { label: 'Sassanid Persia', description: 'Replaced Parthia as the eastern superpower in 224 AD. Crippled Rome at Edessa (260 AD) by capturing emperor Valerian; persistent rival for four centuries.' }
+      ],
+      leaders: [
+        { name: 'Augustus', description: 'First emperor (27 BC – 14 AD); founded the Principate, consolidated borders, and presided over the start of the Pax Romana — two centuries of relative peace.' },
+        { name: 'Trajan', description: 'Optimus Princeps (98–117 AD). Conquered Dacia and Mesopotamia at the empire’s territorial peak; the Forum and Column of Trajan commemorate his campaigns.' },
+        { name: 'Hadrian', description: 'Successor to Trajan (117–138 AD); consolidated his predecessor’s gains, withdrew from Mesopotamia, and built the famous wall in Britain. Patron of arts and architecture.' },
+        { name: 'Marcus Aurelius', description: 'Last of the “Five Good Emperors” (161–180 AD); fought the Marcomannic Wars on the Danube. Author of the Stoic Meditations.' },
+        { name: 'Constantine I', description: 'Reunified the empire (324 AD), legalized Christianity, founded Constantinople (330), and convened the Council of Nicaea (325). Set the eastern empire’s trajectory for the next millennium.' }
+      ]
     },
     bluf: 'The Roman Empire represented the zenith of Roman civilization, a period when a single state governed the entire Mediterranean world and beyond, achieving unprecedented levels of urbanization, legal sophistication, and cultural integration across three continents.',
     summary: [
@@ -147,12 +196,27 @@ window.__ERAS__ = [
         { name: 'Mediolanum', dates: '286 – 402 AD' },
         { name: 'Ravenna', dates: '402 – 476 AD' }
       ],
-      leaders: ['Honorius', 'Valentinian III', 'Flavius Aetius', 'Romulus Augustulus'],
-      government: 'Late Dominate',
-      rival: 'Visigoths, Vandals, Huns',
-      religion: 'Nicene Christianity',
-      monument: 'Notitia Dignitatum (c. 400 AD)',
-      languages: 'Latin'
+      languages: 'Latin',
+      government: [
+        { label: 'Late Dominate', description: 'The autocratic system of Diocletian and Constantine, but in slow disintegration. Western emperors increasingly dominated by their generals (Stilicho, Aetius, Ricimer — often barbarian magistri militum).' }
+      ],
+      religion: [
+        { label: 'Nicene Christianity', description: 'The orthodox Trinitarian Christianity defined at Nicaea (325) and reaffirmed at Constantinople (381); made the official Roman religion by Theodosius in 380.' }
+      ],
+      monument: [
+        { label: 'Notitia Dignitatum', description: 'An illustrated administrative register from c. 400 AD listing every imperial office, military unit, and frontier post — our richest single source on the late Roman state.' }
+      ],
+      rival: [
+        { label: 'Visigoths', description: 'Sacked Rome itself in 410 under Alaric — the first time in 800 years — then carved out a kingdom in southern Gaul and Iberia.' },
+        { label: 'Vandals', description: 'Crossed Gaul, Spain, and into North Africa (429); from Carthage they sacked Rome in 455 and severed the grain supply that fed Italy.' },
+        { label: 'Huns', description: 'Steppe confederation under Attila that pillaged the Balkans and Gaul (440s–453); defeated at the Catalaunian Plains (451) by Aetius and his Visigothic allies.' }
+      ],
+      leaders: [
+        { name: 'Honorius', description: 'Western emperor 393–423; recalled the legions from Britain (~410) and presided over the Visigothic sack of Rome. Ineffectual; effective power lay with his general Stilicho.' },
+        { name: 'Valentinian III', description: 'Western emperor 425–455; nominally ruled during the loss of Africa and Aetius’s defeat of Attila. Personally killed Aetius in 454, fatally weakening the west.' },
+        { name: 'Flavius Aetius', description: 'Magister militum 433–454; the “last of the Romans.” Repeatedly stitched the western empire together through diplomacy and the victory at the Catalaunian Plains.' },
+        { name: 'Romulus Augustulus', description: 'Last western emperor (475–476), a teenage figurehead deposed by the Germanic chieftain Odoacer. His abdication conventionally marks the end of the Western Empire.' }
+      ]
     },
     bluf: 'The Western Roman Empire endured a rapid 81-year decline as barbarian migrations, economic collapse, and political instability reduced the once-mighty western half of Rome to a rump state before its final dissolution in 476 AD.',
     summary: [
@@ -184,12 +248,29 @@ window.__ERAS__ = [
       population: '~26 million (≈ 13% of world, under Justinian)',
       territory: '~3.5 million km² (≈ India, under Justinian)',
       capitals: [{ name: 'Constantinople' }],
-      leaders: ['Justinian I', 'Heraclius', 'Basil II', 'Constantine XI'],
-      government: 'Dominate → Theme system',
-      rival: 'Sassanids, Caliphate, Ottomans',
-      religion: 'Orthodox Christianity',
-      monument: 'Hagia Sophia, Corpus Juris Civilis',
-      languages: 'Greek (Latin until ~610 AD)'
+      languages: 'Greek (Latin until ~610 AD)',
+      government: [
+        { label: 'Dominate', description: 'The autocratic late-Roman system inherited from Diocletian and Constantine. Strong central bureaucracy, elaborate court ceremony, and a sacralized emperor.' },
+        { label: 'Theme system', description: 'From the 7th century, Heraclius reorganized the empire into themes — military districts where soldiers held land in exchange for service. The foundation of medieval Byzantine power.' }
+      ],
+      religion: [
+        { label: 'Orthodox Christianity', description: 'The eastern Greek-speaking branch of Christianity centered on Constantinople. Diverged from the western Latin Catholic Church over doctrine and authority, formally splitting in the Great Schism of 1054.' }
+      ],
+      monument: [
+        { label: 'Hagia Sophia', description: 'Justinian’s domed cathedral in Constantinople (completed 537 AD). For nearly a thousand years the largest church in the world; an enduring symbol of Byzantine civilization.' },
+        { label: 'Corpus Juris Civilis', description: 'Justinian’s compilation of Roman law (529–534), distilling 1,000+ years of jurisprudence into a coherent code. The foundation of civil-law systems across modern Europe.' }
+      ],
+      rival: [
+        { label: 'Sassanid Persia', description: 'The eastern superpower since 224 AD. Climactic war 602–628 left both empires exhausted; Persia fell to the Arabs within twenty years.' },
+        { label: 'Caliphate', description: 'Arab Islamic state that conquered Syria, Egypt, and North Africa from Byzantium in the 630s–640s, halving the empire’s territory in a single generation.' },
+        { label: 'Ottoman Turks', description: 'Anatolian Turkish dynasty that gradually swallowed Byzantine territory through the 14th–15th centuries. Took Constantinople in 1453 under Mehmed II, ending the empire.' }
+      ],
+      leaders: [
+        { name: 'Justinian I', description: 'Reigned 527–565. Reconquered Italy, Africa, and southern Spain, codified Roman law, and built the Hagia Sophia. The empire’s greatest reach after the western collapse.' },
+        { name: 'Heraclius', description: 'Reigned 610–641. Defeated Sassanid Persia in a desperate war (628), then watched Syria, Palestine, and Egypt fall to the Arabs. Made Greek the official language of state.' },
+        { name: 'Basil II', description: '“Bulgar-slayer” (976–1025). Pushed the empire to its greatest extent since Justinian, conquering Bulgaria and stabilizing the eastern frontier.' },
+        { name: 'Constantine XI', description: 'Last Byzantine emperor; died fighting at the walls of Constantinople when Mehmed II’s Ottomans took the city on 29 May 1453.' }
+      ]
     },
     bluf: 'The Eastern Roman Empire, later known as the Byzantine Empire, preserved and transformed Roman civilization for over a thousand years, serving as Christendom’s bulwark against successive waves of Persian, Arab, and Turkish expansion until its fall to the Ottoman Turks in 1453.',
     summary: [

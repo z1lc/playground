@@ -109,10 +109,15 @@
       font-size: 0.92rem; line-height: 1.75; color: rgba(240,230,211,0.72);
       margin-bottom: 14px; text-align: justify;
     }
-    .back-link {
-      display: inline-block; margin-bottom: 18px; color: rgba(240,230,211,0.4);
-      text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
+    .header-row {
+      display: flex; align-items: baseline; margin-bottom: 6px;
     }
+    .back-link {
+      color: rgba(240,230,211,0.4);
+      text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .header-row .page-title { flex: 1; margin-bottom: 0; }
     .back-link:hover { color: #DAA520; }
   </style>
 </head>
@@ -346,8 +351,10 @@
 
       return (
         <div className="container">
-          <a href="../" className="back-link">&larr; Back to Playground</a>
-          <h1 className="page-title cinzel">Stages of Rome</h1>
+          <div className="header-row">
+            <a href="../" className="back-link">&larr; Back to Playground</a>
+            <h1 className="page-title cinzel">Stages of Rome</h1>
+          </div>
           <p className="page-subtitle">From Kingdom to Empire &mdash; 753 BC to 1453 AD</p>
           <Timeline selectedEra={selectedEra} onSelect={setSelectedEra} />
           <div className="content">

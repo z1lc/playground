@@ -245,8 +245,8 @@ window.__ERAS__ = [
     bbox: [-9, 24, 46, 49],    // Eastern Med + Justinian reconquests (Italy, N. Africa, SE Spain)
     peakDate: 'Peak extent · ~555 AD (under Justinian)',
     stats: {
-      population: '~26 million (≈ 13% of world, under Justinian)',
-      territory: '~3.5 million km² (≈ India, under Justinian)',
+      population: '~26 million (≈ 13% of world)',
+      territory: '~3.5 million km² (≈ India)',
       capitals: [{ name: 'Constantinople' }],
       languages: 'Greek (Latin until ~610 AD)',
       government: [

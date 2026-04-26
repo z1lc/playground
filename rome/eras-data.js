@@ -56,18 +56,34 @@ window.__ERAS__ = [
       'Yet the Republic’s very success undermined its institutions. Wealth inequality, the displacement of small farmers by slave-worked latifundia, and the rise of powerful generals with personal armies led to a century of civil wars. The conflicts between Marius and Sulla, Caesar and Pompey, and finally Octavian and Mark Antony tore the Republic apart. When Octavian defeated Antony at Actium in 31 BC and received the title Augustus from the Senate in 27 BC, the Republic effectively ended.'
     ],
     territory: [
-      // Italy + Cisalpine Gaul
-      [[7.5,44.0],[7.0,44.5],[7.5,45.5],[8.5,46.3],[10.5,46.8],[12.5,46.8],[13.8,46.5],[13.5,45.8],[15.0,44.5],[16.5,43.5],[17.5,41.5],[18.5,40.2],[17.0,39.5],[16.0,37.9],[15.7,38.0],[14.0,40.5],[10.5,42.0],[8.5,40.5],[10.0,43.5],[8.5,44.3]],
+      // Italy + Cisalpine Gaul — clean clockwise around the peninsula coastline
+      [
+        [7.5,44.0], [7.5,45.5], [8.5,46.3], [10.5,46.8], [12.5,46.8],
+        [13.8,46.5], [13.5,45.7], [12.5,45.0], [12.5,44.0], [13.5,43.0],
+        [14.5,42.0], [16.0,41.5], [17.5,40.7], [18.5,40.0], [17.0,39.5],
+        [16.0,38.0], [15.7,38.0], [16.0,39.0], [14.5,40.5], [13.5,41.0],
+        [12.0,41.5], [11.0,42.5], [10.0,43.5], [8.5,44.3]
+      ],
       // Sicily
       [[12.4,38.0],[13.5,38.4],[15.6,38.4],[15.7,37.0],[14.5,36.6],[12.5,37.5]],
       // Iberia
       [[-9.3,42.5],[-7.0,43.5],[-3.5,43.4],[-1.5,43.3],[0.5,42.7],[3.2,42.5],[3.2,40.0],[0.5,38.5],[-2.0,36.7],[-5.5,36.0],[-7.5,37.0],[-9.0,37.0],[-9.5,38.5],[-9.3,40.5]],
-      // North Africa
+      // North Africa (Mauretania to Egyptian frontier — but NOT Egypt itself)
       [[-1.0,35.3],[1.0,36.5],[5.0,37.0],[8.0,37.3],[10.5,37.3],[11.5,33.5],[15.0,32.5],[20.0,31.0],[24.0,31.0],[25.5,31.0],[25.5,30.3],[23.0,30.0],[20.0,30.2],[15.0,31.0],[11.0,32.0],[8.0,33.0],[4.0,33.5],[0.0,33.5],[-1.5,34.0]],
-      // Greece + Balkans
+      // Greece + Balkans (Illyricum, Macedonia, Achaea)
       [[13.5,46.0],[15.5,45.5],[17.5,45.0],[19.5,43.5],[21.5,42.5],[23.5,41.5],[25.5,41.0],[26.5,40.5],[24.0,38.0],[23.0,36.5],[21.5,36.7],[19.5,38.5],[18.5,40.0],[17.0,41.5],[15.0,43.5],[13.5,44.5]],
-      // Asia Minor + Syria + Cyprus
-      [[26.5,40.5],[28.5,41.3],[31.5,42.0],[34.0,42.0],[36.5,41.0],[38.5,39.5],[39.0,37.5],[38.0,36.5],[37.5,36.8],[37.0,35.5],[36.5,34.5],[36.0,33.0],[35.5,32.5],[34.5,31.5],[33.5,32.0],[32.5,33.0],[33.0,35.0],[31.0,36.5],[28.5,36.5],[27.0,37.0],[26.0,38.5],[26.0,39.5]]
+      // Crete (Roman province from 67 BC)
+      [[23.5,35.7],[26.4,35.5],[26.0,34.8],[23.5,35.0]],
+      // Cyprus (Roman province from 58 BC)
+      [[32.3,35.7],[34.6,35.7],[34.6,34.6],[32.4,34.6]],
+      // Asia Minor + Syria — southern boundary at the Egyptian frontier (~Gaza),
+      // does NOT extend into Sinai or Egypt (Egypt was Ptolemaic in 44 BC)
+      [
+        [26.5,40.5], [29.0,41.5], [32.0,42.0], [34.0,42.0], [37.0,41.0],
+        [39.0,39.0], [39.0,37.5], [38.0,36.0], [37.0,35.0], [36.5,34.0],
+        [36.0,33.0], [35.0,32.0], [33.5,32.5], [30.5,36.5], [28.5,36.5],
+        [27.0,37.0], [26.0,38.5], [26.0,39.5]
+      ]
     ]
   },
   {
@@ -147,15 +163,31 @@ window.__ERAS__ = [
       'The empire’s long decline began with the catastrophic defeat at Manzikert (1071), which opened Anatolia to Turkish settlement. The Fourth Crusade’s sack of Constantinople in 1204 shattered the empire into competing successor states. Though the Byzantines recaptured their capital in 1261, the restored empire was a shadow of its former self. The final siege by Ottoman Sultan Mehmed II began on April 6, 1453, and the city fell on May 29, ending 1,123 years of continuous Roman governance in the east and marking the conventional end of the Middle Ages.'
     ],
     territory: [
-      // Eastern main: Greece + Balkans + Anatolia + Levant + Egypt + Cyrenaica
-      [[15.0,44.8],[18.5,45.0],[22.0,44.5],[25.0,44.0],[28.5,43.5],[28.0,41.5],[30.0,41.0],[34.0,42.0],[37.5,41.5],[41.0,40.5],[42.5,38.5],[40.0,37.0],[37.5,36.5],[36.5,33.5],[35.0,30.0],[33.5,28.5],[34.5,24.0],[32.0,22.5],[28.0,22.5],[25.0,22.0],[24.0,30.0],[20.0,32.5],[19.5,30.5],[16.0,30.5],[20.5,33.5],[24.0,36.0],[22.0,37.5],[19.5,39.5],[17.0,41.0]],
-      // Italy + Sicily (reconquered)
-      [[7.5,44.0],[9.0,45.5],[12.5,46.5],[14.0,46.0],[16.5,45.5],[18.5,42.5],[18.0,40.0],[17.0,38.5],[15.0,37.5],[12.0,37.5],[15.5,38.5],[15.5,40.0],[12.0,41.5],[10.0,43.0],[8.0,43.5]],
+      // Eastern main: Balkans + Anatolia + Levant + Egypt — closes through
+      // the Mediterranean east of Italy (so Italy is not enclosed).
+      [
+        [15.0,44.8], [18.5,45.0], [22.0,44.5], [25.0,44.0], [28.5,43.5],
+        [29.0,41.5], [30.0,41.0], [34.0,42.0], [37.5,41.5], [41.0,40.5],
+        [42.5,38.5], [40.0,37.0], [37.5,36.5], [36.5,33.5], [35.0,30.0],
+        [33.5,28.5], [34.5,24.0], [32.0,22.5], [28.0,22.5], [25.0,22.0],
+        [25.0,30.5], [24.0,32.0], [24.0,36.0], [22.0,37.5], [19.5,39.5],
+        [17.0,41.0]
+      ],
+      // Cyrenaica (eastern Libya — reached from Egypt by sea, separate ring)
+      [[16.5,31.5],[22.0,31.5],[25.0,31.0],[24.0,32.5],[20.0,33.0],[16.0,32.0]],
+      // Italy + Sicily (reconquered Gothic Kingdom 535–554 AD)
+      [
+        [7.5,44.0], [9.0,45.5], [12.5,46.5], [14.0,46.0], [13.5,45.5],
+        [13.5,43.5], [15.0,42.0], [16.5,41.5], [18.5,40.5], [18.0,40.0],
+        [16.5,39.5], [16.0,38.0], [15.7,38.0], [14.0,38.0], [12.5,37.5],
+        [13.5,38.4], [15.0,38.5], [15.5,40.0], [13.5,41.0], [11.5,42.5],
+        [10.0,43.5], [8.5,44.3]
+      ],
       // Sardinia + Corsica (reconquered)
       [[8.0,41.5],[9.8,41.5],[9.8,38.8],[8.4,38.8]],
-      // Roman Africa (Tunisia + Tripolitania, reconquered from Vandals)
+      // Roman Africa (Tunisia + Tripolitania, reconquered from Vandals 533–534)
       [[7.5,37.0],[10.5,37.5],[11.5,36.5],[11.5,34.0],[14.5,32.5],[15.0,30.5],[12.0,32.0],[10.0,33.5],[8.5,34.5]],
-      // Spania (reconquered SE Spain)
+      // Spania (reconquered SE Spain coastal strip, ~552 AD)
       [[-6.5,37.0],[-3.5,37.5],[-1.5,38.0],[-0.5,37.5],[-2.5,36.5],[-5.5,36.0]]
     ]
   }

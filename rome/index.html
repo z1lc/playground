@@ -191,6 +191,62 @@
       );
     }
 
+    // Compute the SVG viewBox [x, y, w, h] for an era's geographic bbox,
+    // by projecting the bbox's lon/lat corners and padding by 4%.
+    function computeViewBox(bbox) {
+      if (!bbox) return [0, 0, W.projection.width, W.projection.height];
+      const [lonMin, latMin, lonMax, latMax] = bbox;
+      // Sample the bbox edges (not just corners) — LCC is conformal so
+      // edge midpoints can extend further than corners under projection.
+      const samples = [];
+      const N = 8;
+      for (let i = 0; i <= N; i++) {
+        const t = i / N;
+        samples.push([lonMin + t*(lonMax-lonMin), latMin]);
+        samples.push([lonMin + t*(lonMax-lonMin), latMax]);
+        samples.push([lonMin, latMin + t*(latMax-latMin)]);
+        samples.push([lonMax, latMin + t*(latMax-latMin)]);
+      }
+      const projected = samples.map(p => project(p));
+      let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+      for (const [x, y] of projected) {
+        if (x < xMin) xMin = x; if (x > xMax) xMax = x;
+        if (y < yMin) yMin = y; if (y > yMax) yMax = y;
+      }
+      const padX = (xMax - xMin) * 0.04;
+      const padY = (yMax - yMin) * 0.04;
+      return [xMin - padX, yMin - padY, xMax - xMin + 2*padX, yMax - yMin + 2*padY];
+    }
+
+    // Smoothly tween an SVG viewBox from one [x,y,w,h] to another over
+    // ~600ms with ease-in-out. Uses requestAnimationFrame.
+    function useAnimatedViewBox(target) {
+      const [vb, setVb] = useState(target);
+      const startRef = React.useRef(null);
+      const fromRef = React.useRef(target);
+      const toRef = React.useRef(target);
+      useEffect(() => {
+        // Animate from current displayed vb to new target
+        fromRef.current = vb.slice();
+        toRef.current = target.slice();
+        startRef.current = performance.now();
+        let raf;
+        const DUR = 700;
+        const ease = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+        const step = (now) => {
+          const t = Math.min(1, (now - startRef.current) / DUR);
+          const k = ease(t);
+          const next = fromRef.current.map((v, i) => v + (toRef.current[i] - v) * k);
+          setVb(next);
+          if (t < 1) raf = requestAnimationFrame(step);
+        };
+        raf = requestAnimationFrame(step);
+        return () => raf && cancelAnimationFrame(raf);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [target.join(',')]);
+      return vb;
+    }
+
     function RomeMap({ selectedEra }) {
       // Project each era's territory rings once.
       const projectedEras = useMemo(() => ERAS.map(era => ({
@@ -206,25 +262,38 @@
         return { ...c, x, y };
       }), []);
 
+      const era = ERAS.find(e => e.id === selectedEra);
+      const target = useMemo(() => computeViewBox(era?.bbox), [selectedEra]);
+      const viewBox = useAnimatedViewBox(target);
+      // Zoom factor relative to full world: used for counter-scaling city dots
+      // and labels so they stay roughly the same visual size at any zoom.
+      const zoom = W.projection.width / viewBox[2];
+      const cityR = Math.max(0.7, 2.6 / zoom);
+      const cityFont = Math.max(3, 8.5 / zoom);
+      const cityOffset = cityR + 1.5;
+
       return (
         <React.Fragment>
           <div className="map-container">
-            <svg viewBox={`0 0 ${W.projection.width} ${W.projection.height}`} preserveAspectRatio="xMidYMid meet">
+            <svg viewBox={viewBox.join(' ')} preserveAspectRatio="xMidYMid meet">
               <defs>
                 <mask id="land-mask" maskUnits="userSpaceOnUse"
-                      x="0" y="0" width={W.projection.width} height={W.projection.height}>
-                  <rect width="100%" height="100%" fill="black"/>
+                      x={-W.projection.width} y={-W.projection.height}
+                      width={3*W.projection.width} height={3*W.projection.height}>
+                  <rect x={-W.projection.width} y={-W.projection.height}
+                        width={3*W.projection.width} height={3*W.projection.height} fill="black"/>
                   {W.landPaths.map((d, i) =>
                     <path key={i} d={d} fill="white" fillRule="evenodd"/>)}
                 </mask>
               </defs>
 
-              {/* Sea */}
-              <rect width="100%" height="100%" fill="#0d1b2a"/>
+              {/* Sea (covers viewBox at any zoom) */}
+              <rect x={-W.projection.width} y={-W.projection.height}
+                    width={3*W.projection.width} height={3*W.projection.height} fill="#0d1b2a"/>
 
               {/* Land base color */}
               {W.landPaths.map((d, i) =>
-                <path key={i} d={d} fill="#2a2018" fillRule="evenodd"/>)}
+                <path key={i} d={d} fill="#3d2e21" fillRule="evenodd"/>)}
 
               {/* Territory overlays — masked to land */}
               <g mask="url(#land-mask)">
@@ -238,18 +307,22 @@
                 ))}
               </g>
 
-              {/* Coastline outline for crispness */}
+              {/* Coastline outline for crispness — non-scaling-stroke keeps the
+                  line ~0.6px on screen regardless of zoom */}
               {W.landPaths.map((d, i) =>
                 <path key={i} d={d} fill="none"
-                      stroke="rgba(218,165,32,0.28)" strokeWidth="0.6"/>)}
+                      stroke="rgba(218,165,32,0.28)" strokeWidth="0.6"
+                      vectorEffect="non-scaling-stroke"/>)}
 
-              {/* Cities */}
+              {/* Cities — counter-scaled so dots/labels stay constant visual size */}
               {projectedCities.map(c => (
                 <g key={c.name}>
-                  <circle cx={c.x} cy={c.y} r="2.6"
-                          fill="#DAA520" stroke="#1a1210" strokeWidth="0.9"/>
-                  <text x={c.x + 4.5} y={c.y + 1.8}
-                        fill="#F0E6D3" fontSize="8.5" fontFamily="Cinzel, serif">
+                  <circle cx={c.x} cy={c.y} r={cityR}
+                          fill="#DAA520" stroke="#1a1210"
+                          strokeWidth={cityR * 0.35}
+                          vectorEffect="non-scaling-stroke"/>
+                  <text x={c.x + cityOffset} y={c.y + cityFont * 0.3}
+                        fill="#F0E6D3" fontSize={cityFont} fontFamily="Cinzel, serif">
                     {c.name}
                   </text>
                 </g>

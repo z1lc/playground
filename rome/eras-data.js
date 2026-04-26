@@ -20,6 +20,7 @@ window.__ERAS__ = [
   {
     id: 'kingdom', name: 'Roman Kingdom', shortName: 'Kingdom',
     startYear: -753, endYear: -509, color: '#8B6914', row: 0,
+    bbox: [4, 38, 20, 47],     // Italy + immediate surroundings — show the city-state clearly
     stats: {
       population: '~30,000 (city of Rome)',
       territory: '~2,500 km²',
@@ -40,6 +41,7 @@ window.__ERAS__ = [
   {
     id: 'republic', name: 'Roman Republic', shortName: 'Republic',
     startYear: -509, endYear: -27, color: '#C41E3A', row: 0,
+    bbox: [-10, 28, 42, 52],   // Mediterranean basin (Iberia → Anatolia, Sahara → Gaul)
     stats: {
       population: '~55 million',
       territory: '~1.9 million km²',
@@ -54,22 +56,23 @@ window.__ERAS__ = [
     ],
     territory: [
       // Italy + Cisalpine Gaul
-      [[8.0, 46.5], [10.5, 46.7], [13.5, 46.5], [16.5, 45.0], [18.5, 41.0], [16.5, 39.0], [12.5, 38.0], [9.0, 39.5], [7.0, 44.0]],
+      [[7.5,44.0],[7.0,44.5],[7.5,45.5],[8.5,46.3],[10.5,46.8],[12.5,46.8],[13.8,46.5],[13.5,45.8],[15.0,44.5],[16.5,43.5],[17.5,41.5],[18.5,40.2],[17.0,39.5],[16.0,37.9],[15.7,38.0],[14.0,40.5],[10.5,42.0],[8.5,40.5],[10.0,43.5],[8.5,44.3]],
       // Sicily
-      [[12.4, 38.3], [15.6, 38.3], [15.7, 36.6], [12.5, 36.7]],
+      [[12.4,38.0],[13.5,38.4],[15.6,38.4],[15.7,37.0],[14.5,36.6],[12.5,37.5]],
       // Iberia
-      [[-9.5, 43.5], [-7.0, 43.7], [-1.0, 43.5], [3.0, 42.5], [3.0, 39.0], [0.0, 36.0], [-7.0, 36.0], [-9.5, 37.0], [-9.5, 41.0]],
-      // North Africa coast
-      [[-2.0, 36.0], [3.0, 37.5], [8.0, 37.4], [11.0, 37.5], [15.0, 33.0], [20.0, 31.5], [25.0, 31.5], [27.0, 31.5], [25.0, 30.5], [20.0, 30.0], [15.0, 30.5], [10.0, 33.5], [3.0, 33.5], [-2.0, 33.0]],
-      // Balkans + Greece
-      [[14.5, 46.0], [19.5, 45.0], [22.5, 43.5], [26.0, 41.5], [27.0, 38.5], [24.0, 36.5], [21.5, 37.0], [19.0, 39.0], [17.0, 41.0], [14.5, 43.5]],
-      // Anatolia + Levant + Cyprus area
-      [[26.5, 42.0], [33.0, 42.0], [37.0, 41.0], [38.5, 38.0], [37.0, 36.0], [36.0, 33.5], [35.5, 31.0], [33.5, 30.5], [32.5, 32.0], [33.0, 35.0], [30.0, 36.5], [27.0, 37.5], [25.5, 39.5]]
+      [[-9.3,42.5],[-7.0,43.5],[-3.5,43.4],[-1.5,43.3],[0.5,42.7],[3.2,42.5],[3.2,40.0],[0.5,38.5],[-2.0,36.7],[-5.5,36.0],[-7.5,37.0],[-9.0,37.0],[-9.5,38.5],[-9.3,40.5]],
+      // North Africa
+      [[-1.0,35.3],[1.0,36.5],[5.0,37.0],[8.0,37.3],[10.5,37.3],[11.5,33.5],[15.0,32.5],[20.0,31.0],[24.0,31.0],[25.5,31.0],[25.5,30.3],[23.0,30.0],[20.0,30.2],[15.0,31.0],[11.0,32.0],[8.0,33.0],[4.0,33.5],[0.0,33.5],[-1.5,34.0]],
+      // Greece + Balkans
+      [[13.5,46.0],[15.5,45.5],[17.5,45.0],[19.5,43.5],[21.5,42.5],[23.5,41.5],[25.5,41.0],[26.5,40.5],[24.0,38.0],[23.0,36.5],[21.5,36.7],[19.5,38.5],[18.5,40.0],[17.0,41.5],[15.0,43.5],[13.5,44.5]],
+      // Asia Minor + Syria + Cyprus
+      [[26.5,40.5],[28.5,41.3],[31.5,42.0],[34.0,42.0],[36.5,41.0],[38.5,39.5],[39.0,37.5],[38.0,36.5],[37.5,36.8],[37.0,35.5],[36.5,34.5],[36.0,33.0],[35.5,32.5],[34.5,31.5],[33.5,32.0],[32.5,33.0],[33.0,35.0],[31.0,36.5],[28.5,36.5],[27.0,37.0],[26.0,38.5],[26.0,39.5]]
     ]
   },
   {
     id: 'empire', name: 'Roman Empire', shortName: 'Empire',
     startYear: -27, endYear: 395, color: '#DAA520', row: 0,
+    bbox: [-11, 25, 50, 56],   // Full extent: Britain → Mesopotamia, Sahara → Hadrian's Wall
     stats: {
       population: '~55–70 million',
       territory: '~5 million km² (under Trajan)',
@@ -83,15 +86,16 @@ window.__ERAS__ = [
       'The Crisis of the Third Century (235–284 AD) nearly destroyed the empire, with civil wars, plague, and barbarian invasions fragmenting Roman power. Emperor Diocletian (284–305 AD) stabilized the situation through radical reforms, including dividing the empire into eastern and western administrative halves under the Tetrarchy. Constantine the Great reunified the empire, founded Constantinople as a new eastern capital, and legalized Christianity. However, the structural division between east and west deepened, and in 395 AD, upon the death of Emperor Theodosius I, the empire was permanently divided between his two sons.'
     ],
     territory: [
-      // Continental main mass: Iberia + Gaul + Italy + Balkans + Anatolia + Levant + Egypt + N.Africa + Dacia + Mesopotamia
-      [[-9.5, 43.5], [-7.0, 45.0], [-2.0, 48.5], [2.5, 50.5], [4.5, 51.0], [7.5, 51.0], [9.0, 50.5], [11.0, 50.0], [16.0, 48.5], [22.0, 48.0], [27.0, 47.5], [29.5, 45.0], [37.0, 43.0], [42.0, 41.0], [44.0, 38.0], [47.0, 34.0], [48.0, 30.5], [44.0, 30.5], [38.0, 31.0], [34.0, 28.0], [33.0, 23.5], [29.5, 23.5], [25.0, 30.5], [10.0, 33.0], [-2.0, 34.5], [-7.0, 35.0], [-10.0, 36.5], [-10.0, 41.0]],
+      // Continental: Iberia + Gaul + Italy + Balkans + Dacia + Anatolia + Levant + Egypt + N.Africa + Mesopotamia
+      [[-9.5,43.0],[-8.5,44.5],[-1.5,46.0],[0.0,49.5],[2.0,51.0],[4.0,52.0],[6.5,51.5],[8.0,50.0],[10.5,49.0],[13.0,48.5],[17.0,48.5],[21.0,48.0],[26.0,48.0],[28.5,46.0],[30.5,45.5],[35.0,45.0],[40.0,43.5],[42.5,40.5],[44.0,38.5],[46.5,37.0],[44.5,34.5],[47.0,31.0],[44.0,30.0],[37.0,29.5],[34.5,28.0],[33.5,24.0],[31.5,23.5],[27.0,23.5],[25.0,30.5],[15.0,31.0],[10.0,33.0],[0.0,35.0],[-6.0,34.5],[-9.5,35.5],[-9.5,37.0],[-9.0,41.0]],
       // Britannia (south of Hadrian's Wall)
-      [[-5.5, 50.0], [-4.5, 53.0], [-2.0, 55.0], [0.0, 55.0], [1.5, 53.0], [1.5, 51.0], [-0.5, 50.0], [-3.0, 50.0]]
+      [[-5.5,50.0],[-4.5,51.5],[-3.5,54.5],[-1.5,55.0],[0.5,54.0],[1.5,52.5],[1.0,51.0],[-0.5,50.5],[-3.5,50.0]]
     ]
   },
   {
     id: 'western', name: 'Western Roman Empire', shortName: 'Western',
     startYear: 395, endYear: 476, color: '#8B0000', row: 0,
+    bbox: [-11, 30, 24, 56],   // Western half + Britain
     stats: {
       population: '~25 million (declining)',
       territory: '~2.4 million km²',
@@ -105,15 +109,16 @@ window.__ERAS__ = [
       'The end came in 476 AD when the Germanic chieftain Odoacer deposed the last western emperor, the teenaged Romulus Augustulus, and sent the imperial regalia to Constantinople. While contemporaries did not necessarily view this as the "fall of Rome" — the eastern empire continued and theoretically still claimed authority over the west — it marked the definitive end of centralized Roman governance in western Europe and is conventionally regarded as one of history’s great turning points, ushering in the early medieval period.'
     ],
     territory: [
-      // Continental: Iberia + Gaul + Italy + Western Balkans + western N.Africa
-      [[-9.5, 43.5], [-7.0, 44.5], [-1.5, 49.0], [2.5, 50.5], [4.5, 51.0], [7.5, 50.5], [9.0, 48.0], [13.5, 47.5], [16.0, 46.0], [19.0, 43.5], [19.5, 41.5], [18.5, 39.5], [16.5, 39.5], [15.5, 37.5], [12.0, 36.5], [10.0, 33.5], [-2.0, 34.5], [-7.0, 35.0], [-10.0, 36.5], [-10.0, 41.0]],
+      // Continental: Iberia + Gaul + Italy + Pannonia + Dalmatia + Roman Africa
+      [[-9.0,43.0],[-5.0,43.5],[-1.5,43.5],[3.0,42.5],[3.5,46.0],[7.0,47.5],[8.5,49.0],[6.5,51.0],[3.0,51.0],[-1.0,49.0],[-5.0,48.0],[-1.0,45.0],[2.0,46.5],[7.5,44.0],[12.5,45.5],[14.0,45.0],[19.5,46.0],[19.0,42.5],[18.5,40.0],[12.5,36.7],[10.0,33.5],[-2.0,34.5],[-9.5,35.5],[-9.5,38.5],[-9.5,42.0]],
       // Britannia (officially Western until ~410)
-      [[-5.5, 50.0], [-4.5, 53.0], [-2.0, 55.0], [0.0, 55.0], [1.5, 53.0], [1.5, 51.0], [-0.5, 50.0], [-3.0, 50.0]]
+      [[-5.5,50.0],[-4.5,53.0],[-2.0,55.5],[0.0,55.5],[1.5,53.0],[1.5,51.5],[-0.5,50.5],[-3.0,50.0]]
     ]
   },
   {
     id: 'eastern', name: 'Eastern Roman Empire', shortName: 'Byzantine',
     startYear: 395, endYear: 1453, color: '#6A0DAD', row: 1,
+    bbox: [-9, 24, 46, 49],    // Eastern Med + Justinian reconquests (Italy, N. Africa, SE Spain)
     stats: {
       population: '~26 million (under Justinian)',
       territory: '~3.5 million km² (under Justinian)',
@@ -127,16 +132,16 @@ window.__ERAS__ = [
       'The empire’s long decline began with the catastrophic defeat at Manzikert (1071), which opened Anatolia to Turkish settlement. The Fourth Crusade’s sack of Constantinople in 1204 shattered the empire into competing successor states. Though the Byzantines recaptured their capital in 1261, the restored empire was a shadow of its former self. The final siege by Ottoman Sultan Mehmed II began on April 6, 1453, and the city fell on May 29, ending 1,123 years of continuous Roman governance in the east and marking the conventional end of the Middle Ages.'
     ],
     territory: [
-      // Eastern main: Greece + Balkans (Thrace, Moesia) + Anatolia + Levant + Egypt + Cyrenaica
-      [[15.5, 44.5], [19.0, 45.0], [22.0, 44.0], [25.5, 43.5], [29.0, 43.5], [32.0, 42.0], [37.0, 42.0], [42.0, 41.0], [44.0, 38.0], [42.0, 36.0], [38.5, 35.5], [37.0, 33.5], [35.5, 31.0], [33.5, 29.5], [33.0, 23.5], [29.5, 23.5], [25.0, 30.5], [22.0, 32.5], [20.0, 31.5], [18.0, 31.5], [21.0, 35.0], [24.0, 36.5], [21.5, 37.5], [19.0, 39.5], [17.0, 41.5]],
-      // Italy + Sicily (reconquered by Justinian)
-      [[7.0, 44.5], [9.5, 46.0], [13.5, 46.5], [16.0, 46.0], [18.5, 41.0], [16.5, 39.0], [13.0, 38.0], [9.0, 39.5], [7.0, 44.0]],
+      // Eastern main: Greece + Balkans + Anatolia + Levant + Egypt + Cyrenaica
+      [[15.0,44.8],[18.5,45.0],[22.0,44.5],[25.0,44.0],[28.5,43.5],[28.0,41.5],[30.0,41.0],[34.0,42.0],[37.5,41.5],[41.0,40.5],[42.5,38.5],[40.0,37.0],[37.5,36.5],[36.5,33.5],[35.0,30.0],[33.5,28.5],[34.5,24.0],[32.0,22.5],[28.0,22.5],[25.0,22.0],[24.0,30.0],[20.0,32.5],[19.5,30.5],[16.0,30.5],[20.5,33.5],[24.0,36.0],[22.0,37.5],[19.5,39.5],[17.0,41.0]],
+      // Italy + Sicily (reconquered)
+      [[7.5,44.0],[9.0,45.5],[12.5,46.5],[14.0,46.0],[16.5,45.5],[18.5,42.5],[18.0,40.0],[17.0,38.5],[15.0,37.5],[12.0,37.5],[15.5,38.5],[15.5,40.0],[12.0,41.5],[10.0,43.0],[8.0,43.5]],
       // Sardinia + Corsica (reconquered)
-      [[8.0, 43.0], [10.0, 43.5], [10.0, 38.5], [8.0, 39.0]],
-      // Roman Africa (Tunisia + western Libya, reconquered from Vandals)
-      [[7.0, 37.0], [11.0, 37.5], [15.0, 33.0], [16.5, 31.0], [11.0, 32.5], [7.0, 35.0]],
+      [[8.0,41.5],[9.8,41.5],[9.8,38.8],[8.4,38.8]],
+      // Roman Africa (Tunisia + Tripolitania, reconquered from Vandals)
+      [[7.5,37.0],[10.5,37.5],[11.5,36.5],[11.5,34.0],[14.5,32.5],[15.0,30.5],[12.0,32.0],[10.0,33.5],[8.5,34.5]],
       // Spania (reconquered SE Spain)
-      [[-7.0, 37.5], [-3.0, 38.0], [0.5, 38.5], [-1.0, 36.5], [-5.0, 36.0], [-7.0, 36.5]]
+      [[-6.5,37.0],[-3.5,37.5],[-1.5,38.0],[-0.5,37.5],[-2.5,36.5],[-5.5,36.0]]
     ]
   }
 ];

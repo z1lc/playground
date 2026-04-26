@@ -30,20 +30,57 @@
       border-radius: 8px;
     }
 
+    /* Title — stylized "Stages of Rome" mark with engraved-gold ROME */
     .title-pane {
-      flex: 0 0 200px;
-      padding: 10px 14px;
-      display: flex; flex-direction: column; justify-content: center; gap: 4px;
+      flex: 0 0 240px;
+      padding: 12px 18px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(218,165,32,0.06) 0%, transparent 70%),
+        #2a2018;
     }
-    .title-pane .back-link {
-      color: rgba(240,230,211,0.4);
-      text-decoration: none; font-size: 0.7rem; transition: color 0.2s;
+    .title-stages {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem; font-weight: 600;
+      color: #DAA520;
+      letter-spacing: 7px; text-transform: uppercase;
+      padding-left: 7px;  /* compensate for trailing letter-spacing */
+      opacity: 0.85;
     }
-    .title-pane .back-link:hover { color: #DAA520; }
-    .title-pane .page-title {
-      font-family: 'Cinzel', serif; font-weight: 700;
-      font-size: 0.95rem; color: #DAA520;
-      letter-spacing: 3px; text-transform: uppercase;
+    .title-flourish {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; margin: 4px 0 2px;
+    }
+    .title-flourish-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(218,165,32,0.55), transparent);
+    }
+    .title-of {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem; font-style: italic; font-weight: 400;
+      color: rgba(240,230,211,0.55);
+      letter-spacing: 3px;
+    }
+    .title-rome {
+      font-family: 'Cinzel', serif;
+      font-size: 1.85rem; font-weight: 700;
+      letter-spacing: 8px;
+      padding-left: 8px;
+      line-height: 1;
+      background: linear-gradient(180deg, #f5d36a 0%, #DAA520 45%, #a07c0e 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 1px 0 rgba(0,0,0,0.55));
+    }
+    .title-dates {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem; font-weight: 400;
+      color: rgba(240,230,211,0.42);
+      letter-spacing: 3.5px; text-transform: uppercase;
+      margin-top: 8px;
     }
 
     .timeline-pane {
@@ -449,8 +486,14 @@
         <div className="app">
           <div className="top-row">
             <div className="pane title-pane">
-              <a href="../" className="back-link">&larr; Playground</a>
-              <div className="page-title">Stages of Rome</div>
+              <div className="title-stages">Stages</div>
+              <div className="title-flourish">
+                <span className="title-flourish-line" />
+                <span className="title-of">of</span>
+                <span className="title-flourish-line" />
+              </div>
+              <div className="title-rome">Rome</div>
+              <div className="title-dates">753 BC &mdash; 1453 AD</div>
             </div>
             <div className="pane timeline-pane">
               <Timeline selectedEra={selectedEra} onSelect={setSelectedEra} />

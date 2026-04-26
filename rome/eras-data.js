@@ -35,8 +35,8 @@ window.__ERAS__ = [
       'The monarchy ended in 509 BC when the last king, Tarquinius Superbus ("Tarquin the Proud"), was overthrown in a revolt triggered by the rape of Lucretia by the king’s son. The Romans replaced the monarchy with a republic, vowing never again to be ruled by a king — a sentiment so deeply embedded in Roman culture that it persisted for nearly five centuries and made the word "rex" (king) politically toxic in Roman society.'
     ],
     territory: [
-      // Latium / area around Rome
-      [[11.0, 42.7], [12.0, 42.7], [12.8, 42.5], [13.4, 42.0], [13.5, 41.5], [13.0, 41.0], [12.4, 41.0], [11.6, 41.4], [11.0, 41.9]]
+      // Latium hull (mask clips to land)
+      [[11.0, 42.7], [13.5, 42.5], [13.5, 41.0], [11.5, 41.0]]
     ]
   },
   {
@@ -56,34 +56,20 @@ window.__ERAS__ = [
       'Yet the Republic’s very success undermined its institutions. Wealth inequality, the displacement of small farmers by slave-worked latifundia, and the rise of powerful generals with personal armies led to a century of civil wars. The conflicts between Marius and Sulla, Caesar and Pompey, and finally Octavian and Mark Antony tore the Republic apart. When Octavian defeated Antony at Actium in 31 BC and received the title Augustus from the Senate in 27 BC, the Republic effectively ended.'
     ],
     territory: [
-      // Italy + Cisalpine Gaul — clean clockwise around the peninsula coastline
-      [
-        [7.5,44.0], [7.5,45.5], [8.5,46.3], [10.5,46.8], [12.5,46.8],
-        [13.8,46.5], [13.5,45.7], [12.5,45.0], [12.5,44.0], [13.5,43.0],
-        [14.5,42.0], [16.0,41.5], [17.5,40.7], [18.5,40.0], [17.0,39.5],
-        [16.0,38.0], [15.7,38.0], [16.0,39.0], [14.5,40.5], [13.5,41.0],
-        [12.0,41.5], [11.0,42.5], [10.0,43.5], [8.5,44.3]
-      ],
-      // Sicily
-      [[12.4,38.0],[13.5,38.4],[15.6,38.4],[15.7,37.0],[14.5,36.6],[12.5,37.5]],
+      // Italy + Cisalpine Gaul + Sicily + Sardinia + Corsica (one big hull)
+      [[7,47], [14,47], [19,41], [15,36], [12,36], [8,38], [7,41], [7,44]],
       // Iberia
-      [[-9.3,42.5],[-7.0,43.5],[-3.5,43.4],[-1.5,43.3],[0.5,42.7],[3.2,42.5],[3.2,40.0],[0.5,38.5],[-2.0,36.7],[-5.5,36.0],[-7.5,37.0],[-9.0,37.0],[-9.5,38.5],[-9.3,40.5]],
-      // North Africa (Mauretania to Egyptian frontier — but NOT Egypt itself)
-      [[-1.0,35.3],[1.0,36.5],[5.0,37.0],[8.0,37.3],[10.5,37.3],[11.5,33.5],[15.0,32.5],[20.0,31.0],[24.0,31.0],[25.5,31.0],[25.5,30.3],[23.0,30.0],[20.0,30.2],[15.0,31.0],[11.0,32.0],[8.0,33.0],[4.0,33.5],[0.0,33.5],[-1.5,34.0]],
+      [[-9.5,43.5], [3.5,43], [3.5,38.5], [-1,36], [-7,36], [-9.5,37.5]],
+      // North Africa coast (Mauretania to Egyptian frontier — NOT Egypt)
+      [[-1,35.5], [12,37.5], [25,31.5], [25,30.3], [12,32.5], [-1,34]],
       // Greece + Balkans (Illyricum, Macedonia, Achaea)
-      [[13.5,46.0],[15.5,45.5],[17.5,45.0],[19.5,43.5],[21.5,42.5],[23.5,41.5],[25.5,41.0],[26.5,40.5],[24.0,38.0],[23.0,36.5],[21.5,36.7],[19.5,38.5],[18.5,40.0],[17.0,41.5],[15.0,43.5],[13.5,44.5]],
-      // Crete (Roman province from 67 BC)
-      [[23.5,35.7],[26.4,35.5],[26.0,34.8],[23.5,35.0]],
-      // Cyprus (Roman province from 58 BC)
-      [[32.3,35.7],[34.6,35.7],[34.6,34.6],[32.4,34.6]],
-      // Asia Minor + Syria — southern boundary at the Egyptian frontier (~Gaza),
-      // does NOT extend into Sinai or Egypt (Egypt was Ptolemaic in 44 BC)
-      [
-        [26.5,40.5], [29.0,41.5], [32.0,42.0], [34.0,42.0], [37.0,41.0],
-        [39.0,39.0], [39.0,37.5], [38.0,36.0], [37.0,35.0], [36.5,34.0],
-        [36.0,33.0], [35.0,32.0], [33.5,32.5], [30.5,36.5], [28.5,36.5],
-        [27.0,37.0], [26.0,38.5], [26.0,39.5]
-      ]
+      [[13.5,46], [19.5,45.5], [27,41.5], [26.5,40.5], [21.5,36.5], [19,39], [13.5,44.5]],
+      // Anatolia + Cilicia + Syria (south boundary stops at Phoenician coast — NOT Sinai)
+      [[26.5,40.5], [42,41.5], [40,36.5], [37,33], [33,33.5], [29,36.5], [26,39.5]],
+      // Crete (Roman from 67 BC)
+      [[23.5,35.7], [26.4,35.5], [26,34.8], [23.5,35]],
+      // Cyprus (Roman from 58 BC)
+      [[32.3,35.7], [34.6,35.7], [34.6,34.6], [32.3,34.6]]
     ]
   },
   {
@@ -106,10 +92,12 @@ window.__ERAS__ = [
       'The Crisis of the Third Century (235–284 AD) nearly destroyed the empire, with civil wars, plague, and barbarian invasions fragmenting Roman power. Emperor Diocletian (284–305 AD) stabilized the situation through radical reforms, including dividing the empire into eastern and western administrative halves under the Tetrarchy. Constantine the Great reunified the empire, founded Constantinople as a new eastern capital, and legalized Christianity. However, the structural division between east and west deepened, and in 395 AD, upon the death of Emperor Theodosius I, the empire was permanently divided between his two sons.'
     ],
     territory: [
-      // Continental: Iberia + Gaul + Italy + Balkans + Dacia + Anatolia + Levant + Egypt + N.Africa + Mesopotamia
-      [[-9.5,43.0],[-8.5,44.5],[-1.5,46.0],[0.0,49.5],[2.0,51.0],[4.0,52.0],[6.5,51.5],[8.0,50.0],[10.5,49.0],[13.0,48.5],[17.0,48.5],[21.0,48.0],[26.0,48.0],[28.5,46.0],[30.5,45.5],[35.0,45.0],[40.0,43.5],[42.5,40.5],[44.0,38.5],[46.5,37.0],[44.5,34.5],[47.0,31.0],[44.0,30.0],[37.0,29.5],[34.5,28.0],[33.5,24.0],[31.5,23.5],[27.0,23.5],[25.0,30.5],[15.0,31.0],[10.0,33.0],[0.0,35.0],[-6.0,34.5],[-9.5,35.5],[-9.5,37.0],[-9.0,41.0]],
+      // Continental hull (Iberia → Gaul up to Rhine → Limes → Danube → Dacia →
+      // Caucasus → Armenia → Mesopotamia → Persian Gulf → Sinai → Egypt → Aswan
+      // → North Africa → Atlantic Morocco → Atlantic Iberia)
+      [[-10,43.5], [-1,49], [3,51], [6,52], [8,50], [11,48], [17,48], [22,48], [29,47], [40,41], [47,37], [47,30], [33,28], [33,24], [25,22], [10,30], [-2,32], [-10,34], [-10,39]],
       // Britannia (south of Hadrian's Wall)
-      [[-5.5,50.0],[-4.5,51.5],[-3.5,54.5],[-1.5,55.0],[0.5,54.0],[1.5,52.5],[1.0,51.0],[-0.5,50.5],[-3.5,50.0]]
+      [[-5.5,50], [-3,55], [1.5,55], [1.5,51], [-0.5,50]]
     ]
   },
   {
@@ -132,18 +120,12 @@ window.__ERAS__ = [
       'The end came in 476 AD when the Germanic chieftain Odoacer deposed the last western emperor, the teenaged Romulus Augustulus, and sent the imperial regalia to Constantinople. While contemporaries did not necessarily view this as the "fall of Rome" — the eastern empire continued and theoretically still claimed authority over the west — it marked the definitive end of centralized Roman governance in western Europe and is conventionally regarded as one of history’s great turning points, ushering in the early medieval period.'
     ],
     territory: [
-      // Continental: Iberia → Gaul → Rhine → Alps → Italy → Pannonia/Dalmatia
-      // → Adriatic → Sicily → Roman Africa → Atlantic Morocco → Atlantic Iberia.
-      // Single clockwise traversal, no self-intersections.
-      [
-        [-9.5,42.5], [-2.0,43.5], [1.0,46.0], [-5.0,48.5], [0.0,49.5],
-        [4.0,51.0], [6.5,51.5], [8.0,50.0], [8.0,47.5], [11.0,47.0],
-        [14.0,46.0], [19.0,46.0], [19.0,43.5], [18.0,41.0], [17.0,38.5],
-        [15.5,37.0], [12.5,37.5], [10.5,36.5], [11.0,33.0], [16.0,31.5],
-        [3.0,30.5], [-3.0,30.5], [-9.5,32.0], [-9.5,36.5], [-9.5,39.5]
-      ],
+      // Continental hull (Iberia → Gaul up to Rhine → Limes → Danube →
+      // east boundary at lon 19-20°E in Balkans → Adriatic → S Italy →
+      // Tripolitania → North Africa → Atlantic Morocco → Atlantic Iberia)
+      [[-10,43.5], [-1,49], [3,51], [6,52], [8,50], [11,48], [17,48], [20,46], [20,42], [19,40], [18,38], [16,31], [10,30], [-2,32], [-10,34], [-10,39]],
       // Britannia (officially Western until ~410)
-      [[-5.5,50.0],[-4.5,53.0],[-2.0,55.5],[0.0,55.5],[1.5,53.0],[1.5,51.5],[-0.5,50.5],[-3.0,50.0]]
+      [[-5.5,50], [-3,55], [1.5,55], [1.5,51], [-0.5,50]]
     ]
   },
   {
@@ -163,32 +145,19 @@ window.__ERAS__ = [
       'The empire’s long decline began with the catastrophic defeat at Manzikert (1071), which opened Anatolia to Turkish settlement. The Fourth Crusade’s sack of Constantinople in 1204 shattered the empire into competing successor states. Though the Byzantines recaptured their capital in 1261, the restored empire was a shadow of its former self. The final siege by Ottoman Sultan Mehmed II began on April 6, 1453, and the city fell on May 29, ending 1,123 years of continuous Roman governance in the east and marking the conventional end of the Middle Ages.'
     ],
     territory: [
-      // Eastern main: Balkans + Anatolia + Levant + Egypt — closes through
-      // the Mediterranean east of Italy (so Italy is not enclosed).
-      [
-        [15.0,44.8], [18.5,45.0], [22.0,44.5], [25.0,44.0], [28.5,43.5],
-        [29.0,41.5], [30.0,41.0], [34.0,42.0], [37.5,41.5], [41.0,40.5],
-        [42.5,38.5], [40.0,37.0], [37.5,36.5], [36.5,33.5], [35.0,30.0],
-        [33.5,28.5], [34.5,24.0], [32.0,22.5], [28.0,22.5], [25.0,22.0],
-        [25.0,30.5], [24.0,32.0], [24.0,36.0], [22.0,37.5], [19.5,39.5],
-        [17.0,41.0]
-      ],
-      // Cyrenaica (eastern Libya — reached from Egypt by sea, separate ring)
-      [[16.5,31.5],[22.0,31.5],[25.0,31.0],[24.0,32.5],[20.0,33.0],[16.0,32.0]],
+      // Eastern main hull (Balkans east of 19-20°E + Anatolia + Levant + Egypt —
+      // closes south of Crete and through the Adriatic east of Italy)
+      [[15,45], [22,45], [25,44], [29,43], [35,42], [41,41], [43,39], [40,36], [37,33], [35,30], [33,24], [28,22], [25,30], [24,35], [22,38], [19,39.5], [17,41]],
+      // Cyrenaica (eastern Libya, reached by sea from Egypt — separate ring)
+      [[16.5,31.5], [25,31.5], [25,30.5], [16.5,30]],
       // Italy + Sicily (reconquered Gothic Kingdom 535–554 AD)
-      [
-        [7.5,44.0], [9.0,45.5], [12.5,46.5], [14.0,46.0], [13.5,45.5],
-        [13.5,43.5], [15.0,42.0], [16.5,41.5], [18.5,40.5], [18.0,40.0],
-        [16.5,39.5], [16.0,38.0], [15.7,38.0], [14.0,38.0], [12.5,37.5],
-        [13.5,38.4], [15.0,38.5], [15.5,40.0], [13.5,41.0], [11.5,42.5],
-        [10.0,43.5], [8.5,44.3]
-      ],
+      [[7,47], [14,47], [19,41], [15,36], [12,36], [12,38.5], [10,41], [7.5,44.5]],
       // Sardinia + Corsica (reconquered)
-      [[8.0,41.5],[9.8,41.5],[9.8,38.8],[8.4,38.8]],
+      [[8,43.5], [10,43.5], [10,38.8], [8,38.8]],
       // Roman Africa (Tunisia + Tripolitania, reconquered from Vandals 533–534)
-      [[7.5,37.0],[10.5,37.5],[11.5,36.5],[11.5,34.0],[14.5,32.5],[15.0,30.5],[12.0,32.0],[10.0,33.5],[8.5,34.5]],
+      [[7,37.5], [12,37.5], [15,33], [15,30], [7,35]],
       // Spania (reconquered SE Spain coastal strip, ~552 AD)
-      [[-6.5,37.0],[-3.5,37.5],[-1.5,38.0],[-0.5,37.5],[-2.5,36.5],[-5.5,36.0]]
+      [[-7,37.5], [-1,38], [-1,36.5], [-7,36]]
     ]
   }
 ];

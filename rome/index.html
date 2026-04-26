@@ -219,7 +219,7 @@
     }
 
     /* Tooltip — pure CSS via data-tip attribute */
-    .tipped { cursor: help; }
+    .tipped { cursor: help; position: relative; }
     .tipped::after {
       content: attr(data-tip);
       position: absolute;
@@ -558,9 +558,18 @@
       );
     }
 
-    // Renders a list of {label/name, description} items as a red-bulleted
-     // list where each item has a hover tooltip showing its description.
+    // Renders a list of {label/name, description} items. With a single item
+    // renders it as plain stat text (with hover tooltip); with 2+ items
+    // renders a red-bulleted list where each bullet has its own tooltip.
     function TooltipList({ items, getLabel }) {
+      if (items.length === 1) {
+        const it = items[0];
+        return (
+          <div className="stat-value tipped" data-tip={it.description} tabIndex="0">
+            {getLabel(it)}
+          </div>
+        );
+      }
       return (
         <ul className="bulleted-list">
           {items.map((it, i) => (
@@ -614,11 +623,11 @@
             )}
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">⚔️</span> Chief Rival</div>
+            <div className="stat-label"><span className="stat-emoji">⚔️</span> {era.stats.rival.length > 1 ? 'Chief Rivals' : 'Chief Rival'}</div>
             <TooltipList items={era.stats.rival} getLabel={labelKey}/>
           </div>
           <div className="stat-card">
-            <div className="stat-label"><span className="stat-emoji">🗿</span> Signature Work</div>
+            <div className="stat-label"><span className="stat-emoji">🗿</span> {era.stats.monument.length > 1 ? 'Signature Works' : 'Signature Work'}</div>
             <TooltipList items={era.stats.monument} getLabel={labelKey}/>
           </div>
           <div className="stat-card">

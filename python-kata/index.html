@@ -1,289 +1,685 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python Kata Practice</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #FAF9F6;
-      --surface: #FFFFFF;
-      --border: #E8E0D8;
-      --text: #1a1a1a;
-      --text-secondary: #3a3a3a;
-      --text-muted: #6B5B4F;
-      --text-faint: #9B8E83;
-      --code-bg: #F0EDE8;
-      --accent: #D97757;
-      --accent-hover: #C4623F;
-      --pass: #2D8659;
-      --pass-bg: #E8F5EE;
-      --fail: #C4432B;
-      --test-border: #F0EDE8;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1a1a1a;
-        --surface: #242424;
-        --border: #3a3a3a;
-        --text: #e8e8e8;
-        --text-secondary: #cccccc;
-        --text-muted: #999999;
-        --text-faint: #777777;
-        --code-bg: #2e2e2e;
-        --accent: #E08862;
-        --accent-hover: #D97757;
-        --pass: #4eca8b;
-        --pass-bg: #1e3a2a;
-        --fail: #ef6b5b;
-        --test-border: #333333;
-      }
-    }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Python Kata Practice</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg: #faf9f6;
+                --surface: #ffffff;
+                --border: #e8e0d8;
+                --text: #1a1a1a;
+                --text-secondary: #3a3a3a;
+                --text-muted: #6b5b4f;
+                --text-faint: #9b8e83;
+                --code-bg: #f0ede8;
+                --accent: #d97757;
+                --accent-hover: #c4623f;
+                --pass: #2d8659;
+                --pass-bg: #e8f5ee;
+                --fail: #c4432b;
+                --test-border: #f0ede8;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg: #1a1a1a;
+                    --surface: #242424;
+                    --border: #3a3a3a;
+                    --text: #e8e8e8;
+                    --text-secondary: #cccccc;
+                    --text-muted: #999999;
+                    --text-faint: #777777;
+                    --code-bg: #2e2e2e;
+                    --accent: #e08862;
+                    --accent-hover: #d97757;
+                    --pass: #4eca8b;
+                    --pass-bg: #1e3a2a;
+                    --fail: #ef6b5b;
+                    --test-border: #333333;
+                }
+            }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body, #root { height: 100%; overflow: hidden; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-    .app { display: flex; flex-direction: column; height: 100%; }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #root {
+                height: 100%;
+                overflow: hidden;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            }
+            .app {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
 
-    /* Header */
-    .header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      flex-shrink: 0;
-    }
-    .header-title { font-size: 1.1rem; font-weight: 600; }
-    .kata-select {
-      padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px;
-      background: var(--surface); color: var(--text); font-size: 0.9rem;
-      cursor: pointer; outline: none;
-    }
-    .kata-select:focus { border-color: var(--accent); }
+            /* Header */
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 24px;
+                border-bottom: 1px solid var(--border);
+                background: var(--surface);
+                flex-shrink: 0;
+            }
+            .header-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+            .kata-select {
+                padding: 6px 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                background: var(--surface);
+                color: var(--text);
+                font-size: 0.9rem;
+                cursor: pointer;
+                outline: none;
+            }
+            .kata-select:focus {
+                border-color: var(--accent);
+            }
 
-    /* Split pane */
-    .split-pane { display: flex; flex: 1; min-height: 0; }
+            /* Split pane */
+            .split-pane {
+                display: flex;
+                flex: 1;
+                min-height: 0;
+            }
 
-    /* Problem panel */
-    .problem-panel {
-      width: 380px; min-width: 320px;
-      border-right: 1px solid var(--border);
-      overflow-y: auto; padding: 24px; background: var(--surface);
-    }
-    .problem-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-    .difficulty-badge {
-      display: inline-block; padding: 2px 10px; border-radius: 12px;
-      font-size: 0.75rem; font-weight: 600; margin-bottom: 16px;
-      background: var(--pass-bg); color: var(--pass);
-    }
-    .problem-description { font-size: 0.95rem; line-height: 1.7; color: var(--text-secondary); }
-    .problem-description p { margin-bottom: 12px; }
-    .problem-description h4 {
-      font-size: 0.9rem; font-weight: 600; color: var(--text-muted);
-      margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .problem-description pre {
-      background: var(--code-bg); border-radius: 8px;
-      padding: 12px 16px; overflow-x: auto; margin-bottom: 12px;
-    }
-    .problem-description code {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
-    }
-    /* Editor panel */
-    .editor-panel {
-      flex: 1; display: flex; flex-direction: column;
-      min-width: 0; background: var(--bg);
-    }
-    .editor-wrapper { flex: 1; min-height: 200px; overflow: hidden; }
-    .editor-wrapper .cm-editor { height: 100%; }
-    .editor-wrapper .cm-scroller {
-      font-family: 'JetBrains Mono', monospace !important;
-      font-size: 16px !important;
-    }
+            /* Problem panel */
+            .problem-panel {
+                width: 380px;
+                min-width: 320px;
+                border-right: 1px solid var(--border);
+                overflow-y: auto;
+                padding: 24px;
+                background: var(--surface);
+            }
+            .problem-title {
+                font-size: 1.4rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+            .difficulty-badge {
+                display: inline-block;
+                padding: 2px 10px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-bottom: 16px;
+                background: var(--pass-bg);
+                color: var(--pass);
+            }
+            .problem-description {
+                font-size: 0.95rem;
+                line-height: 1.7;
+                color: var(--text-secondary);
+            }
+            .problem-description p {
+                margin-bottom: 12px;
+            }
+            .problem-description h4 {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: var(--text-muted);
+                margin: 16px 0 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .problem-description pre {
+                background: var(--code-bg);
+                border-radius: 8px;
+                padding: 12px 16px;
+                overflow-x: auto;
+                margin-bottom: 12px;
+            }
+            .problem-description code {
+                font-family: "JetBrains Mono", monospace;
+                font-size: 0.85rem;
+            }
+            /* Editor panel */
+            .editor-panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                background: var(--bg);
+            }
+            .editor-wrapper {
+                flex: 1;
+                min-height: 200px;
+                overflow: hidden;
+            }
+            .editor-wrapper .cm-editor {
+                height: 100%;
+            }
+            .editor-wrapper .cm-scroller {
+                font-family: "JetBrains Mono", monospace !important;
+                font-size: 16px !important;
+            }
 
-    /* Button bar */
-    .button-bar {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 16px; border-top: 1px solid var(--border);
-      background: var(--surface); flex-shrink: 0;
-    }
-    .btn {
-      padding: 8px 20px; border: none; border-radius: 8px;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-primary { background: var(--accent); color: #FFFFFF; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: var(--code-bg); }
-    .status-text { font-size: 0.8rem; color: var(--text-faint); margin-left: auto; }
-    .status-text.loading { color: var(--accent); }
+            /* Button bar */
+            .button-bar {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 16px;
+                border-top: 1px solid var(--border);
+                background: var(--surface);
+                flex-shrink: 0;
+            }
+            .btn {
+                padding: 8px 20px;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .btn-primary {
+                background: var(--accent);
+                color: #ffffff;
+            }
+            .btn-primary:hover:not(:disabled) {
+                background: var(--accent-hover);
+            }
+            .btn-primary:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .btn-secondary {
+                background: transparent;
+                color: var(--text-muted);
+                border: 1px solid var(--border);
+            }
+            .btn-secondary:hover {
+                background: var(--code-bg);
+            }
+            .status-text {
+                font-size: 0.8rem;
+                color: var(--text-faint);
+                margin-left: auto;
+            }
+            .status-text.loading {
+                color: var(--accent);
+            }
 
-    /* Results panel */
-    .results-panel {
-      min-height: 100px; max-height: 280px; overflow-y: auto;
-      padding: 16px; border-top: 1px solid var(--border);
-      background: var(--surface); flex-shrink: 0;
-    }
-    .results-summary { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: var(--text-muted); }
-    .results-summary.all-pass { color: var(--pass); }
-    .test-case {
-      display: flex; align-items: flex-start; gap: 8px;
-      padding: 8px 0; border-bottom: 1px solid var(--test-border);
-    }
-    .test-case:last-child { border-bottom: none; }
-    .test-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
-    .test-icon.pass { color: var(--pass); }
-    .test-icon.fail { color: var(--fail); }
-    .test-label { font-size: 0.85rem; font-weight: 500; }
-    .test-detail {
-      font-size: 0.8rem; color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace; margin-top: 4px;
-    }
-    .test-error {
-      font-size: 0.8rem; color: var(--fail);
-      font-family: 'JetBrains Mono', monospace; margin-top: 4px;
-      white-space: pre-wrap;
-    }
-    .empty-results { color: var(--text-faint); font-size: 0.85rem; font-style: italic; }
+            /* Results panel */
+            .results-panel {
+                min-height: 100px;
+                max-height: 280px;
+                overflow-y: auto;
+                padding: 16px;
+                border-top: 1px solid var(--border);
+                background: var(--surface);
+                flex-shrink: 0;
+            }
+            .results-summary {
+                font-size: 0.85rem;
+                font-weight: 600;
+                margin-bottom: 12px;
+                color: var(--text-muted);
+            }
+            .results-summary.all-pass {
+                color: var(--pass);
+            }
+            .test-case {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 8px 0;
+                border-bottom: 1px solid var(--test-border);
+            }
+            .test-case:last-child {
+                border-bottom: none;
+            }
+            .test-icon {
+                font-size: 1rem;
+                flex-shrink: 0;
+                width: 20px;
+                text-align: center;
+            }
+            .test-icon.pass {
+                color: var(--pass);
+            }
+            .test-icon.fail {
+                color: var(--fail);
+            }
+            .test-label {
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+            .test-detail {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                font-family: "JetBrains Mono", monospace;
+                margin-top: 4px;
+            }
+            .test-error {
+                font-size: 0.8rem;
+                color: var(--fail);
+                font-family: "JetBrains Mono", monospace;
+                margin-top: 4px;
+                white-space: pre-wrap;
+            }
+            .empty-results {
+                color: var(--text-faint);
+                font-size: 0.85rem;
+                font-style: italic;
+            }
 
-    @media (max-width: 768px) {
-      .split-pane { flex-direction: column; }
-      .problem-panel {
-        width: 100%; min-width: unset; max-height: 40vh;
-        border-right: none; border-bottom: 1px solid var(--border);
-      }
-    }
-  </style>
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@18.2.0",
-      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-      "htm": "https://esm.sh/htm@3.1.1",
+            @media (max-width: 768px) {
+                .split-pane {
+                    flex-direction: column;
+                }
+                .problem-panel {
+                    width: 100%;
+                    min-width: unset;
+                    max-height: 40vh;
+                    border-right: none;
+                    border-bottom: 1px solid var(--border);
+                }
+            }
+        </style>
+        <script type="importmap">
+            {
+                "imports": {
+                    "react": "https://esm.sh/react@18.2.0",
+                    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+                    "htm": "https://esm.sh/htm@3.1.1",
 
-      "@lezer/common": "https://esm.sh/@lezer/common@1.2.1",
-      "@lezer/highlight": "https://esm.sh/@lezer/highlight@1.2.0?external=@lezer/common",
-      "@lezer/lr": "https://esm.sh/@lezer/lr@1.4.1?external=@lezer/common",
+                    "@lezer/common": "https://esm.sh/@lezer/common@1.2.1",
+                    "@lezer/highlight": "https://esm.sh/@lezer/highlight@1.2.0?external=@lezer/common",
+                    "@lezer/lr": "https://esm.sh/@lezer/lr@1.4.1?external=@lezer/common",
 
-      "@codemirror/state": "https://esm.sh/@codemirror/state@6.4.1",
-      "@codemirror/view": "https://esm.sh/@codemirror/view@6.33.0?external=@codemirror/state",
-      "@codemirror/language": "https://esm.sh/@codemirror/language@6.10.3?external=@codemirror/state,@codemirror/view,@lezer/common,@lezer/highlight,@lezer/lr",
-      "@codemirror/commands": "https://esm.sh/@codemirror/commands@6.6.2?external=@codemirror/state,@codemirror/view,@codemirror/language",
-      "@codemirror/autocomplete": "https://esm.sh/@codemirror/autocomplete@6.18.1?external=@codemirror/state,@codemirror/view,@codemirror/language,@lezer/common",
-      "@codemirror/search": "https://esm.sh/@codemirror/search@6.5.6?external=@codemirror/state,@codemirror/view",
-      "@codemirror/lint": "https://esm.sh/@codemirror/lint@6.8.2?external=@codemirror/state,@codemirror/view",
-      "codemirror": "https://esm.sh/codemirror@6.0.1?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/commands,@codemirror/autocomplete,@codemirror/search,@codemirror/lint",
-      "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6.1.6?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/autocomplete,@lezer/common,@lezer/highlight,@lezer/lr",
-      "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6.1.2?external=@codemirror/state,@codemirror/view,@codemirror/language,@lezer/highlight"
-    }
-  }
-  </script>
-</head>
-<body>
-  <div id="root"></div>
-  <script type="module">
-import React from "react";
-import { createRoot } from "react-dom/client";
-import htm from "htm";
-import { basicSetup } from "codemirror";
-import { EditorView, keymap } from "@codemirror/view";
-import { EditorState } from "@codemirror/state";
-import { indentWithTab } from "@codemirror/commands";
-import { python, pythonLanguage } from "@codemirror/lang-python";
+                    "@codemirror/state": "https://esm.sh/@codemirror/state@6.4.1",
+                    "@codemirror/view": "https://esm.sh/@codemirror/view@6.33.0?external=@codemirror/state",
+                    "@codemirror/language": "https://esm.sh/@codemirror/language@6.10.3?external=@codemirror/state,@codemirror/view,@lezer/common,@lezer/highlight,@lezer/lr",
+                    "@codemirror/commands": "https://esm.sh/@codemirror/commands@6.6.2?external=@codemirror/state,@codemirror/view,@codemirror/language",
+                    "@codemirror/autocomplete": "https://esm.sh/@codemirror/autocomplete@6.18.1?external=@codemirror/state,@codemirror/view,@codemirror/language,@lezer/common",
+                    "@codemirror/search": "https://esm.sh/@codemirror/search@6.5.6?external=@codemirror/state,@codemirror/view",
+                    "@codemirror/lint": "https://esm.sh/@codemirror/lint@6.8.2?external=@codemirror/state,@codemirror/view",
+                    "codemirror": "https://esm.sh/codemirror@6.0.1?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/commands,@codemirror/autocomplete,@codemirror/search,@codemirror/lint",
+                    "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6.1.6?external=@codemirror/state,@codemirror/view,@codemirror/language,@codemirror/autocomplete,@lezer/common,@lezer/highlight,@lezer/lr",
+                    "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6.1.2?external=@codemirror/state,@codemirror/view,@codemirror/language,@lezer/highlight"
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module">
+            import React from "react";
+            import { createRoot } from "react-dom/client";
+            import htm from "htm";
+            import { basicSetup } from "codemirror";
+            import { EditorView, keymap } from "@codemirror/view";
+            import { EditorState } from "@codemirror/state";
+            import { indentWithTab } from "@codemirror/commands";
+            import { python, pythonLanguage } from "@codemirror/lang-python";
 
-import { indentUnit } from "@codemirror/language";
-import { autocompletion } from "@codemirror/autocomplete";
-import { oneDark } from "@codemirror/theme-one-dark";
+            import { indentUnit } from "@codemirror/language";
+            import { autocompletion } from "@codemirror/autocomplete";
+            import { oneDark } from "@codemirror/theme-one-dark";
 
-const { useState, useEffect, useRef, useCallback } = React;
-const html = htm.bind(React.createElement);
-const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const { useState, useEffect, useRef, useCallback } = React;
+            const html = htm.bind(React.createElement);
+            const isDark = window.matchMedia(
+                "(prefers-color-scheme: dark)",
+            ).matches;
 
-// ─── Kata Definitions ───────────────────────────────────────────
+            // ─── Kata Definitions ───────────────────────────────────────────
 
-const KATAS = [
-  {
-    id: "extract-column",
-    title: "Extract Column from Matrix",
-    difficulty: "Easy",
-    description: `<p>Given a 2D matrix (list of lists) and a column index, return a list containing all elements from that column.</p>
+            const KATAS = [
+                {
+                    id: "extract-column",
+                    title: "Extract Column from Matrix",
+                    difficulty: "Easy",
+                    description: `<p>Given a 2D matrix (list of lists) and a column index, return a list containing all elements from that column.</p>
 <h4>Example</h4>
 <pre><code>matrix = [[1, 2, 3],
           [4, 5, 6],
           [7, 8, 9]]
 column = 1
 → [2, 5, 8]</code></pre>`,
-    functionName: "extract_column",
-    starterCode: "def extract_column(matrix: list[list], column: int) -> list:\n    # Your code here\n    pass",
-    testCases: [
-      { input: { matrix: [[1,2,3],[4,5,6],[7,8,9]], column: 0 }, expected: [1, 4, 7], label: "3\u00d73 matrix, first column" },
-      { input: { matrix: [[1,2,3],[4,5,6],[7,8,9]], column: 1 }, expected: [2, 5, 8], label: "3\u00d73 matrix, middle column" },
-      { input: { matrix: [[1,2,3],[4,5,6],[7,8,9]], column: 2 }, expected: [3, 6, 9], label: "3\u00d73 matrix, last column" },
-      { input: { matrix: [[10,20],[30,40],[50,60]], column: 0 }, expected: [10, 30, 50], label: "3\u00d72 matrix, column 0" },
-      { input: { matrix: [[10,20],[30,40],[50,60]], column: 1 }, expected: [20, 40, 60], label: "3\u00d72 matrix, column 1" },
-      { input: { matrix: [[1,2,3,4,5]], column: 3 }, expected: [4], label: "Single row, middle element" },
-      { input: { matrix: [["a","b","c"]], column: 2 }, expected: ["c"], label: "Single row, strings" },
-      { input: { matrix: [[1],[2],[3]], column: 0 }, expected: [1, 2, 3], label: "Single column matrix" },
-      { input: { matrix: [[true,false],[false,true]], column: 1 }, expected: [false, true], label: "Boolean values" },
-      { input: { matrix: [[0,0,0],[0,0,0]], column: 2 }, expected: [0, 0], label: "All zeros" },
-      { input: { matrix: [[-1,-2],[-3,-4],[-5,-6]], column: 0 }, expected: [-1, -3, -5], label: "Negative numbers" },
-      { input: { matrix: [[1.5,2.5],[3.5,4.5]], column: 1 }, expected: [2.5, 4.5], label: "Floating point values" },
-      { input: { matrix: [[null,1],[2,null]], column: 0 }, expected: [null, 1], label: "None values in column 0" },
-      { input: { matrix: [[null,1],[2,null]], column: 1 }, expected: [1, null], label: "None values in column 1" },
-      { input: { matrix: [], column: 0 }, expected: [], label: "Empty matrix" },
-      { input: { matrix: [[1,2,3,4,5,6,7,8,9,10]], column: 9 }, expected: [10], label: "Wide matrix, last column" },
-      { input: { matrix: Array.from({length: 100}, (_, i) => [i, i*2]), column: 1 }, expected: Array.from({length: 100}, (_, i) => i*2), label: "100 rows" },
-    ]
-  },
-  {
-    id: "binary-search",
-    title: "Binary Search",
-    difficulty: "Easy",
-    description: `<p>Implement binary search on a sorted list of integers. Return the index of the target if found, or <code>-1</code> if not present.</p>
+                    functionName: "extract_column",
+                    starterCode:
+                        "def extract_column(matrix: list[list], column: int) -> list:\n    # Your code here\n    pass",
+                    testCases: [
+                        {
+                            input: {
+                                matrix: [
+                                    [1, 2, 3],
+                                    [4, 5, 6],
+                                    [7, 8, 9],
+                                ],
+                                column: 0,
+                            },
+                            expected: [1, 4, 7],
+                            label: "3\u00d73 matrix, first column",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [1, 2, 3],
+                                    [4, 5, 6],
+                                    [7, 8, 9],
+                                ],
+                                column: 1,
+                            },
+                            expected: [2, 5, 8],
+                            label: "3\u00d73 matrix, middle column",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [1, 2, 3],
+                                    [4, 5, 6],
+                                    [7, 8, 9],
+                                ],
+                                column: 2,
+                            },
+                            expected: [3, 6, 9],
+                            label: "3\u00d73 matrix, last column",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [10, 20],
+                                    [30, 40],
+                                    [50, 60],
+                                ],
+                                column: 0,
+                            },
+                            expected: [10, 30, 50],
+                            label: "3\u00d72 matrix, column 0",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [10, 20],
+                                    [30, 40],
+                                    [50, 60],
+                                ],
+                                column: 1,
+                            },
+                            expected: [20, 40, 60],
+                            label: "3\u00d72 matrix, column 1",
+                        },
+                        {
+                            input: { matrix: [[1, 2, 3, 4, 5]], column: 3 },
+                            expected: [4],
+                            label: "Single row, middle element",
+                        },
+                        {
+                            input: { matrix: [["a", "b", "c"]], column: 2 },
+                            expected: ["c"],
+                            label: "Single row, strings",
+                        },
+                        {
+                            input: { matrix: [[1], [2], [3]], column: 0 },
+                            expected: [1, 2, 3],
+                            label: "Single column matrix",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [true, false],
+                                    [false, true],
+                                ],
+                                column: 1,
+                            },
+                            expected: [false, true],
+                            label: "Boolean values",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [0, 0, 0],
+                                    [0, 0, 0],
+                                ],
+                                column: 2,
+                            },
+                            expected: [0, 0],
+                            label: "All zeros",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [-1, -2],
+                                    [-3, -4],
+                                    [-5, -6],
+                                ],
+                                column: 0,
+                            },
+                            expected: [-1, -3, -5],
+                            label: "Negative numbers",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [1.5, 2.5],
+                                    [3.5, 4.5],
+                                ],
+                                column: 1,
+                            },
+                            expected: [2.5, 4.5],
+                            label: "Floating point values",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [null, 1],
+                                    [2, null],
+                                ],
+                                column: 0,
+                            },
+                            expected: [null, 2],
+                            label: "None values in column 0",
+                        },
+                        {
+                            input: {
+                                matrix: [
+                                    [null, 1],
+                                    [2, null],
+                                ],
+                                column: 1,
+                            },
+                            expected: [1, null],
+                            label: "None values in column 1",
+                        },
+                        {
+                            input: { matrix: [], column: 0 },
+                            expected: [],
+                            label: "Empty matrix",
+                        },
+                        {
+                            input: {
+                                matrix: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]],
+                                column: 9,
+                            },
+                            expected: [10],
+                            label: "Wide matrix, last column",
+                        },
+                        {
+                            input: {
+                                matrix: Array.from({ length: 100 }, (_, i) => [
+                                    i,
+                                    i * 2,
+                                ]),
+                                column: 1,
+                            },
+                            expected: Array.from(
+                                { length: 100 },
+                                (_, i) => i * 2,
+                            ),
+                            label: "100 rows",
+                        },
+                    ],
+                },
+                {
+                    id: "binary-search",
+                    title: "Binary Search",
+                    difficulty: "Easy",
+                    description: `<p>Implement binary search on a sorted list of integers. Return the index of the target if found, or <code>-1</code> if not present.</p>
 <p>You must implement the algorithm yourself \u2014 do not use built-in search functions.</p>
 <h4>Example</h4>
 <pre><code>nums = [1, 3, 5, 7, 9, 11]
 target = 7
 → 3</code></pre>`,
-    functionName: "binary_search",
-    starterCode: "def binary_search(nums: list[int], target: int) -> int:\n    # Your code here\n    pass",
-    testCases: [
-      { input: { nums: [1,3,5,7,9,11], target: 7 }, expected: 3, label: "Target in middle" },
-      { input: { nums: [1,3,5,7,9,11], target: 1 }, expected: 0, label: "Target at start" },
-      { input: { nums: [1,3,5,7,9,11], target: 11 }, expected: 5, label: "Target at end" },
-      { input: { nums: [1,3,5,7,9,11], target: 4 }, expected: -1, label: "Target not found (between elements)" },
-      { input: { nums: [1,3,5,7,9,11], target: 0 }, expected: -1, label: "Target smaller than all" },
-      { input: { nums: [1,3,5,7,9,11], target: 12 }, expected: -1, label: "Target larger than all" },
-      { input: { nums: [], target: 5 }, expected: -1, label: "Empty list" },
-      { input: { nums: [42], target: 42 }, expected: 0, label: "Single element, found" },
-      { input: { nums: [42], target: 41 }, expected: -1, label: "Single element, not found" },
-      { input: { nums: [1,2], target: 1 }, expected: 0, label: "Two elements, find first" },
-      { input: { nums: [1,2], target: 2 }, expected: 1, label: "Two elements, find second" },
-      { input: { nums: [1,2], target: 3 }, expected: -1, label: "Two elements, not found" },
-      { input: { nums: [2,4,6,8,10,12,14], target: 2 }, expected: 0, label: "Odd-length list, find first" },
-      { input: { nums: [2,4,6,8,10,12,14], target: 14 }, expected: 6, label: "Odd-length list, find last" },
-      { input: { nums: [2,4,6,8,10,12,14], target: 8 }, expected: 3, label: "Odd-length list, find exact middle" },
-      { input: { nums: [-10,-5,0,5,10], target: -5 }, expected: 1, label: "Negative numbers" },
-      { input: { nums: [-10,-5,0,5,10], target: 0 }, expected: 2, label: "Search for zero" },
-      { input: { nums: [-100,0,100], target: 100 }, expected: 2, label: "Sparse values, find last" },
-      { input: { nums: Array.from({length: 1000}, (_, i) => i * 2), target: 998 }, expected: 499, label: "Large list (1000 elements)" },
-      { input: { nums: Array.from({length: 1000}, (_, i) => i * 2), target: 999 }, expected: -1, label: "Large list, target not found" },
-    ]
-  },
-  {
-    id: "sliding-window-maximum",
-    title: "Sliding Window Maximum",
-    difficulty: "Medium",
-    description: `<p>Given a list of integers and a window size <code>k</code>, return a list of the maximum value in each contiguous window of size <code>k</code> as it slides from left to right.</p>
+                    functionName: "binary_search",
+                    starterCode:
+                        "def binary_search(nums: list[int], target: int) -> int:\n    # Your code here\n    pass",
+                    testCases: [
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 7 },
+                            expected: 3,
+                            label: "Target in middle",
+                        },
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 1 },
+                            expected: 0,
+                            label: "Target at start",
+                        },
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 11 },
+                            expected: 5,
+                            label: "Target at end",
+                        },
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 4 },
+                            expected: -1,
+                            label: "Target not found (between elements)",
+                        },
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 0 },
+                            expected: -1,
+                            label: "Target smaller than all",
+                        },
+                        {
+                            input: { nums: [1, 3, 5, 7, 9, 11], target: 12 },
+                            expected: -1,
+                            label: "Target larger than all",
+                        },
+                        {
+                            input: { nums: [], target: 5 },
+                            expected: -1,
+                            label: "Empty list",
+                        },
+                        {
+                            input: { nums: [42], target: 42 },
+                            expected: 0,
+                            label: "Single element, found",
+                        },
+                        {
+                            input: { nums: [42], target: 41 },
+                            expected: -1,
+                            label: "Single element, not found",
+                        },
+                        {
+                            input: { nums: [1, 2], target: 1 },
+                            expected: 0,
+                            label: "Two elements, find first",
+                        },
+                        {
+                            input: { nums: [1, 2], target: 2 },
+                            expected: 1,
+                            label: "Two elements, find second",
+                        },
+                        {
+                            input: { nums: [1, 2], target: 3 },
+                            expected: -1,
+                            label: "Two elements, not found",
+                        },
+                        {
+                            input: {
+                                nums: [2, 4, 6, 8, 10, 12, 14],
+                                target: 2,
+                            },
+                            expected: 0,
+                            label: "Odd-length list, find first",
+                        },
+                        {
+                            input: {
+                                nums: [2, 4, 6, 8, 10, 12, 14],
+                                target: 14,
+                            },
+                            expected: 6,
+                            label: "Odd-length list, find last",
+                        },
+                        {
+                            input: {
+                                nums: [2, 4, 6, 8, 10, 12, 14],
+                                target: 8,
+                            },
+                            expected: 3,
+                            label: "Odd-length list, find exact middle",
+                        },
+                        {
+                            input: { nums: [-10, -5, 0, 5, 10], target: -5 },
+                            expected: 1,
+                            label: "Negative numbers",
+                        },
+                        {
+                            input: { nums: [-10, -5, 0, 5, 10], target: 0 },
+                            expected: 2,
+                            label: "Search for zero",
+                        },
+                        {
+                            input: { nums: [-100, 0, 100], target: 100 },
+                            expected: 2,
+                            label: "Sparse values, find last",
+                        },
+                        {
+                            input: {
+                                nums: Array.from(
+                                    { length: 1000 },
+                                    (_, i) => i * 2,
+                                ),
+                                target: 998,
+                            },
+                            expected: 499,
+                            label: "Large list (1000 elements)",
+                        },
+                        {
+                            input: {
+                                nums: Array.from(
+                                    { length: 1000 },
+                                    (_, i) => i * 2,
+                                ),
+                                target: 999,
+                            },
+                            expected: -1,
+                            label: "Large list, target not found",
+                        },
+                    ],
+                },
+                {
+                    id: "sliding-window-maximum",
+                    title: "Sliding Window Maximum",
+                    difficulty: "Medium",
+                    description: `<p>Given a list of integers and a window size <code>k</code>, return a list of the maximum value in each contiguous window of size <code>k</code> as it slides from left to right.</p>
 <p>For a list of length <code>n</code>, there are <code>n - k + 1</code> windows.</p>
 <h4>Example</h4>
 <pre><code>nums = [1, 3, -1, -3, 5, 3, 6, 7]
@@ -298,283 +694,528 @@ Window positions          Max
  1  3  -1  -3  5 [3  6  7]   7
 
 → [3, 3, 5, 5, 6, 7]</code></pre>`,
-    functionName: "sliding_window_max",
-    starterCode: "def sliding_window_max(nums: list[int], k: int) -> list[int]:\n    # Your code here\n    pass",
-    testCases: [
-      { input: { nums: [1,3,-1,-3,5,3,6,7], k: 3 }, expected: [3,3,5,5,6,7], label: "Example case, k=3" },
-      { input: { nums: [1,3,-1,-3,5,3,6,7], k: 1 }, expected: [1,3,-1,-3,5,3,6,7], label: "k=1 (each element is its own window)" },
-      { input: { nums: [1,3,-1,-3,5,3,6,7], k: 8 }, expected: [7], label: "k=length (single window)" },
-      { input: { nums: [5], k: 1 }, expected: [5], label: "Single element" },
-      { input: { nums: [1,2], k: 2 }, expected: [2], label: "Two elements, k=2" },
-      { input: { nums: [1,2,3,4,5], k: 2 }, expected: [2,3,4,5], label: "Ascending, k=2" },
-      { input: { nums: [5,4,3,2,1], k: 2 }, expected: [5,4,3,2], label: "Descending, k=2" },
-      { input: { nums: [5,4,3,2,1], k: 3 }, expected: [5,4,3], label: "Descending, k=3" },
-      { input: { nums: [1,1,1,1,1], k: 3 }, expected: [1,1,1], label: "All same values" },
-      { input: { nums: [1,2,3,4,5], k: 5 }, expected: [5], label: "Ascending, k=length" },
-      { input: { nums: [-1,-3,-5,-2,-4], k: 2 }, expected: [-1,-3,-2,-2], label: "All negative, k=2" },
-      { input: { nums: [-1,-3,-5,-2,-4], k: 3 }, expected: [-1,-2,-2], label: "All negative, k=3" },
-      { input: { nums: [10,9,8,7,6,5,4,3,2,1], k: 4 }, expected: [10,9,8,7,6,5,4], label: "Descending 10 elements, k=4" },
-      { input: { nums: [1,3,1,3,1,3], k: 2 }, expected: [3,3,3,3,3], label: "Alternating values, k=2" },
-      { input: { nums: [1,3,1,3,1,3], k: 3 }, expected: [3,3,3,3], label: "Alternating values, k=3" },
-      { input: { nums: [0,0,0,1,0,0,0], k: 3 }, expected: [0,1,1,1,0], label: "Spike in middle" },
-      { input: { nums: [100,-100,100,-100,100], k: 2 }, expected: [100,100,100,100], label: "Large swings, k=2" },
-      { input: { nums: Array.from({length: 100}, (_, i) => i % 10), k: 10 }, expected: Array.from({length: 91}, () => 9), label: "Repeating pattern, k=10" },
-    ]
-  }
-];
+                    functionName: "sliding_window_max",
+                    starterCode:
+                        "def sliding_window_max(nums: list[int], k: int) -> list[int]:\n    # Your code here\n    pass",
+                    testCases: [
+                        {
+                            input: { nums: [1, 3, -1, -3, 5, 3, 6, 7], k: 3 },
+                            expected: [3, 3, 5, 5, 6, 7],
+                            label: "Example case, k=3",
+                        },
+                        {
+                            input: { nums: [1, 3, -1, -3, 5, 3, 6, 7], k: 1 },
+                            expected: [1, 3, -1, -3, 5, 3, 6, 7],
+                            label: "k=1 (each element is its own window)",
+                        },
+                        {
+                            input: { nums: [1, 3, -1, -3, 5, 3, 6, 7], k: 8 },
+                            expected: [7],
+                            label: "k=length (single window)",
+                        },
+                        {
+                            input: { nums: [5], k: 1 },
+                            expected: [5],
+                            label: "Single element",
+                        },
+                        {
+                            input: { nums: [1, 2], k: 2 },
+                            expected: [2],
+                            label: "Two elements, k=2",
+                        },
+                        {
+                            input: { nums: [1, 2, 3, 4, 5], k: 2 },
+                            expected: [2, 3, 4, 5],
+                            label: "Ascending, k=2",
+                        },
+                        {
+                            input: { nums: [5, 4, 3, 2, 1], k: 2 },
+                            expected: [5, 4, 3, 2],
+                            label: "Descending, k=2",
+                        },
+                        {
+                            input: { nums: [5, 4, 3, 2, 1], k: 3 },
+                            expected: [5, 4, 3],
+                            label: "Descending, k=3",
+                        },
+                        {
+                            input: { nums: [1, 1, 1, 1, 1], k: 3 },
+                            expected: [1, 1, 1],
+                            label: "All same values",
+                        },
+                        {
+                            input: { nums: [1, 2, 3, 4, 5], k: 5 },
+                            expected: [5],
+                            label: "Ascending, k=length",
+                        },
+                        {
+                            input: { nums: [-1, -3, -5, -2, -4], k: 2 },
+                            expected: [-1, -3, -2, -2],
+                            label: "All negative, k=2",
+                        },
+                        {
+                            input: { nums: [-1, -3, -5, -2, -4], k: 3 },
+                            expected: [-1, -2, -2],
+                            label: "All negative, k=3",
+                        },
+                        {
+                            input: {
+                                nums: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+                                k: 4,
+                            },
+                            expected: [10, 9, 8, 7, 6, 5, 4],
+                            label: "Descending 10 elements, k=4",
+                        },
+                        {
+                            input: { nums: [1, 3, 1, 3, 1, 3], k: 2 },
+                            expected: [3, 3, 3, 3, 3],
+                            label: "Alternating values, k=2",
+                        },
+                        {
+                            input: { nums: [1, 3, 1, 3, 1, 3], k: 3 },
+                            expected: [3, 3, 3, 3],
+                            label: "Alternating values, k=3",
+                        },
+                        {
+                            input: { nums: [0, 0, 0, 1, 0, 0, 0], k: 3 },
+                            expected: [0, 1, 1, 1, 0],
+                            label: "Spike in middle",
+                        },
+                        {
+                            input: { nums: [100, -100, 100, -100, 100], k: 2 },
+                            expected: [100, 100, 100, 100],
+                            label: "Large swings, k=2",
+                        },
+                        {
+                            input: {
+                                nums: Array.from(
+                                    { length: 100 },
+                                    (_, i) => i % 10,
+                                ),
+                                k: 10,
+                            },
+                            expected: Array.from({ length: 91 }, () => 9),
+                            label: "Repeating pattern, k=10",
+                        },
+                    ],
+                },
+            ];
 
-// ─── localStorage ───────────────────────────────────────────────
+            // ─── localStorage ───────────────────────────────────────────────
 
-const STORAGE_PREFIX = "python-kata-";
-const SELECTED_KEY = "python-kata-selected";
+            const STORAGE_PREFIX = "python-kata-";
+            const SELECTED_KEY = "python-kata-selected";
 
-function loadCode(kataId, defaultCode) {
-  try { return localStorage.getItem(STORAGE_PREFIX + kataId) ?? defaultCode; }
-  catch { return defaultCode; }
-}
-function saveCode(kataId, code) {
-  try { localStorage.setItem(STORAGE_PREFIX + kataId, code); } catch {}
-}
-function loadSelected() {
-  try { return localStorage.getItem(SELECTED_KEY) || KATAS[0].id; }
-  catch { return KATAS[0].id; }
-}
-function saveSelected(id) {
-  try { localStorage.setItem(SELECTED_KEY, id); } catch {}
-}
+            function loadCode(kataId, defaultCode) {
+                try {
+                    return (
+                        localStorage.getItem(STORAGE_PREFIX + kataId) ??
+                        defaultCode
+                    );
+                } catch {
+                    return defaultCode;
+                }
+            }
+            function saveCode(kataId, code) {
+                try {
+                    localStorage.setItem(STORAGE_PREFIX + kataId, code);
+                } catch {}
+            }
+            function loadSelected() {
+                try {
+                    return localStorage.getItem(SELECTED_KEY) || KATAS[0].id;
+                } catch {
+                    return KATAS[0].id;
+                }
+            }
+            function saveSelected(id) {
+                try {
+                    localStorage.setItem(SELECTED_KEY, id);
+                } catch {}
+            }
 
-// ─── Test Runner ────────────────────────────────────────────────
+            // ─── Test Runner ────────────────────────────────────────────────
 
-function cleanError(msg) {
-  const lines = msg.trim().split("\n");
-  const errorLine = lines[lines.length - 1] || msg;
-  // Extract line number from traceback (File "<exec>", line X)
-  // The script prepends "import json\n", so subtract 1 to get user code line
-  const lineMatches = [...msg.matchAll(/File "<exec>", line (\d+)/g)];
-  if (lineMatches.length > 0) {
-    const rawLine = parseInt(lineMatches[lineMatches.length - 1][1]);
-    const userLine = rawLine - 1; // adjust for "import json\n" prefix
-    if (userLine > 0) return `Line ${userLine}: ${errorLine}`;
-  }
-  return errorLine;
-}
+            function cleanError(msg) {
+                const lines = msg.trim().split("\n");
+                const errorLine = lines[lines.length - 1] || msg;
+                // Extract line number from traceback (File "<exec>", line X)
+                // The script prepends "import json\n", so subtract 1 to get user code line
+                const lineMatches = [
+                    ...msg.matchAll(/File "<exec>", line (\d+)/g),
+                ];
+                if (lineMatches.length > 0) {
+                    const rawLine = parseInt(
+                        lineMatches[lineMatches.length - 1][1],
+                    );
+                    const userLine = rawLine - 1; // adjust for "import json\n" prefix
+                    if (userLine > 0) return `Line ${userLine}: ${errorLine}`;
+                }
+                return errorLine;
+            }
 
-async function runTests(pyodide, userCode, kata) {
-  const results = [];
-  for (const tc of kata.testCases) {
-    const args = Object.entries(tc.input)
-      .map(([key, val]) => `${key}=${JSON.stringify(val)}`)
-      .join(", ");
+            function toPythonRepr(val) {
+                if (val === null || val === undefined) return "None";
+                if (val === true) return "True";
+                if (val === false) return "False";
+                if (typeof val === "string") return JSON.stringify(val);
+                if (typeof val === "number") return String(val);
+                if (Array.isArray(val))
+                    return `[${val.map(toPythonRepr).join(", ")}]`;
+                if (typeof val === "object") {
+                    const entries = Object.entries(val).map(
+                        ([k, v]) => `${JSON.stringify(k)}: ${toPythonRepr(v)}`,
+                    );
+                    return `{${entries.join(", ")}}`;
+                }
+                return String(val);
+            }
 
-    const script = `import json\n${userCode}\njson.dumps(${kata.functionName}(${args}))`;
+            async function runTests(pyodide, userCode, kata) {
+                const results = [];
+                for (const tc of kata.testCases) {
+                    const args = Object.entries(tc.input)
+                        .map(([key, val]) => `${key}=${toPythonRepr(val)}`)
+                        .join(", ");
 
-    try {
-      const resultJson = await pyodide.runPythonAsync(script);
-      const actual = JSON.parse(resultJson);
-      const passed = JSON.stringify(actual) === JSON.stringify(tc.expected);
-      results.push({ ...tc, passed, actual, error: null });
-    } catch (err) {
-      results.push({ ...tc, passed: false, actual: null, error: cleanError(err.message) });
-    }
-  }
-  return results;
-}
+                    const script = `import json\n${userCode}\njson.dumps(${kata.functionName}(${args}))`;
 
-// ─── CodeEditor Component ───────────────────────────────────────
+                    try {
+                        const resultJson = await pyodide.runPythonAsync(script);
+                        const actual = JSON.parse(resultJson);
+                        const passed =
+                            JSON.stringify(actual) ===
+                            JSON.stringify(tc.expected);
+                        results.push({ ...tc, passed, actual, error: null });
+                    } catch (err) {
+                        results.push({
+                            ...tc,
+                            passed: false,
+                            actual: null,
+                            error: cleanError(err.message),
+                        });
+                    }
+                }
+                return results;
+            }
 
-function CodeEditor({ value, onChange, onRun }) {
-  const containerRef = useRef(null);
-  const viewRef = useRef(null);
-  const onChangeRef = useRef(onChange);
-  const onRunRef = useRef(onRun);
-  onChangeRef.current = onChange;
-  onRunRef.current = onRun;
+            // ─── CodeEditor Component ───────────────────────────────────────
 
-  useEffect(() => {
-    const state = EditorState.create({
-      doc: value,
-      extensions: [
-        basicSetup,
-        python(),
-        autocompletion({ override: [() => null] }),
-        ...(isDark ? [oneDark] : []),
-        indentUnit.of("    "),
-        EditorState.tabSize.of(4),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) onChangeRef.current(update.state.doc.toString());
-        }),
-        keymap.of([
-          indentWithTab,
-          { key: "Mod-Enter", run: () => { onRunRef.current?.(); return true; } },
-        ]),
-      ],
-    });
+            function CodeEditor({ value, onChange, onRun }) {
+                const containerRef = useRef(null);
+                const viewRef = useRef(null);
+                const onChangeRef = useRef(onChange);
+                const onRunRef = useRef(onRun);
+                onChangeRef.current = onChange;
+                onRunRef.current = onRun;
 
-    const view = new EditorView({ state, parent: containerRef.current });
-    viewRef.current = view;
-    return () => view.destroy();
-  }, []);
+                useEffect(() => {
+                    const state = EditorState.create({
+                        doc: value,
+                        extensions: [
+                            basicSetup,
+                            python(),
+                            autocompletion({ override: [() => null] }),
+                            ...(isDark ? [oneDark] : []),
+                            indentUnit.of("    "),
+                            EditorState.tabSize.of(4),
+                            EditorView.updateListener.of((update) => {
+                                if (update.docChanged)
+                                    onChangeRef.current(
+                                        update.state.doc.toString(),
+                                    );
+                            }),
+                            keymap.of([
+                                indentWithTab,
+                                {
+                                    key: "Mod-Enter",
+                                    run: () => {
+                                        onRunRef.current?.();
+                                        return true;
+                                    },
+                                },
+                            ]),
+                        ],
+                    });
 
-  useEffect(() => {
-    const view = viewRef.current;
-    if (view && value !== view.state.doc.toString()) {
-      view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } });
-    }
-  }, [value]);
+                    const view = new EditorView({
+                        state,
+                        parent: containerRef.current,
+                    });
+                    viewRef.current = view;
+                    return () => view.destroy();
+                }, []);
 
-  return html`<div ref=${containerRef} style=${{ height: "100%" }} />`;
-}
+                useEffect(() => {
+                    const view = viewRef.current;
+                    if (view && value !== view.state.doc.toString()) {
+                        view.dispatch({
+                            changes: {
+                                from: 0,
+                                to: view.state.doc.length,
+                                insert: value,
+                            },
+                        });
+                    }
+                }, [value]);
 
-// ─── App ────────────────────────────────────────────────────────
+                return html`<div
+                    ref=${containerRef}
+                    style=${{ height: "100%" }}
+                />`;
+            }
 
-function App() {
-  const [selectedId, setSelectedId] = useState(loadSelected);
-  const [codes, setCodes] = useState(() => {
-    const m = {};
-    for (const k of KATAS) m[k.id] = loadCode(k.id, k.starterCode);
-    return m;
-  });
-  const [results, setResults] = useState(null);
-  const [running, setRunning] = useState(false);
-  const [pyodide, setPyodide] = useState(null);
-  const [pyLoading, setPyLoading] = useState(true);
-  const [pyError, setPyError] = useState(null);
+            // ─── App ────────────────────────────────────────────────────────
 
-  const kata = KATAS.find(k => k.id === selectedId) || KATAS[0];
-  const code = codes[kata.id];
+            function App() {
+                const [selectedId, setSelectedId] = useState(loadSelected);
+                const [codes, setCodes] = useState(() => {
+                    const m = {};
+                    for (const k of KATAS)
+                        m[k.id] = loadCode(k.id, k.starterCode);
+                    return m;
+                });
+                const [results, setResults] = useState(null);
+                const [running, setRunning] = useState(false);
+                const [pyodide, setPyodide] = useState(null);
+                const [pyLoading, setPyLoading] = useState(true);
+                const [pyError, setPyError] = useState(null);
 
-  // Load Pyodide
-  useEffect(() => {
-    (async () => {
-      try {
-        const { loadPyodide } = await import(
-          "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs"
-        );
-        const py = await loadPyodide();
-        setPyodide(py);
-      } catch (err) {
-        setPyError(err.message);
-      } finally {
-        setPyLoading(false);
-      }
-    })();
-  }, []);
+                const kata = KATAS.find((k) => k.id === selectedId) || KATAS[0];
+                const code = codes[kata.id];
 
-  const handleKataChange = useCallback((e) => {
-    const id = e.target.value;
-    setSelectedId(id);
-    saveSelected(id);
-    setResults(null);
-  }, []);
+                // Load Pyodide
+                useEffect(() => {
+                    (async () => {
+                        try {
+                            const { loadPyodide } =
+                                await import("https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs");
+                            const py = await loadPyodide();
+                            setPyodide(py);
+                        } catch (err) {
+                            setPyError(err.message);
+                        } finally {
+                            setPyLoading(false);
+                        }
+                    })();
+                }, []);
 
-  const handleCodeChange = useCallback((newCode) => {
-    setCodes(prev => ({ ...prev, [kata.id]: newCode }));
-    saveCode(kata.id, newCode);
-  }, [kata.id]);
+                const handleKataChange = useCallback((e) => {
+                    const id = e.target.value;
+                    setSelectedId(id);
+                    saveSelected(id);
+                    setResults(null);
+                }, []);
 
-  const handleRun = useCallback(async () => {
-    if (!pyodide || running) return;
-    setRunning(true);
-    setResults(null);
-    try {
-      const r = await runTests(pyodide, code, kata);
-      setResults(r);
-    } catch (err) {
-      setResults([{ label: "Execution error", passed: false, actual: null, error: err.message }]);
-    } finally {
-      setRunning(false);
-    }
-  }, [pyodide, running, code, kata]);
+                const handleCodeChange = useCallback(
+                    (newCode) => {
+                        setCodes((prev) => ({ ...prev, [kata.id]: newCode }));
+                        saveCode(kata.id, newCode);
+                    },
+                    [kata.id],
+                );
 
-  const handleReset = useCallback(() => {
-    setCodes(prev => ({ ...prev, [kata.id]: kata.starterCode }));
-    saveCode(kata.id, kata.starterCode);
-    setResults(null);
-  }, [kata]);
+                const handleRun = useCallback(async () => {
+                    if (!pyodide || running) return;
+                    setRunning(true);
+                    setResults(null);
+                    try {
+                        const r = await runTests(pyodide, code, kata);
+                        setResults(r);
+                    } catch (err) {
+                        setResults([
+                            {
+                                label: "Execution error",
+                                passed: false,
+                                actual: null,
+                                error: err.message,
+                            },
+                        ]);
+                    } finally {
+                        setRunning(false);
+                    }
+                }, [pyodide, running, code, kata]);
 
-  const passCount = results ? results.filter(r => r.passed).length : 0;
-  const totalCount = results ? results.length : 0;
+                const handleReset = useCallback(() => {
+                    setCodes((prev) => ({
+                        ...prev,
+                        [kata.id]: kata.starterCode,
+                    }));
+                    saveCode(kata.id, kata.starterCode);
+                    setResults(null);
+                }, [kata]);
 
-  return html`
-    <div className="app">
-      <div className="header">
-        <span className="header-title">Python Kata Practice</span>
-        <select className="kata-select" value=${selectedId} onChange=${handleKataChange}>
-          ${KATAS.map(k => html`<option key=${k.id} value=${k.id}>${k.title}</option>`)}
-        </select>
-      </div>
+                const passCount = results
+                    ? results.filter((r) => r.passed).length
+                    : 0;
+                const totalCount = results ? results.length : 0;
 
-      <div className="split-pane">
-        <div className="problem-panel">
-          <h1 className="problem-title">${kata.title}</h1>
-          <span className="difficulty-badge">${kata.difficulty}</span>
-          <div className="problem-description"
-               dangerouslySetInnerHTML=${{ __html: kata.description }} />
-        </div>
-
-        <div className="editor-panel">
-          <div className="editor-wrapper">
-            <${CodeEditor}
-              key=${kata.id}
-              value=${code}
-              onChange=${handleCodeChange}
-              onRun=${handleRun} />
-          </div>
-
-          <div className="button-bar">
-            <button className="btn btn-primary"
-                    onClick=${handleRun}
-                    disabled=${pyLoading || running || !!pyError}>
-              ${running ? "Running\u2026" : "Run Tests"}
-            </button>
-            <button className="btn btn-secondary" onClick=${handleReset}>Reset</button>
-            <span className="status-text">Ctrl/\u2318+Enter to run</span>
-            ${pyLoading && html`<span className="status-text loading" style=${{ marginLeft: "auto" }}>Loading Python runtime\u2026</span>`}
-            ${pyError && html`<span className="status-text" style=${{ color: "#C4432B", marginLeft: "auto" }}>Failed to load Python</span>`}
-          </div>
-
-          <div className="results-panel">
-            ${!results && !running && html`
-              <span className="empty-results">Click "Run Tests" to check your solution.</span>
-            `}
-            ${running && html`
-              <span className="empty-results">Running tests\u2026</span>
-            `}
-            ${results && html`
-              <div>
-                <div className=${`results-summary${passCount === totalCount ? " all-pass" : ""}`}>
-                  ${passCount === totalCount
-                    ? `All ${totalCount} tests passed!`
-                    : `${passCount}/${totalCount} tests passed`}
-                </div>
-                ${results.map((r, i) => html`
-                  <div key=${i} className="test-case">
-                    <span className=${`test-icon ${r.passed ? "pass" : "fail"}`}>
-                      ${r.passed ? "\u2713" : "\u2717"}
-                    </span>
-                    <div>
-                      <div className="test-label">${r.label}</div>
-                      ${!r.passed && r.error && html`
-                        <div className="test-error">${r.error}</div>
-                      `}
-                      ${!r.passed && !r.error && html`
-                        <div className="test-detail">
-                          Expected: ${JSON.stringify(r.expected)}${" \u00a0|\u00a0 "}Got: ${JSON.stringify(r.actual)}
+                return html`
+                    <div className="app">
+                        <div className="header">
+                            <span className="header-title"
+                                >Python Kata Practice</span
+                            >
+                            <select
+                                className="kata-select"
+                                value=${selectedId}
+                                onChange=${handleKataChange}
+                            >
+                                ${KATAS.map(
+                                    (k) =>
+                                        html`<option key=${k.id} value=${k.id}>
+                                            ${k.title}
+                                        </option>`,
+                                )}
+                            </select>
                         </div>
-                      `}
-                    </div>
-                  </div>
-                `)}
-              </div>
-            `}
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
 
-createRoot(document.getElementById("root")).render(html`<${App} />`);
-  </script>
-</body>
+                        <div className="split-pane">
+                            <div className="problem-panel">
+                                <h1 className="problem-title">${kata.title}</h1>
+                                <span className="difficulty-badge"
+                                    >${kata.difficulty}</span
+                                >
+                                <div
+                                    className="problem-description"
+                                    dangerouslySetInnerHTML=${{
+                                        __html: kata.description,
+                                    }}
+                                />
+                            </div>
+
+                            <div className="editor-panel">
+                                <div className="editor-wrapper">
+                                    <${CodeEditor}
+                                        key=${kata.id}
+                                        value=${code}
+                                        onChange=${handleCodeChange}
+                                        onRun=${handleRun}
+                                    />
+                                </div>
+
+                                <div className="button-bar">
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick=${handleRun}
+                                        disabled=${pyLoading ||
+                                        running ||
+                                        !!pyError}
+                                    >
+                                        ${running
+                                            ? "Running\u2026"
+                                            : "Run Tests"}
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick=${handleReset}
+                                    >
+                                        Reset
+                                    </button>
+                                    <span className="status-text"
+                                        >Ctrl/⌘+Enter to run</span
+                                    >
+                                    ${pyLoading &&
+                                    html`<span
+                                        className="status-text loading"
+                                        style=${{ marginLeft: "auto" }}
+                                        >Loading Python runtime…</span
+                                    >`}
+                                    ${pyError &&
+                                    html`<span
+                                        className="status-text"
+                                        style=${{
+                                            color: "#C4432B",
+                                            marginLeft: "auto",
+                                        }}
+                                        >Failed to load Python</span
+                                    >`}
+                                </div>
+
+                                <div className="results-panel">
+                                    ${!results &&
+                                    !running &&
+                                    html`
+                                        <span className="empty-results"
+                                            >Click "Run Tests" to check your
+                                            solution.</span
+                                        >
+                                    `}
+                                    ${running &&
+                                    html`
+                                        <span className="empty-results"
+                                            >Running tests…</span
+                                        >
+                                    `}
+                                    ${results &&
+                                    html`
+                                        <div>
+                                            <div
+                                                className=${`results-summary${passCount === totalCount ? " all-pass" : ""}`}
+                                            >
+                                                ${passCount === totalCount
+                                                    ? `All ${totalCount} tests passed!`
+                                                    : `${passCount}/${totalCount} tests passed`}
+                                            </div>
+                                            ${results.map(
+                                                (r, i) => html`
+                                                    <div
+                                                        key=${i}
+                                                        className="test-case"
+                                                    >
+                                                        <span
+                                                            className=${`test-icon ${r.passed ? "pass" : "fail"}`}
+                                                        >
+                                                            ${r.passed
+                                                                ? "\u2713"
+                                                                : "\u2717"}
+                                                        </span>
+                                                        <div>
+                                                            <div
+                                                                className="test-label"
+                                                            >
+                                                                ${r.label}
+                                                            </div>
+                                                            ${!r.passed &&
+                                                            r.error &&
+                                                            html`
+                                                                <div
+                                                                    className="test-error"
+                                                                >
+                                                                    ${r.error}
+                                                                </div>
+                                                            `}
+                                                            ${!r.passed &&
+                                                            !r.error &&
+                                                            html`
+                                                                <div
+                                                                    className="test-detail"
+                                                                >
+                                                                    Expected:
+                                                                    ${JSON.stringify(
+                                                                        r.expected,
+                                                                    )}${" \u00a0|\u00a0 "}Got:
+                                                                    ${JSON.stringify(
+                                                                        r.actual,
+                                                                    )}
+                                                                </div>
+                                                            `}
+                                                        </div>
+                                                    </div>
+                                                `,
+                                            )}
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            createRoot(document.getElementById("root")).render(
+                html`<${App} />`,
+            );
+        </script>
+    </body>
 </html>

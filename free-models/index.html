@@ -421,11 +421,28 @@
           .then(r => { if (!r.ok) throw new Error('OpenRouter API error ' + r.status); return r.json(); })
           .then(d => d.data);
 
-        const aaUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://artificialanalysis.ai/api/v2/data/llms/models');
-        const fetchAA = fetch(aaUrl, {
-          headers: { 'x-api-key': apiKey }
-        })
-          .then(r => { if (!r.ok) throw new Error('ArtificialAnalysis API error ' + r.status + (r.status === 401 ? ' — check your API key' : '')); return r.json(); });
+        const today = new Date().toISOString().slice(0, 10);
+        const aaCacheKey = 'aa-cache';
+        const aaCacheDateKey = 'aa-cache-date';
+        let fetchAA;
+        const cachedDate = localStorage.getItem(aaCacheDateKey);
+        const cachedData = localStorage.getItem(aaCacheKey);
+        if (cachedDate === today && cachedData) {
+          fetchAA = Promise.resolve(JSON.parse(cachedData));
+        } else {
+          const aaUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://artificialanalysis.ai/api/v2/data/llms/models');
+          fetchAA = fetch(aaUrl, {
+            headers: { 'x-api-key': apiKey }
+          })
+            .then(r => { if (!r.ok) throw new Error('ArtificialAnalysis API error ' + r.status + (r.status === 401 ? ' — check your API key' : '')); return r.json(); })
+            .then(aa => {
+              try {
+                localStorage.setItem(aaCacheKey, JSON.stringify(aa));
+                localStorage.setItem(aaCacheDateKey, today);
+              } catch (e) { /* localStorage full — skip caching */ }
+              return aa;
+            });
+        }
 
         Promise.all([fetchOR, fetchAA])
           .then(([or, aa]) => {

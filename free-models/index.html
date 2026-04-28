@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Model Ranker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fafafa;
+      color: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 0.92rem; color: #6b7280; margin-bottom: 28px; line-height: 1.5; }
+    a { color: #7c3aed; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* API key prompt */
+    .key-section {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+    .key-section h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .key-section p { font-size: 0.88rem; color: #6b7280; margin-bottom: 16px; line-height: 1.5; }
+    .key-row { display: flex; gap: 10px; align-items: center; }
+    .key-row input {
+      flex: 1;
+      padding: 9px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .key-row input:focus { border-color: #7c3aed; }
+    .btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 20px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #6d28d9; }
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      background: transparent;
+      color: #7c3aed;
+      border: 1px solid #7c3aed;
+    }
+    .btn-sm:hover { background: #f5f3ff; }
+    .key-saved { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #059669; }
+    .key-saved .masked { color: #6b7280; font-family: monospace; }
+
+    /* Status / loading */
+    .status {
+      text-align: center;
+      padding: 48px 20px;
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 28px; height: 28px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error { color: #dc2626; }
+
+    /* Table */
+    .table-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b7280;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    thead th:hover { color: #374151; }
+    thead th.sorted { color: #7c3aed; }
+    tbody td {
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f9fafb; }
+    .model-name { font-weight: 500; }
+    .score { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .no-score { color: #9ca3af; font-style: italic; font-weight: 400; }
+    .links { display: flex; gap: 12px; white-space: nowrap; }
+    .links a { font-size: 0.85rem; }
+    .unmatched td { color: #9ca3af; }
+    .unmatched .model-name { font-weight: 400; }
+    .ref-row { background: #f7f7f7; }
+    .ref-row:hover { background: #f0f0f0; }
+    .ref-row .model-name { font-weight: 400; }
+    .ref-row .score { font-weight: 400; }
+    .price { font-variant-numeric: tabular-nums; }
+
+    .result-count {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="root"></div>
+
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.9/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useMemo } = React;
+
+    const LS_KEY = 'aa-api-key';
+
+    function getKeyFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('key') || '';
+    }
+
+    function normalize(s) {
+      return s.toLowerCase()
+        .replace(/[^a-z0-9]/g, '')
+    }
+
+    function tokenize(s) {
+      return s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    }
+
+    function tokenOverlap(a, b) {
+      const setA = new Set(tokenize(a));
+      const setB = new Set(tokenize(b));
+      let matches = 0;
+      for (const t of setA) if (setB.has(t)) matches++;
+      return matches / Math.max(setA.size, setB.size);
+    }
+
+    // Build multiple matching keys from an OpenRouter model ID
+    function orMatchKeys(id) {
+      // id like "google/gemma-2-9b-it:free"
+      let name = id.replace(/:free$/i, '');
+      const slash = name.indexOf('/');
+      if (slash >= 0) name = name.substring(slash + 1);
+      const keys = [normalize(name)];
+      // also try stripping common suffixes
+      for (const suffix of ['-instruct', '-it', '-chat', '-hf', '-turbo', '-preview', '-exp', '-latest']) {
+        const stripped = name.replace(new RegExp(suffix + '$', 'i'), '');
+        if (stripped !== name) keys.push(normalize(stripped));
+      }
+      return keys;
+    }
+
+    function matchModels(orModels, aaModels) {
+      // Build lookup from normalized AA names and slugs
+      const aaByNorm = new Map();
+      for (const aa of aaModels) {
+        const nameKey = normalize(aa.name || '');
+        if (nameKey) aaByNorm.set(nameKey, aa);
+        const slugKey = normalize(aa.slug || '');
+        if (slugKey) aaByNorm.set(slugKey, aa);
+      }
+
+      const matched = [];
+      const unmatched = [];
+
+      for (const or of orModels) {
+        // Skip the meta-router entry
+        if (or.id === 'openrouter/free') continue;
+
+        const keys = orMatchKeys(or.id);
+        let found = null;
+
+        // 1) exact normalized match against AA name or slug
+        for (const k of keys) {
+          if (aaByNorm.has(k)) { found = aaByNorm.get(k); break; }
+        }
+
+        // 2) substring match — prefer shortest (most specific) AA match
+        if (!found) {
+          let bestLen = Infinity;
+          for (const aa of aaModels) {
+            const aaNorm = normalize(aa.name || '');
+            const aaSlug = normalize(aa.slug || '');
+            for (const k of keys) {
+              if (k.length < 4) continue;
+              if ((aaNorm && (aaNorm.includes(k) || k.includes(aaNorm))) ||
+                  (aaSlug && (aaSlug.includes(k) || k.includes(aaSlug)))) {
+                const len = aaNorm.length;
+                if (len < bestLen) { found = aa; bestLen = len; }
+                break;
+              }
+            }
+          }
+        }
+
+        // 3) token-set overlap (handles reordered words like "70b-instruct" vs "instruct-70b")
+        if (!found) {
+          let bestScore = 0;
+          const orName = or.id.replace(/:free$/i, '').replace(/^[^/]+\//, '');
+          for (const aa of aaModels) {
+            const score = Math.max(
+              tokenOverlap(orName, aa.slug || ''),
+              tokenOverlap(orName, aa.name || '')
+            );
+            if (score > bestScore && score >= 0.75) {
+              bestScore = score;
+              found = aa;
+            }
+          }
+        }
+
+        if (found) {
+          matched.push({ or, aa: found });
+        } else {
+          unmatched.push({ or, aa: null });
+        }
+      }
+
+      return { matched, unmatched };
+    }
+
+    function ApiKeyPrompt({ apiKey, onSave, onCopyShareLink }) {
+      const [input, setInput] = useState('');
+      const [editing, setEditing] = useState(!apiKey);
+
+      if (apiKey && !editing) {
+        const masked = apiKey.slice(0, 4) + '...' + apiKey.slice(-4);
+        return (
+          <div className="key-section">
+            <div className="key-saved">
+              <span>API key saved</span>
+              <span className="masked">{masked}</span>
+              <button className="btn btn-sm" onClick={() => setEditing(true)}>Change</button>
+              <button className="btn btn-sm" onClick={onCopyShareLink}>Copy share link</button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="key-section">
+          <h2>ArtificialAnalysis API Key</h2>
+          <p>
+            Enter your API key from{' '}
+            <a href="https://artificialanalysis.ai/api-reference" target="_blank" rel="noopener">
+              artificialanalysis.ai
+            </a>{' '}
+            (free tier: 1,000 requests/day).
+          </p>
+          <div className="key-row">
+            <input
+              type="password"
+              placeholder="aa-..."
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { onSave(input.trim()); setEditing(false); } }}
+            />
+            <button
+              className="btn"
+              disabled={!input.trim()}
+              onClick={() => { onSave(input.trim()); setEditing(false); }}
+            >
+              Save
+            </button>
+            {apiKey && (
+              <button className="btn btn-sm" onClick={() => setEditing(false)}>Cancel</button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function SortArrow({ active, desc }) {
+      if (!active) return <span style={{ opacity: 0.3, marginLeft: 4 }}>&#x25B2;</span>;
+      return <span style={{ marginLeft: 4 }}>{desc ? '▼' : '▲'}</span>;
+    }
+
+    function isOpenWeights(orModel) {
+      return orModel && typeof orModel.hugging_face_id === 'string' && orModel.hugging_face_id.length > 0;
+    }
+
+    function blendedPrice(pricing) {
+      if (!pricing) return null;
+      const inp = parseFloat(pricing.prompt);
+      const out = parseFloat(pricing.completion);
+      if (isNaN(inp) || isNaN(out)) return null;
+      return (3 * inp + out) / 4 * 1_000_000;
+    }
+
+    function formatPrice(p) {
+      if (p == null) return '—';
+      if (p === 0) return 'Free';
+      if (p < 0.01) return '<$0.01';
+      return '$' + p.toFixed(2);
+    }
+
+    function priceTooltip(pricing) {
+      if (!pricing) return '';
+      const inp = parseFloat(pricing.prompt) * 1_000_000;
+      const out = parseFloat(pricing.completion) * 1_000_000;
+      if (inp === 0 && out === 0) return 'Input: Free\nOutput: Free';
+      return `Input: $${inp.toFixed(2)}/M tokens\nOutput: $${out.toFixed(2)}/M tokens`;
+    }
+
+    // Pick top N AA models from distinct creators, optionally filtering by creator set
+    function topByCreator(aaModels, n, creatorFilter) {
+      const seen = new Set();
+      const result = [];
+      const sorted = [...aaModels]
+        .filter(m => m.evaluations?.artificial_analysis_intelligence_index != null)
+        .sort((a, b) => b.evaluations.artificial_analysis_intelligence_index - a.evaluations.artificial_analysis_intelligence_index);
+      for (const m of sorted) {
+        const creator = m.model_creator?.slug;
+        if (!creator || seen.has(creator)) continue;
+        if (creatorFilter && !creatorFilter.has(creator)) continue;
+        seen.add(creator);
+        result.push(m);
+        if (result.length >= n) break;
+      }
+      return result;
+    }
+
+    // Find the best OR model match for an AA model (for pricing)
+    function findOrModel(aa, allOrModels) {
+      const aaSlug = normalize(aa.slug || '');
+      const aaName = normalize(aa.name || '');
+      // Try exact slug/name match first
+      for (const or of allOrModels) {
+        const orNorm = normalize(or.id.replace(/^[^/]+\//, ''));
+        if (orNorm === aaSlug || orNorm === aaName) return or;
+      }
+      // Substring
+      for (const or of allOrModels) {
+        const orNorm = normalize(or.id.replace(/^[^/]+\//, ''));
+        if (orNorm.length >= 4 && (aaSlug.includes(orNorm) || orNorm.includes(aaSlug))) return or;
+      }
+      return null;
+    }
+
+    function App() {
+      const [apiKey, setApiKey] = useState(() => getKeyFromUrl() || localStorage.getItem(LS_KEY) || '');
+      const [copied, setCopied] = useState(false);
+
+      // Persist URL key to localStorage on first load
+      useEffect(() => {
+        const urlKey = getKeyFromUrl();
+        if (urlKey) localStorage.setItem(LS_KEY, urlKey);
+      }, []);
+      const [allOrModels, setAllOrModels] = useState(null);
+      const [freeOrModels, setFreeOrModels] = useState(null);
+      const [aaModels, setAaModels] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState('');
+      const [sortCol, setSortCol] = useState('score');
+      const [sortDesc, setSortDesc] = useState(true);
+
+      const saveKey = useCallback((key) => {
+        localStorage.setItem(LS_KEY, key);
+        setApiKey(key);
+        setAaModels(null);
+        setError('');
+      }, []);
+
+      useEffect(() => {
+        if (!apiKey) return;
+        let cancelled = false;
+        setLoading(true);
+        setError('');
+
+        const fetchOR = fetch('https://openrouter.ai/api/v1/models')
+          .then(r => { if (!r.ok) throw new Error('OpenRouter API error ' + r.status); return r.json(); })
+          .then(d => d.data);
+
+        const aaUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://artificialanalysis.ai/api/v2/data/llms/models');
+        const fetchAA = fetch(aaUrl, {
+          headers: { 'x-api-key': apiKey }
+        })
+          .then(r => { if (!r.ok) throw new Error('ArtificialAnalysis API error ' + r.status + (r.status === 401 ? ' — check your API key' : '')); return r.json(); });
+
+        Promise.all([fetchOR, fetchAA])
+          .then(([or, aa]) => {
+            if (cancelled) return;
+            setAllOrModels(or);
+            setFreeOrModels(or.filter(m => m.pricing && m.pricing.prompt === '0' && m.pricing.completion === '0'));
+            setAaModels(Array.isArray(aa) ? aa : aa.data || []);
+            setLoading(false);
+          })
+          .catch(err => {
+            if (cancelled) return;
+            setError(err.message);
+            setLoading(false);
+          });
+
+        return () => { cancelled = true; };
+      }, [apiKey]);
+
+      const { matched, unmatched } = useMemo(() => {
+        if (!freeOrModels || !aaModels) return { matched: [], unmatched: [] };
+        return matchModels(freeOrModels, aaModels);
+      }, [freeOrModels, aaModels]);
+
+      // Reference models:
+      //  - Top 3 proprietary + top 2 open-weights (by distinct creator)
+      //  - Tier references: closest proprietary model at each ~5-point interval
+      const refRows = useMemo(() => {
+        if (!aaModels || !allOrModels) return [];
+
+        // Resolve all top AA models against OR, then classify as top refs
+        const candidates = topByCreator(aaModels, 20, null);
+        const resolved = [];
+        for (const aa of candidates) {
+          const orMatch = findOrModel(aa, allOrModels);
+          if (!orMatch) continue;
+          resolved.push({ aa, or: orMatch, open: isOpenWeights(orMatch), price: blendedPrice(orMatch.pricing) });
+        }
+
+        const proprietary = [];
+        const open = [];
+        const seenProp = new Set(), seenOpen = new Set();
+        for (const r of resolved) {
+          const creator = r.aa.model_creator?.slug;
+          if (r.open && !seenOpen.has(creator) && open.length < 2) {
+            seenOpen.add(creator);
+            open.push({ ...r, refType: 'open' });
+          } else if (!r.open && !seenProp.has(creator) && proprietary.length < 3) {
+            seenProp.add(creator);
+            proprietary.push({ ...r, refType: 'proprietary' });
+          }
+        }
+
+        const topRefs = [...proprietary, ...open];
+        // Exclude models already shown as free or as top refs (by AA slug and OR id)
+        const freeSlugs = new Set(matched.filter(r => r.aa).map(r => r.aa.slug));
+        const freeOrBases = new Set(matched.map(r => r.or.id.replace(/:free$/i, '')));
+        const usedSlugs = new Set([...topRefs.map(r => r.aa.slug), ...freeSlugs]);
+        const usedOrIds = new Set(topRefs.map(r => r.or.id));
+
+        // Tier references at score intervals
+        const tierTargets = [5, 10, 15, 20, 25, 30, 35, 40, 45];
+        const allAASorted = [...aaModels]
+          .filter(m => m.evaluations?.artificial_analysis_intelligence_index != null)
+          .sort((a, b) => {
+            return a.evaluations.artificial_analysis_intelligence_index -
+                   b.evaluations.artificial_analysis_intelligence_index;
+          });
+
+        const tierCreators = new Set(['openai', 'anthropic', 'google']);
+        const tierRefs = [];
+        for (const target of tierTargets) {
+          // Find all models within 3 points, then pick the cheapest
+          let best = null, bestPrice = Infinity, bestOr = null;
+          for (const aa of allAASorted) {
+            if (usedSlugs.has(aa.slug)) continue;
+            if (!tierCreators.has(aa.model_creator?.slug)) continue;
+            const score = aa.evaluations.artificial_analysis_intelligence_index;
+            if (Math.abs(score - target) > 2) continue;
+            const orMatch = findOrModel(aa, allOrModels);
+            if (!orMatch || usedOrIds.has(orMatch.id)) continue;
+            // Skip if this OR model is also available for free
+            if (freeOrBases.has(orMatch.id)) continue;
+            const price = blendedPrice(orMatch.pricing);
+            if (price != null && price < bestPrice) {
+              best = aa; bestPrice = price; bestOr = orMatch;
+            }
+          }
+          if (best) {
+            usedSlugs.add(best.slug);
+            usedOrIds.add(bestOr.id);
+            tierRefs.push({
+              aa: best, or: bestOr, refType: 'proprietary',
+              price: bestPrice,
+            });
+          }
+        }
+
+        return [...topRefs, ...tierRefs];
+      }, [aaModels, allOrModels, matched]);
+
+      const sorted = useMemo(() => {
+        const getScore = (row) => row.aa?.evaluations?.artificial_analysis_intelligence_index ?? null;
+        const getName = (row) => (row.or?.name || row.aa?.name || row.or?.id || '').toLowerCase();
+
+        const secondaryScore = (a, b) => {
+          const sa = getScore(a), sb = getScore(b);
+          if (sa == null && sb == null) return 0;
+          if (sa == null) return 1;
+          if (sb == null) return -1;
+          return sb - sa;
+        };
+        const cmp = (a, b) => {
+          if (sortCol === 'score') {
+            const sa = getScore(a), sb = getScore(b);
+            if (sa == null && sb == null) return 0;
+            if (sa == null) return 1;
+            if (sb == null) return -1;
+            return sortDesc ? sb - sa : sa - sb;
+          }
+          if (sortCol === 'price') {
+            const pa = a.price ?? Infinity, pb = b.price ?? Infinity;
+            const d = sortDesc ? pb - pa : pa - pb;
+            return d !== 0 ? d : secondaryScore(a, b);
+          }
+          const na = getName(a), nb = getName(b);
+          const d = sortDesc ? nb.localeCompare(na) : na.localeCompare(nb);
+          return d !== 0 ? d : secondaryScore(a, b);
+        };
+
+        // Merge free rows (with price=0) and ref rows; drop unmatched free models
+        const freeRows = matched.map(r => ({ ...r, price: 0 }));
+        return [...freeRows, ...refRows].sort(cmp);
+      }, [matched, unmatched, refRows, sortCol, sortDesc]);
+
+      const toggleSort = (col) => {
+        if (sortCol === col) setSortDesc(!sortDesc);
+        else { setSortCol(col); setSortDesc(col === 'score'); }
+      };
+
+      const aaModelUrl = (aa) => {
+        if (aa.slug) return `https://artificialanalysis.ai/models/${aa.slug}`;
+        return 'https://artificialanalysis.ai/leaderboards/models';
+      };
+
+      return (
+        <>
+          <h1>Free Model Ranker</h1>
+          <p className="subtitle">
+            Free models from <a href="https://openrouter.ai/openrouter/free" target="_blank" rel="noopener">OpenRouter</a>,
+            ranked by <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">ArtificialAnalysis</a> intelligence index. Paid models are included in grey rows for reference.
+          </p>
+
+          <ApiKeyPrompt apiKey={apiKey} onSave={saveKey} onCopyShareLink={() => {
+            const url = new URL(window.location.href);
+            url.search = '';
+            url.searchParams.set('key', apiKey);
+            navigator.clipboard.writeText(url.toString());
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }} />
+          {copied && <div style={{ fontSize: '0.85rem', color: '#059669', marginTop: -20, marginBottom: 12 }}>Share link copied to clipboard!</div>}
+
+          {!apiKey && (
+            <div className="status">Enter your ArtificialAnalysis API key above to get started.</div>
+          )}
+
+          {apiKey && loading && (
+            <div className="status">
+              <div className="spinner"></div>
+              <div>Fetching models from OpenRouter & ArtificialAnalysis…</div>
+            </div>
+          )}
+
+          {error && (
+            <div className="status error">{error}</div>
+          )}
+
+          {apiKey && !loading && !error && sorted.length > 0 && (
+            <>
+              <div className="result-count">
+                {matched.length} free models matched (of {matched.length + unmatched.length} on OpenRouter)
+              </div>
+              <div className="table-card">
+                <table>
+                  <thead>
+                    <tr>
+                      <th
+                        className={sortCol === 'name' ? 'sorted' : ''}
+                        onClick={() => toggleSort('name')}
+                      >
+                        Model <SortArrow active={sortCol === 'name'} desc={sortDesc} />
+                      </th>
+                      <th
+                        className={sortCol === 'score' ? 'sorted' : ''}
+                        onClick={() => toggleSort('score')}
+                        style={{ textAlign: 'right' }}
+                      >
+                        Intelligence Index <SortArrow active={sortCol === 'score'} desc={sortDesc} />
+                      </th>
+                      <th
+                        className={sortCol === 'price' ? 'sorted' : ''}
+                        onClick={() => toggleSort('price')}
+                        style={{ textAlign: 'right' }}
+                      >
+                        Price/M tokens <SortArrow active={sortCol === 'price'} desc={sortDesc} />
+                      </th>
+                      <th>Links</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map(row => {
+                      const score = row.aa?.evaluations?.artificial_analysis_intelligence_index ?? null;
+                      const isUnmatched = !row.aa && !row.refType;
+                      const isRef = !!row.refType;
+                      const key = row.or?.id || row.aa?.slug || Math.random();
+                      const name = (isRef && row.aa?.name) ? row.aa.name : (row.or?.name || row.aa?.name || '');
+                      return (
+                        <tr key={key} className={isRef ? 'ref-row' : (isUnmatched ? 'unmatched' : '')}>
+                          <td className="model-name">{name}</td>
+                          <td style={{ textAlign: 'right' }}>
+                            {score != null
+                              ? <span className="score">{score}</span>
+                              : <span className="no-score">—</span>
+                            }
+                          </td>
+                          <td style={{ textAlign: 'right' }} title={priceTooltip(row.or?.pricing)}>
+                            <span className="price" style={{ cursor: row.or?.pricing ? 'help' : 'default' }}>{formatPrice(row.price)}</span>
+                          </td>
+                          <td>
+                            <div className="links">
+                              {row.or && (
+                                <a href={`https://openrouter.ai/${row.or.id}`} target="_blank" rel="noopener">OpenRouter</a>
+                              )}
+                              {row.aa && (
+                                <a href={aaModelUrl(row.aa)} target="_blank" rel="noopener">AA</a>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {apiKey && !loading && !error && freeOrModels && sorted.length === 0 && (
+            <div className="status">No free models found on OpenRouter.</div>
+          )}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

@@ -92,7 +92,7 @@
       border-radius: 12px;
       overflow: hidden;
     }
-    table { width: 100%; border-collapse: collapse; }
+    table { width: 100%; border-collapse: collapse; min-width: 560px; }
     thead th {
       text-align: left;
       font-size: 0.78rem;
@@ -133,6 +133,29 @@
       font-size: 0.85rem;
       color: #6b7280;
       margin-bottom: 12px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 640px) {
+      body { padding: 20px 10px 40px; }
+      h1 { font-size: 1.4rem; }
+      .subtitle { font-size: 0.84rem; margin-bottom: 20px; }
+      .key-section { padding: 16px 10px; border-radius: 0; border-left: none; border-right: none; margin-left: -10px; margin-right: -10px; }
+      .key-row { flex-direction: column; }
+      .key-row input { width: 100%; }
+      .btn { width: 100%; text-align: center; }
+      .table-card { border-radius: 0; border-left: none; border-right: none; margin-left: -10px; margin-right: -10px; }
+      table { min-width: 0; }
+      thead th { padding: 10px 6px; font-size: 0.68rem; }
+      tbody td { padding: 9px 6px; font-size: 0.8rem; }
+      .links { gap: 6px; }
+      .links a { font-size: 0.75rem; }
+      .link-abbrev { display: inline; }
+      .link-full { display: none; }
+    }
+    @media (min-width: 641px) {
+      .link-abbrev { display: none; }
+      .link-full { display: inline; }
     }
   </style>
 </head>
@@ -253,23 +276,10 @@
       return { matched, unmatched };
     }
 
-    function ApiKeyPrompt({ apiKey, onSave, onCopyShareLink }) {
+    function ApiKeyPrompt({ apiKey, onSave, onCopyShareLink, show, onHide }) {
       const [input, setInput] = useState('');
-      const [editing, setEditing] = useState(!apiKey);
 
-      if (apiKey && !editing) {
-        const masked = apiKey.slice(0, 4) + '...' + apiKey.slice(-4);
-        return (
-          <div className="key-section">
-            <div className="key-saved">
-              <span>API key saved</span>
-              <span className="masked">{masked}</span>
-              <button className="btn btn-sm" onClick={() => setEditing(true)}>Change</button>
-              <button className="btn btn-sm" onClick={onCopyShareLink}>Copy share link</button>
-            </div>
-          </div>
-        );
-      }
+      if (!show) return null;
 
       return (
         <div className="key-section">
@@ -287,19 +297,24 @@
               placeholder="aa-..."
               value={input}
               onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { onSave(input.trim()); setEditing(false); } }}
+              onKeyDown={e => { if (e.key === 'Enter' && input.trim()) { onSave(input.trim()); onHide(); } }}
             />
             <button
               className="btn"
               disabled={!input.trim()}
-              onClick={() => { onSave(input.trim()); setEditing(false); }}
+              onClick={() => { onSave(input.trim()); onHide(); }}
             >
               Save
             </button>
             {apiKey && (
-              <button className="btn btn-sm" onClick={() => setEditing(false)}>Cancel</button>
+              <button className="btn btn-sm" onClick={onHide}>Cancel</button>
             )}
           </div>
+          {apiKey && (
+            <div style={{ marginTop: 12 }}>
+              <button className="btn btn-sm" onClick={onCopyShareLink}>Copy share link</button>
+            </div>
+          )}
         </div>
       );
     }
@@ -387,6 +402,7 @@
       const [error, setError] = useState('');
       const [sortCol, setSortCol] = useState('score');
       const [sortDesc, setSortDesc] = useState(true);
+      const [showConfig, setShowConfig] = useState(!apiKey);
 
       const saveKey = useCallback((key) => {
         localStorage.setItem(LS_KEY, key);
@@ -560,9 +576,12 @@
           <p className="subtitle">
             Free models from <a href="https://openrouter.ai/openrouter/free" target="_blank" rel="noopener">OpenRouter</a>,
             ranked by <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">ArtificialAnalysis</a> intelligence index. Paid models are included in grey rows for reference.
+            {apiKey && !showConfig && (
+              <>{' '}<a href="#" onClick={e => { e.preventDefault(); setShowConfig(true); }} style={{ fontSize: '0.85rem' }}>Config</a></>
+            )}
           </p>
 
-          <ApiKeyPrompt apiKey={apiKey} onSave={saveKey} onCopyShareLink={() => {
+          <ApiKeyPrompt apiKey={apiKey} onSave={(key) => { saveKey(key); setShowConfig(false); }} show={showConfig} onHide={() => setShowConfig(false)} onCopyShareLink={() => {
             const url = new URL(window.location.href);
             url.search = '';
             url.searchParams.set('key', apiKey);
@@ -570,10 +589,12 @@
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }} />
-          {copied && <div style={{ fontSize: '0.85rem', color: '#059669', marginTop: -20, marginBottom: 12 }}>Share link copied to clipboard!</div>}
+          {copied && <div style={{ fontSize: '0.85rem', color: '#059669', marginBottom: 12 }}>Share link copied to clipboard!</div>}
 
-          {!apiKey && (
-            <div className="status">Enter your ArtificialAnalysis API key above to get started.</div>
+          {!apiKey && !showConfig && (
+            <div className="status">
+              <a href="#" onClick={e => { e.preventDefault(); setShowConfig(true); }}>Enter your ArtificialAnalysis API key</a> to get started.
+            </div>
           )}
 
           {apiKey && loading && (
@@ -607,14 +628,14 @@
                         onClick={() => toggleSort('score')}
                         style={{ textAlign: 'right' }}
                       >
-                        Intelligence Index <SortArrow active={sortCol === 'score'} desc={sortDesc} />
+                        <span className="link-full">Intelligence Index</span><span className="link-abbrev">Score</span> <SortArrow active={sortCol === 'score'} desc={sortDesc} />
                       </th>
                       <th
                         className={sortCol === 'price' ? 'sorted' : ''}
                         onClick={() => toggleSort('price')}
                         style={{ textAlign: 'right' }}
                       >
-                        Price/M tokens <SortArrow active={sortCol === 'price'} desc={sortDesc} />
+                        <span className="link-full">Price/M tokens</span><span className="link-abbrev">$/M</span> <SortArrow active={sortCol === 'price'} desc={sortDesc} />
                       </th>
                       <th>Links</th>
                     </tr>
@@ -641,7 +662,7 @@
                           <td>
                             <div className="links">
                               {row.or && (
-                                <a href={`https://openrouter.ai/${row.or.id}`} target="_blank" rel="noopener">OpenRouter</a>
+                                <a href={`https://openrouter.ai/${row.or.id}`} target="_blank" rel="noopener"><span className="link-full">OpenRouter</span><span className="link-abbrev">OR</span></a>
                               )}
                               {row.aa && (
                                 <a href={aaModelUrl(row.aa)} target="_blank" rel="noopener">AA</a>

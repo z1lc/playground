@@ -92,7 +92,7 @@
       flex: 0 0 40%; min-height: 0;
       display: flex; flex-direction: column; gap: 12px;
     }
-    .map-disclaimer {
+    .site-disclaimer {
       flex: 0 0 auto;
       padding: 6px 10px;
       background: rgba(196, 30, 58, 0.08);
@@ -104,7 +104,7 @@
       text-align: center;
       letter-spacing: 0.3px;
     }
-    .map-disclaimer .disclaimer-icon { margin-right: 4px; }
+    .site-disclaimer .disclaimer-icon { margin-right: 4px; }
 
     .summary-pane {
       flex: 1 1 auto; min-width: 0;
@@ -704,9 +704,9 @@
           </div>
           <div className="bottom-row">
             <div className="left-pane">
-              <div className="map-disclaimer">
+              <div className="site-disclaimer">
                 <span className="disclaimer-icon">🚧</span>
-                Map still under construction — boundaries may have inaccuracies
+                Site still under construction — content may have inaccuracies
               </div>
               <RomeMap selectedEra={selectedEra} />
               <EraStats era={era} />

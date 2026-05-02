@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Largest M&amp;A Deals by US Presidential Term</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .subtitle em { color: #64748b; font-style: normal; }
+    .chart-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 16px 8px;
+    }
+    .recharts-default-tooltip {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      border-radius: 8px !important;
+    }
+    .legend-row {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 6px 14px 12px;
+      font-size: 12.5px;
+      color: #94a3b8;
+    }
+    .legend-row .swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: -1px;
+    }
+    .summary-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .summary-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+    .summary-card p { margin-bottom: 10px; }
+    .summary-card p:last-child { margin-bottom: 0; }
+    .summary-card a { color: #fbbf24; text-decoration: none; }
+    .summary-card a:hover { text-decoration: underline; }
+    .summary-card ul { padding-left: 22px; margin: 6px 0 10px; }
+    .summary-card li { margin-bottom: 4px; }
+
+    /* Custom tooltip table */
+    .deal-tip {
+      max-width: 520px;
+      font-size: 12.5px;
+    }
+    .deal-tip-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .deal-tip-header .term { font-weight: 700; font-size: 14px; color: #e2e8f0; }
+    .deal-tip-header .pres { color: #94a3b8; }
+    .deal-tip-header .total { margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #fbbf24; font-weight: 600; }
+    .deal-tip .term-meta { color: #64748b; font-size: 11.5px; margin-bottom: 8px; }
+    .deal-tip .term-meta .partial { color: #fb923c; font-style: italic; }
+    .deal-tip table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .deal-tip th, .deal-tip td {
+      padding: 3px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .deal-tip th {
+      font-weight: 500;
+      color: #64748b;
+      font-size: 11px;
+      border-bottom: 1px solid #334155;
+    }
+    .deal-tip td { color: #cbd5e1; }
+    .deal-tip td.num {
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+    }
+    .deal-tip td.year { color: #94a3b8; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .deal-tip tr.overridden td { font-style: italic; color: #94a3b8; }
+    .deal-tip .deal { font-weight: 500; color: #e2e8f0; }
+    .deal-tip .arrow { color: #64748b; margin: 0 4px; }
+
+    @media (max-width: 640px) {
+      body { padding: 20px 10px 40px; }
+      h1 { font-size: 1.3rem; }
+      .chart-card { padding: 12px 4px 4px; }
+      .summary-card { padding: 16px 18px; font-size: 13px; }
+      .deal-tip { max-width: 320px; font-size: 11px; }
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.2.0",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+      "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <div class="container">
+    <div class="summary-card">
+      <h2>Methodology</h2>
+      <p>
+        Each bar is the <strong>sum of the 10 largest M&amp;A deals announced during that presidential term</strong>,
+        with each deal expressed as a <strong>percentage of US nominal GDP for the year it was announced</strong>.
+        That normalizes for both inflation and overall economic growth &mdash; a $50B deal in 1995 represents a
+        much bigger share of the economy than a $50B deal in 2025. Hover any bar to see the underlying deals.
+      </p>
+      <p>
+        <strong>Data source:</strong>
+        <a href="https://en.wikipedia.org/wiki/List_of_largest_mergers_and_acquisitions" target="_blank" rel="noopener">
+          Wikipedia: List of largest mergers and acquisitions
+        </a>
+        (decade tables for the 1990s through 2020s; "Free market enterprises" section).
+        US nominal GDP from BEA NIPA annual series; 2025 and 2026 are projections.
+      </p>
+      <ul>
+        <li><strong>US-relevant only.</strong> At least one party must be US-headquartered. Foreign-only deals (Vodafone&ndash;Mannesmann, Cheung Kong&ndash;Hutchison, AB&nbsp;InBev&ndash;SABMiller, BHP unification, etc.) are out.</li>
+        <li><strong>Arm's-length market deals only.</strong> Excluded: 2008&ndash;09 government bailouts (AIG, Citi, BofA, GM); internal reorgs (Verizon&ndash;VZ Wireless 45%, Kinder Morgan/Energy Transfer MLP rollups, SpaceX&ndash;xAI); asset/spectrum/division-only deals (DuPont N&amp;B&ndash;IFF, GSK/Pfizer Consumer Health JV, AT&amp;T&ndash;EchoStar spectrum); failed or withdrawn deals (Pfizer&ndash;Allergan, Visa&ndash;Plaid, AstraZeneca&ndash;Gilead).</li>
+        <li><strong>Clinton I (1993&ndash;1997) is omitted</strong> &mdash; Wikipedia's list has only one US-relevant deal in that window (Bell Atlantic&ndash;NYNEX, 1996).</li>
+        <li><strong>Transition-year deals</strong> default to the post-inauguration term, with manual overrides where Wikipedia uses the close year (e.g., Sprint&ndash;Nextel was announced Dec 2004, so it's under Bush I). Overridden rows are <em>italicized</em> in the tooltip.</li>
+        <li><strong>Trump II is partial</strong> &mdash; 467 of the term's 1461 days, through 2026-05-02. The solid hatched bar is actual to date; the lighter dashed cap is the implied 4-year total at the current pace (actual &times; 1461/467). The label above the bar is the implied total.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import React, { useMemo } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+    import htm from 'htm';
+    const html = htm.bind(React.createElement);
+
+    // DATA_START
+    const DATA = {
+      "generatedAt": "2026-05-02",
+      "metric": "pctGdp",
+      "source": "https://en.wikipedia.org/wiki/List_of_largest_mergers_and_acquisitions",
+      "notes": [
+            "Top 10 US-relevant arm's-length deals per US presidential term, ranked by deal value as a percentage of US nominal GDP for the deal's year.",
+            "US-relevant means at least one party (acquirer or target) is US-headquartered. Foreign-only deals (e.g., Vodafone-Mannesmann, Cheung Kong-Hutchison) are excluded.",
+            "Non-market transactions are excluded: 2008 Treasury bailouts (AIG, Citigroup, BofA, GM), internal corporate reorgs (Verizon-VZ Wireless 45%, Kinder Morgan/ET MLP rollups, SpaceX-xAI Musk reorg), and asset/division-only deals (DuPont N&B-IFF, GSK/Pfizer Consumer Health Haleon JV, Bell Atlantic-Vodafone US Wireless JV, AT&T-EchoStar spectrum).",
+            "GDP figures are BEA annual nominal GDP in current US dollars; 2025 and 2026 are projections.",
+            "Failed/withdrawn megadeals (e.g., Pfizer-Allergan, Visa-Plaid) are excluded \u2014 only completed deals.",
+            "State-owned-enterprise restructurings (e.g., Shenhua-China Guodian) are excluded.",
+            "Clinton I (1993-01-20 to 1997-01-20) is omitted because Wikipedia's source list has only one US-relevant deal in that window (Bell Atlantic-NYNEX, 1996), making the bar misleading.",
+            "For transition years, deals default to the post-inauguration term; manual overrides apply where Wikipedia uses close-year for a deal announced in the previous term.",
+            "Trump II is in progress; bar covers 2025-01-20 through 2026-05-02 only."
+      ],
+      "terms": [
+            {
+                  "id": "clinton-2",
+                  "label": "Clinton II",
+                  "president": "Bill Clinton",
+                  "party": "D",
+                  "start": "1997-01-20",
+                  "end": "2001-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 7.8714,
+                  "deals": [
+                        {
+                              "acquirer": "AOL",
+                              "target": "Time Warner",
+                              "year": 2000,
+                              "nominal": 182.0,
+                              "gdpThatYear": 10251,
+                              "pctGdp": 1.7754,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Pfizer",
+                              "target": "Warner-Lambert",
+                              "year": 1999,
+                              "nominal": 90.0,
+                              "gdpThatYear": 9631,
+                              "pctGdp": 0.9345,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Exxon",
+                              "target": "Mobil",
+                              "year": 1998,
+                              "nominal": 77.2,
+                              "gdpThatYear": 9063,
+                              "pctGdp": 0.8518,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Citicorp",
+                              "target": "Travelers Group",
+                              "year": 1998,
+                              "nominal": 70.0,
+                              "gdpThatYear": 9063,
+                              "pctGdp": 0.7724,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "NationsBank",
+                              "target": "Bank America",
+                              "year": 1998,
+                              "nominal": 62.0,
+                              "gdpThatYear": 9063,
+                              "pctGdp": 0.6841,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "SBC Communications",
+                              "target": "Ameritech Corporation",
+                              "year": 1999,
+                              "nominal": 62.0,
+                              "gdpThatYear": 9631,
+                              "pctGdp": 0.6438,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Bell Atlantic",
+                              "target": "GTE",
+                              "year": 1998,
+                              "nominal": 53.36,
+                              "gdpThatYear": 9063,
+                              "pctGdp": 0.5888,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Vodafone Group",
+                              "target": "AirTouch Communications",
+                              "year": 1999,
+                              "nominal": 56.0,
+                              "gdpThatYear": 9631,
+                              "pctGdp": 0.5815,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "BP",
+                              "target": "Amoco",
+                              "year": 1998,
+                              "nominal": 49.0,
+                              "gdpThatYear": 9063,
+                              "pctGdp": 0.5407,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AT&T",
+                              "target": "Tele-Communications Inc.",
+                              "year": 1999,
+                              "nominal": 48.0,
+                              "gdpThatYear": 9631,
+                              "pctGdp": 0.4984,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "bush-1",
+                  "label": "Bush I",
+                  "president": "George W. Bush",
+                  "party": "R",
+                  "start": "2001-01-20",
+                  "end": "2005-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 3.7394,
+                  "deals": [
+                        {
+                              "acquirer": "Comcast",
+                              "target": "AT&T Broadband",
+                              "year": 2001,
+                              "nominal": 72.0,
+                              "gdpThatYear": 10582,
+                              "pctGdp": 0.6804,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AT&T",
+                              "target": "MediaOne",
+                              "year": 2002,
+                              "nominal": 62.0,
+                              "gdpThatYear": 10929,
+                              "pctGdp": 0.5673,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Pfizer",
+                              "target": "Pharmacia Corp.",
+                              "year": 2002,
+                              "nominal": 60.0,
+                              "gdpThatYear": 10929,
+                              "pctGdp": 0.549,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "JPMorgan Chase",
+                              "target": "Bank One Corporation",
+                              "year": 2004,
+                              "nominal": 58.0,
+                              "gdpThatYear": 12217,
+                              "pctGdp": 0.4747,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Bank of America",
+                              "target": "FleetBoston Financial",
+                              "year": 2003,
+                              "nominal": 47.0,
+                              "gdpThatYear": 11456,
+                              "pctGdp": 0.4103,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Cingular",
+                              "target": "AT&T Wireless",
+                              "year": 2004,
+                              "nominal": 41.0,
+                              "gdpThatYear": 12217,
+                              "pctGdp": 0.3356,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Sprint Corporation",
+                              "target": "Nextel Communications",
+                              "year": 2005,
+                              "nominal": 35.0,
+                              "gdpThatYear": 13039,
+                              "pctGdp": 0.2684,
+                              "dateOverridden": true
+                        },
+                        {
+                              "acquirer": "Hewlett Packard Company",
+                              "target": "Compaq",
+                              "year": 2001,
+                              "nominal": 25.0,
+                              "gdpThatYear": 10582,
+                              "pctGdp": 0.2363,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "American International Group",
+                              "target": "American General",
+                              "year": 2001,
+                              "nominal": 23.0,
+                              "gdpThatYear": 10582,
+                              "pctGdp": 0.2174,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "bush-2",
+                  "label": "Bush II",
+                  "president": "George W. Bush",
+                  "party": "R",
+                  "start": "2005-01-20",
+                  "end": "2009-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 3.1232,
+                  "deals": [
+                        {
+                              "acquirer": "AT&T",
+                              "target": "BellSouth",
+                              "year": 2006,
+                              "nominal": 67.0,
+                              "gdpThatYear": 13816,
+                              "pctGdp": 0.4849,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Procter & Gamble",
+                              "target": "Gillette",
+                              "year": 2005,
+                              "nominal": 57.0,
+                              "gdpThatYear": 13039,
+                              "pctGdp": 0.4372,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "InBev",
+                              "target": "Anheuser-Busch",
+                              "year": 2008,
+                              "nominal": 52.0,
+                              "gdpThatYear": 14770,
+                              "pctGdp": 0.3521,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Bank of America",
+                              "target": "Merrill Lynch & Co.",
+                              "year": 2008,
+                              "nominal": 50.0,
+                              "gdpThatYear": 14770,
+                              "pctGdp": 0.3385,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "ConocoPhillips",
+                              "target": "Burlington Resources",
+                              "year": 2005,
+                              "nominal": 35.6,
+                              "gdpThatYear": 13039,
+                              "pctGdp": 0.273,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Bank of America",
+                              "target": "MBNA",
+                              "year": 2005,
+                              "nominal": 34.2,
+                              "gdpThatYear": 13039,
+                              "pctGdp": 0.2623,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "The Blackstone Group",
+                              "target": "Equity Office",
+                              "year": 2006,
+                              "nominal": 36.0,
+                              "gdpThatYear": 13816,
+                              "pctGdp": 0.2606,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Mittal Steel Company",
+                              "target": "Arcelor",
+                              "year": 2006,
+                              "nominal": 33.65,
+                              "gdpThatYear": 13816,
+                              "pctGdp": 0.2436,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Telef\u00f3nica",
+                              "target": "O2",
+                              "year": 2005,
+                              "nominal": 31.6,
+                              "gdpThatYear": 13039,
+                              "pctGdp": 0.2423,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Nokia Corporation (Telecommunication Network Equipment Unit)",
+                              "target": "Siemens AG (Telecommunication Network Equipment Unit)",
+                              "year": 2006,
+                              "nominal": 31.6,
+                              "gdpThatYear": 13816,
+                              "pctGdp": 0.2287,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "obama-1",
+                  "label": "Obama I",
+                  "president": "Barack Obama",
+                  "party": "D",
+                  "start": "2009-01-20",
+                  "end": "2013-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 2.4437,
+                  "deals": [
+                        {
+                              "acquirer": "Pfizer",
+                              "target": "Wyeth",
+                              "year": 2009,
+                              "nominal": 68.0,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.4697,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Roche Holding AG",
+                              "target": "Genentech",
+                              "year": 2009,
+                              "nominal": 46.8,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.3232,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Merck & Co.",
+                              "target": "Schering-Plough",
+                              "year": 2009,
+                              "nominal": 41.1,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.2839,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "ExxonMobil",
+                              "target": "XTO Energy",
+                              "year": 2009,
+                              "nominal": 41.0,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.2832,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Comcast",
+                              "target": "General Electric ( NBCUniversal)",
+                              "year": 2009,
+                              "nominal": 30.0,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.2072,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Express Scripts",
+                              "target": "Medco Health Solutions",
+                              "year": 2011,
+                              "nominal": 29.1,
+                              "gdpThatYear": 15600,
+                              "pctGdp": 0.1865,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "T-Mobile US",
+                              "target": "MetroPCS",
+                              "year": 2012,
+                              "nominal": 29.6,
+                              "gdpThatYear": 16254,
+                              "pctGdp": 0.1821,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Berkshire Hathaway",
+                              "target": "Burlington Northern Santa Fe Corp.",
+                              "year": 2009,
+                              "nominal": 26.3,
+                              "gdpThatYear": 14478,
+                              "pctGdp": 0.1817,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Duke Energy",
+                              "target": "Progress Energy Inc",
+                              "year": 2011,
+                              "nominal": 26.0,
+                              "gdpThatYear": 15600,
+                              "pctGdp": 0.1667,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "CenturyLink",
+                              "target": "Qwest Corporation",
+                              "year": 2010,
+                              "nominal": 24.0,
+                              "gdpThatYear": 15049,
+                              "pctGdp": 0.1595,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "obama-2",
+                  "label": "Obama II",
+                  "president": "Barack Obama",
+                  "party": "D",
+                  "start": "2013-01-20",
+                  "end": "2017-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 3.5769,
+                  "deals": [
+                        {
+                              "acquirer": "Dow Chemical",
+                              "target": "E. I. du Pont de Nemours and Company",
+                              "year": 2015,
+                              "nominal": 130.0,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.7141,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Heinz",
+                              "target": "Kraft",
+                              "year": 2015,
+                              "nominal": 100.0,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.5493,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Charter Communications",
+                              "target": "Time Warner Cable",
+                              "year": 2015,
+                              "nominal": 78.7,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.4323,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Actavis",
+                              "target": "Allergan, Inc",
+                              "year": 2015,
+                              "nominal": 70.5,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.3872,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Dell",
+                              "target": "EMC Corporation",
+                              "year": 2015,
+                              "nominal": 67.0,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.368,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "British American Tobacco",
+                              "target": "R. J. Reynolds Tobacco Company",
+                              "year": 2017,
+                              "nominal": 49.0,
+                              "gdpThatYear": 19477,
+                              "pctGdp": 0.2516,
+                              "dateOverridden": true
+                        },
+                        {
+                              "acquirer": "Medtronic",
+                              "target": "Covidien",
+                              "year": 2014,
+                              "nominal": 42.9,
+                              "gdpThatYear": 17551,
+                              "pctGdp": 0.2444,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Teva Pharmaceutical Industries",
+                              "target": "Allergan plc ( Actavis Generics)",
+                              "year": 2015,
+                              "nominal": 40.5,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.2225,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Berkshire Hathaway",
+                              "target": "Precision Castparts",
+                              "year": 2015,
+                              "nominal": 37.2,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.2043,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Avago Technologies",
+                              "target": "Broadcom Corporation",
+                              "year": 2015,
+                              "nominal": 37.0,
+                              "gdpThatYear": 18206,
+                              "pctGdp": 0.2032,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "trump-1",
+                  "label": "Trump I",
+                  "president": "Donald Trump",
+                  "party": "R",
+                  "start": "2017-01-20",
+                  "end": "2021-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 2.8422,
+                  "deals": [
+                        {
+                              "acquirer": "United Technologies (Aerospace Division)",
+                              "target": "Raytheon",
+                              "year": 2019,
+                              "nominal": 121.0,
+                              "gdpThatYear": 21381,
+                              "pctGdp": 0.5659,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Linde AG",
+                              "target": "Praxair",
+                              "year": 2017,
+                              "nominal": 86.0,
+                              "gdpThatYear": 19477,
+                              "pctGdp": 0.4415,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "CVS Health",
+                              "target": "Aetna",
+                              "year": 2017,
+                              "nominal": 69.0,
+                              "gdpThatYear": 19477,
+                              "pctGdp": 0.3543,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AbbVie",
+                              "target": "Allergan plc",
+                              "year": 2019,
+                              "nominal": 63.0,
+                              "gdpThatYear": 21381,
+                              "pctGdp": 0.2947,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Groupe PSA",
+                              "target": "Fiat Chrysler",
+                              "year": 2019,
+                              "nominal": 50.0,
+                              "gdpThatYear": 21381,
+                              "pctGdp": 0.2339,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "S&P Global",
+                              "target": "IHS Markit",
+                              "year": 2020,
+                              "nominal": 44.0,
+                              "gdpThatYear": 21060,
+                              "pctGdp": 0.2089,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Comcast Corporation",
+                              "target": "Sky plc",
+                              "year": 2018,
+                              "nominal": 39.0,
+                              "gdpThatYear": 20533,
+                              "pctGdp": 0.1899,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "E.ON SE",
+                              "target": "Innogy SE",
+                              "year": 2018,
+                              "nominal": 38.5,
+                              "gdpThatYear": 20533,
+                              "pctGdp": 0.1875,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AstraZeneca",
+                              "target": "Alexion Pharmaceuticals",
+                              "year": 2020,
+                              "nominal": 39.0,
+                              "gdpThatYear": 21060,
+                              "pctGdp": 0.1852,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Liberty Global ( Virgin Media)",
+                              "target": "Telef\u00f3nica ( O2)",
+                              "year": 2020,
+                              "nominal": 38.0,
+                              "gdpThatYear": 21060,
+                              "pctGdp": 0.1804,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "biden",
+                  "label": "Biden",
+                  "president": "Joe Biden",
+                  "party": "D",
+                  "start": "2021-01-20",
+                  "end": "2025-01-20",
+                  "partial": false,
+                  "topDealsTotalPctGdp": 1.5451,
+                  "deals": [
+                        {
+                              "acquirer": "Microsoft",
+                              "target": "Activision Blizzard",
+                              "year": 2022,
+                              "nominal": 68.7,
+                              "gdpThatYear": 26007,
+                              "pctGdp": 0.2642,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Discovery, Inc.",
+                              "target": "AT&T ( WarnerMedia)",
+                              "year": 2021,
+                              "nominal": 43.0,
+                              "gdpThatYear": 23594,
+                              "pctGdp": 0.1822,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Elon Musk",
+                              "target": "Twitter, Inc.",
+                              "year": 2022,
+                              "nominal": 44.0,
+                              "gdpThatYear": 26007,
+                              "pctGdp": 0.1692,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Pfizer",
+                              "target": "Seagen",
+                              "year": 2023,
+                              "nominal": 43.0,
+                              "gdpThatYear": 27361,
+                              "pctGdp": 0.1572,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Blackstone Inc The Carlyle Group Hellman & Friedman",
+                              "target": "Medline Industries",
+                              "year": 2021,
+                              "nominal": 34.0,
+                              "gdpThatYear": 23594,
+                              "pctGdp": 0.1441,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Canadian Pacific Railway",
+                              "target": "Kansas City Southern",
+                              "year": 2021,
+                              "nominal": 31.0,
+                              "gdpThatYear": 23594,
+                              "pctGdp": 0.1314,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AerCap",
+                              "target": "General Electric ( GECAS)",
+                              "year": 2021,
+                              "nominal": 30.0,
+                              "gdpThatYear": 23594,
+                              "pctGdp": 0.1272,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Bunge Limited",
+                              "target": "Viterra",
+                              "year": 2023,
+                              "nominal": 34.0,
+                              "gdpThatYear": 27361,
+                              "pctGdp": 0.1243,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Square, Inc.",
+                              "target": "Afterpay",
+                              "year": 2021,
+                              "nominal": 29.0,
+                              "gdpThatYear": 23594,
+                              "pctGdp": 0.1229,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Capital One",
+                              "target": "Discover Financial",
+                              "year": 2024,
+                              "nominal": 35.3,
+                              "gdpThatYear": 28833,
+                              "pctGdp": 0.1224,
+                              "dateOverridden": false
+                        }
+                  ]
+            },
+            {
+                  "id": "trump-2",
+                  "label": "Trump II",
+                  "president": "Donald Trump",
+                  "party": "R",
+                  "start": "2025-01-20",
+                  "end": "2026-05-02",
+                  "partial": true,
+                  "topDealsTotalPctGdp": 1.7586,
+                  "deals": [
+                        {
+                              "acquirer": "Paramount Skydance",
+                              "target": "Warner Bros. Discovery",
+                              "year": 2026,
+                              "nominal": 111.0,
+                              "gdpThatYear": 32000,
+                              "pctGdp": 0.3469,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Union Pacific Railroad",
+                              "target": "Norfolk Southern Railway",
+                              "year": 2025,
+                              "nominal": 85.0,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.2787,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Unilever plc (Food Business)",
+                              "target": "McCormick & Company",
+                              "year": 2026,
+                              "nominal": 65.0,
+                              "gdpThatYear": 32000,
+                              "pctGdp": 0.2031,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Devon Energy",
+                              "target": "Coterra",
+                              "year": 2026,
+                              "nominal": 58.0,
+                              "gdpThatYear": 32000,
+                              "pctGdp": 0.1813,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Public Investment Fund Silver Lake Affinity Partners",
+                              "target": "Electronic Arts",
+                              "year": 2025,
+                              "nominal": 55.0,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.1803,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Kimberly-Clark",
+                              "target": "Kenvue",
+                              "year": 2025,
+                              "nominal": 48.7,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.1597,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "AI Infrastructure Partnership Microsoft Nvidia BlackRock BlackRock ( Global Infrastructure Partners) xAI MGX Fund Management Limited Temasek",
+                              "target": "Macquarie Group ( Aligned Data Centers)",
+                              "year": 2025,
+                              "nominal": 40.0,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.1311,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Alphabet Inc.",
+                              "target": "Wiz, Inc.",
+                              "year": 2025,
+                              "nominal": 32.0,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.1049,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Sysco",
+                              "target": "Kirsh Group ( Jetro Restaurant Depot)",
+                              "year": 2026,
+                              "nominal": 29.0,
+                              "gdpThatYear": 32000,
+                              "pctGdp": 0.0906,
+                              "dateOverridden": false
+                        },
+                        {
+                              "acquirer": "Palo Alto Networks",
+                              "target": "CyberArk",
+                              "year": 2025,
+                              "nominal": 25.0,
+                              "gdpThatYear": 30500,
+                              "pctGdp": 0.082,
+                              "dateOverridden": false
+                        }
+                  ],
+                  "daysElapsed": 467,
+                  "fullTermDays": 1461,
+                  "impliedFullTermPctGdp": 5.5017
+            }
+      ]
+};
+    // DATA_END
+
+    const PARTY_COLOR = { D: '#3b82f6', R: '#ef4444' };
+    const PARTIAL_FILL = 'url(#partialPattern)';
+
+    const fmtBshort = (v) => '$' + (v >= 1000 ? (v / 1000).toFixed(1) + 'T' : v.toFixed(0) + 'B');
+    const fmtPct = (v) => v.toFixed(2) + '%';
+    const fmtPct1 = (v) => v.toFixed(1) + '%';
+    const fmtPctDeal = (v) => v < 0.1 ? v.toFixed(3) + '%' : v.toFixed(2) + '%';
+
+    function CustomTooltip({ active, payload }) {
+      if (!active || !payload || !payload.length) return null;
+      const t = payload[0].payload;  // term object
+      const headerValue = t.partial
+        ? `${fmtPct(t.impliedFullTermPctGdp)} implied 4-yr`
+        : `${fmtPct(t.actualPctGdp)} of GDP`;
+      return html`
+        <div class="deal-tip recharts-default-tooltip" style=${{ padding: '10px 14px' }}>
+          <div class="deal-tip-header">
+            <span class="swatch" style=${{ background: PARTY_COLOR[t.party], width: 10, height: 10, borderRadius: 2, display: 'inline-block' }} />
+            <span class="term">${t.label}</span>
+            <span class="pres">${t.president}</span>
+            <span class="total">${headerValue}</span>
+          </div>
+          <div class="term-meta">
+            ${t.start} → ${t.end}
+            ${t.partial && html`<span class="partial"> · ${fmtPct(t.actualPctGdp)} actual over ${t.daysElapsed}/${t.fullTermDays} days</span>`}
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Acquirer → Target</th>
+                <th class="num">Year</th>
+                <th class="num">Nominal</th>
+                <th class="num">% of GDP</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${t.deals.map((d, i) => html`
+                <tr key=${i} class=${d.dateOverridden ? 'overridden' : ''}>
+                  <td>
+                    <span class="deal">${d.acquirer}</span>
+                    <span class="arrow">→</span>
+                    <span class="deal">${d.target}</span>
+                  </td>
+                  <td class="num year">${d.year}</td>
+                  <td class="num">${fmtBshort(d.nominal)}</td>
+                  <td class="num">${fmtPctDeal(d.pctGdp)}</td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function App() {
+      const chartData = useMemo(() => DATA.terms.map(t => {
+        const actual = t.topDealsTotalPctGdp;
+        const implied = t.partial ? t.impliedFullTermPctGdp : null;
+        const extension = implied != null ? Math.max(0, implied - actual) : 0;
+        return {
+          id: t.id,
+          label: t.label + (t.partial ? '*' : ''),
+          president: t.president,
+          party: t.party,
+          start: t.start,
+          end: t.end,
+          partial: t.partial,
+          actualPctGdp: actual,
+          impliedFullTermPctGdp: implied,
+          extensionPctGdp: extension,
+          displayPctGdp: implied != null ? implied : actual,
+          daysElapsed: t.daysElapsed,
+          fullTermDays: t.fullTermDays,
+          deals: t.deals,
+        };
+      }), []);
+
+      return html`
+        <div class="container">
+          <h1>Largest M&A Deals by US Presidential Term</h1>
+          <p class="subtitle">
+            Top 10 deals announced during each term, sized as a share of US GDP for each deal's year.
+            <em>Trump II* is partial (through ${DATA.generatedAt}); its hatched cap shows the implied 4-year total at the current pace.</em>
+          </p>
+          <div class="chart-card">
+            <${ResponsiveContainer} width="100%" height=${480}>
+              <${BarChart} data=${chartData} margin=${{ top: 16, right: 24, left: 16, bottom: 8 }}>
+                <defs>
+                  <pattern id="partialPattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                    <rect width="6" height="6" fill=${PARTY_COLOR.R} fillOpacity="0.65" />
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
+                  </pattern>
+                  <pattern id="impliedPattern" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+                    <rect width="6" height="6" fill=${PARTY_COLOR.R} fillOpacity="0.18" />
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.18)" strokeWidth="2" strokeDasharray="2 2" />
+                  </pattern>
+                </defs>
+                <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" vertical=${false} />
+                <${XAxis} dataKey="label" tick=${{ fill: '#cbd5e1', fontSize: 12.5 }} interval=${0} />
+                <${YAxis}
+                  tickFormatter=${fmtPct1}
+                  tick=${{ fill: '#94a3b8', fontSize: 12 }}
+                  width=${60}
+                  label=${{ value: '% of US GDP', angle: -90, position: 'insideLeft', offset: 18, style: { fill: '#64748b', fontSize: 12, textAnchor: 'middle' } }}
+                />
+                <${Tooltip}
+                  content=${(props) => html`<${CustomTooltip} ...${props} />`}
+                  cursor=${{ fill: 'rgba(255,255,255,0.04)' }}
+                  wrapperStyle=${{ outline: 'none' }}
+                />
+                <${Bar} dataKey="actualPctGdp" stackId="t" isAnimationActive=${false}>
+                  ${chartData.map((d) => html`
+                    <${Cell}
+                      key=${'a-' + d.id}
+                      fill=${d.partial ? 'url(#partialPattern)' : PARTY_COLOR[d.party]}
+                    />
+                  `)}
+                </>
+                <${Bar} dataKey="extensionPctGdp" stackId="t" radius=${[4, 4, 0, 0]} isAnimationActive=${false}>
+                  ${chartData.map((d) => html`
+                    <${Cell}
+                      key=${'e-' + d.id}
+                      fill="url(#impliedPattern)"
+                      stroke=${d.extensionPctGdp > 0 ? 'rgba(239,68,68,0.55)' : 'none'}
+                      strokeDasharray=${d.extensionPctGdp > 0 ? '4 3' : '0'}
+                      strokeWidth=${d.extensionPctGdp > 0 ? 1 : 0}
+                    />
+                  `)}
+                  <${LabelList}
+                    dataKey="displayPctGdp"
+                    position="top"
+                    formatter=${fmtPct}
+                    style=${{ fill: '#cbd5e1', fontSize: 11.5, fontWeight: 500 }}
+                  />
+                </>
+              </>
+            </>
+            <div class="legend-row">
+              <span><span class="swatch" style=${{ background: PARTY_COLOR.D }}></span>Democratic</span>
+              <span><span class="swatch" style=${{ background: PARTY_COLOR.R }}></span>Republican</span>
+              <span><span class="swatch" style=${{ background: PARTY_COLOR.R, opacity: 0.65, backgroundImage: 'repeating-linear-gradient(45deg, transparent 0 2px, rgba(255,255,255,0.35) 2px 4px)' }}></span>Partial term (actual to date)</span>
+              <span><span class="swatch" style=${{ background: PARTY_COLOR.R, opacity: 0.18, backgroundImage: 'repeating-linear-gradient(45deg, transparent 0 2px, rgba(255,255,255,0.18) 2px 4px)', border: '1px dashed rgba(239,68,68,0.55)' }}></span>Implied full term (extrapolated)</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

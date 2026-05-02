@@ -167,12 +167,19 @@ def build_payload(prices, drawdown, cum_return, holdings) -> dict:
     })
 
     # 3-5. Holdings-derived metrics. Each ETF entry in `holdings` is a list of
-    # monthly observations with {date, mag7Pct, aiBasketPct, techSectorPct}.
+    # monthly observations with {date, mag7Pct, aiBasketPct, techBroadPct}.
+    # We truncate to PRICE_START so the weight lines align with the
+    # cumulative-return / drawdown lines (no pre-2010 weight data without a
+    # corresponding price line on screen).
     def holdings_series(field: str) -> dict:
         out = {}
         for etf in ETFS:
             obs = holdings.get(etf, [])
-            out[etf] = [[o["date"], round(o[field], 4)] for o in obs if o.get(field) is not None]
+            out[etf] = [
+                [o["date"], round(o[field], 4)]
+                for o in obs
+                if o.get(field) is not None and o["date"] >= PRICE_START
+            ]
         return out
 
     metrics.append({

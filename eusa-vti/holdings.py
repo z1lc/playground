@@ -51,22 +51,28 @@ BASKET_CUSIPS: dict[str, set[str]] = {
 }
 
 BASKET_NAME_FRAGMENTS: dict[str, list[str]] = {
+    # Pre-2015: Google was "Google Inc.". Pre-2014: only "Class A" (no Class C
+    # split). Pre-2021: Meta was "Facebook, Inc.". Pre-2018: Broadcom was
+    # "Avago Technologies". The basket reflects current identity, but the
+    # fragments need historical names to match older N-Q filings.
     "AAPL":  ["APPLE INC"],
     "MSFT":  ["MICROSOFT"],
-    "GOOGL": ["ALPHABET INC CL A", "ALPHABET INC. CLASS A", "ALPHABET CL A"],
-    "GOOG":  ["ALPHABET INC CL C", "ALPHABET INC. CLASS C", "ALPHABET CL C"],
+    "GOOGL": ["ALPHABET INC CL A", "ALPHABET INC. CLASS A", "ALPHABET CL A",
+              "GOOGLE INC. CLASS A", "GOOGLE INC CL A"],
+    "GOOG":  ["ALPHABET INC CL C", "ALPHABET INC. CLASS C", "ALPHABET CL C",
+              "GOOGLE INC. CLASS C", "GOOGLE INC CL C"],
     "AMZN":  ["AMAZON.COM", "AMAZON COM"],
     "NVDA":  ["NVIDIA"],
-    "META":  ["META PLATFORMS"],
+    "META":  ["META PLATFORMS", "FACEBOOK INC", "FACEBOOK, INC"],
     "TSLA":  ["TESLA"],
-    "AVGO":  ["BROADCOM"],
+    "AVGO":  ["BROADCOM", "AVAGO TECHNOLOGIES"],
     "AMD":   ["ADVANCED MICRO DEVICES"],
     "ORCL":  ["ORACLE CORP"],
-    "CRM":   ["SALESFORCE"],
+    "CRM":   ["SALESFORCE", "SALESFORCE.COM"],
     "NFLX":  ["NETFLIX"],
     "PLTR":  ["PALANTIR"],
     "SMCI":  ["SUPER MICRO COMPUTER"],
-    "DELL":  ["DELL TECHNOLOGIES"],
+    "DELL":  ["DELL TECHNOLOGIES", "DELL INC"],
     "ARM":   ["ARM HOLDINGS"],
     "MU":    ["MICRON TECHNOLOGY"],
     "SNOW":  ["SNOWFLAKE"],
@@ -160,7 +166,7 @@ def extract_holdings(xml_str: str, target_series_id: str) -> dict | None:
         except ValueError:
             continue
         holdings.append({"name": name, "cusip": cusip, "pctVal": pct})
-    return {"repPdDate": rep_date, "holdings": holdings}
+    return {"repPdDate": rep_date, "holdings": holdings, "source": "n-port"}
 
 
 def aggregate(
@@ -269,14 +275,22 @@ def fetch_etf_holdings(
 
 
 def fetch_all_holdings(cache_dir: Path, headers: dict, offline: bool) -> dict[str, list[dict]]:
-    """Top-level entry: fetch holdings for both ETFs and aggregate metrics."""
+    """Top-level entry: fetch holdings for both ETFs and aggregate metrics.
+
+    Combines two SEC sources:
+      * N-PORT-P (monthly, 2019+) — via `fetch_etf_holdings()` here.
+      * N-Q (quarterly, pre-2019) — via `historical_holdings.fetch_etf_historical()`.
+
+    Both produce observations of shape `{repPdDate, holdings: [{name, cusip, pctVal}]}`,
+    which the same `aggregate()` function consumes downstream.
+    """
     cache_dir.mkdir(parents=True, exist_ok=True)
     targets = [
         ("EUSA", "0000930667", "S000028709"),
         ("VTI",  "0000036405", "S000002848"),
     ]
 
-    # Pass 1: extract holdings from cached XML for each ETF.
+    # Pass 1a: N-PORT extraction (2019-present).
     extracted_per_etf: dict[str, list[dict]] = {}
     all_names: set[str] = set()
     for etf, cik, series_id in targets:
@@ -287,7 +301,20 @@ def fetch_all_holdings(cache_dir: Path, headers: dict, offline: bool) -> dict[st
             for h in o["holdings"]:
                 if not sectors.is_skippable(h["name"]):
                     all_names.add(h["name"])
-    print(f"  collected {len(all_names)} unique holding names across both ETFs")
+
+    # Pass 1b: N-Q extraction (pre-2019). Same observation shape, just older.
+    import historical_holdings
+    print("  fetching pre-2019 N-Q holdings ...")
+    for etf, _, _ in targets:
+        nq_obs = historical_holdings.fetch_etf_historical(etf, cache_dir, headers, offline)
+        extracted_per_etf[etf].extend(nq_obs)
+        for o in nq_obs:
+            for h in o["holdings"]:
+                if not sectors.is_skippable(h["name"]):
+                    all_names.add(h["name"])
+        print(f"  [{etf}] N-Q observations: {len(nq_obs)}")
+
+    print(f"  collected {len(all_names)} unique holding names across both ETFs and both forms")
 
     # Pass 2a: name -> ticker.
     name_to_ticker = sectors.build_name_to_ticker_map(cache_dir, headers, offline)
@@ -306,11 +333,22 @@ def fetch_all_holdings(cache_dir: Path, headers: dict, offline: bool) -> dict[st
         tickers_needed, sector_cache_path, offline, progress_label="sectors"
     )
 
-    # Pass 3: aggregate per filing.
+    # Pass 3: aggregate per filing. Sort chronologically so N-Q (older) and
+    # N-PORT (newer) observations interleave correctly and the chart renders
+    # one continuous line per metric.
     out: dict[str, list[dict]] = {}
     for etf, _, _ in targets:
+        observations = sorted(extracted_per_etf[etf], key=lambda o: o["repPdDate"])
+        # Dedupe: if both N-Q and N-PORT happen to land on the same report
+        # date, prefer N-PORT (XML, more reliable).
+        by_date: dict[str, dict] = {}
+        for ext in observations:
+            d = ext["repPdDate"]
+            if d in by_date and ext.get("source") == "n-q":
+                continue
+            by_date[d] = ext
         agg = []
-        for ext in extracted_per_etf[etf]:
+        for ext in sorted(by_date.values(), key=lambda o: o["repPdDate"]):
             row = aggregate(ext, name_to_ticker, sector_map)
             agg.append({
                 "date": row["repPdDate"],

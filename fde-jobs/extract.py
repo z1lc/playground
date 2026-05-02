@@ -39,6 +39,7 @@ MANIFEST_PATH = SCRIPT_DIR / "manifest.json"
 LISTINGS_DIR = SCRIPT_DIR / "listings"
 EXTRACTED_DIR = SCRIPT_DIR / "extracted"
 DATA_PATH = SCRIPT_DIR / "data.json"
+COMPANY_DESCRIPTIONS_PATH = SCRIPT_DIR / "company_descriptions.json"
 INDEX_HTML_PATH = SCRIPT_DIR / "index.html"
 
 INDEX_DATA_BLOCK_RE = re.compile(
@@ -580,6 +581,13 @@ def main() -> None:
             ),
         })
 
+    company_descriptions: dict[str, str] = {}
+    if COMPANY_DESCRIPTIONS_PATH.exists():
+        try:
+            company_descriptions = json.loads(COMPANY_DESCRIPTIONS_PATH.read_text())
+        except json.JSONDecodeError:
+            print(f"WARN: {COMPANY_DESCRIPTIONS_PATH.name} is not valid JSON; ignoring.")
+
     bundle = {
         "metadata": {
             "stage1_fetched_at": manifest.get("metadata", {}).get("fetched_at"),
@@ -591,6 +599,7 @@ def main() -> None:
             "n_listings_failed": n_failed,
         },
         "categories": categories,
+        "company_descriptions": company_descriptions,
         "listings": bundle_listings,
     }
     DATA_PATH.write_text(json.dumps(bundle, indent=2) + "\n")

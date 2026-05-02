@@ -1,0 +1,61 @@
+{
+  "id": "vercel__forward-deployed-engineer-hybrid-london",
+  "extracted": {
+    "required_skill_areas": [
+      "frontend",
+      "prompt_engineering",
+      "agent_development"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [
+      "typescript"
+    ],
+    "software_tool_familiarity": [
+      "react"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "frontend": "to drive transformational outcomes across frontend modernization",
+      "prompt_engineering": "including prompt engineering, agent development, and tool use patterns",
+      "agent_development": "including prompt engineering, agent development, and tool use patterns"
+    },
+    "primary_role_motion": "You will embed directly with our most strategic enterprise customers to drive transformational outcomes across frontend modernization, platform migrations, and AI adoption.",
+    "deployment_environment": "all within customer environments",
+    "target_customer_industry": "Vercel helps customers like Ramp, Supreme, PayPal, and Under Armour",
+    "travel_requirement": "remote-first with significant travel (25-40%) to customer sites for embedded engagements.",
+    "ai_ml_depth": "Production experience with LLMs and AI applications, including prompt engineering, agent development, and tool use patterns.",
+    "customer_engagement_depth": "embed directly with our most strategic enterprise customers",
+    "target_user_persona": "you will work hands-on-keyboard alongside customer teams",
+    "solution_customization_level": "Build production AI solutions using Vercel's AI SDK and AI Cloud\u2014including conversational interfaces, production agents, MCP servers, and agentic workflows that transform customer operations.",
+    "programming_languages": {
+      "typescript": null
+    },
+    "software_tool_familiarity": {
+      "react": "Mastery of React and its ecosystem"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:45:09+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "073902aa18224dbbbdd43f8bf1a747665333d4285edab4f44ac55fb76a26a0a0",
+    "validation_warnings": [
+      "evidence[ai_ml_depth]: quote not found verbatim in listing body",
+      "evidence[target_user_persona]: quote not found verbatim in listing body",
+      "evidence[solution_customization_level]: quote not found verbatim in listing body",
+      "evidence[programming_languages]: expected object, got str",
+      "evidence[software_tool_familiarity.react]: quote not found verbatim in listing body"
+    ]
+  }
+}

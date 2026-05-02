@@ -1,0 +1,52 @@
+{
+  "id": "physical-intelligence__forward-deployed-robotics-engineer-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "physical_infrastructure",
+      "observability"
+    ],
+    "primary_role_motion": "field_hardware_ops",
+    "deployment_environment": "physical_hardware_or_edge",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "field_operators_and_military",
+    "solution_customization_level": "configuration_and_light_scripting",
+    "programming_languages": [
+      "python",
+      "bash"
+    ],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "physical_infrastructure": "Proficiency debugging electromechanical systems including actuators, PCBs, cameras, wiring harnesses, and communication hardware",
+      "observability": "Analyze telemetry, sensor data, and logs to form and test hypotheses about root causes"
+    },
+    "primary_role_motion": "first line of technical defense for our growing fleet of robotic systems deployed across warehouse and external data-collection environments",
+    "deployment_environment": "deployed across warehouse and external data-collection environments",
+    "target_customer_industry": null,
+    "travel_requirement": null,
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "Execute technically sound Failure Analysis / Root Cause Analysis procedures",
+    "target_user_persona": "Strongly Preferred: \u2022 Experience supporting multi-robot fleets, warehouse automation systems, or field robotics deployments",
+    "solution_customization_level": "Experience with log parsing and basic scripting for diagnostics (Python or Bash)",
+    "programming_languages": {
+      "python": "Python or Bash",
+      "bash": "Python or Bash"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:25+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "7525e6bc3d1b79a528fe231f87603b7952992234522f6b7e0cb49650fee1235a",
+    "validation_warnings": [
+      "evidence[target_user_persona]: quote not found verbatim in listing body"
+    ]
+  }
+}

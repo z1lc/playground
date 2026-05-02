@@ -1,0 +1,50 @@
+{
+  "id": "glean__founding-forward-deployed-engineer-new-york",
+  "extracted": {
+    "required_skill_areas": [
+      "prompt_engineering",
+      "agent_development"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "github",
+      "zendesk"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "prompt_engineering": "prompt engineering",
+      "agent_development": "agent development"
+    },
+    "primary_role_motion": "Your primary job is 0-to-1 product creation.",
+    "deployment_environment": "Glean is the Work AI platform",
+    "target_customer_industry": "With customers across 50+ industries",
+    "travel_requirement": "This role requires 25\u201350% travel.",
+    "ai_ml_depth": "You've shipped AI-powered solutions in the real world - prompt engineering, agent development, evaluation frameworks, deployment at scale.",
+    "customer_engagement_depth": "working in a pod with Forward Deployed PMs directly with the C-suite of the world's most influential companies",
+    "target_user_persona": "Be a technical partner to the C-suite",
+    "solution_customization_level": "build entirely new products",
+    "software_tool_familiarity": {
+      "github": "used daily across Microsoft Teams, Zoom, ServiceNow, Zendesk, GitHub",
+      "zendesk": "used daily across Microsoft Teams, Zoom, ServiceNow, Zendesk, GitHub"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "29e6ffcabc475cb42d99b8676cd3645eed11a9c90376f951e726e56a8c23097c",
+    "validation_warnings": []
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "hebbia__solutions-engineer-new-york-city",
+  "extracted": {
+    "required_skill_areas": [
+      "pre_sales",
+      "agent_development",
+      "prompt_engineering"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": null,
+    "target_customer_industry": "financial_services",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "configuration_and_light_scripting",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": true,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "pre_sales": "revenue-critical leader who owns the technical strategy in complex, high-scrutiny enterprise evaluations.",
+      "agent_development": "Design and configure tailored AI-powered workflows",
+      "prompt_engineering": "LLM based workflows"
+    },
+    "primary_role_motion": "The Solutions Engineering team converts buyer interest into enterprise conviction.",
+    "target_customer_industry": "The AI platform for investors and bankers",
+    "travel_requirement": null,
+    "ai_ml_depth": "Deep experience with AI systems, data platforms, LLM based workflows or decision intelligence platforms",
+    "customer_engagement_depth": "Own technical strategy from discovery through close in complex enterprise sales cycles",
+    "target_user_persona": "Demonstrable executive presence, able to earn trust from C-Suite practitioners",
+    "solution_customization_level": "Design and configure tailored AI-powered workflows",
+    "sales_quota_or_commission": "70:30 (50% split team & 50% individual) Uncapped on individual performance."
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:01+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "28a69e97a3e75c4b340a22ec4514014c8546f156270980c899fa86d805aa071e",
+    "validation_warnings": []
+  }
+}

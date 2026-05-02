@@ -1,0 +1,49 @@
+{
+  "id": "grafana-labs__staff-solutions-engineer-east-coast-remote-united-states-remote",
+  "extracted": {
+    "required_skill_areas": [
+      "pre_sales",
+      "observability"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "transactional_or_advisory",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "configuration_and_light_scripting",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "grafana"
+    ],
+    "sales_quota_or_commission": true,
+    "open_source_involvement": true,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "pre_sales": "5+ years of technical pre-sales experience",
+      "observability": "Metrics/Monitoring space"
+    },
+    "primary_role_motion": "5+ years of technical pre-sales experience",
+    "target_customer_industry": "more than 3,000 companies -- including Bloomberg, JPMorgan Chase, and eBay -- manage their observability strategies",
+    "travel_requirement": null,
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "We share our technical and product expertise with customers through demos, hands-on enablement, presentations, technical evaluations and ongoing interaction.",
+    "target_user_persona": "manage their observability strategies with the Grafana LGTM Stack",
+    "solution_customization_level": "Deliver product and technical presentations to potential and existing customers",
+    "software_tool_familiarity": {
+      "grafana": "Grafana, the open source visualization tool"
+    },
+    "sales_quota_or_commission": "In the United States the OTE (On-Target Earnings) compensation range for this role is $204,000 - $254,000.",
+    "open_source_involvement": "Grafana Labs is a remote-first, open-source powerhouse."
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "2e7c0a2801aa0f972701fd5e0a2b60cc5dc24f5dc019fabf99cf469f75c5350e",
+    "validation_warnings": []
+  }
+}

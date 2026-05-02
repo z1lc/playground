@@ -1,0 +1,57 @@
+{
+  "id": "palantir__forward-deployed-software-engineer-internship-france-new-york",
+  "extracted": {
+    "required_skill_areas": [
+      "data_engineering",
+      "frontend",
+      "databases"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [
+      "python",
+      "java",
+      "c++",
+      "typescript",
+      "javascript"
+    ],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "data_engineering": "wrangling massive-scale data",
+      "frontend": "coding a custom web app",
+      "databases": "storage systems"
+    },
+    "primary_role_motion": "Forward Deployed Software Engineers (FDSEs) work directly with customers to quickly understand their greatest problems and design and implement solutions to use data against them.",
+    "target_customer_industry": "some of the world\u2019s most important industries and institutions",
+    "travel_requirement": null,
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "You\u2019ll work in small teams with minimal supervision and own end-to-end execution of high stakes projects.",
+    "target_user_persona": "speaking with customer executives",
+    "solution_customization_level": "coding a custom web app",
+    "programming_languages": {
+      "python": "Proficiency with one or more programming languages, such as Python, Java, C++, TypeScript/JavaScript, or similar",
+      "java": "Proficiency with one or more programming languages, such as Python, Java, C++, TypeScript/JavaScript, or similar",
+      "c++": "Proficiency with one or more programming languages, such as Python, Java, C++, TypeScript/JavaScript, or similar",
+      "typescript": "Proficiency with one or more programming languages, such as Python, Java, C++, TypeScript/JavaScript, or similar",
+      "javascript": "Proficiency with one or more programming languages, such as Python, Java, C++, TypeScript/JavaScript, or similar"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:19+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "c1766d00677d8d9afeb23ed2ac8677f7a71810c7d4a0e026dd0de89c86b0b1a4",
+    "validation_warnings": []
+  }
+}

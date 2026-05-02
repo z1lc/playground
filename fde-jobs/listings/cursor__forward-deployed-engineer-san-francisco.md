@@ -1,0 +1,41 @@
+---
+id: "cursor__forward-deployed-engineer-san-francisco"
+company: Cursor (Anysphere)
+company_slug: cursor
+company_employee_estimate: 60
+title: Forward Deployed Engineer
+title_match: "forward-deployed"
+location: "San Francisco, CA"
+remote: onsite
+team: Forward Deployment
+posted_at: "2026-03-13T17:42:24.068+00:00"
+url: "https://jobs.ashbyhq.com/cursor/34cecd0c-c392-4454-8ef5-261310541011"
+ats: ashby
+compensation_raw: ""
+---
+
+# Forward Deployed Engineer at Cursor (Anysphere)
+
+Our mission is to automate coding. The first step in our journey is to build the best tool for professional programmers, using a combination of inventive research, design, and engineering. Our organization is very flat, and our team is small and talent dense. We particularly like people who are truth-seeking, passionate, and creative. We enjoy spirited debate, crazy ideas, and shipping code.
+
+Forward Deployed Engineers embed directly with customer engineering teams to ship production-grade Cursor workflows that measurably improve how they build software.
+
+You’ll figure out what’s actually slowing a team down, design a practical solution, and own it end-to-end — from first discovery call through launch, iteration, and post-production support. This is not a demo role. You are responsible for systems that work in the real world.
+
+## What you’ll do
+
+* Lead discovery with customer engineers to identify the real bottleneck and define clear success metrics
+* Design and build Cursor-powered workflows (e.g., large-scale refactors, migrations, PR review loops, incident → fix pipelines, spec → implementation systems)
+* Ship a fast first version in days, then harden it into something reliable over weeks with proper rollout plans, monitoring, and iteration based on real usage
+* Own production quality: tracing, evals, metrics, debugging model behavior, latency/cost tradeoffs, and failure modes
+* Work directly with Staff+/Platform/Eng leaders — going deep in code while also communicating clearly about tradeoffs and results
+* Turn what you build into reusable patterns and push improvements back into the core Cursor product
+
+## You may be a fit if
+
+* You thrive in ambiguity and can turn fuzzy problems into clear scopes and shipped systems.
+* You’ve built and owned AI-native workflows in production — not just prototypes — and have debugged real-world model failures
+* You’re comfortable leading discovery conversations and being accountable for customer outcomes
+* You build end-to-end. If it needs frontend, backend, infra, or prompt iteration, you’ll own it
+* You’ve handled production reliability before (metrics, alerts, safe rollouts, incident response)
+* You’re strong in Python and TypeScript/JavaScript and can ramp quickly on new stacks

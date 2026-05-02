@@ -1,0 +1,48 @@
+{
+  "id": "anduril__change-implementation-engineer-costa-mesa",
+  "extracted": {
+    "required_skill_areas": [
+      "compliance",
+      "configuration_management",
+      "plm"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": null,
+    "target_customer_industry": "defense_and_government",
+    "travel_requirement": "low_under_25_percent",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": null,
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "jira"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "compliance": "Familiarity with regulatory standards for aerospace systems.",
+      "configuration_management": "Strong understanding of configuration management principles and practices.",
+      "plm": "Experience with CAD and PLM packages."
+    },
+    "primary_role_motion": "define, build and commission a digital engineering thread from scratch",
+    "target_customer_industry": "Anduril Industries is a defense technology company with a mission to transform U.S. and allied military capabilities with advanced technology.",
+    "travel_requirement": "Willingness to travel to satellite Anduril sites (less than 25%).",
+    "ai_ml_depth": "Identifying and piloting opportunities to leverage Anduril\u2019s AI capabilities tools to unlock increased speed, accuracy, and efficiency within Anduril\u2019s configuration management activities.",
+    "target_user_persona": "a critical partner for Anduril engineering and operational leaders",
+    "solution_customization_level": "define, build and commission a digital engineering thread from scratch",
+    "software_tool_familiarity": {
+      "jira": "Experience with Teamcenter, Teamcenter Requirements, Teamcenter Quality, Confluence & JIRA."
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "8835deeeee4e7e8c58ba672688e70ed2f06ac067ab6a534ea925a0c05451492c",
+    "validation_warnings": []
+  }
+}

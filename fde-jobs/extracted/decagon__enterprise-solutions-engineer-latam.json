@@ -1,0 +1,45 @@
+{
+  "id": "decagon__enterprise-solutions-engineer-latam",
+  "extracted": {
+    "required_skill_areas": [
+      "pre_sales",
+      "agent_development"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "transactional_or_advisory",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": true,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "pre_sales": "4-6 years of customer facing experience in a sales engineering (pre-sales) role",
+      "agent_development": "Create and architect generative AI experiences for our customer\u2019s end users"
+    },
+    "primary_role_motion": "This role sits at the intersection of pre-sales engineering, product strategy, and enterprise architecture.",
+    "target_customer_industry": "industry-defining enterprises like Avis Budget Group, Block\u2019s Cash App and Square, Chime, Oura Health, and Hunter Douglas",
+    "travel_requirement": null,
+    "ai_ml_depth": "Create and architect generative AI experiences for our customer\u2019s end users",
+    "customer_engagement_depth": "You will serve as a technical advisor and trusted consultant to enterprise prospects and customers, driving value-based solutioning and integration",
+    "target_user_persona": "Communicate complex technical concepts clearly to diverse stakeholders, including C-level decision makers, business users, and engineering stakeholders",
+    "solution_customization_level": "integrating Decagon\u2019s AI-native platform into complex customer ecosystems",
+    "sales_quota_or_commission": "Offers Commission"
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "6c2d0635ae9fa6476f0581ea8cd5c1ddd2db7eab0d633a96e54534a29d9e31a0",
+    "validation_warnings": [
+      "evidence[solution_customization_level]: quote not found verbatim in listing body"
+    ]
+  }
+}

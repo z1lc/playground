@@ -1,0 +1,54 @@
+{
+  "id": "cartesia__founding-forward-deployed-engineer-india-bangalore",
+  "extracted": {
+    "required_skill_areas": [
+      "networking",
+      "kubernetes",
+      "security",
+      "observability",
+      "agent_development"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "kubernetes"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "networking": "Experience navigating enterprise constraints: authentication, networking, observability, and security reviews",
+      "kubernetes": "containerized environments (AWS, GCP, Kubernetes)",
+      "security": "Experience navigating enterprise constraints: authentication, networking, observability, and security reviews",
+      "observability": "Experience navigating enterprise constraints: authentication, networking, observability, and security reviews",
+      "agent_development": "delivering agentic voice AI solutions"
+    },
+    "primary_role_motion": "FDEs maximize customer success and revenue by turning Cartesia\u2019s core product into deployed, high-impact solutions.",
+    "deployment_environment": "Deploy across cloud, VPC, and on-prem environments",
+    "target_customer_industry": "embedding directly with enterprise customers",
+    "travel_requirement": null,
+    "ai_ml_depth": "Integrating APIs and distributed services into real-world infrastructure",
+    "customer_engagement_depth": "embedding directly with enterprise customers",
+    "target_user_persona": "Clear, structured communicator comfortable engaging with senior technical stakeholders",
+    "solution_customization_level": "Transform one-off solutions into repeatable playbooks, templates, and reference architectures.",
+    "software_tool_familiarity": {
+      "kubernetes": "containerized environments (AWS, GCP, Kubernetes)"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "ffde35845e9fbc8a56068183125da7ccb28c374f8cd80e016e1c828f459865c5",
+    "validation_warnings": []
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "id": "linear__solutions-engineer-europe-london",
+  "extracted": {
+    "required_skill_areas": [
+      "pre_sales",
+      "databases",
+      "security"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "sql",
+      "python",
+      "javascript"
+    ],
+    "software_tool_familiarity": [
+      "git",
+      "github",
+      "jira"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "pre_sales": "with a primary focus on pre-sales revenue impact",
+      "databases": "Comfort with SQL",
+      "security": "security and architecture reviews"
+    },
+    "primary_role_motion": "with a primary focus on pre-sales revenue impact",
+    "deployment_environment": null,
+    "target_customer_industry": "more than 25,000 companies (including OpenAI, Coinbase, and Ramp)",
+    "travel_requirement": null,
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "You will stay engaged through onboarding to ensure technical continuity",
+    "target_user_persona": "to plan, build, and ship their products",
+    "solution_customization_level": "Strong hands-on experience with OAuth2 and GraphQL, data migrations, and product integrations",
+    "programming_languages": {
+      "sql": "Comfort with SQL",
+      "python": "scripting (e.g., Python or JavaScript)",
+      "javascript": "scripting (e.g., Python or JavaScript)"
+    },
+    "software_tool_familiarity": {
+      "git": "Experience with Github and git",
+      "github": "Experience with Github and git",
+      "jira": "Linear and/or Jira strongly preferred"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:05+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "1b95dc578b939227256ce2224c8c0213be6642ce694022ecfe02892bbc8fe810",
+    "validation_warnings": []
+  }
+}

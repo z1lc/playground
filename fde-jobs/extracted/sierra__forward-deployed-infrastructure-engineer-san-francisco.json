@@ -1,0 +1,58 @@
+{
+  "id": "sierra__forward-deployed-infrastructure-engineer-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "networking",
+      "security",
+      "compliance",
+      "observability",
+      "pre_sales"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "terraform",
+      "datadog",
+      "grafana"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "networking": "cloud networking (VPCs, IAM, DNS, load balancing)",
+      "security": "navigating security reviews",
+      "compliance": "compliance requirements",
+      "observability": "you think about upgrades, rollbacks, monitoring, and failure modes from the start",
+      "pre_sales": "scope infrastructure requirements during pre-sales"
+    },
+    "primary_role_motion": "Manage the full infrastructure lifecycle for some of Sierra\u2019s most critical customers: initial deployment, ongoing upgrades, scaling, and incident support.",
+    "deployment_environment": "deployments in customer-owned cloud environments",
+    "target_customer_industry": null,
+    "travel_requirement": null,
+    "ai_ml_depth": "4+ years of experience in infrastructure, DevOps, platform engineering, or solutions architecture roles",
+    "customer_engagement_depth": "initial deployment, ongoing upgrades, scaling, and incident support",
+    "target_user_persona": "Work with customers' platform engineering, security, and DevOps teams",
+    "solution_customization_level": "automation tooling to make operations repeatable",
+    "software_tool_familiarity": {
+      "terraform": "Deep experience with AWS services, Terraform",
+      "datadog": "Familiarity with observability and incident management in distributed systems (Prometheus, Grafana, Datadog, or similar)",
+      "grafana": "Familiarity with observability and incident management in distributed systems (Prometheus, Grafana, Datadog, or similar)"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:44+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "965e0d436168a1db92df585e1f5c30b134b75cd3bc6a7b83a1c632c81ef18ead",
+    "validation_warnings": []
+  }
+}

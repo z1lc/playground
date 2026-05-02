@@ -1,0 +1,55 @@
+{
+  "id": "vannevar-labs__forward-deployed-engineer-ts-sci-clearance-required-remote",
+  "extracted": {
+    "required_skill_areas": [
+      "databases",
+      "frontend",
+      "compliance",
+      "security"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "defense_and_government",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "field_operators_and_military",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "react",
+      "s3"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": true
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "databases": "familiarity with relational databases (like Postgres)",
+      "frontend": "modern front-end frameworks (like React)",
+      "compliance": "Experience developing and deploying software compliant with DoD Risk Management Framework (RMF)",
+      "security": "ensuring solutions meet security, compliance, and operational constraints"
+    },
+    "primary_role_motion": "Architect, build, and own software solutions deployed directly to customer environments in support of mission-critical use cases",
+    "deployment_environment": "deployed directly to customer environments",
+    "target_customer_industry": "Vannevar is a defense technology company building AI to deter our adversaries.",
+    "travel_requirement": "travel up to 20\u201330%",
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "serve as the primary technical point of contact for customer stakeholders, engaging with senior technical leaders",
+    "target_user_persona": "You will work directly with operators, analysts, and technical stakeholders supporting national security missions",
+    "solution_customization_level": "Architect, build, and own software solutions deployed directly to customer environments in support of mission-critical use cases",
+    "software_tool_familiarity": {
+      "react": "modern front-end frameworks (like React)",
+      "s3": "object storage systems (like S3)"
+    },
+    "requires_active_security_clearance": "Must hold an active **U.S. TS Security clearance with SCI Eligibility**"
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:44:04+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "90fbb60bb2d36630f67a0d02e4b7bf4205444f0604a218ea3469abcc9b6372b8",
+    "validation_warnings": []
+  }
+}

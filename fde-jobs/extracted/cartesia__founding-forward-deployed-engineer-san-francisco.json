@@ -1,0 +1,56 @@
+{
+  "id": "cartesia__founding-forward-deployed-engineer-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "networking",
+      "kubernetes",
+      "security",
+      "observability",
+      "agent_development"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": null,
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "kubernetes"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "networking": "networking",
+      "kubernetes": "Kubernetes",
+      "security": "security reviews",
+      "observability": "observability",
+      "agent_development": "agentic voice AI solutions"
+    },
+    "primary_role_motion": "embedding directly with enterprise customers and delivering agentic voice AI solutions into their production environments.",
+    "deployment_environment": "Deploy across cloud, VPC, and on-prem environments",
+    "target_customer_industry": "enterprise customers",
+    "travel_requirement": null,
+    "ai_ml_depth": "agentic voice AI solutions",
+    "customer_engagement_depth": "Own deployments end-to-end \u2014 Lead discovery, architecture, implementation, and rollout for strategic customer engagements.",
+    "solution_customization_level": "Write and ship production-grade code \u2014 Design, build, and deploy voice AI systems that power real enterprise workflows.",
+    "software_tool_familiarity": {
+      "kubernetes": "Kubernetes"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "1bb2565adf7f83900eae0d3379527efc319ac5b3e08d400ec0af4ea065cb57b6",
+    "validation_warnings": [
+      "evidence[customer_engagement_depth]: quote not found verbatim in listing body",
+      "evidence[solution_customization_level]: quote not found verbatim in listing body"
+    ]
+  }
+}

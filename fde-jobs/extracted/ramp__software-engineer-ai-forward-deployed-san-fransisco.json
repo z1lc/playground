@@ -1,0 +1,43 @@
+{
+  "id": "ramp__software-engineer-ai-forward-deployed-san-fransisco",
+  "extracted": {
+    "required_skill_areas": [
+      "agent_development",
+      "pre_sales"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "agent_development": "build internal and external agents",
+      "pre_sales": "Collaborate closely with Sales, Solutions, Customer Success, and Account Management to close deals"
+    },
+    "primary_role_motion": "build internal and external agents to serve our largest customers",
+    "deployment_environment": null,
+    "target_customer_industry": "the largest and most complex companies in the world",
+    "travel_requirement": null,
+    "ai_ml_depth": "agent-first",
+    "customer_engagement_depth": "interact directly with customers and deliver solutions end to end",
+    "target_user_persona": "finance teams",
+    "solution_customization_level": "deliver software end to end"
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:30+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "78723edcb9e68c4954bba3ed4290101f4994f8009fa716fc26f4501a84654c91",
+    "validation_warnings": []
+  }
+}

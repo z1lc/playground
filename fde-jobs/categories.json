@@ -1,0 +1,203 @@
+{
+  "metadata": {
+    "generated_at": "2026-05-02T08:37:51+00:00",
+    "model": "google/gemini-3.1-pro-preview",
+    "n_listings_seen": 53,
+    "max_categories": 15,
+    "hint": null,
+    "n_categories_generated": 13,
+    "n_categories_kept": 13,
+    "n_validation_errors": 0,
+    "n_booleans": 3,
+    "input_hash": "c54997111aa070b67163dbaa3c288c877ef3a85608ecf7df84dbad85335a30b4"
+  },
+  "categories": [
+    {
+      "key": "required_skill_areas",
+      "name": "Required Skill Areas",
+      "description": "Extract 2-5 specific technical skill domains demanded by the role. Use a controlled vocabulary in lowercase snake_case. Choose from: networking, kubernetes, gpu_programming, llm_inference, model_training, distributed_systems, data_engineering, frontend, mobile, security, compliance, physical_infrastructure, databases, observability, prompt_engineering, agent_development, pre_sales, government_clearance. If a skill isn't in this list but is highly prominent, create a concise snake_case tag for it.",
+      "type": "list[string]",
+      "examples": [
+        "[\"kubernetes\", \"cloud_vpc_on_prem\", \"security\"]",
+        "[\"prompt_engineering\", \"agent_development\", \"frontend\"]"
+      ]
+    },
+    {
+      "key": "primary_role_motion",
+      "name": "Primary Role Motion",
+      "description": "Identify the primary phase of the customer lifecycle this role operates in. Use 'pre_sales_focus' for roles driving technical wins before a deal closes. Use 'post_sales_implementation' for deploying existing products. Use 'zero_to_one_builder' for creating entirely new bespoke products for customers. Use 'field_hardware_ops' for physical deployment and maintenance.",
+      "type": "enum",
+      "enum_values": [
+        "pre_sales_focus",
+        "post_sales_implementation",
+        "zero_to_one_builder",
+        "field_hardware_ops"
+      ],
+      "examples": [
+        "pre_sales_focus",
+        "zero_to_one_builder"
+      ]
+    },
+    {
+      "key": "deployment_environment",
+      "name": "Deployment Environment",
+      "description": "Where the software or systems are primarily being deployed. Use 'customer_vpc_or_on_prem' for deploying into the customer's own secure infrastructure. Use 'managed_cloud_saas' for integrating with a vendor-hosted cloud platform. Use 'physical_hardware_or_edge' for deploying to physical devices, robots, or field hardware.",
+      "type": "enum",
+      "enum_values": [
+        "customer_vpc_or_on_prem",
+        "managed_cloud_saas",
+        "physical_hardware_or_edge"
+      ],
+      "examples": [
+        "customer_vpc_or_on_prem",
+        "managed_cloud_saas"
+      ]
+    },
+    {
+      "key": "target_customer_industry",
+      "name": "Target Customer Industry",
+      "description": "The primary industry or sector of the customers this role serves. If not explicitly focused on a single vertical, use 'general_enterprise'.",
+      "type": "enum",
+      "enum_values": [
+        "defense_and_government",
+        "financial_services",
+        "healthcare",
+        "retail_and_hospitality",
+        "ai_and_developers",
+        "general_enterprise"
+      ],
+      "examples": [
+        "defense_and_government",
+        "general_enterprise"
+      ]
+    },
+    {
+      "key": "travel_requirement",
+      "name": "Travel Requirement",
+      "description": "The expected amount of travel to customer sites or field locations. Extract from percentages or descriptions. Use 'none_or_unstated' if travel is not mentioned.",
+      "type": "enum",
+      "enum_values": [
+        "high_over_50_percent",
+        "moderate_25_to_50_percent",
+        "low_under_25_percent",
+        "none_or_unstated"
+      ],
+      "examples": [
+        "moderate_25_to_50_percent",
+        "none_or_unstated"
+      ]
+    },
+    {
+      "key": "ai_ml_depth",
+      "name": "AI/ML Depth",
+      "description": "The level of AI/ML technical depth required for the role. Use 'model_training_and_tuning' if it requires PyTorch, fine-tuning, or GPU optimization. Use 'agent_and_prompt_engineering' if it requires LLM APIs, RAG, or LangChain. Use 'api_integration_only' for basic REST API usage without deep ML knowledge. Use 'not_ai_focused' for traditional software or infrastructure roles.",
+      "type": "enum",
+      "enum_values": [
+        "model_training_and_tuning",
+        "agent_and_prompt_engineering",
+        "api_integration_only",
+        "not_ai_focused"
+      ],
+      "examples": [
+        "agent_and_prompt_engineering",
+        "not_ai_focused"
+      ]
+    },
+    {
+      "key": "customer_engagement_depth",
+      "name": "Customer Engagement Depth",
+      "description": "How deeply the engineer embeds with the customer's team. Use 'deep_embed_months' if they act as a founding engineer/partner for the customer. Use 'project_based_weeks' for standard implementation/migration projects. Use 'transactional_or_advisory' for short pre-sales demos, support tickets, or architectural advice.",
+      "type": "enum",
+      "enum_values": [
+        "deep_embed_months",
+        "project_based_weeks",
+        "transactional_or_advisory"
+      ],
+      "examples": [
+        "deep_embed_months",
+        "transactional_or_advisory"
+      ]
+    },
+    {
+      "key": "target_user_persona",
+      "name": "Target User Persona",
+      "description": "The primary persona the engineer is building for or supporting at the customer organization.",
+      "type": "enum",
+      "enum_values": [
+        "software_engineers",
+        "data_scientists_and_ml_engineers",
+        "business_executives_and_operators",
+        "field_operators_and_military"
+      ],
+      "examples": [
+        "software_engineers",
+        "business_executives_and_operators"
+      ]
+    },
+    {
+      "key": "solution_customization_level",
+      "name": "Solution Customization Level",
+      "description": "How much custom code the engineer writes per customer. Use 'bespoke_product_development' for building net-new applications from scratch. Use 'heavy_integration_and_glue_code' for writing scripts, data pipelines, and API connectors. Use 'configuration_and_light_scripting' for mostly UI configuration, standard SDK setup, or YAML.",
+      "type": "enum",
+      "enum_values": [
+        "bespoke_product_development",
+        "heavy_integration_and_glue_code",
+        "configuration_and_light_scripting"
+      ],
+      "examples": [
+        "heavy_integration_and_glue_code",
+        "bespoke_product_development"
+      ]
+    },
+    {
+      "key": "programming_languages",
+      "name": "Programming Languages",
+      "description": "Specific programming languages explicitly required or strongly preferred in the listing. Return as lowercase strings. Return an empty list if none are specified.",
+      "type": "list[string]",
+      "examples": [
+        "[\"python\", \"typescript\"]",
+        "[\"go\", \"c++\", \"sql\"]"
+      ]
+    },
+    {
+      "key": "software_tool_familiarity",
+      "name": "Software & Tool Familiarity",
+      "description": "Specific named products, SaaS services, named open-source projects, and vendor tools the listing mentions a candidate should be familiar with (as opposed to generic skill areas, which live in `required_skill_areas`). You MUST only use values from this exact list: 'airflow', 'ansible', 'claude', 'codex', 'cursor', 'databricks', 'datadog', 'docker', 'git', 'github', 'grafana', 'jira', 'kubernetes', 'linux', 'pytorch', 'react', 's3', 'slack', 'snowflake', 'terraform', 'v0', 'zendesk'. Items NOT in that list MUST be omitted. Return an empty list if no listed tool is explicitly named.",
+      "type": "list[string]",
+      "examples": [
+        "[\"datadog\", \"grafana\", \"kubernetes\"]",
+        "[\"airflow\", \"snowflake\", \"databricks\"]"
+      ]
+    },
+    {
+      "key": "sales_quota_or_commission",
+      "name": "Sales Quota or Commission",
+      "description": "True if the compensation or role description explicitly mentions a sales quota, commission, OTE (On-Target Earnings), or pre-sales revenue impact. False otherwise.",
+      "type": "boolean",
+      "examples": [
+        true,
+        false
+      ]
+    },
+    {
+      "key": "open_source_involvement",
+      "name": "Open Source Involvement",
+      "description": "True if the role explicitly involves contributing to, supporting, or leveraging open-source projects as a core responsibility. False otherwise.",
+      "type": "boolean",
+      "examples": [
+        true,
+        false
+      ]
+    },
+    {
+      "key": "requires_active_security_clearance",
+      "name": "Requires Active Security Clearance",
+      "description": "True if the role explicitly requires an active government security clearance (e.g., Secret, TS/SCI) to apply or perform the job. False otherwise.",
+      "type": "boolean",
+      "examples": [
+        true,
+        false
+      ]
+    }
+  ]
+}

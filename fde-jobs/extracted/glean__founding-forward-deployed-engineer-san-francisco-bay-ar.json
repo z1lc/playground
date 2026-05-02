@@ -1,0 +1,58 @@
+{
+  "id": "glean__founding-forward-deployed-engineer-san-francisco-bay-ar",
+  "extracted": {
+    "required_skill_areas": [
+      "agent_development",
+      "prompt_engineering",
+      "full_stack"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [],
+    "software_tool_familiarity": [
+      "github",
+      "zendesk"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "agent_development": "Production AI experience: You've shipped AI-powered solutions in the real world - prompt engineering, agent development, evaluation frameworks, deployment at scale.",
+      "prompt_engineering": "Production AI experience: You've shipped AI-powered solutions in the real world - prompt engineering, agent development, evaluation frameworks, deployment at scale.",
+      "full_stack": "Full-stack technical depth: Strong programming skills across the stack with a deep understanding of and experience with how enterprise systems actually work."
+    },
+    "primary_role_motion": "Your primary job is 0-to-1 product creation.",
+    "deployment_environment": "powering intelligent Search, an AI Assistant, and scalable AI agents on one secure, open platform.",
+    "target_customer_industry": "Glean is a fully horizontal AI platform",
+    "travel_requirement": "This role requires 25\u201350% travel.",
+    "ai_ml_depth": "Production AI experience: prompt engineering, agent development, evaluation frameworks, deployment at scale.",
+    "customer_engagement_depth": "You'll join as a founding member of Glean's forward deployed team and operate with the autonomy and accountability of a founder.",
+    "target_user_persona": "Be a technical partner to the C-suite",
+    "solution_customization_level": "You won't be configuring existing products or optimizing within defined constraints. You'll identify the biggest unsolved business problems at our most strategic customers, build entirely new products to solve them.",
+    "software_tool_familiarity": {
+      "github": "you\u2019ll help build systems used daily across Microsoft Teams, Zoom, ServiceNow, Zendesk, GitHub, and many more",
+      "zendesk": "you\u2019ll help build systems used daily across Microsoft Teams, Zoom, ServiceNow, Zendesk, GitHub, and many more"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "7411658f7a50eded7ebae572e2465c5257eee089c924dc7dbf9be44fb11fd859",
+    "validation_warnings": [
+      "evidence[required_skill_areas.agent_development]: quote not found verbatim in listing body",
+      "evidence[required_skill_areas.prompt_engineering]: quote not found verbatim in listing body",
+      "evidence[required_skill_areas.full_stack]: quote not found verbatim in listing body",
+      "evidence[ai_ml_depth]: quote not found verbatim in listing body",
+      "evidence[solution_customization_level]: quote not found verbatim in listing body"
+    ]
+  }
+}

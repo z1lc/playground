@@ -1,0 +1,435 @@
+# Curated list of prestigious smaller (<1k employees) tech companies that hire
+# Forward-Deployed-Engineer-archetype roles. Edit freely.
+#
+# Fields:
+#   name              Company display name.
+#   slug              File-safe identifier; used as a key across all stages.
+#   employee_estimate Public estimate. ~1k+ companies are kept but flagged.
+#   ats               greenhouse | lever | ashby | custom
+#                     (custom = HTML fetch + OpenRouter LLM extraction)
+#   board_id          ATS-specific board identifier.
+#   careers_url       Used for the `custom` ATS path and as a human reference.
+#   notes             Free-form context.
+
+companies:
+  # === AI labs / model companies ===
+  - name: Anthropic
+    slug: anthropic
+    employee_estimate: 1000
+    ats: greenhouse
+    board_id: anthropic
+    careers_url: https://www.anthropic.com/careers
+    notes: Borderline 1k. Known FDE program (Applied AI, Federal Civilian).
+
+  - name: Cohere
+    slug: cohere
+    employee_estimate: 450
+    ats: ashby
+    board_id: cohere
+    careers_url: https://cohere.com/careers
+
+  - name: Mistral
+    slug: mistral
+    employee_estimate: 150
+    ats: lever
+    board_id: mistral
+    careers_url: https://jobs.lever.co/mistral
+    notes: Heavy on "AI Deployment Strategist" titles — won't match strict FDE regex but Solutions Engineer roles do.
+
+  - name: Perplexity
+    slug: perplexity
+    employee_estimate: 200
+    ats: ashby
+    board_id: perplexity
+    careers_url: https://www.perplexity.ai/hub/careers
+
+  - name: xAI
+    slug: xai
+    employee_estimate: 600
+    ats: greenhouse
+    board_id: xai
+    careers_url: https://x.ai/careers
+
+  - name: Cursor (Anysphere)
+    slug: cursor
+    employee_estimate: 60
+    ats: ashby
+    board_id: cursor
+    careers_url: https://www.cursor.com/careers
+
+  - name: Together AI
+    slug: together
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: togetherai
+    careers_url: https://www.together.ai/careers
+
+  # === Vertical AI / agent companies ===
+  - name: Decagon
+    slug: decagon
+    employee_estimate: 150
+    ats: ashby
+    board_id: decagon
+    careers_url: https://decagon.ai/careers
+
+  - name: Sierra
+    slug: sierra
+    employee_estimate: 200
+    ats: ashby
+    board_id: sierra
+    careers_url: https://sierra.ai/careers
+
+  - name: Harvey
+    slug: harvey
+    employee_estimate: 300
+    ats: ashby
+    board_id: harvey
+    careers_url: https://www.harvey.ai/careers
+
+  - name: Hebbia
+    slug: hebbia
+    employee_estimate: 90
+    ats: greenhouse
+    board_id: hebbia
+    careers_url: https://www.hebbia.com/careers
+
+  - name: Speak
+    slug: speak
+    employee_estimate: 200
+    ats: ashby
+    board_id: speak
+    careers_url: https://www.speak.com/careers
+
+  - name: Imbue
+    slug: imbue
+    employee_estimate: 50
+    ats: greenhouse
+    board_id: imbue
+    careers_url: https://imbue.com/careers
+
+  - name: Mercor
+    slug: mercor
+    employee_estimate: 100
+    ats: ashby
+    board_id: mercor
+    careers_url: https://mercor.com/careers
+
+  - name: ElevenLabs
+    slug: elevenlabs
+    employee_estimate: 200
+    ats: ashby
+    board_id: elevenlabs
+    careers_url: https://elevenlabs.io/careers
+
+  - name: Runway
+    slug: runway
+    employee_estimate: 150
+    ats: ashby
+    board_id: runway
+    careers_url: https://runwayml.com/careers
+
+  # === Dev / infra ===
+  - name: Modal
+    slug: modal
+    employee_estimate: 50
+    ats: ashby
+    board_id: modal
+    careers_url: https://modal.com/careers
+
+  - name: Linear
+    slug: linear
+    employee_estimate: 80
+    ats: ashby
+    board_id: linear
+    careers_url: https://linear.app/careers
+
+  - name: Crusoe
+    slug: crusoe
+    employee_estimate: 700
+    ats: ashby
+    board_id: crusoe
+    careers_url: https://www.crusoe.ai/careers
+
+  # === Fintech / SaaS ===
+  - name: Mercury
+    slug: mercury
+    employee_estimate: 700
+    ats: greenhouse
+    board_id: mercury
+    careers_url: https://mercury.com/jobs
+
+  - name: Vanta
+    slug: vanta
+    employee_estimate: 800
+    ats: ashby
+    board_id: vanta
+    careers_url: https://www.vanta.com/careers
+
+  - name: Ramp
+    slug: ramp
+    employee_estimate: 1000
+    ats: ashby
+    board_id: ramp
+    careers_url: https://ramp.com/careers
+    notes: Borderline 1k.
+
+  - name: Sourcegraph
+    slug: sourcegraph
+    employee_estimate: 200
+    ats: greenhouse
+    board_id: sourcegraph91
+    careers_url: https://sourcegraph.com/careers
+    notes: Their public site is JS-rendered; the Greenhouse board is the source of truth.
+
+  - name: Glean
+    slug: glean
+    employee_estimate: 700
+    ats: greenhouse
+    board_id: gleanwork
+    careers_url: https://www.glean.com/careers
+    notes: Their public site is JS-rendered; the Greenhouse board is the source of truth.
+
+  # ============================================================
+  # Expansion batch 1 — additional companies across verticals
+  # ============================================================
+
+  # === More AI labs / agent companies ===
+  - name: Cognition
+    slug: cognition
+    employee_estimate: 80
+    ats: ashby
+    board_id: cognition
+    careers_url: https://cognition.ai/careers
+    notes: Makers of Devin.
+
+  - name: Lovable
+    slug: lovable
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: lovable
+    careers_url: https://lovable.dev/careers
+
+  - name: Continue
+    slug: continue
+    employee_estimate: 30
+    ats: ashby
+    board_id: continue
+    careers_url: https://www.continue.dev/careers
+
+  - name: Letta
+    slug: letta
+    employee_estimate: 30
+    ats: ashby
+    board_id: letta
+    careers_url: https://www.letta.com/careers
+    notes: Formerly MemGPT.
+
+  - name: Suno
+    slug: suno
+    employee_estimate: 100
+    ats: ashby
+    board_id: suno
+    careers_url: https://suno.com/careers
+
+  - name: Pika
+    slug: pika
+    employee_estimate: 60
+    ats: ashby
+    board_id: pika
+    careers_url: https://pika.art/careers
+
+  - name: Character.AI
+    slug: character-ai
+    employee_estimate: 200
+    ats: ashby
+    board_id: character
+    careers_url: https://character.ai/careers
+
+  - name: Stability AI
+    slug: stability-ai
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: stabilityai
+    careers_url: https://stability.ai/careers
+
+  # === Voice / multimodal AI ===
+  - name: Cartesia
+    slug: cartesia
+    employee_estimate: 50
+    ats: ashby
+    board_id: cartesia
+    careers_url: https://cartesia.ai/careers
+
+  - name: Deepgram
+    slug: deepgram
+    employee_estimate: 250
+    ats: ashby
+    board_id: deepgram
+    careers_url: https://deepgram.com/careers
+
+  - name: Bland AI
+    slug: bland-ai
+    employee_estimate: 50
+    ats: ashby
+    board_id: bland
+    careers_url: https://www.bland.ai/careers
+
+  - name: Vapi
+    slug: vapi
+    employee_estimate: 50
+    ats: ashby
+    board_id: vapi
+    careers_url: https://vapi.ai/careers
+
+  # === Data infra / databases ===
+  - name: Pinecone
+    slug: pinecone
+    employee_estimate: 200
+    ats: ashby
+    board_id: pinecone
+    careers_url: https://www.pinecone.io/careers
+
+  - name: MotherDuck
+    slug: motherduck
+    employee_estimate: 80
+    ats: ashby
+    board_id: motherduck
+    careers_url: https://motherduck.com/careers
+
+  - name: Turbopuffer
+    slug: turbopuffer
+    employee_estimate: 30
+    ats: ashby
+    board_id: turbopuffer
+    careers_url: https://turbopuffer.com/careers
+
+  - name: ClickHouse
+    slug: clickhouse
+    employee_estimate: 250
+    ats: greenhouse
+    board_id: clickhouse
+    careers_url: https://clickhouse.com/careers
+
+  - name: Weaviate
+    slug: weaviate
+    employee_estimate: 100
+    ats: ashby
+    board_id: weaviate
+    careers_url: https://weaviate.io/company/careers
+
+  # === Dev tools / platforms ===
+  - name: Vercel
+    slug: vercel
+    employee_estimate: 500
+    ats: greenhouse
+    board_id: vercel
+    careers_url: https://vercel.com/careers
+
+  - name: Replit
+    slug: replit
+    employee_estimate: 200
+    ats: ashby
+    board_id: replit
+    careers_url: https://replit.com/careers
+
+  # === Observability / DevOps ===
+  - name: Sentry
+    slug: sentry
+    employee_estimate: 700
+    ats: ashby
+    board_id: sentry
+    careers_url: https://sentry.io/careers
+
+  - name: Honeycomb
+    slug: honeycomb
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: honeycomb
+    careers_url: https://www.honeycomb.io/careers
+
+  - name: Grafana Labs
+    slug: grafana-labs
+    employee_estimate: 1100
+    ats: greenhouse
+    board_id: grafanalabs
+    careers_url: https://grafana.com/about/careers/
+    notes: Borderline ~1k.
+
+  # === Healthcare AI ===
+  - name: Abridge
+    slug: abridge
+    employee_estimate: 250
+    ats: ashby
+    board_id: abridge
+    careers_url: https://www.abridge.com/careers
+
+  - name: Suki
+    slug: suki
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: suki
+    careers_url: https://www.suki.ai/careers
+
+  - name: Nabla
+    slug: nabla
+    employee_estimate: 100
+    ats: ashby
+    board_id: nabla
+    careers_url: https://www.nabla.com/careers
+
+  # === Defense / national-security ===
+  - name: Palantir
+    slug: palantir
+    employee_estimate: 4000
+    ats: lever
+    board_id: palantir
+    careers_url: https://jobs.lever.co/palantir
+    notes: "Above 1k — named exception. Coined the term 'Forward Deployed Engineer'."
+
+  - name: Anduril
+    slug: anduril
+    employee_estimate: 3500
+    ats: greenhouse
+    board_id: andurilindustries
+    careers_url: https://www.anduril.com/careers
+    notes: "Above 1k — named exception. FDE-archetype heavy for defense customers."
+
+  - name: Helsing
+    slug: helsing
+    employee_estimate: 600
+    ats: greenhouse
+    board_id: helsing
+    careers_url: https://helsing.ai/jobs
+
+  - name: Vannevar Labs
+    slug: vannevar-labs
+    employee_estimate: 150
+    ats: greenhouse
+    board_id: vannevarlabs
+    careers_url: https://www.vannevarlabs.com/careers
+
+  - name: Sayari
+    slug: sayari
+    employee_estimate: 250
+    ats: greenhouse
+    board_id: sayari
+    careers_url: https://sayari.com/careers
+
+  # === Robotics / physical AI ===
+  - name: Physical Intelligence
+    slug: physical-intelligence
+    employee_estimate: 100
+    ats: ashby
+    board_id: physicalintelligence
+    careers_url: https://www.physicalintelligence.company/careers
+
+  - name: Figure
+    slug: figure
+    employee_estimate: 250
+    ats: greenhouse
+    board_id: figure
+    careers_url: https://www.figure.ai/careers
+
+# Considered but not added (no public ATS endpoint discovered):
+#   Codeium / Windsurf, Magic.dev, Retool, Hippocratic AI, Skild AI, 1X
+# Re-probe these periodically; they may have a Workday or custom careers page.

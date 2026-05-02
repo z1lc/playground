@@ -1,0 +1,58 @@
+{
+  "id": "perplexity__member-of-technical-staff-forward-deployed-engineer-applied-new-york-city",
+  "extracted": {
+    "required_skill_areas": [
+      "prompt_engineering",
+      "agent_development",
+      "distributed_systems"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "python",
+      "javascript",
+      "typescript",
+      "java"
+    ],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "prompt_engineering": "Production experience building LLM-powered systems, including prompt engineering, agent workflows, evaluation, and deploying AI systems at scale",
+      "agent_development": "Production experience building LLM-powered systems, including prompt engineering, agent workflows, evaluation, and deploying AI systems at scale",
+      "distributed_systems": "Deep experience with APIs and distributed systems"
+    },
+    "primary_role_motion": "Work directly with customers to design and deploy these integrations in production.",
+    "deployment_environment": "Our API Platform powers search, retrieval, and automation across structured and unstructured data",
+    "target_customer_industry": "integrating search, retrieval, and AI capabilities into enterprise systems",
+    "travel_requirement": null,
+    "ai_ml_depth": "Production experience building LLM-powered systems, including prompt engineering, agent workflows, evaluation, and deploying AI systems at scale",
+    "customer_engagement_depth": "You\u2019ll embed with teams, connect Perplexity into their existing stack, and build systems that automate real work.",
+    "target_user_persona": "engaging both technical teams and executive stakeholders",
+    "solution_customization_level": "Develop and operationalize integrations using APIs, event-driven architectures, and workflow orchestration, including deploying Perplexity Computer for multi-step, agent-driven workflows",
+    "programming_languages": {
+      "python": "Strong programming ability in Python (plus one of JavaScript/TypeScript, Java, etc.)",
+      "javascript": "Strong programming ability in Python (plus one of JavaScript/TypeScript, Java, etc.)",
+      "typescript": "Strong programming ability in Python (plus one of JavaScript/TypeScript, Java, etc.)",
+      "java": "Strong programming ability in Python (plus one of JavaScript/TypeScript, Java, etc.)"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:24+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "4536633dcad389c89e182f4b117b9eccce025849a37386bda7a61a4be66aaf8e",
+    "validation_warnings": [
+      "evidence[deployment_environment]: quote not found verbatim in listing body"
+    ]
+  }
+}

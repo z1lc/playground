@@ -1,0 +1,41 @@
+{
+  "id": "deepgram__forward-deployed-engineer-deepgram-for-restaurants-new-york",
+  "extracted": {
+    "required_skill_areas": [
+      "pre_sales"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "retail_and_hospitality",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "pre_sales": "This role also includes up to 50% travel to meet with customers, support sales engagements"
+    },
+    "primary_role_motion": "You deploy Deepgram\u2019s voice AI platform into complex restaurant environments and make it work in the real world.",
+    "deployment_environment": "Deepgram\u2019s voice-native foundation models are accessed through cloud APIs or as self-hosted and on-premises software",
+    "target_customer_industry": "Forward Deployed Engineer, Deepgram for Restaurants",
+    "travel_requirement": "This role also includes up to 50% travel to meet with customers, support sales engagements",
+    "ai_ml_depth": "You are comfortable working across APIs, SDKs, webhooks, cloud infrastructure, and customer tech stacks.",
+    "customer_engagement_depth": "You embed with enterprise restaurant brands and restaurant technology partners, learn their systems deeply, and integrate our platform into the core of their operations.",
+    "target_user_persona": "You partner closely with Sales, Product, and Engineering, but you are just as comfortable on a customer\u2019s Slack channel walking their team through an API integration.",
+    "solution_customization_level": "Adapt and configure Deepgram\u2019s platform to meet each customer\u2019s unique operational requirements \u2014 menu structures, ordering flows, POS integrations, edge cases, and everything in between."
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "c37f045121b90f0642d444c678cfb7b1d8f33e511bfe407e37a2ae3fc384bb24",
+    "validation_warnings": []
+  }
+}

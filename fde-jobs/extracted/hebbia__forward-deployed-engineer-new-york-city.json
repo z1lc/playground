@@ -1,0 +1,63 @@
+{
+  "id": "hebbia__forward-deployed-engineer-new-york-city",
+  "extracted": {
+    "required_skill_areas": [
+      "fullstack",
+      "cloud_platforms",
+      "data_engineering",
+      "pre_sales"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "financial_services",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "python",
+      "typescript",
+      "go"
+    ],
+    "software_tool_familiarity": [
+      "s3",
+      "snowflake"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "fullstack": "Strong full-stack engineering skills",
+      "cloud_platforms": "Experience with cloud platforms (e.g., AWS) and modern backend technologies (Python, TypeScript, Go)",
+      "data_engineering": "Experience with data integrations, ETL pipelines, or enterprise data systems (S3, Snowflake, SharePoint, etc.) is a plus",
+      "pre_sales": "Experience with customer-facing engineering roles (solutions engineering, professional services, or similar) is a plus"
+    },
+    "primary_role_motion": "You will spend the majority of your time embedded with Hebbia\u2019s most strategic customers, building the last mile of our platform for their specific workflows, data, and domain.",
+    "deployment_environment": "Write production code that deploys through our CI/CD pipelines and meets our engineering standards",
+    "target_customer_industry": "The AI platform for investors and bankers",
+    "travel_requirement": null,
+    "ai_ml_depth": "Build custom integrations, workflow automations, and domain-specific solutions on top of Hebbia\u2019s platform",
+    "customer_engagement_depth": "Return from engagements and work with engineering and product to generalize reusable patterns into platform capabilities",
+    "target_user_persona": "The AI platform for investors and bankers",
+    "solution_customization_level": "Build custom integrations, workflow automations, and domain-specific solutions on top of Hebbia\u2019s platform",
+    "programming_languages": {
+      "python": "Experience with cloud platforms (e.g., AWS) and modern backend technologies (Python, TypeScript, Go)",
+      "typescript": "Experience with cloud platforms (e.g., AWS) and modern backend technologies (Python, TypeScript, Go)",
+      "go": "Experience with cloud platforms (e.g., AWS) and modern backend technologies (Python, TypeScript, Go)"
+    },
+    "software_tool_familiarity": {
+      "s3": "Experience with data integrations, ETL pipelines, or enterprise data systems (S3, Snowflake, SharePoint, etc.) is a plus",
+      "snowflake": "Experience with data integrations, ETL pipelines, or enterprise data systems (S3, Snowflake, SharePoint, etc.) is a plus"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "c2ce59a0cbbd297e37ec186722ff63c5b2f42fe8d2c9ceb137840a51aeae8947",
+    "validation_warnings": []
+  }
+}

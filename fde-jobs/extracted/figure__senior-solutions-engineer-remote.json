@@ -1,0 +1,45 @@
+{
+  "id": "figure__senior-solutions-engineer-remote",
+  "extracted": {
+    "required_skill_areas": [
+      "api_integration",
+      "identity_management",
+      "security"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "financial_services",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "api_integration": "Strong fluency with APIs and integration patterns (REST, JSON, webhooks), including the ability to design and debug end-to-end integrations.",
+      "identity_management": "Deep understanding of authentication and identity standards (OAuth 2.0, SAML, SCIM) and secure system design principles.",
+      "security": "Deep understanding of authentication and identity standards (OAuth 2.0, SAML, SCIM) and secure system design principles."
+    },
+    "primary_role_motion": "This role sits at the intersection of Sales, Product, and Engineering and is responsible for designing integration solutions, accelerating onboarding, and ensuring partners fully leverage our API, webhook, and identity infrastructure.",
+    "deployment_environment": "ensuring partners fully leverage our API, webhook, and identity infrastructure.",
+    "target_customer_industry": "architect and scale technical integrations for mortgage lending partners",
+    "travel_requirement": null,
+    "ai_ml_depth": "We are seeking a Solutions Engineer to architect and scale technical integrations for mortgage lending partners.",
+    "customer_engagement_depth": "You will work with enterprise and institutional partners from technical discovery through integration and early scale as a trusted technical advisor.",
+    "target_user_persona": "Bridge partner engineering teams with internal Product and Engineering",
+    "solution_customization_level": "Designing and documenting integration architectures, workflows, and data exchanges."
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "92510c201c584b7973846909edadcd57e6257a06232648cacffb3495799cea79",
+    "validation_warnings": []
+  }
+}

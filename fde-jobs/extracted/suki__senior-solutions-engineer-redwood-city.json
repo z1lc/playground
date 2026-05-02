@@ -1,0 +1,69 @@
+{
+  "id": "suki__senior-solutions-engineer-redwood-city",
+  "extracted": {
+    "required_skill_areas": [
+      "kubernetes",
+      "distributed_systems",
+      "frontend",
+      "security"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "healthcare",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "python",
+      "golang",
+      "java",
+      "typescript",
+      "javascript"
+    ],
+    "software_tool_familiarity": [
+      "kubernetes",
+      "pytorch",
+      "react"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "kubernetes": "Our tech stack includes GCP, Kubernetes, Vertex AI, Golang, Python, C++, PyTorch, JAX, Transformers, GPT, LLAMA, MoE, gRPC, Javascript.",
+      "distributed_systems": "Previous experience deploying distributed applications in both onsite and cloud hosted datacenters.",
+      "frontend": "Medium-level proficiency with Typescript, Javascript, React.",
+      "security": "Familiarity with OpenAPI 3.0 and basic knowledge of API security."
+    },
+    "primary_role_motion": "The Solutions team at Suki works most closely with our Platform customers, integrating their systems and applications with the Suki Platform APIs and SDKs.",
+    "deployment_environment": "Previous experience deploying distributed applications in both onsite and cloud hosted datacenters.",
+    "target_customer_industry": "Suki is reimagining the healthcare technology stack to make the lives of clinicians better.",
+    "travel_requirement": null,
+    "ai_ml_depth": "The Solutions team at Suki works most closely with our Platform customers, integrating their systems and applications with the Suki Platform APIs and SDKs.",
+    "customer_engagement_depth": "Proven ability to estimate project complexity and timelines, and deliver within those estimates.",
+    "target_user_persona": "you\u2019re accustomed to working onsite and with customers\u2019 technology and IT teams.",
+    "solution_customization_level": "The Solutions team at Suki works most closely with our Platform customers, integrating their systems and applications with the Suki Platform APIs and SDKs.",
+    "programming_languages": {
+      "python": "High-level proficiency in one of the following: Python, Golang, or Java.",
+      "golang": "High-level proficiency in one of the following: Python, Golang, or Java.",
+      "java": "High-level proficiency in one of the following: Python, Golang, or Java.",
+      "typescript": "Medium-level proficiency with Typescript, Javascript, React.",
+      "javascript": "Medium-level proficiency with Typescript, Javascript, React."
+    },
+    "software_tool_familiarity": {
+      "kubernetes": "Our tech stack includes GCP, Kubernetes, Vertex AI, Golang, Python, C++, PyTorch, JAX, Transformers, GPT, LLAMA, MoE, gRPC, Javascript.",
+      "pytorch": "Our tech stack includes GCP, Kubernetes, Vertex AI, Golang, Python, C++, PyTorch, JAX, Transformers, GPT, LLAMA, MoE, gRPC, Javascript.",
+      "react": "Medium-level proficiency with Typescript, Javascript, React."
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:48+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "58067881d03741e65b64550a930897e5134b2c65d4d2315d9b8ff89de8a50294",
+    "validation_warnings": []
+  }
+}

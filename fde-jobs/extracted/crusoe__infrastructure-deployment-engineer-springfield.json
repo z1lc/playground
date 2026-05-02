@@ -1,0 +1,40 @@
+{
+  "id": "crusoe__infrastructure-deployment-engineer-springfield",
+  "extracted": {
+    "required_skill_areas": [
+      "physical_infrastructure"
+    ],
+    "primary_role_motion": "field_hardware_ops",
+    "deployment_environment": "physical_hardware_or_edge",
+    "target_customer_industry": "ai_and_developers",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "project_based_weeks",
+    "target_user_persona": null,
+    "solution_customization_level": "configuration_and_light_scripting",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "physical_infrastructure": "The Cloud Data Center Whitespace Deployment Engineer is responsible for executing the physical deployment of data center whitespace environments"
+    },
+    "primary_role_motion": "The Cloud Data Center Whitespace Deployment Engineer is responsible for executing the physical deployment of data center whitespace environments",
+    "deployment_environment": "Manage on-site deployment of whitespace infrastructure including rack positioning, floor grid layouts, and containment systems",
+    "target_customer_industry": "to power the world's most ambitious AI workloads",
+    "travel_requirement": "Willingness to travel to construction sites, typically 25\u201350% or more",
+    "ai_ml_depth": "Manage on-site deployment of whitespace infrastructure including rack positioning, floor grid layouts, and containment systems",
+    "customer_engagement_depth": "The Cloud Data Center Whitespace Deployment Engineer is responsible for executing the physical deployment of data center whitespace environments, serving as the bridge between engineering design and operational implementation.",
+    "solution_customization_level": "Develop and standardize deployment playbooks to reduce time-to-market for new capacity"
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "f07658ff0430d93855a413c270a92331f8f41d75ad21043a407a84bb755b45d0",
+    "validation_warnings": []
+  }
+}

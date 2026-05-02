@@ -1,0 +1,84 @@
+---
+id: "glean__founding-forward-deployed-engineer-san-francisco-bay-ar"
+company: Glean
+company_slug: glean
+company_employee_estimate: 700
+title: Founding Forward Deployed Engineer
+title_match: "forward-deployed"
+location: San Francisco Bay Area
+remote: onsite
+team: ""
+posted_at: "2026-04-22T10:29:42-04:00"
+url: "https://job-boards.greenhouse.io/gleanwork/jobs/4651990005"
+ats: greenhouse
+compensation_raw: "$160,000-$270,000 "
+---
+
+# Founding Forward Deployed Engineer at Glean
+
+**About Glean:**
+
+Glean is the Work AI platform that helps everyone work smarter with AI. What began as the industry’s most advanced enterprise search has evolved into a full-scale Work AI ecosystem, powering intelligent Search, an AI Assistant, and scalable AI agents on one secure, open platform. With over 100 enterprise SaaS connectors, flexible LLM choice, and robust APIs, Glean gives organizations the infrastructure to govern, scale, and customize AI across their entire business - without vendor lock-in or costly implementation cycles.
+
+At its core, Glean is redefining how enterprises find, use, and act on knowledge. Its Enterprise Graph and Personal Knowledge Graph map the relationships between people, content, and activity, delivering deeply personalized, context-aware responses for every employee. This foundation powers Glean’s agentic capabilities - AI agents that automate real work across teams by accessing the industry’s broadest range of data: enterprise and world, structured and unstructured, historical and real-time. The result: measurable business impact through faster onboarding, hours of productivity gained each week, and smarter, safer decisions at every level.
+
+Recognized by Fast Company as one of the World’s Most Innovative Companies (Top 10, 2025), by CNBC’s Disruptor 50, Bloomberg’s AI Startups to Watch (2026), Forbes AI 50, and Gartner’s Tech Innovators in Agentic AI, Glean continues to accelerate its global impact. With customers across 50+ industries and 1,000+ employees in more than 25 countries, we’re helping the world’s largest organizations make every employee AI-fluent, and turning the superintelligent enterprise from concept into reality.
+
+If you’re excited to shape how the world works, you’ll help build systems used daily across Microsoft Teams, Zoom, ServiceNow, Zendesk, GitHub, and many more - deeply embedded where people get things done. You’ll ship agentic capabilities on an open, extensible stack, with the craft and care required for enterprise trust, as we bring Work AI to every employee, in every company.
+
+**About the Role:**
+
+You'll join as a founding member of Glean's forward deployed team and operate with the autonomy and accountability of a founder. Your job is to discover and build Glean's next generation of product surfaces, working in a pod with Forward Deployed PMs directly with the C-suite of the world's most influential companies and with Glean's own engineering and product teams.
+
+Glean is a fully horizontal AI platform - and that scope is what makes this role unique. You won't be configuring existing products or optimizing within defined constraints. You'll identify the biggest unsolved business problems at our most strategic customers, build entirely new products to solve them, and in doing so shape what Glean becomes. The best of what you build ships to every Glean customer in the world. You get founder-level ownership with Glean's resources, relationships, and scale behind you.
+
+**You will:**
+
+* **Discover and build Glean's next product surfaces:** Your primary job is 0-to-1 product creation. Nothing about what you're building is predefined - you'll work with your FDPM to identify where Glean's platform can be extended to solve problems no product currently solves, then design and ship it. What you build becomes what Glean ships.
+* **Lead deep opportunity discovery:** Before you write a line of code, you go deep on the business. What's structurally broken? Where is the biggest concentration of unsolved value? What's actually buildable, and what's the fastest path to something real that can be tested and learned from? You'll form strong hypotheses alongside your FDPM and pressure-test them directly with the people who have to live with the outcome.
+* **Be a technical partner to the C-suite:** You'll earn trust at the highest levels of your customer organizations - not just with technical teams, but with the executives who are accountable for outcomes. You can explain what you're building, why it will work, and what the risks are to anyone in the room.
+* **Scale what works** Once something works, you'll make it repeatable - working closely with the core R&D team to ensure the product is scalable
+* **Stay at the frontier with Glean's R&D team:** You'll work closely with Glean's core engineering and product teams, staying ahead of what's possible on the platform and actively shaping how its capabilities evolve. What you encounter in the field directly informs what gets built next.
+
+**About you:**
+
+* You think like a founder. When you walk into a customer, you're curious about the business, digging into what's broken, and figuring out what to build that doesn't yet exist. You're scrappy and resourceful, you move fast enough to learn, and you're as comfortable in a strategic discussion with a CEO as you are deep in a codebase. You've shipped actual products that real people use, that drove real outcomes - and you want to do it at a higher level of ambition.
+* **0-to-1 build track record:** You've built production software from scratch in ambiguous environments. You can point to something that didn't exist before you showed up and is now used by real people at scale.
+* **Production AI experience:** You've shipped AI-powered solutions in the real world - prompt engineering, agent development, evaluation frameworks, deployment at scale. Not just prototypes.
+* **Full-stack technical depth:** Strong programming skills across the stack with a deep understanding of and experience with how enterprise systems actually work.
+* **Business acumen:** You can walk into a customer, identify where the real problems are, and connect that diagnosis to a product hypothesis - without being handed a brief.
+* **Customer instinct:** You build trust quickly at every level of an organization, communicate with clarity, and know how to tailor your depth to the room.
+* **Builder's judgment:** You know what's actually buildable, how long it will take, and when to simplify scope to get something real into production faster. You spot problems early and solve them independently.
+* **Curiosity and scrappiness:** You're driven to understand problems deeply before solving them, and resourceful enough to find a path forward when none is obvious.
+* **Experience:** 4+ years in technical roles with a track record of shipping production software. Former technical founders are strongly encouraged to apply.
+* **Willingness to travel:** This role requires 25–50% travel.
+* **Nice to Have:**
+  + Experience as a founder, at a top-tier technology company, or in a forward deployed engineering role.
+  + A technical degree in CS, engineering, math, or a related field.
+  + Deep familiarity with LLMs, retrieval systems, and evaluation frameworks.
+  + Experience driving technology adoption inside large enterprises.
+
+**Location:**
+
+* This role is hybrid (3-4 days a week in one of our SF Bay Area offices)
+* This role requires 25-50% travel
+
+**Compensation & Benefits:**
+
+The standard range for this position is $160,000-$270,000 annually. Compensation offered will be determined by factors such as location, level, job-related knowledge, skills, and experience. Certain roles may be eligible for variable compensation, equity, and benefits. Special Note: This range encompasses varying levels of the role, you will be assessed for your level during the interview process.
+
+We offer a comprehensive benefits package including competitive compensation, Medical, Vision, and Dental coverage, generous time-off policy, and the opportunity to contribute to your 401k plan to support your long-term goals. When you join, you'll receive a home office improvement stipend, as well as an annual education and wellness stipends to support your growth and wellbeing. We foster a vibrant company culture through regular events, and provide healthy lunches daily to keep you fueled and focused.
+
+We are a diverse bunch of people and we want to continue to attract and retain a diverse range of people into our organization. We're committed to an inclusive and diverse company. We do not discriminate based on gender, ethnicity, sexual orientation, religion, civil or family status, age, disability, or race.
+
+#LI-HYBRID
+
+**AI-First Mindset at Glean:**
+
+At Glean, AI fluency is core to how we work and we're committed to ensuring every new hire feels confident integrating AI into their everyday work. **As part of the interview process, you'll complete a brief AI-focused exercise or discussion so we can understand how you think about, design, and use AI to drive impact in your role.** Feel free to reference any tools, platforms, or workflows you use today — prior Glean experience isn't required.
+
+**Global Data Privacy Notice for Job Candidates and Applicants:**
+
+Depending on your location, the General Data Protection Regulation (GDPR), California Consumer Privacy Act (CCPA), or other privacy laws may regulate the way we manage the data of job applicants. Our full notice outlining how data will be processed as part of the application procedure for applicable locations is available in our [**Privacy Policy**](https://www.glean.com/privacy). By submitting your application, you are agreeing to our use and processing of your data as required. US applicants and their applications are subject to arbitration of disputes as outlined in our [**Applicant Arbitration Agreement**](https://www.glean.com/arbitrationagreement).
+
+By clicking “Submit Application,” I confirm that I have read the Global Data Privacy Notice and the [**Applicant Arbitration Agreement**](https://www.glean.com/arbitrationagreement), and I agree to the terms.

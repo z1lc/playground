@@ -1,0 +1,45 @@
+{
+  "id": "vapi__member-of-technical-staff-forward-deployed-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "agent_development"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": "customer_vpc_or_on_prem",
+    "target_customer_industry": "financial_services",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "business_executives_and_operators",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "agent_development": "We\u2019re the most configurable platform for deploying voice agents"
+    },
+    "primary_role_motion": "We see ENT deploy in weeks and expand rapidly when we support them.",
+    "deployment_environment": "You\u2019ll deploy a large ENT onsite.",
+    "target_customer_industry": "customers like NYLife and Intuit.",
+    "travel_requirement": null,
+    "ai_ml_depth": "We\u2019re the most configurable platform for deploying voice agents",
+    "customer_engagement_depth": "60 Day: You\u2019ll discover 2nd and 3rd use-cases within their team.",
+    "target_user_persona": "Build the human interface for every business",
+    "solution_customization_level": "90 Day: You\u2019ll build product that makes the next similar deployment trivial."
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:45:06+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "c12c93b8ed505d6f484342f88dbbe33736fa31093e7888afd25808a78ce33f55",
+    "validation_warnings": [
+      "evidence[customer_engagement_depth]: quote not found verbatim in listing body",
+      "evidence[target_user_persona]: quote not found verbatim in listing body",
+      "evidence[solution_customization_level]: quote not found verbatim in listing body"
+    ]
+  }
+}

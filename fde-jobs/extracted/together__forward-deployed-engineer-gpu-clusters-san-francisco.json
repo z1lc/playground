@@ -1,0 +1,63 @@
+{
+  "id": "together__forward-deployed-engineer-gpu-clusters-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "kubernetes",
+      "networking",
+      "distributed_systems",
+      "physical_infrastructure"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "ai_and_developers",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "model_training_and_tuning",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "data_scientists_and_ml_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "python",
+      "shell"
+    ],
+    "software_tool_familiarity": [
+      "kubernetes",
+      "ansible"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "kubernetes": "Deep, hands-on experience with Kubernetes (specifically GPU-operator and device plugins) and/or SLURM for workload scheduling.",
+      "networking": "Expert knowledge of InfiniBand, RoCE, and NVLink; ability to diagnose network failures that degrade collective communication (NCCL).",
+      "distributed_systems": "Design and execute rigorous pre-handover test suites (NCCL, DCGM, GPU Burn) to ensure clusters are stable under the extreme stress of multi-node training.",
+      "physical_infrastructure": "Profile and debug low-level bottlenecks in InfiniBand (IB) fabrics, NVLink topologies, and high-performance storage systems."
+    },
+    "primary_role_motion": "meet the requirements of our most complex POCs",
+    "deployment_environment": "Together AI\u2019s optimized infrastructure",
+    "target_customer_industry": "the world\u2019s leading AI model builders",
+    "travel_requirement": null,
+    "ai_ml_depth": "build reference designs and 'out-of-the-box' configurations for training frameworks",
+    "customer_engagement_depth": "Act as the primary technical point of contact for model labs",
+    "target_user_persona": "model labs",
+    "solution_customization_level": "Proficiency in Python and shell scripting; experience with Ansible or similar tools for automated cluster configuration.",
+    "programming_languages": {
+      "python": "Proficiency in Python and shell scripting",
+      "shell": "Proficiency in Python and shell scripting"
+    },
+    "software_tool_familiarity": {
+      "kubernetes": "Deep, hands-on experience with Kubernetes",
+      "ansible": "experience with Ansible or similar tools for automated cluster configuration."
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:56+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "a753f11132858bab2452575e9507632828c18faf1a2ea08ae873ceca43c0ae72",
+    "validation_warnings": [
+      "evidence[ai_ml_depth]: quote not found verbatim in listing body"
+    ]
+  }
+}

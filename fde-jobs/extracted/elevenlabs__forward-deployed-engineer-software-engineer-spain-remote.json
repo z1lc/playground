@@ -1,0 +1,45 @@
+{
+  "id": "elevenlabs__forward-deployed-engineer-software-engineer-spain-remote",
+  "extracted": {
+    "required_skill_areas": [
+      "api_integration"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "api_integration_only",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [
+      "python"
+    ],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "api_integration": "Proficiency in Python and strong software development knowledge, inclusive of a deep understanding of software development, software architecture, and APIs integration."
+    },
+    "primary_role_motion": "Collaborate daily with our customer\u2019s engineers and executives teams to ensure the best use of ElevenLabs\u2019 technologies.",
+    "target_customer_industry": "We serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta.",
+    "travel_requirement": null,
+    "ai_ml_depth": "Proficiency in Python and strong software development knowledge, inclusive of a deep understanding of software development, software architecture, and APIs integration.",
+    "customer_engagement_depth": "Embedded with our most strategic customers",
+    "target_user_persona": "Collaborate daily with our customer\u2019s engineers and executives teams",
+    "solution_customization_level": "building full-scale integrations",
+    "programming_languages": {
+      "python": "Proficiency in Python"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "73034a6a6be895786f505dfeed2d213b4ff0d0bb0a71ec063f5f3aae11ce24fc",
+    "validation_warnings": []
+  }
+}

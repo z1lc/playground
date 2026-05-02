@@ -1,0 +1,66 @@
+{
+  "id": "turbopuffer__customer-engineer-remote",
+  "extracted": {
+    "required_skill_areas": [
+      "linux",
+      "kubernetes"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "not_ai_focused",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "configuration_and_light_scripting",
+    "programming_languages": [
+      "python",
+      "javascript",
+      "typescript"
+    ],
+    "software_tool_familiarity": [
+      "linux",
+      "kubernetes",
+      "slack"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "linux": "linux - you're comfortable in terminals and reading logs",
+      "kubernetes": "k8s experience"
+    },
+    "primary_role_motion": "debug customer issues, optimize queries",
+    "target_customer_industry": null,
+    "travel_requirement": null,
+    "ai_ml_depth": null,
+    "customer_engagement_depth": "live in customer slack channels, helping to solve problems",
+    "target_user_persona": null,
+    "solution_customization_level": "write examples for our docs",
+    "programming_languages": {
+      "python": "python or javascript/typescript - for reproducing issues and building solutions",
+      "javascript": "python or javascript/typescript - for reproducing issues and building solutions",
+      "typescript": "python or javascript/typescript - for reproducing issues and building solutions"
+    },
+    "software_tool_familiarity": {
+      "linux": "linux - you're comfortable in terminals and reading logs",
+      "kubernetes": "k8s experience",
+      "slack": "live in customer slack channels"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:57+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "ca755d2d227f466b69a8e5833b1dcb3ef192aa7ae767e38f4cff2fbd73bbbe96",
+    "validation_warnings": [
+      "evidence[required_skill_areas.linux]: quote not found verbatim in listing body",
+      "evidence[programming_languages.python]: quote not found verbatim in listing body",
+      "evidence[programming_languages.javascript]: quote not found verbatim in listing body",
+      "evidence[programming_languages.typescript]: quote not found verbatim in listing body",
+      "evidence[software_tool_familiarity.linux]: quote not found verbatim in listing body"
+    ]
+  }
+}

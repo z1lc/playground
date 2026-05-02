@@ -1,0 +1,60 @@
+{
+  "id": "cursor__forward-deployed-engineer-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "agent_development",
+      "prompt_engineering",
+      "observability",
+      "llm_inference"
+    ],
+    "primary_role_motion": "zero_to_one_builder",
+    "deployment_environment": null,
+    "target_customer_industry": "ai_and_developers",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [
+      "python",
+      "typescript",
+      "javascript"
+    ],
+    "software_tool_familiarity": [
+      "cursor"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "agent_development": "build Cursor-powered workflows",
+      "prompt_engineering": "prompt iteration",
+      "observability": "tracing, evals, metrics",
+      "llm_inference": "debugging model behavior, latency/cost tradeoffs"
+    },
+    "primary_role_motion": "design a practical solution, and own it end-to-end \u2014 from first discovery call through launch, iteration, and post-production support.",
+    "target_customer_industry": "build the best tool for professional programmers",
+    "travel_requirement": null,
+    "ai_ml_depth": "prompt iteration",
+    "customer_engagement_depth": "embed directly with customer engineering teams",
+    "target_user_persona": "professional programmers",
+    "solution_customization_level": "build Cursor-powered workflows",
+    "programming_languages": {
+      "python": "You\u2019re strong in Python and TypeScript/JavaScript",
+      "typescript": "You\u2019re strong in Python and TypeScript/JavaScript",
+      "javascript": "You\u2019re strong in Python and TypeScript/JavaScript"
+    },
+    "software_tool_familiarity": {
+      "cursor": "build Cursor-powered workflows"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "acda35dc1a9d720402b2f10dde489ce47cd9b9af9fc380e15ede67b238b7d2b4",
+    "validation_warnings": []
+  }
+}

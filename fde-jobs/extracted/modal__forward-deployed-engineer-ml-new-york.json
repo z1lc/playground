@@ -1,0 +1,46 @@
+{
+  "id": "modal__forward-deployed-engineer-ml-new-york",
+  "extracted": {
+    "required_skill_areas": [
+      "gpu_programming",
+      "llm_inference",
+      "model_training"
+    ],
+    "primary_role_motion": "pre_sales_focus",
+    "deployment_environment": "managed_cloud_saas",
+    "target_customer_industry": "ai_and_developers",
+    "travel_requirement": "none_or_unstated",
+    "ai_ml_depth": "model_training_and_tuning",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "data_scientists_and_ml_engineers",
+    "solution_customization_level": "heavy_integration_and_glue_code",
+    "programming_languages": [],
+    "software_tool_familiarity": [],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": true,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "gpu_programming": "GPU programming",
+      "llm_inference": "LLM serving",
+      "model_training": "model training"
+    },
+    "primary_role_motion": "Conduct technical demos, experiments, and proof-of-concepts that make Modal's performance advantages tangible",
+    "deployment_environment": "Modal provides the infrastructure foundation for AI teams.",
+    "target_customer_industry": "We have thousands of customers who rely on us for production AI workloads, including Lovable, Scale AI, Substack, and Suno.",
+    "travel_requirement": null,
+    "ai_ml_depth": "model training (SFT, RLHF)",
+    "customer_engagement_depth": "Build trusted relationships with technical leaders (CTOs, VPs of Engineering, ML leads)",
+    "target_user_persona": "ML leads",
+    "solution_customization_level": "architect and optimize production AI workloads on Modal",
+    "open_source_involvement": "Contribute to open-source projects"
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:43:12+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "50eddda184aa2d40219f1d58536851dcf51e7360f492897f8a1a95f551d63c58",
+    "validation_warnings": []
+  }
+}

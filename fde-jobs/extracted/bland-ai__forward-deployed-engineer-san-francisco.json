@@ -1,0 +1,57 @@
+{
+  "id": "bland-ai__forward-deployed-engineer-san-francisco",
+  "extracted": {
+    "required_skill_areas": [
+      "agent_development",
+      "llm_inference"
+    ],
+    "primary_role_motion": "post_sales_implementation",
+    "deployment_environment": null,
+    "target_customer_industry": "general_enterprise",
+    "travel_requirement": "moderate_25_to_50_percent",
+    "ai_ml_depth": "agent_and_prompt_engineering",
+    "customer_engagement_depth": "deep_embed_months",
+    "target_user_persona": "software_engineers",
+    "solution_customization_level": "bespoke_product_development",
+    "programming_languages": [
+      "python",
+      "javascript"
+    ],
+    "software_tool_familiarity": [
+      "git"
+    ],
+    "sales_quota_or_commission": false,
+    "open_source_involvement": false,
+    "requires_active_security_clearance": false
+  },
+  "evidence": {
+    "required_skill_areas": {
+      "agent_development": "build tailored agents",
+      "llm_inference": "Hands-on experience integrating LLMs or AI SDKs into web applications."
+    },
+    "primary_role_motion": "Own end-to-end delivery. From discovery call to deployment, you\u2019ll lead the technical build, testing, and iteration",
+    "target_customer_industry": "Our software runs inside critical workflows at companies like Samsara, Gallup, TripAdvisor, Snapchat, Signant Health, Better.com, and others.",
+    "travel_requirement": "You travel on-site, get to know our customers on a human level, and develop real relationships with our champions and other stakeholders, going above and beyond to host training sessions and dinners.",
+    "ai_ml_depth": "Hands-on experience integrating LLMs or AI SDKs into web applications.",
+    "customer_engagement_depth": "embed yourself within the customer organization to uncover new opportunities for automation and scale.",
+    "target_user_persona": "Partner with customer teams across engineering, product, and operations",
+    "solution_customization_level": "build tailored agents",
+    "programming_languages": {
+      "python": "scripting languages (Python or JavaScript)",
+      "javascript": "scripting languages (Python or JavaScript)"
+    },
+    "software_tool_familiarity": {
+      "git": "modern dev tools (Git, NPM/PNPM)"
+    }
+  },
+  "extraction_metadata": {
+    "model": "deepseek/deepseek-v4-pro:floor",
+    "extracted_at": "2026-05-02T09:41:10+00:00",
+    "categories_hash": "f35cfc6c751717919ab861791d78e66c63ca4b240ea7ef453b03d39d21f6922b",
+    "listing_hash": "267eb170932113e076a08672a86049b5dd2a31c57ecf6710eb7be60b79e662bb",
+    "validation_warnings": [
+      "evidence[primary_role_motion]: quote not found verbatim in listing body",
+      "evidence[target_customer_industry]: quote not found verbatim in listing body"
+    ]
+  }
+}

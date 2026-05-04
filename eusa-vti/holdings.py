@@ -288,6 +288,7 @@ def fetch_all_holdings(cache_dir: Path, headers: dict, offline: bool) -> dict[st
     targets = [
         ("EUSA", "0000930667", "S000028709"),
         ("VTI",  "0000036405", "S000002848"),
+        ("VT",   "0000857489", "S000022482"),
     ]
 
     # Pass 1a: N-PORT extraction (2019-present).

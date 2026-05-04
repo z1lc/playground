@@ -49,7 +49,7 @@ DATA_JSON = HERE / "data.json"
 INDEX_HTML = HERE / "index.html"
 TODAY = date(2026, 5, 2)
 
-ETFS = ["EUSA", "VTI"]
+ETFS = ["EUSA", "VTI", "VT"]
 PRICE_START = "2010-05-07"  # EUSA inception
 
 # Mag 7: cap-weighted AI mega-caps. GOOGL and GOOG counted together (same

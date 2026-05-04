@@ -139,7 +139,7 @@ def _find_target_section_ishares(html: str, target_phrase: str = "MSCI USA EQUAL
     return section, rep_date
 
 
-def _find_target_section_vanguard(html: str, target_phrase: str = "TOTAL STOCK MARKET INDEX FUND") -> tuple[str, str | None] | None:
+def _find_target_section_vanguard(html: str, target_phrase: str) -> tuple[str, str | None] | None:
     visible = _normalize_visible(html)
     upper = visible.upper()
 
@@ -265,7 +265,9 @@ def parse_nq_for_etf(html: str, etf: str) -> dict | None:
     if etf == "EUSA":
         located = _find_target_section_ishares(html)
     elif etf == "VTI":
-        located = _find_target_section_vanguard(html)
+        located = _find_target_section_vanguard(html, "TOTAL STOCK MARKET INDEX FUND")
+    elif etf == "VT":
+        located = _find_target_section_vanguard(html, "TOTAL WORLD STOCK INDEX FUND")
     else:
         return None
     if located is None:
@@ -296,6 +298,7 @@ def parse_nq_for_etf(html: str, etf: str) -> dict | None:
 ETF_CONFIG = {
     "EUSA": {"cik": "0000930667"},
     "VTI":  {"cik": "0000036405"},
+    "VT":   {"cik": "0000857489"},
 }
 
 

@@ -173,7 +173,7 @@
   <script type="module">
     import React, { useMemo, useState, useCallback, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
-    import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+    import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts';
     import htm from 'htm';
     const html = htm.bind(React.createElement);
 
@@ -271,6 +271,10 @@
     // with non-empty data become the initial selection.
     const PREFERRED_DEFAULTS = ['drawdown', 'aiBasket', 'techSector', 'cumReturn', 'mag7'];
     const STORAGE_KEY = 'eusa-vti-selection-v1';
+
+    // Personal reference line — date the user sold equities on overvaluation
+    // concerns. Rendered as a thin vertical guide on the chart.
+    const SALE_DATE_NUM = Math.floor(new Date('2025-07-04T00:00:00Z').getTime() / 86400000);
 
     function loadStoredSelection(metricsById) {
       try {
@@ -627,6 +631,13 @@
               <${ResponsiveContainer} width="100%" height=${isNarrow ? 380 : 500}>
                 <${LineChart} data=${chartData} margin=${{ top: 12, right: 4, left: 0, bottom: 8 }}>
                   <${CartesianGrid} strokeDasharray="3 3" stroke="#1e293b" />
+                  <${ReferenceLine}
+                    x=${SALE_DATE_NUM}
+                    yAxisId=${yAxes[0]?.id}
+                    stroke="#94a3b8"
+                    strokeWidth=${1}
+                    strokeOpacity=${0.5}
+                  />
                   <${XAxis}
                     dataKey="dateNum"
                     type="number"

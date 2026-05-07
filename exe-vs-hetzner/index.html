@@ -125,9 +125,25 @@
     }
     .refresh-btn:hover { border-color: #E07A5F; color: #E07A5F; }
 
+    .col-spec { display: table-cell; }
+    .col-specs-combined { display: none; }
+    .col-notes { display: table-cell; }
+    .lbl-full { display: inline; }
+    .lbl-short { display: none; }
+
+    /* Combine spec columns first to buy more room for notes. */
+    @media (max-width: 1100px) {
+      .col-spec { display: none; }
+      .col-specs-combined { display: table-cell; }
+    }
+
+    /* When the viewport is too cramped to read notes, drop notes and shorten labels. */
     @media (max-width: 720px) {
       body { padding: 24px 12px; }
       .controls-row { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
+      .col-notes { display: none; }
+      .lbl-full { display: none; }
+      .lbl-short { display: inline; }
     }
   </style>
   <script type="importmap">
@@ -169,6 +185,9 @@
       { name: 'CCX63', vcpu: 48, ram: 192, disk: 960, trafficEU_GB: 60000, trafficUS_GB: 1000, eurMonth: 288.49 },
     ];
     const HETZ_EXTRA_TRAFFIC_EUR_PER_TB = 1.0;
+    // CCX disk grows roughly 20 GB per vCPU at the top of the line (CCX63 = 48/960).
+    // Use that as the extrapolation rate for Cloud Pool tiers above 48 vCPU.
+    const HETZ_CCX_DISK_GB_PER_VCPU = 20;
 
     // Hetzner Dedicated Servers (EU-only). Includes unlimited traffic on 1 GBit/s.
     // Verify against hetzner.com/dedicated-rootserver/. AX162-S = AMD EPYC 9454P
@@ -217,6 +236,11 @@
       { upToGB: 150000,   ratePerGB: 0.07  },
       { upToGB: Infinity, ratePerGB: 0.05  },
     ];
+    function hetzCcxDiskForRow(row) {
+      const ccx = HETZNER.find(h => h.vcpu === row.vcpu && h.ram === row.ram);
+      return ccx ? ccx.disk : row.vcpu * HETZ_CCX_DISK_GB_PER_VCPU;
+    }
+
     function awsEgressCost(targetGB) {
       let billed = Math.max(0, targetGB - EC2_EGRESS_FREE_GB);
       let cost = 0;
@@ -246,12 +270,21 @@
       return out;
     })(); // length 26
 
+    // Indices where the slider's step granularity changes — used as visible tick labels.
+    const TICK_INDICES = [
+      0,   // 200 GB
+      6,   // 500 GB (end of 50 GB jumps)
+      11,  // 1 TB (end of 100 GB jumps)
+      17,  // 4 TB (end of 500 GB jumps)
+      STOPS.length - 1, // 20 TB
+    ];
+
     // ---- Storage ------------------------------------------------------------
     const STATE_KEY = 'exe-vs-hetzner:state';
     const FX_KEY = 'exe-vs-hetzner:fx';
     const FX_FALLBACK = 1.18;
     const FX_MAX_AGE_MS = 24 * 60 * 60 * 1000;
-    const DEFAULT_STATE = { region: 'eu', matchDisk: false, transferIdx: 0, benchmark: 'hetz' };
+    const DEFAULT_STATE = { region: 'eu', storageDefault: 'exe', transferIdx: 0, benchmark: 'hetz' };
 
     function loadState() {
       try {
@@ -291,16 +324,18 @@
     function rowCosts(row, hetz, hetzDed, ec2, state, fxRate) {
       const targetGB = STOPS[state.transferIdx];
 
+      // Storage default determines the per-row disk target every provider must reach.
+      const diskTarget = state.storageDefault === 'exe'
+        ? row.disk
+        : hetzCcxDiskForRow(row);
+
       // exe.dev base
       let exeUSD;
       if (row.kind === 'monthly') exeUSD = row.baseUSDmo;
       else exeUSD = row.baseUSDhr * HOURS_PER_MONTH;
 
-      // exe.dev disk add-on (only when matchDisk on, and only if CCX matched —
-      // Dedicated rows aren't a sensible disk anchor since they include far more
-      // disk than Cloud Pool would ever ask for).
-      const diskGap = hetz ? Math.max(0, hetz.disk - row.disk) : 0;
-      const exeDiskAdd = state.matchDisk ? diskGap * EXE_DISK_USD_PER_GB : 0;
+      // exe.dev disk add-on: pays the gap above its included row.disk
+      const exeDiskAdd = Math.max(0, diskTarget - row.disk) * EXE_DISK_USD_PER_GB;
 
       // exe.dev transfer overage (always applied based on slider)
       const exeXferGap = Math.max(0, targetGB - row.includedGB);
@@ -310,6 +345,7 @@
 
       // Hetzner cost in EUR, then to USD. CCX path uses tiered traffic; Dedicated
       // path is a flat monthly + amortized setup fee (unlimited traffic).
+      // Both Hetzner branches always include ≥ diskTarget so no disk add-on.
       let hetzInclGB = null, hetzOverEUR = null, hetzTotalEUR = null, hetzTotalUSD = null;
       if (hetz) {
         hetzInclGB = state.region === 'eu' ? hetz.trafficEU_GB : hetz.trafficUS_GB;
@@ -323,19 +359,19 @@
         hetzTotalUSD = hetzTotalEUR * fxRate;
       }
 
-      // AWS EC2 — only present if we have a matched m7a size
+      // AWS EC2 — only present if we have a matched m7a size.
+      // AWS includes 0 GB so it pays the FULL diskTarget at gp3 rates.
       let awsBase = null, awsDiskAdd = null, awsXfer = null, awsTotal = null;
       if (ec2) {
         awsBase = ec2.usdHr[state.region] * HOURS_PER_MONTH;
-        // AWS includes 0 GB disk; matchDisk asks for the Hetzner disk amount when there is one
-        const awsDiskTarget = state.matchDisk && hetz ? hetz.disk : 0;
-        awsDiskAdd = awsDiskTarget * EC2_GP3_USD_PER_GB[state.region];
+        awsDiskAdd = diskTarget * EC2_GP3_USD_PER_GB[state.region];
         awsXfer = awsEgressCost(targetGB);
         awsTotal = awsBase + awsDiskAdd + awsXfer;
       }
 
       return {
         targetGB,
+        diskTarget,
         exeBase: exeUSD,
         exeDiskAdd,
         exeXferAdd,
@@ -344,7 +380,6 @@
         hetzOverEUR,
         hetzTotalEUR,
         hetzTotalUSD,
-        diskGap,
         awsBase,
         awsDiskAdd,
         awsXfer,
@@ -426,8 +461,16 @@
 
       const renderRow = ({ row, hetz, hetzDed, ec2, costs }, i) => {
         const notes = [];
-        if (!state.matchDisk && hetz) {
-          notes.push(`exe.dev includes ${row.disk} GB disk vs Hetzner's ${hetz.disk} GB.`);
+        const diskSourceWord = state.storageDefault === 'exe' ? 'exe.dev' : 'Hetzner';
+        const isExtrapolated = state.storageDefault === 'hetz' && !hetz;
+        const sourceTag = isExtrapolated ? ' (extrapolated from CCX line)' : '';
+        notes.push(`Storage target ${fmtDisk(costs.diskTarget)} from ${diskSourceWord}${sourceTag}.`);
+        if (costs.exeDiskAdd > 0) {
+          const gap = costs.diskTarget - row.disk;
+          notes.push(`exe.dev disk add-on: +${fmtUSDr(costs.exeDiskAdd)} for the ${fmtDisk(gap)} gap above its included ${fmtDisk(row.disk)}.`);
+        }
+        if (costs.awsDiskAdd > 0) {
+          notes.push(`AWS gp3 disk: +${fmtUSDr(costs.awsDiskAdd)} for ${fmtDisk(costs.diskTarget)} (AWS includes 0 GB).`);
         }
         if (costs.exeXferAdd > 0) {
           const overGB = targetGB - row.includedGB;
@@ -436,9 +479,6 @@
         if (hetz && costs.hetzOverEUR > 0) {
           const overTB = (targetGB - costs.hetzInclGB) / 1000;
           notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${costs.hetzOverEUR.toFixed(2)} (≈ ${fmtUSDr(costs.hetzOverEUR * fxRate)}).`);
-        }
-        if (state.matchDisk && hetz && costs.awsDiskAdd > 0) {
-          notes.push(`AWS includes 0 GB disk → +${fmtUSDr(costs.awsDiskAdd)} for ${hetz.disk} GB gp3.`);
         }
         if (costs.awsXfer > 0) {
           const overGB = targetGB - EC2_EGRESS_FREE_GB;
@@ -473,20 +513,23 @@
         const hetzPct = pct(costs.hetzTotalUSD, state.benchmark === 'hetz');
         const awsPct = pct(costs.awsTotal, state.benchmark === 'aws');
 
-        const diskCellValue = state.matchDisk
-          ? (hetz ? fmtDisk(hetz.disk) : '—')
-          : null;
+        const diskCellValue = fmtDisk(costs.diskTarget);
 
         return html`
           <tr key=${i}>
-            <td style=${tdR}>${row.vcpu}</td>
-            <td style=${tdR}>${fmtRam(row.ram)}</td>
-            ${state.matchDisk ? html`<td style=${tdR}>${diskCellValue}</td>` : null}
+            <td class="col-specs-combined" style=${tdR}>
+              <div>${row.vcpu} vCPU</div>
+              <div>${fmtRam(row.ram)} RAM</div>
+              <div>${diskCellValue} disk</div>
+            </td>
+            <td class="col-spec" style=${tdR}>${row.vcpu}</td>
+            <td class="col-spec" style=${tdR}>${fmtRam(row.ram)}</td>
+            <td class="col-spec" style=${tdR}>${diskCellValue}</td>
             <td style=${tdR}>
               ${priceWithPct(fmtUSDr(costs.exeTotal), exePct)}
               <div style=${subCell}>
                 <div>base ${exeBaseLabel}</div>
-                ${state.matchDisk && costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
+                ${costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
                 ${costs.exeXferAdd > 0 ? html`<div>xfer +${fmtUSDr(costs.exeXferAdd)}</div>` : null}
               </div>
             </td>
@@ -519,7 +562,7 @@
                 </div>
               </td>
             ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`}
-            <td style=${tdL_notes}>${noteText}</td>
+            <td class="col-notes" style=${tdL_notes}>${noteText}</td>
           </tr>
         `;
       };
@@ -534,32 +577,16 @@
           </p>
 
           <div class="controls-row" style=${{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap', marginBottom: 16 }}>
-            <div style=${{ fontSize: 13, color: T.textSecondary, fontVariantNumeric: 'tabular-nums' }}>
-              <strong style=${{ color: T.textPrimary }}>1 EUR = ${fxIsFallback ? '$' + FX_FALLBACK : '$' + fxRate.toFixed(4)}</strong>
-              <span style=${{ marginLeft: 6, color: T.textTertiary }}>
-                ${fxIsFallback ? '(fallback)' : `(open.er-api.com, ${fxDate})`}
-              </span>
-              <button class="refresh-btn" onClick=${refetchFX} disabled=${fxStatus === 'loading'} style=${{ marginLeft: 8 }}>
-                ${fxStatus === 'loading' ? '…' : 'refresh'}
-              </button>
-              ${fxStatus === 'error' ? html`<span style=${{ marginLeft: 8, color: T.bad }}>fetch failed — using ${fxIsFallback ? 'fallback' : 'cached'} rate</span>` : null}
-            </div>
-          </div>
-
-          <div class="controls-row" style=${{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap', marginBottom: 16 }}>
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span style=${{ fontSize: 14, color: T.textLabel }}>Region:</span>
               <div class="seg">
                 <button class=${state.region === 'eu' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, region: 'eu' }))}>EU</button>
                 <button class=${state.region === 'us' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, region: 'us' }))}>US</button>
               </div>
-              <span style=${{ fontSize: 12, color: T.textTertiary }}>
-                ${state.region === 'eu' ? '(full per-plan traffic)' : '(1 TB included for all CCX)'}
-              </span>
             </div>
 
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style=${{ fontSize: 14, color: T.textLabel }}>Benchmark:</span>
+              <span style=${{ fontSize: 14, color: T.textLabel }}>Price benchmark:</span>
               <div class="seg">
                 <button class=${state.benchmark === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'exe' }))}>exe.dev</button>
                 <button class=${state.benchmark === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'hetz' }))}>Hetzner</button>
@@ -567,11 +594,13 @@
               </div>
             </div>
 
-            <label class="check">
-              <input type="checkbox" checked=${state.matchDisk} onChange=${e => setState(s => ({ ...s, matchDisk: e.target.checked }))} />
-              <span class="box"></span>
-              <span>Match Hetzner disk capacity</span>
-            </label>
+            <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style=${{ fontSize: 14, color: T.textLabel }}>Storage default:</span>
+              <div class="seg">
+                <button class=${state.storageDefault === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'exe' }))}>exe.dev</button>
+                <button class=${state.storageDefault === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'hetz' }))}>Hetzner</button>
+              </div>
+            </div>
           </div>
 
           <div style=${{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '14px 16px', background: T.cardBg, border: '1px solid ' + T.border, borderRadius: 12, boxShadow: T.cardShadow }}>
@@ -599,24 +628,35 @@
                 style=${{ position: 'absolute', left: 0, top: 1, width: '100%', height: 20 }}
               />
             </div>
-            <div style=${{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: T.textTertiary, marginTop: 4 }}>
-              <span>${fmtTransfer(STOPS[0])}</span>
-              <span>${fmtTransfer(STOPS[STOPS.length - 1])}</span>
+            <div style=${{ position: 'relative', height: 22, marginTop: 4 }}>
+              ${TICK_INDICES.map((idx) => {
+                const ratio = idx / (STOPS.length - 1);
+                // Thumb center on a native range input traverses from 10px (half thumb width)
+                // to (track_width - 10px), not 0% to 100%. Match that exactly.
+                const left = `calc(${ratio} * (100% - 20px) + 10px)`;
+                return html`
+                  <div key=${idx} style=${{ position: 'absolute', left, top: 0, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style=${{ width: 1, height: 5, background: T.border, marginBottom: 2 }}></div>
+                    <span style=${{ fontSize: 11, color: T.textTertiary, whiteSpace: 'nowrap' }}>${fmtTransfer(STOPS[idx])}</span>
+                  </div>
+                `;
+              })}
             </div>
           </div>
 
           <div style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
             <div class="table-wrap">
-              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 480 }}>
                 <thead>
                   <tr>
-                    <th style=${thR}>vCPU</th>
-                    <th style=${thR}>RAM</th>
-                    ${state.matchDisk ? html`<th style=${thR}>Disk</th>` : null}
-                    <th style=${thR}>exe.dev /mo</th>
-                    <th style=${thR}>Hetzner /mo</th>
-                    <th style=${thR}>AWS /mo</th>
-                    <th style=${thL}>Notes</th>
+                    <th class="col-specs-combined" style=${thR}>specs</th>
+                    <th class="col-spec" style=${thR}>vCPU</th>
+                    <th class="col-spec" style=${thR}>RAM</th>
+                    <th class="col-spec" style=${thR}>Disk</th>
+                    <th style=${thR}><span class="lbl-full">exe.dev /mo</span><span class="lbl-short">exe.dev</span></th>
+                    <th style=${thR}><span class="lbl-full">Hetzner /mo</span><span class="lbl-short">hetz</span></th>
+                    <th style=${thR}><span class="lbl-full">AWS /mo</span><span class="lbl-short">aws</span></th>
+                    <th class="col-notes" style=${thL}>Notes</th>
                   </tr>
                 </thead>
                 <tbody>${rows.map(renderRow)}</tbody>
@@ -624,7 +664,19 @@
             </div>
           </div>
 
+          <div style=${{ marginTop: 12, fontSize: 13, color: T.textSecondary, fontVariantNumeric: 'tabular-nums' }}>
+            <strong style=${{ color: T.textPrimary }}>1 EUR = ${fxIsFallback ? '$' + FX_FALLBACK : '$' + fxRate.toFixed(4)}</strong>
+            <span style=${{ marginLeft: 6, color: T.textTertiary }}>
+              ${fxIsFallback ? '(fallback)' : `(open.er-api.com, ${fxDate})`}
+            </span>
+            <button class="refresh-btn" onClick=${refetchFX} disabled=${fxStatus === 'loading'} style=${{ marginLeft: 8 }}>
+              ${fxStatus === 'loading' ? '…' : 'refresh'}
+            </button>
+            ${fxStatus === 'error' ? html`<span style=${{ marginLeft: 8, color: T.bad }}>fetch failed — using ${fxIsFallback ? 'fallback' : 'cached'} rate</span>` : null}
+          </div>
+
           <div style=${{ marginTop: 24, fontSize: 13, color: T.textSecondary, lineHeight: 1.6 }}>
+            <p style=${{ marginBottom: 6 }}><strong>Storage default:</strong> Sets the disk capacity each provider is priced against. <em>exe.dev</em> uses 25 GB / 500 GB (the included Personal / Cloud Pool amounts). <em>Hetzner</em> uses each row's real CCX disk where one exists, and an extrapolated value of <code>vCPU × 20 GB</code> (the rate at the top of the CCX line — CCX63 is 48 vCPU / 960 GB) for Cloud Pool tiers above 48 vCPU. Hetzner Cloud and Dedicated rows always include the target so they show $0 disk add-on; exe.dev pays the gap above its 25 / 500 GB; AWS pays the full target at gp3 rates ($0.08/GB·mo us, $0.0952/GB·mo eu).</p>
             <p style=${{ marginBottom: 6 }}><strong>Hetzner Cloud (CCX) extras:</strong> €1/TB extra traffic (EU & US), €0.044/GB·mo block volume.</p>
             <p style=${{ marginBottom: 6 }}><strong>Hetzner Dedicated:</strong> Bare-metal server lease, EU only (Falkenstein/Helsinki/Nuremberg). Includes unlimited traffic on a 1 GBit/s link. Displayed monthly cost = base €/mo + one-time setup fee amortized over 12 months. Used as a fallback for Cloud Pool tiers larger than CCX63: both 64- and 96-vCPU rows map to AX162-S (AMD EPYC 9454P, 96 threads) — the 64-vCPU row uses 256 GB RAM (CPU 50% over since AX has no 64-thread SKU), the 96-vCPU row uses 448 GB (RAM 64 GB over the 384 target).</p>
             <p style=${{ marginBottom: 6 }}><strong>exe.dev extras:</strong> $0.08/GB·mo extra disk, $0.05/GB extra transfer.</p>

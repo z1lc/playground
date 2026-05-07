@@ -334,6 +334,7 @@
         const exeBaseLabel = `${fmtUSDr(costs.exeBase)}/mo`;
 
         const diff = costs.exeTotal - costs.hetzTotalUSD;
+        const diffPct = costs.hetzTotalUSD > 0 ? (diff / costs.hetzTotalUSD) * 100 : 0;
         const diffColor = diff > 0 ? T.bad : diff < 0 ? T.good : T.textTertiary;
         const diffSign = diff > 0 ? '+' : diff < 0 ? '−' : '';
 
@@ -351,7 +352,7 @@
               <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
               <div style=${subCell}>${hetz.name} · €${costs.hetzTotalEUR.toFixed(2)}/mo${costs.hetzOverEUR > 0 ? ` (incl. €${costs.hetzOverEUR.toFixed(2)} overage)` : ''}</div>
             </td>
-            <td style=${{ ...tdR, color: diffColor, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${diffSign}${fmtUSDr(Math.abs(diff))}</td>
+            <td style=${{ ...tdR, color: diffColor, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${diffSign}${Math.round(Math.abs(diffPct)).toLocaleString('en-US')}%</td>
             <td style=${tdL_notes}>${noteText}</td>
           </tr>
         `;
@@ -440,7 +441,7 @@
                     ${state.matchDisk ? html`<th style=${thR}>Disk</th>` : null}
                     <th style=${thR}>exe.dev /mo</th>
                     <th style=${thR}>Hetzner /mo</th>
-                    <th style=${thR}>Δ (exe − Hetz)</th>
+                    <th style=${thR}>Δ % (exe vs Hetz)</th>
                     <th style=${thL}>Notes</th>
                   </tr>
                 </thead>

@@ -180,7 +180,6 @@
       .table-card table { table-layout: fixed !important; min-width: 0 !important; }
       .table-card .col-specs-combined { width: 100px !important; }
       .sub-base { display: none; }
-      .sub-dedicated-tag { display: none; }
     }
   </style>
   <script type="importmap">
@@ -515,7 +514,7 @@
         }
         if (hetz && costs.hetzOverEUR > 0) {
           const overTB = (targetGB - costs.hetzInclGB) / 1000;
-          notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${costs.hetzOverEUR.toFixed(2)} (≈ ${fmtUSDr(costs.hetzOverEUR * fxRate)}).`);
+          notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${Math.round(costs.hetzOverEUR)} (≈ ${fmtUSDr(costs.hetzOverEUR * fxRate)}).`);
         }
         if (costs.awsXfer > 0) {
           const overGB = targetGB - EC2_EGRESS_FREE_GB;
@@ -528,7 +527,7 @@
           if (cpuGap !== 0) gapParts.push(`${cpuGap > 0 ? '+' : ''}${cpuGap} vCPU`);
           if (ramGap !== 0) gapParts.push(`${ramGap > 0 ? '+' : ''}${ramGap} GB RAM`);
           const gapNote = gapParts.length ? ` Hardware: ${hetzDed.vcpu} vCPU / ${hetzDed.ram} GB RAM (${gapParts.join(', ')} vs the matched ${row.vcpu} vCPU / ${row.ram} GB).` : '';
-          notes.push(`Hetzner ${hetzDed.name}: bare-metal lease (EU only), unlimited traffic; €${hetzDed.eurMonth.toFixed(2)}/mo + €${hetzDed.eurSetup.toFixed(2)} setup amortized over 12 mo.${gapNote}`);
+          notes.push(`Hetzner ${hetzDed.name}: bare-metal lease (EU only), unlimited traffic; €${Math.round(hetzDed.eurMonth)}/mo + €${Math.round(hetzDed.eurSetup)} setup amortized over 12 mo.${gapNote}`);
         }
         const noteText = notes.length ? notes.join(' ') : '—';
 
@@ -565,7 +564,8 @@
             <td style=${tdR}>
               ${priceWithPct(fmtUSDr(costs.exeTotal), exePct)}
               <div style=${subCell}>
-                <div class="sub-base">base ${exeBaseLabel}</div>
+                <div>${row.plan}</div>
+                <div class="sub-base">${exeBaseLabel}</div>
                 ${costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
                 ${costs.exeXferAdd > 0 ? html`<div>xfer +${fmtUSDr(costs.exeXferAdd)}</div>` : null}
               </div>
@@ -575,7 +575,7 @@
                 ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
                   <div>${hetz.name}</div>
-                  <div class="sub-base">base €${hetz.eurMonth.toFixed(2)}/mo</div>
+                  <div class="sub-base">€${Math.round(hetz.eurMonth)}/mo</div>
                   ${costs.hetzOverEUR > 0 ? html`<div>xfer +${fmtUSDr(costs.hetzOverEUR * fxRate)}</div>` : null}
                 </div>
               </td>
@@ -583,8 +583,8 @@
               <td style=${tdR}>
                 ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
-                  <div>${hetzDed.name}<span class="sub-dedicated-tag"> (dedicated)</span></div>
-                  <div class="sub-base">€${hetzDed.eurMonth.toFixed(2)}/mo</div>
+                  <div>${hetzDed.name}</div>
+                  <div class="sub-base">€${Math.round(hetzDed.eurMonth)}/mo</div>
                   <div>setup +€${Math.round(hetzDed.eurSetup / HETZ_DED_AMORT_MONTHS)}</div>
                 </div>
               </td>

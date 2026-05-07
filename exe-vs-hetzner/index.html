@@ -565,7 +565,7 @@
               ${priceWithPct(fmtUSDr(costs.exeTotal), exePct)}
               <div style=${subCell}>
                 <div>${row.plan}</div>
-                <div class="sub-base">${exeBaseLabel}</div>
+                ${(costs.exeDiskAdd > 0 || costs.exeXferAdd > 0) ? html`<div class="sub-base">${exeBaseLabel}</div>` : null}
                 ${costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
                 ${costs.exeXferAdd > 0 ? html`<div>xfer +${fmtUSDr(costs.exeXferAdd)}</div>` : null}
               </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>exe.dev vs Hetzner Cloud — pricing comparison</title>
+  <title>exe.dev vs Hetzner vs AWS — pricing comparison</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { overflow-x: clip; }
@@ -170,16 +170,67 @@
     ];
     const HETZ_EXTRA_TRAFFIC_EUR_PER_TB = 1.0;
 
-    // exe.dev rows: 4 Personal tiers + 2 Cloud Pool tiers that match Hetzner.
-    // Personal disk/transfer constants regardless of tier; Cloud Pool 500/2000.
-    const EXE_ROWS = [
-      { plan: 'Personal',   vcpu: 2,  ram: 8,   disk: 25,  includedGB: 200,  baseUSDmo: 20,   hetzner: 'CCX13', kind: 'monthly' },
-      { plan: 'Personal',   vcpu: 4,  ram: 16,  disk: 25,  includedGB: 200,  baseUSDmo: 40,   hetzner: 'CCX23', kind: 'monthly' },
-      { plan: 'Personal',   vcpu: 8,  ram: 32,  disk: 25,  includedGB: 200,  baseUSDmo: 80,   hetzner: 'CCX33', kind: 'monthly' },
-      { plan: 'Personal',   vcpu: 16, ram: 64,  disk: 25,  includedGB: 200,  baseUSDmo: 160,  hetzner: 'CCX43', kind: 'monthly' },
-      { plan: 'Cloud Pool', vcpu: 32, ram: 128, disk: 500, includedGB: 2000, baseUSDhr: 2.24, hetzner: 'CCX53', kind: 'hourly' },
-      { plan: 'Cloud Pool', vcpu: 48, ram: 192, disk: 500, includedGB: 2000, baseUSDhr: 3.36, hetzner: 'CCX63', kind: 'hourly' },
+    // Hetzner Dedicated Servers (EU-only). Includes unlimited traffic on 1 GBit/s.
+    // Verify against hetzner.com/dedicated-rootserver/. AX162-S = AMD EPYC 9454P
+    // (48c/96t); same SKU offered with multiple RAM sizes.
+    const HETZNER_DEDICATED = [
+      { id: 'AX162-S-256', name: 'AX162-S', vcpu: 96, ram: 256, disk: 7680, eurMonth:  508.00, eurSetup: 720.00 },
+      { id: 'AX162-S-448', name: 'AX162-S', vcpu: 96, ram: 448, disk: 7680, eurMonth: 1047.00, eurSetup: 720.00 },
     ];
+    const HETZ_DED_AMORT_MONTHS = 12;
+
+    // exe.dev rows: 4 Personal tiers + Cloud Pool tiers that have an exact AWS m7a match.
+    // Hetzner CCX maxes at 48 vCPU; some larger Cloud Pool rows fall back to a Hetzner
+    // Dedicated Server (EU only) where an exact-spec stock SKU exists.
+    const EXE_ROWS = [
+      { plan: 'Personal',   vcpu: 2,   ram: 8,    disk: 25,  includedGB: 200,  baseUSDmo: 20,    hetzner: 'CCX13', hetznerDedicated: null,      kind: 'monthly' },
+      { plan: 'Personal',   vcpu: 4,   ram: 16,   disk: 25,  includedGB: 200,  baseUSDmo: 40,    hetzner: 'CCX23', hetznerDedicated: null,      kind: 'monthly' },
+      { plan: 'Personal',   vcpu: 8,   ram: 32,   disk: 25,  includedGB: 200,  baseUSDmo: 80,    hetzner: 'CCX33', hetznerDedicated: null,      kind: 'monthly' },
+      { plan: 'Personal',   vcpu: 16,  ram: 64,   disk: 25,  includedGB: 200,  baseUSDmo: 160,   hetzner: 'CCX43', hetznerDedicated: null,      kind: 'monthly' },
+      { plan: 'Cloud Pool', vcpu: 32,  ram: 128,  disk: 500, includedGB: 2000, baseUSDhr: 2.24,  hetzner: 'CCX53', hetznerDedicated: null,      kind: 'hourly' },
+      { plan: 'Cloud Pool', vcpu: 48,  ram: 192,  disk: 500, includedGB: 2000, baseUSDhr: 3.36,  hetzner: 'CCX63', hetznerDedicated: null,      kind: 'hourly' },
+      { plan: 'Cloud Pool', vcpu: 64,  ram: 256,  disk: 500, includedGB: 2000, baseUSDhr: 4.48,  hetzner: null,    hetznerDedicated: 'AX162-S-256', kind: 'hourly' },
+      { plan: 'Cloud Pool', vcpu: 96,  ram: 384,  disk: 500, includedGB: 2000, baseUSDhr: 6.72,  hetzner: null,    hetznerDedicated: 'AX162-S-448', kind: 'hourly' },
+      { plan: 'Cloud Pool', vcpu: 128, ram: 512,  disk: 500, includedGB: 2000, baseUSDhr: 8.96,  hetzner: null,    hetznerDedicated: null,      kind: 'hourly' },
+      { plan: 'Cloud Pool', vcpu: 192, ram: 768,  disk: 500, includedGB: 2000, baseUSDhr: 13.44, hetzner: null,    hetznerDedicated: null,      kind: 'hourly' },
+    ];
+
+    // AWS EC2 m7a (AMD EPYC 4th gen, 1:4 vCPU:RAM, dedicated). Linux, on-demand.
+    // Verify against aws.amazon.com/ec2/pricing/on-demand/.
+    const EC2_INSTANCES = [
+      { name: 'm7a.large',    vcpu: 2,   ram: 8,    usdHr: { us: 0.0928,  eu: 0.1044  } },
+      { name: 'm7a.xlarge',   vcpu: 4,   ram: 16,   usdHr: { us: 0.1856,  eu: 0.2088  } },
+      { name: 'm7a.2xlarge',  vcpu: 8,   ram: 32,   usdHr: { us: 0.3712,  eu: 0.4176  } },
+      { name: 'm7a.4xlarge',  vcpu: 16,  ram: 64,   usdHr: { us: 0.7424,  eu: 0.8352  } },
+      { name: 'm7a.8xlarge',  vcpu: 32,  ram: 128,  usdHr: { us: 1.4848,  eu: 1.6704  } },
+      { name: 'm7a.12xlarge', vcpu: 48,  ram: 192,  usdHr: { us: 2.2272,  eu: 2.5056  } },
+      { name: 'm7a.16xlarge', vcpu: 64,  ram: 256,  usdHr: { us: 2.9696,  eu: 3.3408  } },
+      { name: 'm7a.24xlarge', vcpu: 96,  ram: 384,  usdHr: { us: 4.4544,  eu: 5.0112  } },
+      { name: 'm7a.32xlarge', vcpu: 128, ram: 512,  usdHr: { us: 5.9392,  eu: 6.6816  } },
+      { name: 'm7a.48xlarge', vcpu: 192, ram: 768,  usdHr: { us: 8.9088,  eu: 10.0224 } },
+    ];
+    const EC2_GP3_USD_PER_GB = { us: 0.08, eu: 0.0952 };
+    const EC2_EGRESS_FREE_GB = 100;
+    const EC2_EGRESS_TIERS = [
+      { upToGB: 10000,    ratePerGB: 0.09  },
+      { upToGB: 50000,    ratePerGB: 0.085 },
+      { upToGB: 150000,   ratePerGB: 0.07  },
+      { upToGB: Infinity, ratePerGB: 0.05  },
+    ];
+    function awsEgressCost(targetGB) {
+      let billed = Math.max(0, targetGB - EC2_EGRESS_FREE_GB);
+      let cost = 0;
+      let cursor = EC2_EGRESS_FREE_GB;
+      for (const tier of EC2_EGRESS_TIERS) {
+        if (billed <= 0) break;
+        const tierCap = tier.upToGB - cursor;
+        const used = Math.min(billed, tierCap);
+        cost += used * tier.ratePerGB;
+        billed -= used;
+        cursor = tier.upToGB;
+      }
+      return cost;
+    }
 
     const EXE_DISK_USD_PER_GB = 0.08;
     const EXE_TRAFFIC_USD_PER_GB = 0.05;
@@ -237,7 +288,7 @@
     function fmtRam(gb) { return `${gb} GB`; }
 
     // ---- Cost math ----------------------------------------------------------
-    function rowCosts(row, hetz, state, fxRate) {
+    function rowCosts(row, hetz, hetzDed, ec2, state, fxRate) {
       const targetGB = STOPS[state.transferIdx];
 
       // exe.dev base
@@ -245,8 +296,10 @@
       if (row.kind === 'monthly') exeUSD = row.baseUSDmo;
       else exeUSD = row.baseUSDhr * HOURS_PER_MONTH;
 
-      // exe.dev disk add-on (only when matchDisk on)
-      const diskGap = Math.max(0, hetz.disk - row.disk);
+      // exe.dev disk add-on (only when matchDisk on, and only if CCX matched —
+      // Dedicated rows aren't a sensible disk anchor since they include far more
+      // disk than Cloud Pool would ever ask for).
+      const diskGap = hetz ? Math.max(0, hetz.disk - row.disk) : 0;
       const exeDiskAdd = state.matchDisk ? diskGap * EXE_DISK_USD_PER_GB : 0;
 
       // exe.dev transfer overage (always applied based on slider)
@@ -255,12 +308,31 @@
 
       const exeTotal = exeUSD + exeDiskAdd + exeXferAdd;
 
-      // Hetzner cost in EUR, then to USD
-      const hetzInclGB = state.region === 'eu' ? hetz.trafficEU_GB : hetz.trafficUS_GB;
-      const hetzXferGap = Math.max(0, targetGB - hetzInclGB);
-      const hetzOverEUR = (hetzXferGap / 1000) * HETZ_EXTRA_TRAFFIC_EUR_PER_TB;
-      const hetzTotalEUR = hetz.eurMonth + hetzOverEUR;
-      const hetzTotalUSD = hetzTotalEUR * fxRate;
+      // Hetzner cost in EUR, then to USD. CCX path uses tiered traffic; Dedicated
+      // path is a flat monthly + amortized setup fee (unlimited traffic).
+      let hetzInclGB = null, hetzOverEUR = null, hetzTotalEUR = null, hetzTotalUSD = null;
+      if (hetz) {
+        hetzInclGB = state.region === 'eu' ? hetz.trafficEU_GB : hetz.trafficUS_GB;
+        const hetzXferGap = Math.max(0, targetGB - hetzInclGB);
+        hetzOverEUR = (hetzXferGap / 1000) * HETZ_EXTRA_TRAFFIC_EUR_PER_TB;
+        hetzTotalEUR = hetz.eurMonth + hetzOverEUR;
+        hetzTotalUSD = hetzTotalEUR * fxRate;
+      } else if (hetzDed) {
+        hetzOverEUR = 0; // unlimited traffic
+        hetzTotalEUR = hetzDed.eurMonth + (hetzDed.eurSetup / HETZ_DED_AMORT_MONTHS);
+        hetzTotalUSD = hetzTotalEUR * fxRate;
+      }
+
+      // AWS EC2 — only present if we have a matched m7a size
+      let awsBase = null, awsDiskAdd = null, awsXfer = null, awsTotal = null;
+      if (ec2) {
+        awsBase = ec2.usdHr[state.region] * HOURS_PER_MONTH;
+        // AWS includes 0 GB disk; matchDisk asks for the Hetzner disk amount when there is one
+        const awsDiskTarget = state.matchDisk && hetz ? hetz.disk : 0;
+        awsDiskAdd = awsDiskTarget * EC2_GP3_USD_PER_GB[state.region];
+        awsXfer = awsEgressCost(targetGB);
+        awsTotal = awsBase + awsDiskAdd + awsXfer;
+      }
 
       return {
         targetGB,
@@ -273,6 +345,10 @@
         hetzTotalEUR,
         hetzTotalUSD,
         diskGap,
+        awsBase,
+        awsDiskAdd,
+        awsXfer,
+        awsTotal,
       };
     }
 
@@ -312,47 +388,111 @@
       const targetGB = STOPS[state.transferIdx];
 
       const rows = useMemo(() => EXE_ROWS.map(r => {
-        const hetz = HETZNER.find(h => h.name === r.hetzner);
-        return { row: r, hetz, costs: rowCosts(r, hetz, state, fxRate) };
+        const hetz = r.hetzner ? HETZNER.find(h => h.name === r.hetzner) : null;
+        const hetzDed = (!hetz && r.hetznerDedicated && state.region === 'eu')
+          ? HETZNER_DEDICATED.find(d => d.id === r.hetznerDedicated)
+          : null;
+        const ec2 = EC2_INSTANCES.find(e => e.vcpu === r.vcpu && e.ram === r.ram) || null;
+        return { row: r, hetz, hetzDed, ec2, costs: rowCosts(r, hetz, hetzDed, ec2, state, fxRate) };
       }), [state, fxRate]);
 
-      const renderRow = ({ row, hetz, costs }, i) => {
+      const renderPctCell = (pct) => {
+        if (pct === null || pct === undefined) {
+          return html`<td style=${{ ...tdR, color: T.textTertiary, fontWeight: 600 }}>—</td>`;
+        }
+        const color = pct > 0 ? T.bad : pct < 0 ? T.good : T.textTertiary;
+        const sign = pct > 0 ? '+' : pct < 0 ? '−' : '';
+        return html`<td style=${{ ...tdR, color, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${sign}${Math.round(Math.abs(pct)).toLocaleString('en-US')}%</td>`;
+      };
+
+      const renderRow = ({ row, hetz, hetzDed, ec2, costs }, i) => {
         const notes = [];
-        if (!state.matchDisk) {
+        if (!state.matchDisk && hetz) {
           notes.push(`exe.dev includes ${row.disk} GB disk vs Hetzner's ${hetz.disk} GB.`);
         }
         if (costs.exeXferAdd > 0) {
           const overGB = targetGB - row.includedGB;
           notes.push(`exe.dev over its ${fmtTransfer(row.includedGB)} included by ${fmtTransfer(overGB)} → +${fmtUSDr(costs.exeXferAdd)}.`);
         }
-        if (costs.hetzOverEUR > 0) {
+        if (hetz && costs.hetzOverEUR > 0) {
           const overTB = (targetGB - costs.hetzInclGB) / 1000;
           notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${costs.hetzOverEUR.toFixed(2)} (≈ ${fmtUSDr(costs.hetzOverEUR * fxRate)}).`);
+        }
+        if (state.matchDisk && hetz && costs.awsDiskAdd > 0) {
+          notes.push(`AWS includes 0 GB disk → +${fmtUSDr(costs.awsDiskAdd)} for ${hetz.disk} GB gp3.`);
+        }
+        if (costs.awsXfer > 0) {
+          const overGB = targetGB - EC2_EGRESS_FREE_GB;
+          notes.push(`AWS over its 100 GB free egress by ${fmtTransfer(overGB)} → +${fmtUSDr(costs.awsXfer)}.`);
+        }
+        if (hetzDed) {
+          const cpuGap = hetzDed.vcpu - row.vcpu;
+          const ramGap = hetzDed.ram - row.ram;
+          const gapParts = [];
+          if (cpuGap !== 0) gapParts.push(`${cpuGap > 0 ? '+' : ''}${cpuGap} vCPU`);
+          if (ramGap !== 0) gapParts.push(`${ramGap > 0 ? '+' : ''}${ramGap} GB RAM`);
+          const gapNote = gapParts.length ? ` Hardware: ${hetzDed.vcpu} vCPU / ${hetzDed.ram} GB RAM (${gapParts.join(', ')} vs the matched ${row.vcpu} vCPU / ${row.ram} GB).` : '';
+          notes.push(`Hetzner ${hetzDed.name}: bare-metal lease (EU only), unlimited traffic; €${hetzDed.eurMonth.toFixed(2)}/mo + €${hetzDed.eurSetup.toFixed(2)} setup amortized over 12 mo.${gapNote}`);
         }
         const noteText = notes.length ? notes.join(' ') : '—';
 
         const exeBaseLabel = `${fmtUSDr(costs.exeBase)}/mo`;
 
-        const diff = costs.exeTotal - costs.hetzTotalUSD;
-        const diffPct = costs.hetzTotalUSD > 0 ? (diff / costs.hetzTotalUSD) * 100 : 0;
-        const diffColor = diff > 0 ? T.bad : diff < 0 ? T.good : T.textTertiary;
-        const diffSign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+        const hetzAny = hetz || hetzDed;
+        const diffH = hetzAny ? costs.exeTotal - costs.hetzTotalUSD : null;
+        const diffHPct = (hetzAny && costs.hetzTotalUSD > 0) ? (diffH / costs.hetzTotalUSD) * 100 : null;
+        const diffA = ec2 ? costs.exeTotal - costs.awsTotal : null;
+        const diffAPct = (ec2 && costs.awsTotal > 0) ? (diffA / costs.awsTotal) * 100 : null;
+
+        const diskCellValue = state.matchDisk
+          ? (hetz ? fmtDisk(hetz.disk) : '—')
+          : null;
 
         return html`
           <tr key=${i}>
             <td style=${tdL}>${row.plan}</td>
             <td style=${tdR}>${row.vcpu}</td>
             <td style=${tdR}>${fmtRam(row.ram)}</td>
-            ${state.matchDisk ? html`<td style=${tdR}>${fmtDisk(hetz.disk)}</td>` : null}
+            ${state.matchDisk ? html`<td style=${tdR}>${diskCellValue}</td>` : null}
             <td style=${tdR}>
               <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.exeTotal)}</div>
-              <div style=${subCell}>base ${exeBaseLabel}${state.matchDisk && costs.exeDiskAdd > 0 ? ` · disk +${fmtUSDr(costs.exeDiskAdd)}` : ''}${costs.exeXferAdd > 0 ? ` · xfer +${fmtUSDr(costs.exeXferAdd)}` : ''}</div>
+              <div style=${subCell}>
+                <div>base ${exeBaseLabel}</div>
+                ${state.matchDisk && costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
+                ${costs.exeXferAdd > 0 ? html`<div>xfer +${fmtUSDr(costs.exeXferAdd)}</div>` : null}
+              </div>
             </td>
-            <td style=${tdR}>
-              <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
-              <div style=${subCell}>${hetz.name} · €${costs.hetzTotalEUR.toFixed(2)}/mo${costs.hetzOverEUR > 0 ? ` (incl. €${costs.hetzOverEUR.toFixed(2)} overage)` : ''}</div>
-            </td>
-            <td style=${{ ...tdR, color: diffColor, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${diffSign}${Math.round(Math.abs(diffPct)).toLocaleString('en-US')}%</td>
+            ${hetz ? html`
+              <td style=${tdR}>
+                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
+                <div style=${subCell}>
+                  <div>${hetz.name}</div>
+                  <div>base €${hetz.eurMonth.toFixed(2)}/mo</div>
+                  ${costs.hetzOverEUR > 0 ? html`<div>xfer +${fmtUSDr(costs.hetzOverEUR * fxRate)}</div>` : null}
+                </div>
+              </td>
+            ` : (hetzDed ? html`
+              <td style=${tdR}>
+                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
+                <div style=${subCell}>
+                  <div>${hetzDed.name} (dedicated)</div>
+                  <div>€${hetzDed.eurMonth.toFixed(2)}/mo</div>
+                  <div>+€${(hetzDed.eurSetup / HETZ_DED_AMORT_MONTHS).toFixed(2)}/mo setup</div>
+                </div>
+              </td>
+            ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`)}
+            ${ec2 ? html`
+              <td style=${tdR}>
+                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.awsTotal)}</div>
+                <div style=${subCell}>
+                  <div>${ec2.name}</div>
+                  ${costs.awsDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.awsDiskAdd)}</div>` : null}
+                  ${costs.awsXfer > 0 ? html`<div>xfer +${fmtUSDr(costs.awsXfer)}</div>` : null}
+                </div>
+              </td>
+            ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`}
+            ${renderPctCell(diffHPct)}
+            ${renderPctCell(diffAPct)}
             <td style=${tdL_notes}>${noteText}</td>
           </tr>
         `;
@@ -362,9 +502,9 @@
 
       return html`
         <div style=${{ maxWidth: 1240, margin: '0 auto' }}>
-          <h1 style=${{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>exe.dev vs Hetzner Cloud</h1>
+          <h1 style=${{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>exe.dev vs Hetzner vs AWS</h1>
           <p style=${{ color: T.textSecondary, marginBottom: 24, fontSize: 15, lineHeight: 1.5 }}>
-            Compare exe.dev's <a href="https://exe.dev/pricing" style=${linkStyle}>Personal & Cloud Pool plans</a> against Hetzner's <a href="https://www.hetzner.com/cloud/general-purpose" style=${linkStyle}>General Purpose CCX line</a>, matched 1-to-1 by vCPU and RAM. Use the slider to choose a transfer target — both providers pay overages above what they include.
+            Compare exe.dev's <a href="https://exe.dev/pricing" style=${linkStyle}>Personal & Cloud Pool plans</a> against Hetzner's <a href="https://www.hetzner.com/cloud/general-purpose" style=${linkStyle}>Cloud (CCX)</a> and <a href="https://www.hetzner.com/dedicated-rootserver/" style=${linkStyle}>Dedicated Servers</a> plus AWS's <a href="https://aws.amazon.com/ec2/instance-types/m7a/" style=${linkStyle}>EC2 m7a (AMD EPYC)</a>, matched 1-to-1 by vCPU and RAM. Use the slider to choose a transfer target — every provider pays overages above what they include.
           </p>
 
           <div class="controls-row" style=${{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -432,16 +572,18 @@
 
           <div style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
             <div class="table-wrap">
-              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 1100 }}>
                 <thead>
                   <tr>
-                    <th style=${thL}>Plan</th>
+                    <th style=${thL}>exe.dev plan</th>
                     <th style=${thR}>vCPU</th>
                     <th style=${thR}>RAM</th>
                     ${state.matchDisk ? html`<th style=${thR}>Disk</th>` : null}
                     <th style=${thR}>exe.dev /mo</th>
                     <th style=${thR}>Hetzner /mo</th>
-                    <th style=${thR}>Δ % (exe vs Hetz)</th>
+                    <th style=${thR}>AWS /mo</th>
+                    <th style=${thR}>Δ % vs Hetz</th>
+                    <th style=${thR}>Δ % vs AWS</th>
                     <th style=${thL}>Notes</th>
                   </tr>
                 </thead>
@@ -451,12 +593,14 @@
           </div>
 
           <div style=${{ marginTop: 24, fontSize: 13, color: T.textSecondary, lineHeight: 1.6 }}>
-            <p style=${{ marginBottom: 6 }}><strong>Hetzner extras:</strong> €1/TB extra traffic (EU & US), €0.044/GB·mo block volume.</p>
+            <p style=${{ marginBottom: 6 }}><strong>Hetzner Cloud (CCX) extras:</strong> €1/TB extra traffic (EU & US), €0.044/GB·mo block volume.</p>
+            <p style=${{ marginBottom: 6 }}><strong>Hetzner Dedicated:</strong> Bare-metal server lease, EU only (Falkenstein/Helsinki/Nuremberg). Includes unlimited traffic on a 1 GBit/s link. Displayed monthly cost = base €/mo + one-time setup fee amortized over 12 months. Used as a fallback for Cloud Pool tiers larger than CCX63: both 64- and 96-vCPU rows map to AX162-S (AMD EPYC 9454P, 96 threads) — the 64-vCPU row uses 256 GB RAM (CPU 50% over since AX has no 64-thread SKU), the 96-vCPU row uses 448 GB (RAM 64 GB over the 384 target).</p>
             <p style=${{ marginBottom: 6 }}><strong>exe.dev extras:</strong> $0.08/GB·mo extra disk, $0.05/GB extra transfer.</p>
-            <p style=${{ marginBottom: 6 }}><strong>Region note:</strong> Hetzner US (Ashburn, Hillsboro) includes only 1 TB on all CCX; EU locations include the full per-plan amount (20–60 TB).</p>
-            <p style=${{ marginBottom: 6 }}><strong>Excluded:</strong> exe.dev's Team plan and Cloud Pool tiers above 48 vCPU (no single-CCX equivalent).</p>
-            <p style=${{ marginBottom: 6 }}><strong>Hourly → monthly:</strong> Cloud Pool's hourly rate is multiplied by 730 hours/month (30.44 days × 24 hr).</p>
-            <p style=${{ color: T.textTertiary, fontSize: 12, marginTop: 12 }}>Pricing snapshots taken May 2026; verify against the live <a href="https://www.hetzner.com/cloud/general-purpose" style=${linkStyle}>hetzner.com</a> and <a href="https://exe.dev/pricing" style=${linkStyle}>exe.dev</a> pages before making decisions.</p>
+            <p style=${{ marginBottom: 6 }}><strong>AWS extras:</strong> $0.08/GB·mo gp3 EBS in us-east-1 ($0.0952 in eu-central-1), $0.09/GB egress after the 100 GB/mo free tier (drops to $0.085 above 10 TB, $0.07 above 50 TB).</p>
+            <p style=${{ marginBottom: 6 }}><strong>Region mapping:</strong> Hetzner Cloud US (Ashburn, Hillsboro) includes only 1 TB on all CCX; EU locations include the full per-plan amount. Hetzner Dedicated is EU-only — those rows show "—" when the region toggle is on US. AWS: EU → eu-central-1 (Frankfurt), US → us-east-1 (N. Virginia); egress rates are identical between those two regions.</p>
+            <p style=${{ marginBottom: 6 }}><strong>Excluded:</strong> exe.dev's Team plan, and Cloud Pool tiers above 192 vCPU (no AWS m7a match — m7a maxes at m7a.48xlarge / 192 vCPU). Cloud Pool 128/192 vCPU rows show "—" for Hetzner because no Dedicated SKU is available at those sizes.</p>
+            <p style=${{ marginBottom: 6 }}><strong>Hourly → monthly:</strong> Cloud Pool and EC2 hourly rates are multiplied by 730 hours/month (30.44 days × 24 hr).</p>
+            <p style=${{ color: T.textTertiary, fontSize: 12, marginTop: 12 }}>Pricing snapshots taken May 2026; verify against the live <a href="https://www.hetzner.com/cloud/general-purpose" style=${linkStyle}>hetzner.com</a>, <a href="https://exe.dev/pricing" style=${linkStyle}>exe.dev</a>, and <a href="https://aws.amazon.com/ec2/pricing/on-demand/" style=${linkStyle}>aws.amazon.com</a> pages before making decisions.</p>
           </div>
 
           <div style=${{ marginTop: 32, fontSize: 12, color: T.textTertiary }}>

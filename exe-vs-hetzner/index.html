@@ -230,8 +230,8 @@
       }
       return `${gb} GB`;
     }
-    function fmtUSD(n) {
-      return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    function fmtUSDr(n) {
+      return '$' + Math.round(n).toLocaleString('en-US');
     }
     function fmtDisk(gb) { return `${gb} GB`; }
     function fmtRam(gb) { return `${gb} GB`; }
@@ -323,17 +323,15 @@
         }
         if (costs.exeXferAdd > 0) {
           const overGB = targetGB - row.includedGB;
-          notes.push(`exe.dev over its ${fmtTransfer(row.includedGB)} included by ${fmtTransfer(overGB)} → +${fmtUSD(costs.exeXferAdd)}.`);
+          notes.push(`exe.dev over its ${fmtTransfer(row.includedGB)} included by ${fmtTransfer(overGB)} → +${fmtUSDr(costs.exeXferAdd)}.`);
         }
         if (costs.hetzOverEUR > 0) {
           const overTB = (targetGB - costs.hetzInclGB) / 1000;
-          notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${costs.hetzOverEUR.toFixed(2)} (≈ ${fmtUSD(costs.hetzOverEUR * fxRate)}).`);
+          notes.push(`Hetzner over its ${fmtTransfer(costs.hetzInclGB)} included by ${overTB} TB → +€${costs.hetzOverEUR.toFixed(2)} (≈ ${fmtUSDr(costs.hetzOverEUR * fxRate)}).`);
         }
         const noteText = notes.length ? notes.join(' ') : '—';
 
-        const exeBaseLabel = row.kind === 'hourly'
-          ? `${fmtUSD(row.baseUSDhr)}/hr → ${fmtUSD(costs.exeBase)}/mo`
-          : `${fmtUSD(costs.exeBase)}/mo`;
+        const exeBaseLabel = `${fmtUSDr(costs.exeBase)}/mo`;
 
         const diff = costs.exeTotal - costs.hetzTotalUSD;
         const diffColor = diff > 0 ? T.bad : diff < 0 ? T.good : T.textTertiary;
@@ -346,14 +344,14 @@
             <td style=${tdR}>${fmtRam(row.ram)}</td>
             ${state.matchDisk ? html`<td style=${tdR}>${fmtDisk(hetz.disk)}</td>` : null}
             <td style=${tdR}>
-              <div style=${{ fontWeight: 600 }}>${fmtUSD(costs.exeTotal)}</div>
-              <div style=${subCell}>base ${exeBaseLabel}${state.matchDisk && costs.exeDiskAdd > 0 ? ` · disk +${fmtUSD(costs.exeDiskAdd)}` : ''}${costs.exeXferAdd > 0 ? ` · xfer +${fmtUSD(costs.exeXferAdd)}` : ''}</div>
+              <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.exeTotal)}</div>
+              <div style=${subCell}>base ${exeBaseLabel}${state.matchDisk && costs.exeDiskAdd > 0 ? ` · disk +${fmtUSDr(costs.exeDiskAdd)}` : ''}${costs.exeXferAdd > 0 ? ` · xfer +${fmtUSDr(costs.exeXferAdd)}` : ''}</div>
             </td>
             <td style=${tdR}>
-              <div style=${{ fontWeight: 600 }}>${fmtUSD(costs.hetzTotalUSD)}</div>
+              <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
               <div style=${subCell}>${hetz.name} · €${costs.hetzTotalEUR.toFixed(2)}/mo${costs.hetzOverEUR > 0 ? ` (incl. €${costs.hetzOverEUR.toFixed(2)} overage)` : ''}</div>
             </td>
-            <td style=${{ ...tdR, color: diffColor, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${diffSign}${fmtUSD(Math.abs(diff))}</td>
+            <td style=${{ ...tdR, color: diffColor, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${diffSign}${fmtUSDr(Math.abs(diff))}</td>
             <td style=${tdL_notes}>${noteText}</td>
           </tr>
         `;

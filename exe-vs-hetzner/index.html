@@ -134,7 +134,12 @@
     /* Combine spec columns first to buy more room for notes. */
     @media (max-width: 1100px) {
       .col-spec { display: none; }
-      .col-specs-combined { display: table-cell; }
+      .col-specs-combined {
+        display: table-cell;
+        width: 1%;
+        white-space: nowrap;
+        text-align: left !important;
+      }
     }
 
     /* When the viewport is too cramped to read notes, drop notes and shorten labels. */
@@ -144,6 +149,38 @@
       .col-notes { display: none; }
       .lbl-full { display: none; }
       .lbl-short { display: inline; }
+      /* Drop the table's card chrome on mobile to reclaim horizontal space and
+         tighten cell padding so the cost columns fit without scroll. Background
+         stays white and extends to the viewport edges (via negative margins).
+         Row separators extend full width too because the table itself goes
+         edge-to-edge — content is pushed back to the body's 12px line via
+         extra padding on the first and last visible cells. */
+      .table-card {
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 -12px !important;
+      }
+      .table-card th, .table-card td {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+      }
+      .table-card th:first-child, .table-card td:first-child {
+        padding-left: 18px !important;
+      }
+      /* AWS cell is :nth-last-child(2) because the hidden Notes cell still counts
+         as the last child in the DOM. */
+      .table-card th:nth-last-child(2), .table-card td:nth-last-child(2) {
+        padding-right: 18px !important;
+      }
+      /* Force the 3 cost columns to share remaining width equally so the long
+         "AX162-S (dedicated)" string in the Hetzner column wraps instead of
+         hogging horizontal space. min-width also drops here so the table
+         honors narrow viewports without horizontal scroll. */
+      .table-card table { table-layout: fixed !important; min-width: 0 !important; }
+      .table-card .col-specs-combined { width: 100px !important; }
+      .sub-base { display: none; }
+      .sub-dedicated-tag { display: none; }
     }
   </style>
   <script type="importmap">
@@ -528,7 +565,7 @@
             <td style=${tdR}>
               ${priceWithPct(fmtUSDr(costs.exeTotal), exePct)}
               <div style=${subCell}>
-                <div>base ${exeBaseLabel}</div>
+                <div class="sub-base">base ${exeBaseLabel}</div>
                 ${costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
                 ${costs.exeXferAdd > 0 ? html`<div>xfer +${fmtUSDr(costs.exeXferAdd)}</div>` : null}
               </div>
@@ -538,7 +575,7 @@
                 ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
                   <div>${hetz.name}</div>
-                  <div>base €${hetz.eurMonth.toFixed(2)}/mo</div>
+                  <div class="sub-base">base €${hetz.eurMonth.toFixed(2)}/mo</div>
                   ${costs.hetzOverEUR > 0 ? html`<div>xfer +${fmtUSDr(costs.hetzOverEUR * fxRate)}</div>` : null}
                 </div>
               </td>
@@ -546,9 +583,9 @@
               <td style=${tdR}>
                 ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
-                  <div>${hetzDed.name} (dedicated)</div>
-                  <div>€${hetzDed.eurMonth.toFixed(2)}/mo</div>
-                  <div>+€${(hetzDed.eurSetup / HETZ_DED_AMORT_MONTHS).toFixed(2)}/mo setup</div>
+                  <div>${hetzDed.name}<span class="sub-dedicated-tag"> (dedicated)</span></div>
+                  <div class="sub-base">€${hetzDed.eurMonth.toFixed(2)}/mo</div>
+                  <div>setup +€${Math.round(hetzDed.eurSetup / HETZ_DED_AMORT_MONTHS)}</div>
                 </div>
               </td>
             ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`)}
@@ -644,7 +681,7 @@
             </div>
           </div>
 
-          <div style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
+          <div class="table-card" style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
             <div class="table-wrap">
               <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 480 }}>
                 <thead>
@@ -712,7 +749,7 @@
     const tdL = { ...tdBase, textAlign: 'left', whiteSpace: 'nowrap', fontWeight: 500 };
     const tdR = { ...tdBase, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' };
     const tdL_notes = { ...tdBase, textAlign: 'left', color: T.textSecondary, fontSize: 12, lineHeight: 1.45, minWidth: 240 };
-    const subCell = { fontSize: 11, color: T.textTertiary, marginTop: 2 };
+    const subCell = { fontSize: 11, color: T.textTertiary, marginTop: 2, whiteSpace: 'normal' };
     const linkStyle = { color: T.accent, textDecoration: 'none', borderBottom: '1px solid ' + T.accent + '40' };
 
     createRoot(document.getElementById('root')).render(html`<${App} />`);

@@ -623,7 +623,10 @@
             </div>
 
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style=${{ fontSize: 14, color: T.textLabel }}>Price benchmark:</span>
+              <span
+                style=${{ fontSize: 14, color: T.textLabel, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary }}
+                title="Picks which provider's price is the baseline (0%) for the Δ pills next to each cost. Other providers show their cost as a percentage above (red) or below (green) that baseline."
+              >Price benchmark:</span>
               <div class="seg">
                 <button class=${state.benchmark === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'exe' }))}>exe.dev</button>
                 <button class=${state.benchmark === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'hetz' }))}>Hetzner</button>
@@ -632,7 +635,10 @@
             </div>
 
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style=${{ fontSize: 14, color: T.textLabel }}>Storage default:</span>
+              <span
+                style=${{ fontSize: 14, color: T.textLabel, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary }}
+                title="Sets the disk capacity every provider is priced against. exe.dev uses 25 GB (Personal) / 500 GB (Cloud Pool). Hetzner uses each row's real CCX disk where one exists, and an extrapolated value of vCPU × 20 GB for Cloud Pool tiers above 48 vCPU. Hetzner Cloud and Dedicated rows always include the target so they pay $0 disk; exe.dev pays the gap above its included amount; AWS pays the full target at gp3 rates."
+              >Storage default:</span>
               <div class="seg">
                 <button class=${state.storageDefault === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'exe' }))}>exe.dev</button>
                 <button class=${state.storageDefault === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'hetz' }))}>Hetzner</button>
@@ -642,7 +648,10 @@
 
           <div style=${{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '14px 16px', background: T.cardBg, border: '1px solid ' + T.border, borderRadius: 12, boxShadow: T.cardShadow }}>
             <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <div style=${{ fontSize: 14, fontWeight: 600, color: T.textPrimary }}>Transfer target</div>
+              <div
+                style=${{ fontSize: 14, fontWeight: 600, color: T.textPrimary, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary, display: 'inline-block' }}
+                title="The amount of outbound data transfer (egress) you're costing out per month. Each provider includes some amount for free; above that they bill overage at their own rate (exe.dev $50/TB, Hetzner Cloud €1/TB, AWS $90/TB tiered down to $50/TB above 150 TB). Hetzner Dedicated has unlimited traffic. The slider is non-linear: smaller jumps near the low end (50 GB) and bigger jumps near the high end (2 TB)."
+              >Transfer target</div>
               <div style=${{ fontSize: 13, color: T.textTertiary }}>
                 <span style=${{ color: T.accent, fontWeight: 700, fontSize: 15 }}>${fmtTransfer(targetGB)}</span>
               </div>
@@ -716,8 +725,8 @@
             <p style=${{ marginBottom: 6 }}><strong>Storage default:</strong> Sets the disk capacity each provider is priced against. <em>exe.dev</em> uses 25 GB / 500 GB (the included Personal / Cloud Pool amounts). <em>Hetzner</em> uses each row's real CCX disk where one exists, and an extrapolated value of <code>vCPU × 20 GB</code> (the rate at the top of the CCX line — CCX63 is 48 vCPU / 960 GB) for Cloud Pool tiers above 48 vCPU. Hetzner Cloud and Dedicated rows always include the target so they show $0 disk add-on; exe.dev pays the gap above its 25 / 500 GB; AWS pays the full target at gp3 rates ($0.08/GB·mo us, $0.0952/GB·mo eu).</p>
             <p style=${{ marginBottom: 6 }}><strong>Hetzner Cloud (CCX) extras:</strong> €1/TB extra traffic (EU & US), €0.044/GB·mo block volume.</p>
             <p style=${{ marginBottom: 6 }}><strong>Hetzner Dedicated:</strong> Bare-metal server lease, EU only (Falkenstein/Helsinki/Nuremberg). Includes unlimited traffic on a 1 GBit/s link. Displayed monthly cost = base €/mo + one-time setup fee amortized over 12 months. Used as a fallback for Cloud Pool tiers larger than CCX63: both 64- and 96-vCPU rows map to AX162-S (AMD EPYC 9454P, 96 threads) — the 64-vCPU row uses 256 GB RAM (CPU 50% over since AX has no 64-thread SKU), the 96-vCPU row uses 448 GB (RAM 64 GB over the 384 target).</p>
-            <p style=${{ marginBottom: 6 }}><strong>exe.dev extras:</strong> $0.08/GB·mo extra disk, $0.05/GB extra transfer.</p>
-            <p style=${{ marginBottom: 6 }}><strong>AWS extras:</strong> $0.08/GB·mo gp3 EBS in us-east-1 ($0.0952 in eu-central-1), $0.09/GB egress after the 100 GB/mo free tier (drops to $0.085 above 10 TB, $0.07 above 50 TB).</p>
+            <p style=${{ marginBottom: 6 }}><strong>exe.dev extras:</strong> $0.08/GB·mo extra disk, $50/TB extra transfer.</p>
+            <p style=${{ marginBottom: 6 }}><strong>AWS extras:</strong> $0.08/GB·mo gp3 EBS in us-east-1 ($0.0952 in eu-central-1), $90/TB egress after the 100 GB/mo free tier (drops to $85/TB above 10 TB, $70/TB above 50 TB).</p>
             <p style=${{ marginBottom: 6 }}><strong>Region mapping:</strong> Hetzner Cloud US (Ashburn, Hillsboro) includes only 1 TB on all CCX; EU locations include the full per-plan amount. Hetzner Dedicated is EU-only — those rows show "—" when the region toggle is on US. AWS: EU → eu-central-1 (Frankfurt), US → us-east-1 (N. Virginia); egress rates are identical between those two regions.</p>
             <p style=${{ marginBottom: 6 }}><strong>Excluded:</strong> exe.dev's Team plan, and Cloud Pool tiers above 192 vCPU (no AWS m7a match — m7a maxes at m7a.48xlarge / 192 vCPU). Cloud Pool 128/192 vCPU rows show "—" for Hetzner because no Dedicated SKU is available at those sizes.</p>
             <p style=${{ marginBottom: 6 }}><strong>Hourly → monthly:</strong> Cloud Pool and EC2 hourly rates are multiplied by 730 hours/month (30.44 days × 24 hr).</p>

@@ -434,26 +434,14 @@
         if (parsedCache) {
           fetchAA = Promise.resolve(parsedCache);
         } else {
-          const aaUrl = 'https://corsproxy.io/?' + encodeURIComponent('https://artificialanalysis.ai/api/v2/data/llms/models');
+          const aaUrl = 'https://cors.eu.org/https://artificialanalysis.ai/api/v2/data/llms/models';
           fetchAA = fetch(aaUrl, {
             headers: { 'x-api-key': apiKey },
             cache: 'no-store'
           })
             .then(async r => {
               if (!r.ok) throw new Error('ArtificialAnalysis API error ' + r.status + (r.status === 401 ? ' — check your API key' : ''));
-              const buf = await r.arrayBuffer();
-              try {
-                return JSON.parse(new TextDecoder().decode(buf));
-              } catch (e) {
-                // corsproxy.io sometimes forwards brotli-compressed bytes without decompressing,
-                // and Chrome's native DecompressionStream doesn't support brotli — use wasm fallback.
-                // Use new Function() to bypass Babel's import->require transform.
-                const dynImport = new Function('u', 'return import(u)');
-                const mod = await dynImport('https://esm.sh/brotli-dec-wasm@2.3.0');
-                const brotli = await mod.default;
-                const decompressed = brotli.decompress(new Uint8Array(buf));
-                return JSON.parse(new TextDecoder().decode(decompressed));
-              }
+              return r.json();
             })
             .then(aa => {
               try {

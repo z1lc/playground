@@ -424,6 +424,69 @@
     }
 
     // ---- App ----------------------------------------------------------------
+    function HelpLabel({ label, text, baseStyle }) {
+      const [open, setOpen] = useState(false);
+      const [touchMode, setTouchMode] = useState(false);
+
+      useEffect(() => {
+        // Devices without hover capability (phones, tablets) → tap-to-toggle.
+        // Devices with hover (desktop with mouse) → hover-to-show.
+        setTouchMode(!window.matchMedia('(hover: hover)').matches);
+      }, []);
+
+      useEffect(() => {
+        if (!open || !touchMode) return;
+        const onDocClick = (e) => {
+          if (!e.target.closest('.help-label-wrap')) setOpen(false);
+        };
+        const t = setTimeout(() => document.addEventListener('click', onDocClick), 0);
+        return () => { clearTimeout(t); document.removeEventListener('click', onDocClick); };
+      }, [open, touchMode]);
+
+      const triggerHandlers = touchMode
+        ? {
+            onClick: () => setOpen(o => !o),
+            onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(o => !o); } },
+          }
+        : {
+            onMouseEnter: () => setOpen(true),
+            onMouseLeave: () => setOpen(false),
+            onFocus: () => setOpen(true),
+            onBlur: () => setOpen(false),
+          };
+
+      return html`
+        <span class="help-label-wrap" style=${{ position: 'relative', display: 'inline-block' }}>
+          <span
+            role="button"
+            tabIndex=${0}
+            ...${triggerHandlers}
+            style=${{ ...(baseStyle || {}), cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary, userSelect: 'none' }}
+          >${label}</span>
+          ${open ? html`
+            <div style=${{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              marginTop: 6,
+              padding: '10px 12px',
+              background: T.tooltipBg,
+              color: T.tooltipText,
+              fontSize: 12,
+              lineHeight: 1.45,
+              borderRadius: 8,
+              width: 'max-content',
+              maxWidth: 'min(320px, calc(100vw - 32px))',
+              zIndex: 100,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
+              fontWeight: 400,
+              pointerEvents: 'none',
+            }}>${text}</div>
+          ` : null}
+        </span>
+      `;
+    }
+
     function App() {
       const [state, setState] = useState(loadState);
       const [fx, setFx] = useState(() => loadFX());
@@ -623,10 +686,11 @@
             </div>
 
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span
-                style=${{ fontSize: 14, color: T.textLabel, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary }}
-                title="Picks which provider's price is the baseline (0%) for the Δ pills next to each cost. Other providers show their cost as a percentage above (red) or below (green) that baseline."
-              >Price benchmark:</span>
+              <${HelpLabel}
+                label="Price benchmark:"
+                baseStyle=${{ fontSize: 14, color: T.textLabel }}
+                text="Picks which provider's price is the baseline (0%) for the Δ pills next to each cost. Other providers show their cost as a percentage above (red) or below (green) that baseline."
+              />
               <div class="seg">
                 <button class=${state.benchmark === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'exe' }))}>exe.dev</button>
                 <button class=${state.benchmark === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'hetz' }))}>Hetzner</button>
@@ -635,10 +699,11 @@
             </div>
 
             <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span
-                style=${{ fontSize: 14, color: T.textLabel, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary }}
-                title="Sets the disk capacity every provider is priced against. exe.dev uses 25 GB (Personal) / 500 GB (Cloud Pool). Hetzner uses each row's real CCX disk where one exists, and an extrapolated value of vCPU × 20 GB for Cloud Pool tiers above 48 vCPU. Hetzner Cloud and Dedicated rows always include the target so they pay $0 disk; exe.dev pays the gap above its included amount; AWS pays the full target at gp3 rates."
-              >Storage default:</span>
+              <${HelpLabel}
+                label="Storage default:"
+                baseStyle=${{ fontSize: 14, color: T.textLabel }}
+                text="Sets the disk capacity every provider is priced against. exe.dev uses 25 GB (Personal) / 500 GB (Cloud Pool). Hetzner uses each row's real CCX disk where one exists, and an extrapolated value of vCPU × 20 GB for Cloud Pool tiers above 48 vCPU. Hetzner Cloud and Dedicated rows always include the target so they pay $0 disk; exe.dev pays the gap above its included amount; AWS pays the full target at gp3 rates."
+              />
               <div class="seg">
                 <button class=${state.storageDefault === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'exe' }))}>exe.dev</button>
                 <button class=${state.storageDefault === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, storageDefault: 'hetz' }))}>Hetzner</button>
@@ -648,10 +713,11 @@
 
           <div style=${{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '14px 16px', background: T.cardBg, border: '1px solid ' + T.border, borderRadius: 12, boxShadow: T.cardShadow }}>
             <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <div
-                style=${{ fontSize: 14, fontWeight: 600, color: T.textPrimary, cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary, display: 'inline-block' }}
-                title="The amount of outbound data transfer (egress) you're costing out per month. Each provider includes some amount for free; above that they bill overage at their own rate (exe.dev $50/TB, Hetzner Cloud €1/TB, AWS $90/TB tiered down to $50/TB above 150 TB). Hetzner Dedicated has unlimited traffic. The slider is non-linear: smaller jumps near the low end (50 GB) and bigger jumps near the high end (2 TB)."
-              >Transfer target</div>
+              <${HelpLabel}
+                label="Transfer target"
+                baseStyle=${{ fontSize: 14, fontWeight: 600, color: T.textPrimary }}
+                text="The amount of outbound data transfer (egress) you're costing out per month. Each provider includes some amount for free; above that they bill overage at their own rate (exe.dev $50/TB, Hetzner Cloud €1/TB, AWS $90/TB tiered down to $50/TB above 150 TB). Hetzner Dedicated has unlimited traffic. The slider is non-linear: smaller jumps near the low end (50 GB) and bigger jumps near the high end (2 TB)."
+              />
               <div style=${{ fontSize: 13, color: T.textTertiary }}>
                 <span style=${{ color: T.accent, fontWeight: 700, fontSize: 15 }}>${fmtTransfer(targetGB)}</span>
               </div>

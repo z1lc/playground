@@ -251,7 +251,7 @@
     const FX_KEY = 'exe-vs-hetzner:fx';
     const FX_FALLBACK = 1.18;
     const FX_MAX_AGE_MS = 24 * 60 * 60 * 1000;
-    const DEFAULT_STATE = { region: 'eu', matchDisk: false, transferIdx: 0 };
+    const DEFAULT_STATE = { region: 'eu', matchDisk: false, transferIdx: 0, benchmark: 'hetz' };
 
     function loadState() {
       try {
@@ -396,14 +396,33 @@
         return { row: r, hetz, hetzDed, ec2, costs: rowCosts(r, hetz, hetzDed, ec2, state, fxRate) };
       }), [state, fxRate]);
 
-      const renderPctCell = (pct) => {
-        if (pct === null || pct === undefined) {
-          return html`<td style=${{ ...tdR, color: T.textTertiary, fontWeight: 600 }}>—</td>`;
-        }
-        const color = pct > 0 ? T.bad : pct < 0 ? T.good : T.textTertiary;
-        const sign = pct > 0 ? '+' : pct < 0 ? '−' : '';
-        return html`<td style=${{ ...tdR, color, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>${sign}${Math.round(Math.abs(pct)).toLocaleString('en-US')}%</td>`;
+      const renderInlinePct = (pct) => {
+        if (pct === null || pct === undefined) return null;
+        const isUp = pct > 0;
+        const isDown = pct < 0;
+        const bg = isUp ? 'rgba(196, 74, 55, 0.15)' : isDown ? 'rgba(61, 138, 107, 0.15)' : 'rgba(138, 138, 138, 0.15)';
+        const fg = isUp ? T.bad : isDown ? T.good : T.textTertiary;
+        const sign = isUp ? '+' : isDown ? '−' : '';
+        return html`<span style=${{
+          display: 'inline-block',
+          fontWeight: 600,
+          color: fg,
+          background: bg,
+          fontVariantNumeric: 'tabular-nums',
+          fontSize: 12,
+          padding: '2px 8px',
+          borderRadius: 999,
+          lineHeight: 1.4,
+          marginTop: 2,
+        }}>${sign}${Math.round(Math.abs(pct)).toLocaleString('en-US')}%</span>`;
       };
+
+      const priceWithPct = (priceLabel, pct) => html`
+        <div>
+          <div style=${{ fontWeight: 600 }}>${priceLabel}</div>
+          ${renderInlinePct(pct) ? html`<div>${renderInlinePct(pct)}</div>` : null}
+        </div>
+      `;
 
       const renderRow = ({ row, hetz, hetzDed, ec2, costs }, i) => {
         const notes = [];
@@ -438,11 +457,21 @@
 
         const exeBaseLabel = `${fmtUSDr(costs.exeBase)}/mo`;
 
-        const hetzAny = hetz || hetzDed;
-        const diffH = hetzAny ? costs.exeTotal - costs.hetzTotalUSD : null;
-        const diffHPct = (hetzAny && costs.hetzTotalUSD > 0) ? (diffH / costs.hetzTotalUSD) * 100 : null;
-        const diffA = ec2 ? costs.exeTotal - costs.awsTotal : null;
-        const diffAPct = (ec2 && costs.awsTotal > 0) ? (diffA / costs.awsTotal) * 100 : null;
+        const benchmarkCost = state.benchmark === 'exe'
+          ? costs.exeTotal
+          : state.benchmark === 'hetz'
+            ? costs.hetzTotalUSD
+            : costs.awsTotal;
+
+        const pct = (cost, isBenchmark) => {
+          if (isBenchmark) return null;
+          if (cost === null || cost === undefined) return null;
+          if (!benchmarkCost || benchmarkCost <= 0) return null;
+          return ((cost - benchmarkCost) / benchmarkCost) * 100;
+        };
+        const exePct = pct(costs.exeTotal, state.benchmark === 'exe');
+        const hetzPct = pct(costs.hetzTotalUSD, state.benchmark === 'hetz');
+        const awsPct = pct(costs.awsTotal, state.benchmark === 'aws');
 
         const diskCellValue = state.matchDisk
           ? (hetz ? fmtDisk(hetz.disk) : '—')
@@ -450,12 +479,11 @@
 
         return html`
           <tr key=${i}>
-            <td style=${tdL}>${row.plan}</td>
             <td style=${tdR}>${row.vcpu}</td>
             <td style=${tdR}>${fmtRam(row.ram)}</td>
             ${state.matchDisk ? html`<td style=${tdR}>${diskCellValue}</td>` : null}
             <td style=${tdR}>
-              <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.exeTotal)}</div>
+              ${priceWithPct(fmtUSDr(costs.exeTotal), exePct)}
               <div style=${subCell}>
                 <div>base ${exeBaseLabel}</div>
                 ${state.matchDisk && costs.exeDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.exeDiskAdd)}</div>` : null}
@@ -464,7 +492,7 @@
             </td>
             ${hetz ? html`
               <td style=${tdR}>
-                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
+                ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
                   <div>${hetz.name}</div>
                   <div>base €${hetz.eurMonth.toFixed(2)}/mo</div>
@@ -473,7 +501,7 @@
               </td>
             ` : (hetzDed ? html`
               <td style=${tdR}>
-                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.hetzTotalUSD)}</div>
+                ${priceWithPct(fmtUSDr(costs.hetzTotalUSD), hetzPct)}
                 <div style=${subCell}>
                   <div>${hetzDed.name} (dedicated)</div>
                   <div>€${hetzDed.eurMonth.toFixed(2)}/mo</div>
@@ -483,7 +511,7 @@
             ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`)}
             ${ec2 ? html`
               <td style=${tdR}>
-                <div style=${{ fontWeight: 600 }}>${fmtUSDr(costs.awsTotal)}</div>
+                ${priceWithPct(fmtUSDr(costs.awsTotal), awsPct)}
                 <div style=${subCell}>
                   <div>${ec2.name}</div>
                   ${costs.awsDiskAdd > 0 ? html`<div>disk +${fmtUSDr(costs.awsDiskAdd)}</div>` : null}
@@ -491,8 +519,6 @@
                 </div>
               </td>
             ` : html`<td style=${{ ...tdR, color: T.textTertiary }}>—</td>`}
-            ${renderPctCell(diffHPct)}
-            ${renderPctCell(diffAPct)}
             <td style=${tdL_notes}>${noteText}</td>
           </tr>
         `;
@@ -530,6 +556,15 @@
               <span style=${{ fontSize: 12, color: T.textTertiary }}>
                 ${state.region === 'eu' ? '(full per-plan traffic)' : '(1 TB included for all CCX)'}
               </span>
+            </div>
+
+            <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style=${{ fontSize: 14, color: T.textLabel }}>Benchmark:</span>
+              <div class="seg">
+                <button class=${state.benchmark === 'exe' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'exe' }))}>exe.dev</button>
+                <button class=${state.benchmark === 'hetz' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'hetz' }))}>Hetzner</button>
+                <button class=${state.benchmark === 'aws' ? 'active' : ''} onClick=${() => setState(s => ({ ...s, benchmark: 'aws' }))}>AWS</button>
+              </div>
             </div>
 
             <label class="check">
@@ -572,18 +607,15 @@
 
           <div style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
             <div class="table-wrap">
-              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 1100 }}>
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
                 <thead>
                   <tr>
-                    <th style=${thL}>exe.dev plan</th>
                     <th style=${thR}>vCPU</th>
                     <th style=${thR}>RAM</th>
                     ${state.matchDisk ? html`<th style=${thR}>Disk</th>` : null}
                     <th style=${thR}>exe.dev /mo</th>
                     <th style=${thR}>Hetzner /mo</th>
                     <th style=${thR}>AWS /mo</th>
-                    <th style=${thR}>Δ % vs Hetz</th>
-                    <th style=${thR}>Δ % vs AWS</th>
                     <th style=${thL}>Notes</th>
                   </tr>
                 </thead>

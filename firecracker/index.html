@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firecracker: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f172a;
+      --bg-2: #1e293b;
+      --bg-3: #273548;
+      --fg: #e2e8f0;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #f59e0b;
+      --accent-2: #fbbf24;
+      --green: #10b981;
+      --red: #ef4444;
+      --blue: #60a5fa;
+      --purple: #a78bfa;
+      --border: rgba(255,255,255,0.08);
+      --border-2: rgba(255,255,255,0.14);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: rgba(255,255,255,0.03); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(245,158,11,0.06);
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent-2);
+    }
+    section p { margin-bottom: 14px; color: rgba(226,232,240,0.92); }
+    section p + p { margin-top: -4px; }
+    section a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(96,165,250,0.3); }
+    section a:hover { border-bottom-color: var(--blue); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: rgba(226,232,240,0.92); }
+    section li::marker { color: var(--muted); }
+
+    code, .code {
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+      font-size: 0.88em;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #e8e8e8;
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+      white-space: pre;
+      color: #e2e8f0;
+    }
+    .com { color: var(--muted); }
+    .kw { color: var(--purple); }
+    .str { color: var(--green); }
+    .fn { color: var(--accent-2); }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(245,158,11,0.06), rgba(245,158,11,0.02));
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+    }
+    .tldr-card h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: rgba(245,158,11,0.05);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: rgba(96,165,250,0.05); border-left-color: var(--blue); }
+    .callout.note .label { color: var(--blue); }
+    .callout.warn { background: rgba(239,68,68,0.05); border-left-color: var(--red); }
+    .callout.warn .label { color: var(--red); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: rgba(255,255,255,0.04); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--accent-2);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(245,158,11,0.5);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.45);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent-2);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Misc ---------- */
+    .meta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .meta-row span { display: inline-flex; align-items: center; gap: 6px; }
+    .meta-row .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dim); }
+
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.3rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#why">Why Firecracker exists</a>
+      <a href="#model">Mental model in 60 seconds</a>
+      <a href="#threading">Process &amp; threading model</a>
+      <a href="#devices">The minimalist device surface</a>
+      <a href="#boot">The boot path</a>
+      <a href="#isolation">Isolation: defense in depth</a>
+      <a href="#threat">Threat model, formalized</a>
+      <a href="#snapshots">Snapshots &amp; the cold-start trick</a>
+      <a href="#mmds-vsock-net">MMDS, vsock, networking</a>
+      <a href="#comparison">vs QEMU, gVisor, runc</a>
+      <a href="#aws">Where it fits at AWS</a>
+      <a href="#source">Reading the source</a>
+      <a href="#further">Further reading</a>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">🔥</span>Firecracker</h1>
+    <p class="doc-subtitle">A senior engineer's design doc for AWS's microVM monitor — what it is, how it works, and the parts the official docs gloss over.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong>Firecracker is a minimalist KVM-based <span class="x" data-term="VMM" data-def="Virtual Machine Monitor (a.k.a. hypervisor). The host-side userspace program that creates a guest VM, sets up its memory, emulates the devices it sees, and services its VM exits. Firecracker is the whole VMM in this stack; KVM is the kernel-side counterpart it talks to.">virtual machine monitor</span> written in Rust.</strong> It boots a Linux guest in roughly 125 ms with around 5 MiB of memory overhead per microVM, by emulating a small set of <span class="x" data-term="VirtIO" data-def="A standardized paravirtualization framework. The guest installs a virtio-* driver that knows it's talking to a hypervisor and uses shared-memory ring queues instead of pretending to drive real hardware. Much faster than emulating real PCI devices.">VirtIO</span> devices and a couple of legacy ones — versus QEMU's forty-plus.</li>
+        <li><strong>It exists to fill the gap between containers and traditional VMs:</strong> hardware-grade isolation at container-grade density. It powers AWS Lambda and Fargate, where AWS packs many tenants onto shared hosts.</li>
+        <li><strong>The design is opinionated to the point of austerity:</strong> no PCI bus by default, no graphical console, no <span class="x" data-term="SCSI" data-def="Small Computer System Interface. A 1980s-era storage and peripheral protocol still emulated by general-purpose VMMs for compatibility with unmodified guest OSes. Firecracker omits it entirely — there's no virtual SCSI controller, only virtio-block.">SCSI</span>, no USB, no live migration, no nested virtualization. Everything not on the multi-tenant serverless critical path is excluded so the auditable attack surface stays small.</li>
+      </ul>
+    </div>
+
+    <section id="why">
+      <h2>Why Firecracker exists</h2>
+      <p>The serverless promise — "you give us a function, we run it in milliseconds, we bill you for the milliseconds" — runs into a workload-isolation problem. If two customers' functions share a Linux kernel, then any kernel CVE is a cross-tenant CVE. If they share a network namespace, any iptables bug is a tenant boundary bug. Linux's namespace-and-cgroup container model is a workable isolation story for one organization running its own workloads. It is a stretched story for a public cloud running arbitrary code from arbitrary customers.</p>
+      <p>The pre-2018 alternative was to run each function in its own KVM/<span class="x" data-term="QEMU" data-def="A general-purpose machine emulator and virtualizer. Emulates a full PC with dozens of devices (PCI bus, SCSI, USB, GPU, audio, network, …). Excellent compatibility, large attack surface.">QEMU</span> guest. That gave hardware-grade isolation — the guest sees only what nested page tables expose, the guest kernel cannot syscall into the host kernel — but at unacceptable cost. A cold QEMU VM takes seconds to boot and a hundred-plus megabytes of overhead per VM. At Lambda's density (millions of microVMs across a fleet), neither number is acceptable.</p>
+      <p>Firecracker is the synthesis. It uses the same hardware mechanism as QEMU — <span class="x" data-term="KVM" data-def="Kernel-based Virtual Machine. A Linux kernel module that turns the kernel into a Type-2 hypervisor by exposing the CPU's hardware virtualization extensions (Intel VT-x, AMD SVM) to userspace via ioctls on /dev/kvm.">KVM</span> — but strips the userspace VMM down to the minimum required for a serverless workload. The result is roughly 125 ms boot, ~5 MiB overhead, and a codebase small enough that AWS can credibly say they have audited it. It is open-source, written in Rust, and has been in production at Lambda since 2018 and Fargate since 2020.</p>
+      <div class="callout note">
+        <span class="label">Context</span>
+        <p>Firecracker started from Google's <span class="x" data-term="rust-vmm / crosvm" data-def="crosvm is Google's VMM that runs Linux apps and Android in Chrome OS — Firecracker forked from it in 2018. rust-vmm is a community of common Rust crates (KVM bindings, VirtIO queues, etc.) co-founded later by the Firecracker and crosvm teams to share infrastructure."><a href="https://crosvm.dev/">crosvm</a></span> (the VMM behind Chrome OS), then helped spin up the <span class="x" data-term="rust-vmm / crosvm" data-def="crosvm is Google's VMM that runs Linux apps and Android in Chrome OS — Firecracker forked from it in 2018. rust-vmm is a community of common Rust crates (KVM bindings, VirtIO queues, etc.) co-founded later by the Firecracker and crosvm teams to share infrastructure."><a href="https://github.com/rust-vmm">rust-vmm</a></span> community as a place to share common crates between the two projects. The shared lineage is visible in the crate layout — both pull from <code>rust-vmm</code> for KVM bindings, VirtIO queues, etc.</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Mental model in 60 seconds</h2>
+      <p>From the bottom up, a running Firecracker microVM looks like this:</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 460" role="img" aria-label="Firecracker stack diagram">
+  <defs>
+    <linearGradient id="hwG" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#334155"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <!-- Host hardware -->
+  <rect x="20" y="400" width="680" height="44" rx="6" fill="url(#hwG)" stroke="#475569"/>
+  <text x="360" y="427" fill="#cbd5e1" font-size="13" text-anchor="middle">Host CPU — VT-x / AMD-SVM + EPT / NPT (nested paging)</text>
+
+  <!-- Host kernel + KVM -->
+  <rect x="20" y="340" width="680" height="50" rx="6" fill="#1e293b" stroke="#475569"/>
+  <text x="360" y="362" fill="#e2e8f0" font-size="13" text-anchor="middle" font-weight="600">Host Linux kernel</text>
+  <rect x="540" y="350" width="140" height="30" rx="4" fill="#0b1220" stroke="#60a5fa"/>
+  <text x="610" y="370" fill="#93c5fd" font-size="12" text-anchor="middle">KVM module</text>
+
+  <!-- Jailer -->
+  <rect x="40" y="280" width="640" height="48" rx="6" fill="#1a1f33" stroke="#8b5cf6" stroke-dasharray="4 3"/>
+  <text x="56" y="298" fill="#a78bfa" font-size="11" font-weight="600">JAILER</text>
+  <text x="56" y="316" fill="#94a3b8" font-size="11">chroot · pivot_root · cgroups · uid/gid drop · FD scrub</text>
+
+  <!-- Firecracker process -->
+  <rect x="60" y="190" width="600" height="80" rx="6" fill="#1e2540" stroke="#f59e0b"/>
+  <text x="76" y="208" fill="#fbbf24" font-size="11" font-weight="600">FIRECRACKER PROCESS (one per microVM)</text>
+
+  <rect x="80" y="220" width="140" height="40" rx="4" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="150" y="240" fill="#e2e8f0" font-size="11" text-anchor="middle">API thread</text>
+  <text x="150" y="252" fill="#94a3b8" font-size="9" text-anchor="middle">REST on Unix socket</text>
+
+  <rect x="240" y="220" width="140" height="40" rx="4" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="310" y="240" fill="#e2e8f0" font-size="11" text-anchor="middle">VMM thread</text>
+  <text x="310" y="252" fill="#94a3b8" font-size="9" text-anchor="middle">epoll over device FDs</text>
+
+  <rect x="400" y="220" width="240" height="40" rx="4" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="520" y="240" fill="#e2e8f0" font-size="11" text-anchor="middle">vCPU threads × N</text>
+  <text x="520" y="252" fill="#94a3b8" font-size="9" text-anchor="middle">each runs KVM_RUN ioctl loop</text>
+
+  <!-- VirtIO devices -->
+  <rect x="80" y="130" width="560" height="50" rx="6" fill="#0c2e25" stroke="#10b981"/>
+  <text x="96" y="148" fill="#34d399" font-size="11" font-weight="600">VIRTIO DEVICES (host-side emulation)</text>
+  <text x="96" y="166" fill="#94a3b8" font-size="11">block · net · vsock · balloon · rng · pmem · mem &nbsp; + legacy serial / i8042</text>
+
+  <!-- Guest -->
+  <rect x="120" y="70" width="480" height="50" rx="6" fill="#1a1f33" stroke="#60a5fa"/>
+  <text x="360" y="92" fill="#93c5fd" font-size="12" text-anchor="middle" font-weight="600">Guest Linux kernel</text>
+  <text x="360" y="108" fill="#94a3b8" font-size="10" text-anchor="middle">sees only virtio devices + serial + APIC (+ PL031 RTC on aarch64)</text>
+
+  <rect x="200" y="20" width="320" height="40" rx="6" fill="#2a1f33" stroke="#a78bfa"/>
+  <text x="360" y="44" fill="#c4b5fd" font-size="12" text-anchor="middle" font-weight="600">Guest workload (Lambda fn, Fargate task, …)</text>
+
+  <!-- Arrows / annotations -->
+  <line x1="360" y1="60" x2="360" y2="70" stroke="#64748b" stroke-width="1"/>
+  <line x1="360" y1="120" x2="360" y2="130" stroke="#64748b" stroke-width="1"/>
+  <line x1="360" y1="180" x2="360" y2="190" stroke="#64748b" stroke-width="1"/>
+  <line x1="360" y1="270" x2="360" y2="280" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>
+  <line x1="360" y1="328" x2="360" y2="340" stroke="#64748b" stroke-width="1"/>
+  <line x1="610" y1="390" x2="610" y2="400" stroke="#60a5fa" stroke-width="1"/>
+</svg>
+        <div class="caption">A running microVM. Everything below the guest workload is part of Firecracker's responsibility.</div>
+      </div>
+
+      <p>A few things worth noting up front:</p>
+      <ul>
+        <li><strong>One Firecracker process per microVM.</strong> There is no "host daemon" managing many VMs. Each microVM is a separate Linux process. This is the unit of failure isolation.</li>
+        <li><strong>The jailer is a separate binary,</strong> not a library. It runs first, sets up the sandbox, then <code>execve</code>s Firecracker. Once running, the Firecracker process is what's exposed to the guest; the jailer has already exited.</li>
+        <li><strong>The guest sees a deliberately small machine.</strong> MMIO transport by default; an opt-in PCIe transport shipped in v1.13 (<code>--enable-pci</code>). No SCSI. No USB. No GPU. The guest boots via the <span class="x" data-term="PVH" data-def="Paravirtualized Hardware boot protocol. A direct-boot path that lets a VMM jump straight into the Linux kernel entry point, skipping any firmware (BIOS/UEFI). Designed by Xen, used by Firecracker for fast boot."><a href="https://xenproject.org/2018/05/01/pvh-the-virtualization-mode-for-todays-and-tomorrows-cloud/">PVH</a></span> direct-boot path (when the kernel supports it) or the Linux 64-bit boot protocol — there is no SeaBIOS or OVMF.</li>
+        <li><strong>The control plane is a REST API over a Unix socket.</strong> No libvirt, no XML, no command-line flags for VM config. You <code>PUT</code> JSON to <code>/machine-config</code>, <code>/drives/&lt;id&gt;</code>, etc., then <code>PUT</code> an <code>InstanceStart</code> action to <code>/actions</code>.</li>
+      </ul>
+    </section>
+
+    <section id="threading">
+      <h2>Process &amp; threading model</h2>
+      <p>A running Firecracker microVM has <strong>2 + N threads</strong>, where N is the number of guest vCPUs:</p>
+      <ul>
+        <li><strong>API thread.</strong> Accepts HTTP/1.1 over the Unix socket at <code>/run/firecracker.socket</code>. Parses JSON, validates, and forwards configuration requests to the VMM thread via an in-process channel. Has its own seccomp filter (it never needs to call KVM).</li>
+        <li><strong>VMM thread.</strong> Runs an <code>epoll</code> event loop over file descriptors for emulated devices (TAP for net, file FDs for block, Unix socket for vsock), the API channel, signal-handling FDs, and a metrics timer. This is where device emulation actually happens.</li>
+        <li><strong>vCPU thread × N.</strong> Each guest vCPU has a dedicated host thread that calls <code>ioctl(KVM_RUN)</code> in a loop. When the guest exits to the host (<span class="x" data-term="MMIO" data-def="Memory-Mapped I/O. Device registers exposed at fixed guest-physical addresses; reads/writes to those addresses trap to the hypervisor instead of going to RAM. Firecracker's default VirtIO transport — simpler than emulating a PCI bus.">MMIO</span>, port I/O, halt, hypercall), the vCPU thread handles the exit inline — reads and writes are dispatched to the device bus on the same thread, with no cross-thread message to the VMM thread on the hot path.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 700 320" role="img" aria-label="Firecracker process tree under jailer">
+  <!-- Jailer (already exited) -->
+  <rect x="20" y="20" width="200" height="50" rx="6" fill="#1a1f33" stroke="#8b5cf6" stroke-dasharray="4 3"/>
+  <text x="120" y="40" fill="#a78bfa" font-size="12" text-anchor="middle" font-weight="600">jailer (parent, exits)</text>
+  <text x="120" y="58" fill="#94a3b8" font-size="10" text-anchor="middle">forks &amp; execs firecracker</text>
+
+  <line x1="120" y1="70" x2="120" y2="100" stroke="#64748b" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Firecracker process -->
+  <rect x="20" y="100" width="660" height="200" rx="8" fill="#1e2540" stroke="#f59e0b"/>
+  <text x="36" y="120" fill="#fbbf24" font-size="11" font-weight="600">firecracker (pid 1 inside chroot, jailed)</text>
+
+  <!-- API thread -->
+  <rect x="40" y="140" width="180" height="60" rx="6" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="130" y="160" fill="#e2e8f0" font-size="12" text-anchor="middle" font-weight="600">API thread</text>
+  <text x="130" y="178" fill="#94a3b8" font-size="10" text-anchor="middle">HTTP/1.1 on /run/.../socket</text>
+  <text x="130" y="192" fill="#94a3b8" font-size="10" text-anchor="middle">seccomp: parse + IPC only</text>
+
+  <!-- VMM thread -->
+  <rect x="240" y="140" width="180" height="60" rx="6" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="330" y="160" fill="#e2e8f0" font-size="12" text-anchor="middle" font-weight="600">VMM thread</text>
+  <text x="330" y="178" fill="#94a3b8" font-size="10" text-anchor="middle">epoll over device FDs</text>
+  <text x="330" y="192" fill="#94a3b8" font-size="10" text-anchor="middle">seccomp: I/O + signaling</text>
+
+  <!-- vCPU threads -->
+  <rect x="440" y="140" width="220" height="60" rx="6" fill="#0f172a" stroke="#fbbf24"/>
+  <text x="550" y="160" fill="#e2e8f0" font-size="12" text-anchor="middle" font-weight="600">vCPU threads × N</text>
+  <text x="550" y="178" fill="#94a3b8" font-size="10" text-anchor="middle">loop: ioctl(KVM_RUN, …)</text>
+  <text x="550" y="192" fill="#94a3b8" font-size="10" text-anchor="middle">seccomp: KVM ioctls only</text>
+
+  <!-- IPC arrows -->
+  <line x1="220" y1="170" x2="240" y2="170" stroke="#60a5fa" marker-end="url(#arrow2)"/>
+  <line x1="420" y1="170" x2="440" y2="170" stroke="#60a5fa" stroke-dasharray="3 3" marker-end="url(#arrow2)"/>
+  <defs>
+    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#60a5fa"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="230" fill="#94a3b8" font-size="10">→ in-process channels (mpsc); shared <tspan font-family="monospace" fill="#e2e8f0">Arc&lt;Mutex&lt;Vmm&gt;&gt;</tspan> for state mutation</text>
+  <text x="40" y="248" fill="#94a3b8" font-size="10">→ each thread has its own seccomp BPF filter installed before guest code runs</text>
+  <text x="40" y="266" fill="#94a3b8" font-size="10">→ kernel module KVM is invoked only via the vCPU threads' ioctl loop</text>
+  <text x="40" y="284" fill="#94a3b8" font-size="10">→ process inherits jailer's restricted view: chrooted FS, dropped uid, cgroup-bound CPU/RAM</text>
+</svg>
+        <div class="caption">Process structure of a running microVM. Two permanent threads plus one per vCPU.</div>
+      </div>
+
+      <p>This is deliberately small. There is no thread pool, no async runtime, no background worker for device queues. Each VirtIO queue is serviced on the VMM thread when the guest kicks the eventfd. Block I/O is synchronous unless you opt into the async (<span class="x" data-term="io_uring" data-def="Linux's modern async I/O interface (kernel 5.1+). A pair of shared-memory ring buffers between userspace and kernel that batches I/O submissions and completions without per-op syscalls. Used as Firecracker's opt-in high-throughput block backend."><code>io_uring</code></span>) backend — which Firecracker added relatively recently for throughput-sensitive workloads.</p>
+
+      <div class="callout">
+        <span class="label">Official docs say</span>
+        <p>"The process runs the following threads: API, VMM and vCPU(s)." That's it — three sentences for what's actually one of the more important architectural choices. The implication, which the design doc never makes explicit, is that <strong>built-in device emulation is single-threaded</strong>: one slow vsock packet handler can stall every other virtio queue on the VMM thread. (The opt-in <code>vhost-user</code> backend moves a device's data plane to a separate backend process, escaping this constraint.) This rarely matters in Lambda-shaped workloads, but it matters if you try to push high I/O.</p>
+      </div>
+    </section>
+
+    <section id="devices">
+      <h2>The minimalist device surface</h2>
+      <p>Almost everything the guest can talk to is a VirtIO device. <span class="x" data-term="VirtIO" data-def="A standardized paravirtualization framework. The guest installs a virtio-* driver that knows it's talking to a hypervisor and uses shared-memory ring queues instead of pretending to drive real hardware. Much faster than emulating real PCI devices.">VirtIO</span> is paravirtualization: the guest knows it's virtualized and talks to the hypervisor via shared-memory ring queues instead of pretending the hypervisor is a 1990s SCSI controller. That choice eliminates a lot of complicated, bug-prone device emulation.</p>
+      <p>Here is the full host-visible device list as of late 2025:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Device</th><th>Transport</th><th>What it does</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>virtio-block</td><td>MMIO (default) / PCIe</td><td>Block storage; one device per attached drive. Sync or <code>io_uring</code>-backed.</td></tr>
+            <tr><td>virtio-net</td><td>MMIO (default) / PCIe</td><td>Networking; one device per host TAP. Token-bucket rate limiting in process.</td></tr>
+            <tr><td>virtio-vsock</td><td>MMIO (default) / PCIe</td><td>Bidirectional byte stream between guest and host; bridges <code>AF_VSOCK</code> to <code>AF_UNIX</code>.</td></tr>
+            <tr><td>virtio-balloon</td><td>MMIO (default) / PCIe</td><td>Memory reclaim: host asks guest to inflate, guest gives pages back.</td></tr>
+            <tr><td>virtio-rng</td><td>MMIO (default) / PCIe</td><td>Entropy source backed by host <code>/dev/urandom</code>.</td></tr>
+            <tr><td>virtio-pmem</td><td>MMIO (default) / PCIe</td><td>Persistent memory device; useful for read-mostly rootfs images.</td></tr>
+            <tr><td>virtio-mem</td><td>MMIO (default) / PCIe</td><td>Memory hotplug — grow guest RAM after boot by plugging in additional regions.</td></tr>
+            <tr><td>16550A serial</td><td>port I/O (x86_64) / MMIO (aarch64)</td><td>Console output. On aarch64 it's the only non-virtio device besides the RTC.</td></tr>
+            <tr><td>i8042 (partial)</td><td>port I/O</td><td>x86_64 only. Implements just enough to deliver a CPU reset.</td></tr>
+            <tr><td>RTC (pl031)</td><td>MMIO</td><td>aarch64 only. Real-time clock; alarms not supported.</td></tr>
+            <tr><td>VMGenID</td><td>ACPI / MMIO</td><td>128-bit ID exposed via ACPI; the guest CSPRNG reseeds when it changes (e.g. on snapshot restore).</td></tr>
+            <tr><td>ACPI tables</td><td>firmware</td><td>Minimal tables for power management and CPU/device enumeration.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>What's <em>not</em> here is the more interesting list. There's <strong>no graphical console</strong> — no VGA, no QXL, no virtio-gpu. There's <strong>no USB</strong>. There's <strong>no SCSI controller</strong>. The PCIe transport is <strong>opt-in</strong> (<code>--enable-pci</code>, shipped in v1.13); without that flag every virtio device sits on the MMIO bus. There's <strong>no NVMe emulation</strong>. There's <strong>no audio</strong>. There's <strong>no IDE / ATA</strong>. There's <strong>no floppy or CD-ROM</strong>. There's no <a href="https://en.wikipedia.org/wiki/Open_Virtual_Machine_Firmware">OVMF</a> or SeaBIOS — Firecracker uses the <span class="x" data-term="PVH" data-def="Paravirtualized Hardware boot protocol. A direct-boot path that lets a VMM jump straight into the Linux kernel entry point, skipping any firmware (BIOS/UEFI). Designed by Xen, used by Firecracker for fast boot."><a href="https://xenproject.org/2018/05/01/pvh-the-virtualization-mode-for-todays-and-tomorrows-cloud/">PVH</a></span> direct-boot protocol (or the Linux 64-bit boot protocol as a fallback) to jump straight into the Linux kernel.</p>
+
+      <p>Each device you don't emulate is a device whose 30,000 lines of C in QEMU you don't have to audit. <span class="x" data-term="VENOM" data-def="CVE-2015-3456. A buffer overflow in QEMU's virtual floppy disk controller that let guest code execute on the host. Patched in 2015. The canonical example of why every emulated device adds attack surface, even ones nobody actually uses."><a href="https://en.wikipedia.org/wiki/Venom_(security_vulnerability)">VENOM</a></span> (the 2015 floppy controller CVE in QEMU) is the canonical reminder that legacy device code is where VM escapes are found.</p>
+
+      <h3>How devices attach to a microVM</h3>
+      <p>Devices are configured one at a time via the API before <code>InstanceStart</code>:</p>
+<pre><code><span class="com"># Set up a block device</span>
+PUT /drives/rootfs <span class="kw">HTTP/1.1</span>
+{
+  <span class="str">"drive_id"</span>: <span class="str">"rootfs"</span>,
+  <span class="str">"path_on_host"</span>: <span class="str">"/var/lib/fc/rootfs.ext4"</span>,
+  <span class="str">"is_root_device"</span>: <span class="kw">true</span>,
+  <span class="str">"is_read_only"</span>: <span class="kw">false</span>,
+  <span class="str">"rate_limiter"</span>: { <span class="str">"bandwidth"</span>: { <span class="str">"size"</span>: 10485760, <span class="str">"refill_time"</span>: 1000 } }
+}
+
+<span class="com"># Set up a network interface</span>
+PUT /network-interfaces/eth0 <span class="kw">HTTP/1.1</span>
+{
+  <span class="str">"iface_id"</span>: <span class="str">"eth0"</span>,
+  <span class="str">"host_dev_name"</span>: <span class="str">"fc-tap0"</span>,
+  <span class="str">"guest_mac"</span>: <span class="str">"06:00:AC:10:00:02"</span>
+}
+
+<span class="com"># Boot</span>
+PUT /actions <span class="kw">HTTP/1.1</span>
+{ <span class="str">"action_type"</span>: <span class="str">"InstanceStart"</span> }</code></pre>
+      <p>Most configuration is <strong>immutable after boot</strong>. You cannot hot-add a vCPU, change the kernel, or replace the rootfs of a running microVM. The exceptions are narrow: rate limiters and the balloon size can be tuned at runtime, block devices can be hot-plugged when PCIe is enabled (<code>--enable-pci</code>, v1.13+), <code>virtio-mem</code> can grow guest RAM, and you can write to the MMDS data store.</p>
+    </section>
+
+    <section id="boot">
+      <h2>The boot path</h2>
+      <p>The canonical Firecracker number — quoted in <code>SPECIFICATION.md</code> — is <strong>≤125 ms cold boot</strong>, measured from <code>InstanceStart</code> to the start of guest <code>/sbin/init</code> with the serial console disabled and a minimal kernel / rootfs. Snapshot restore is much faster again, in the low tens of milliseconds. The path:</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 280" role="img" aria-label="Firecracker boot sequence">
+  <!-- timeline -->
+  <line x1="40" y1="240" x2="680" y2="240" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="680 240, 670 236, 670 244" fill="#64748b"/>
+  <text x="40" y="260" fill="#94a3b8" font-size="10">t = 0</text>
+  <text x="680" y="260" fill="#94a3b8" font-size="10" text-anchor="end">guest userspace</text>
+
+  <!-- steps -->
+  <g font-size="10" fill="#e2e8f0">
+    <rect x="40" y="40" width="100" height="40" rx="4" fill="#1e2540" stroke="#fbbf24"/>
+    <text x="90" y="58" text-anchor="middle">jailer setup</text>
+    <text x="90" y="72" text-anchor="middle" fill="#94a3b8" font-size="9">~5 ms</text>
+    <line x1="90" y1="80" x2="90" y2="240" stroke="#475569" stroke-dasharray="2 3"/>
+
+    <rect x="155" y="40" width="100" height="40" rx="4" fill="#1e2540" stroke="#fbbf24"/>
+    <text x="205" y="58" text-anchor="middle">API thread up</text>
+    <text x="205" y="72" text-anchor="middle" fill="#94a3b8" font-size="9">socket bind</text>
+    <line x1="205" y1="80" x2="205" y2="240" stroke="#475569" stroke-dasharray="2 3"/>
+
+    <rect x="270" y="40" width="120" height="40" rx="4" fill="#0c2e25" stroke="#10b981"/>
+    <text x="330" y="58" text-anchor="middle">PUT /machine-config</text>
+    <text x="330" y="72" text-anchor="middle" fill="#94a3b8" font-size="9">PUT /boot-source, /drives, /net-ifs</text>
+    <line x1="330" y1="80" x2="330" y2="240" stroke="#475569" stroke-dasharray="2 3"/>
+
+    <rect x="405" y="40" width="120" height="40" rx="4" fill="#2a1f33" stroke="#a78bfa"/>
+    <text x="465" y="58" text-anchor="middle">PUT /actions</text>
+    <text x="465" y="72" text-anchor="middle" fill="#94a3b8" font-size="9">{InstanceStart}</text>
+    <line x1="465" y1="80" x2="465" y2="240" stroke="#475569" stroke-dasharray="2 3"/>
+
+    <rect x="540" y="40" width="140" height="40" rx="4" fill="#1e2540" stroke="#f59e0b"/>
+    <text x="610" y="58" text-anchor="middle">kernel loaded → vCPU run</text>
+    <text x="610" y="72" text-anchor="middle" fill="#94a3b8" font-size="9">PVH entry point</text>
+    <line x1="610" y1="80" x2="610" y2="240" stroke="#475569" stroke-dasharray="2 3"/>
+  </g>
+
+  <!-- per-step detail rows -->
+  <g font-size="9.5" fill="#94a3b8">
+    <text x="40" y="115">1. Jailer sets up cgroups, unshares namespaces, chroots,</text>
+    <text x="40" y="128">   drops uid/gid, then execves firecracker.</text>
+
+    <text x="40" y="148">2. Firecracker installs the API-thread seccomp filter,</text>
+    <text x="40" y="161">   binds the Unix socket, and blocks waiting for config.</text>
+
+    <text x="40" y="181">3. Orchestrator sends 4–6 sequential PUTs to configure</text>
+    <text x="40" y="194">   the machine. Each is validated against vmm_config types.</text>
+
+    <text x="380" y="115">4. InstanceStart triggers vmm::builder::build_microvm_for_boot:</text>
+    <text x="380" y="128">   create KVM VM, mmap guest memory, load kernel image,</text>
+    <text x="380" y="141">   set up vCPUs and registers, attach devices,</text>
+    <text x="380" y="154">   install vCPU + VMM seccomp filters, then resume vCPUs.</text>
+
+    <text x="380" y="181">5. vCPU thread(s) call ioctl(KVM_RUN). Guest enters at the</text>
+    <text x="380" y="194">   PVH (or Linux-64) entry point, mounts rootfs, exec /sbin/init.</text>
+  </g>
+
+  <!-- annotation marker at end -->
+  <circle cx="680" cy="240" r="5" fill="#10b981"/>
+</svg>
+        <div class="caption">Cold boot from <code>execve</code> to guest userspace. Snapshot restore replaces steps 3–5 with a single deserialize+resume call.</div>
+      </div>
+
+      <p>A few details worth knowing:</p>
+      <ul>
+        <li><strong>Kernel loading is direct.</strong> Firecracker reads an uncompressed kernel image — an ELF <code>vmlinux</code> on x86_64, a PE image on aarch64 — copies it into guest physical memory, and sets the vCPU's instruction pointer to the entry point. There is no firmware to boot through. On x86_64 the loader prefers the <span class="x" data-term="PVH" data-def="Paravirtualized Hardware boot protocol. A direct-boot path that lets a VMM jump straight into the Linux kernel entry point, skipping any firmware (BIOS/UEFI). Designed by Xen, used by Firecracker for fast boot."><a href="https://xenproject.org/2018/05/01/pvh-the-virtualization-mode-for-todays-and-tomorrows-cloud/">PVH</a></span> entry note when the kernel has one, falling back to the Linux 64-bit boot protocol otherwise.</li>
+        <li><strong>Guest memory is anonymous-mapped on the host.</strong> Faulted in on first touch by the guest. This is what makes snapshot restore fast — the same trick applies to a restored snapshot, except the backing is a file-mapped region instead of anonymous.</li>
+        <li><strong>Seccomp filters are installed at multiple points.</strong> The API thread gets its filter when it starts. The vCPU threads get their filter <em>after</em> the KVM file descriptor is opened but before <code>KVM_RUN</code> — so an exploited vCPU thread cannot open arbitrary files. The VMM thread's filter is installed <em>last</em>, right before <code>build_microvm_for_boot</code> returns and the vCPUs start running — by that point all device file descriptors are already open, and the filter narrows what the VMM thread can do during the run.</li>
+      </ul>
+    </section>
+
+    <section id="isolation">
+      <h2>Isolation: defense in depth</h2>
+      <p>Firecracker stacks five mechanisms between the guest and the host. None of them is sufficient alone; together they make a guest-to-host escape require breaking <em>every</em> layer.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 700 360" role="img" aria-label="Isolation layers around the guest">
+  <!-- onion -->
+  <rect x="20" y="20" width="660" height="320" rx="10" fill="#1e293b" stroke="#475569"/>
+  <text x="40" y="40" fill="#cbd5e1" font-size="11" font-weight="600">Host kernel (last line of defense)</text>
+
+  <rect x="50" y="55" width="600" height="270" rx="10" fill="#2a1f33" stroke="#8b5cf6"/>
+  <text x="68" y="74" fill="#c4b5fd" font-size="11" font-weight="600">Jailer: chroot + pivot_root + cgroups + namespaces + uid drop</text>
+
+  <rect x="80" y="90" width="540" height="220" rx="10" fill="#1a2840" stroke="#60a5fa"/>
+  <text x="98" y="108" fill="#93c5fd" font-size="11" font-weight="600">Seccomp BPF: ~24–50 allowed syscalls per thread</text>
+
+  <rect x="110" y="125" width="480" height="170" rx="10" fill="#0c2e25" stroke="#10b981"/>
+  <text x="128" y="143" fill="#6ee7b7" font-size="11" font-weight="600">KVM: vmexits → ioctl handlers; narrow kernel surface</text>
+
+  <rect x="140" y="160" width="420" height="120" rx="10" fill="#2a1f1a" stroke="#f59e0b"/>
+  <text x="158" y="178" fill="#fbbf24" font-size="11" font-weight="600">Hardware: VT-x/SVM, EPT/NPT — guest cannot see host memory</text>
+
+  <rect x="180" y="195" width="340" height="70" rx="10" fill="#0f172a" stroke="#cbd5e1"/>
+  <text x="350" y="220" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">Guest workload</text>
+  <text x="350" y="240" fill="#94a3b8" font-size="11" text-anchor="middle">(treated as arbitrary, possibly hostile code)</text>
+</svg>
+        <div class="caption">Defense in depth: each layer is independent. An attacker has to defeat all five.</div>
+      </div>
+
+      <h3>Layer 1 — Hardware (VT-x / SVM + <span class="x" data-term="EPT / NPT" data-def="Hardware-assisted nested paging. Intel calls it EPT (Extended Page Tables), AMD calls it NPT (Nested Page Tables). The CPU maintains a second-level translation from guest-physical to host-physical addresses, so the guest can manage its own page tables without trapping to the hypervisor. The foundation of efficient VM memory isolation.">EPT / NPT</span>)</h3>
+      <p>The CPU's virtualization extensions and nested page tables enforce that the guest sees only the physical pages KVM has mapped for it. Privileged instructions in the guest trap to the host's KVM module. This is the foundation; without it nothing else matters. Notably, it does <em>not</em> defend against microarchitectural side channels (Spectre, Meltdown family, MDS, etc.). Those are mitigated by separate means — kernel mitigations, <span class="x" data-term="SSBD" data-def="Speculative Store Bypass Disable. A CPU MSR control that suppresses the speculative-execution variant exploited by Spectre v4 (CVE-2018-3639). The host kernel can flip it per-thread; Firecracker enables it process-wide via prctl in main() on aarch64.">SSBD</span>, optional CPU template scrubbing.</p>
+
+      <h3>Layer 2 — KVM</h3>
+      <p>The Linux kernel module that exposes virtualization to userspace via ioctls. It is the most security-critical piece of the host kernel from Firecracker's perspective. KVM itself is much smaller than the rest of the kernel (tens of thousands of LOC vs millions), but it is not trivial — there is a steady stream of KVM CVEs and Firecracker's threat model explicitly accepts host-kernel exposure as a residual risk.</p>
+
+      <h3>Layer 3 — Seccomp <span class="x" data-term="BPF" data-def="Berkeley Packet Filter. A small in-kernel virtual machine that runs sandboxed bytecode. Originally for packet filtering; seccomp filters are also BPF programs. (eBPF is the modern extended variant, used for tracing, networking, and observability.)">BPF</span></h3>
+      <p>Each Firecracker thread runs under its own <span class="x" data-term="Seccomp" data-def="A Linux kernel feature that filters syscalls. Userspace installs a BPF program that decides per-syscall whether to allow, deny, kill, or trap. Once installed, the filter cannot be relaxed.">seccomp</span> filter that allowlists the small set of syscalls it actually needs. The default filters under <code>resources/seccomp/</code> permit ~24 syscalls for vCPU threads (the narrowest filter — just KVM ioctls and a handful of memory-management calls), ~31 for the API thread, and ~50 for the VMM thread. The filters are compiled at build time from JSON specifications by the <code>seccompiler</code> tool in the same repo. They are installed before guest code runs, and because seccomp filters cannot be relaxed once installed, a compromised vCPU thread cannot expand its own privileges.</p>
+      <div class="callout warn">
+        <span class="label">Gotcha</span>
+        <p>Custom seccomp filters via <code>--seccomp-filter</code> are easy to get wrong. The official docs explicitly warn that misconfigured filters can crash Firecracker, and they offer <code>--no-seccomp</code> only for prototyping. Don't ship that flag.</p>
+      </div>
+
+      <h3>Layer 4 — Jailer</h3>
+      <p>The jailer is a separate binary that runs before Firecracker. Its job is to set up a sandbox and then <code>execve</code> Firecracker into it. Specifically, the jailer:</p>
+      <ul>
+        <li>Creates a <strong>cgroup</strong> (v1 or v2) and writes the requested CPU, memory, and I/O limits.</li>
+        <li>Calls <code>unshare(CLONE_NEWNS)</code> to get its own mount namespace, then <code>pivot_root</code>s into a per-microVM chroot directory.</li>
+        <li>Optionally creates a <strong>PID namespace</strong> (off by default, via <code>--new-pid-ns</code>). Optionally <strong>joins a pre-existing network namespace</strong> (via <code>--netns &lt;path&gt;</code> + <code>setns</code>); the jailer does not create one.</li>
+        <li><strong>Closes every file descriptor</strong> except stdin/stdout/stderr and a few that Firecracker needs (<code>/dev/kvm</code>, the API socket, the TAP, log/metrics pipes).</li>
+        <li><strong>Drops to a non-root uid/gid.</strong> Once running, Firecracker has no host root privileges.</li>
+        <li><code>execve</code>s Firecracker. In the default path this is a plain <code>exec</code> — the jailer process simply <em>becomes</em> Firecracker, with no parent left behind. With <code>--new-pid-ns</code> it forks a child to <code>exec</code> Firecracker as PID 1 in the new namespace, and the original jailer process exits.</li>
+      </ul>
+      <p>Note what the jailer is <em>not</em>: it's not a container runtime. There's no OCI bundle, no image layering, no built-in network plumbing. The jailer is roughly 3,000 lines of Rust that does the smallest possible useful set of process-isolation work and then gets out of the way.</p>
+
+      <h3>Layer 5 — Host kernel</h3>
+      <p>If everything above fails, the only thing standing between a guest and total host compromise is the host kernel itself. Firecracker's design acknowledges this: the threat model explicitly assumes a hardened host kernel and treats host kernel CVEs as out of scope for Firecracker to mitigate. Hosts running Firecracker in production should be on a recent LTS kernel with the standard hardening: <span class="x" data-term="Kernel hardening (KPTI, KASLR, SMEP, SMAP)" data-def="Standard Linux kernel hardening. KPTI isolates kernel page tables from userspace (Meltdown defense). KASLR randomizes kernel layout. SMEP/SMAP are CPU bits that block the kernel from executing or accessing user-space memory accidentally. Firecracker assumes these are all on."><code>kpti</code>, KASLR, SMEP/SMAP</span>, all relevant Spectre mitigations, and a small attack surface (no unneeded modules).</p>
+    </section>
+
+    <section id="threat">
+      <h2>Threat model, formalized</h2>
+      <p>This is the section the official docs gesture at but never write down. The <code>CHARTER.md</code> says customer workloads are "simultaneously considered sacred (shall not be touched) and malicious (shall be defended against)" — a great framing, but not a threat model. Here is what one looks like for Firecracker:</p>
+
+      <h3>Trust zones</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Zone</th><th>Trust level</th><th>Boundary enforced by</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Guest userspace</td><td>Untrusted</td><td>Guest kernel</td></tr>
+            <tr><td>Guest kernel</td><td>Untrusted</td><td>KVM + EPT (hardware) + VirtIO surface</td></tr>
+            <tr><td>Firecracker process</td><td>Semi-trusted</td><td>Seccomp + jailer + cgroups</td></tr>
+            <tr><td>Host kernel</td><td>Trusted</td><td>(out of Firecracker's scope to defend)</td></tr>
+            <tr><td>Orchestrator / control plane</td><td>Trusted</td><td>OS-level access controls on the API socket</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Attacker capabilities</h3>
+      <ul>
+        <li>The attacker controls arbitrary code in guest userspace. They can issue any syscall to the guest kernel.</li>
+        <li>The attacker is assumed to be able to compromise the guest kernel. A guest kernel root is in-scope — Firecracker still must contain the damage.</li>
+        <li>The attacker cannot directly control the orchestrator or the Firecracker API socket. (If they can, the model breaks; nothing in Firecracker defends against a malicious operator.)</li>
+        <li>The attacker can co-locate workloads with other tenants on the same host. They can attempt side-channel attacks and resource-exhaustion attacks against neighbors.</li>
+      </ul>
+
+      <h3>What Firecracker defends</h3>
+      <ul>
+        <li><strong>Host kernel integrity from guest code paths,</strong> via KVM + seccomp narrowing the syscall surface from "everything Linux exposes" to "~30 syscalls per thread."</li>
+        <li><strong>Host filesystem from guest code paths,</strong> via the jailer's chroot + pivot_root + FD scrub.</li>
+        <li><strong>Other tenants' memory and CPU time,</strong> via per-microVM EPT mappings, per-process address spaces, and cgroup-enforced CPU/RAM shares.</li>
+        <li><strong>Host network plane from guest network plane,</strong> via per-VM TAP devices and netfilter rules on the host (not provided by Firecracker, but assumed by its model).</li>
+        <li><strong>Sensitive guest data at rest,</strong> in the limited sense that Firecracker never reads the contents of guest memory or disk except to serialize a snapshot.</li>
+      </ul>
+
+      <h3>What Firecracker explicitly does <em>not</em> defend</h3>
+      <ul>
+        <li><strong>Microarchitectural side channels in the general case.</strong> Spectre v1/v2/v4, MDS, L1TF, Retbleed, and successors are mitigated as a layered concern (kernel mitigations, optional CPU isolation, optional CPU templates that mask sibling-thread-leaking features) — but Firecracker does not claim immunity. Multi-tenant operators are expected to handle sibling-thread leakage out-of-band — for example by pinning each microVM to its own physical core or core complex on SMT-vulnerable CPUs (the approach Lambda is widely reported to take, though AWS has not published the exact policy).</li>
+        <li><strong>Host kernel CVEs.</strong> If the attacker finds a Linux KVM bug, Firecracker offers no additional protection beyond the seccomp narrowing.</li>
+        <li><strong>Supply-chain attacks on Firecracker or its dependencies.</strong> A compromised <code>rust-vmm</code> crate is game over.</li>
+        <li><strong>Malicious operator scenarios.</strong> Anyone with write access to the API socket can do anything to the microVM. Privilege separation between an orchestrator and the workload is the orchestrator's job, not Firecracker's.</li>
+        <li><strong>Denial of service via legitimate-looking resource use,</strong> beyond what cgroups enforce. A pathological guest workload that maxes out its cgroup share is not an attack from Firecracker's perspective.</li>
+      </ul>
+
+      <div class="callout">
+        <span class="label">Why this matters</span>
+        <p>When you read "Firecracker provides VM-grade isolation," what's actually being claimed is the first list, not the second. The second list is where multi-tenant cloud operators add their own controls — dedicated cores, careful host kernel selection, network segmentation, signed binaries. Firecracker is one piece of a defense system, not the whole system.</p>
+      </div>
+    </section>
+
+    <section id="snapshots">
+      <h2>Snapshots &amp; the cold-start trick</h2>
+      <p>This is arguably <em>the</em> feature that makes Firecracker work as the Lambda substrate. A microVM that takes 200 ms to boot is fine for a long-running Fargate task; it is unacceptable for a Lambda function that is supposed to feel synchronous to the user. Snapshots let you pre-boot a microVM up to the point where it's ready to handle a request, freeze it, and restore copies of that frozen state in milliseconds.</p>
+
+      <h3>Anatomy of a snapshot</h3>
+      <div class="diagram">
+<svg viewBox="0 0 700 230" role="img" aria-label="Snapshot file layout">
+  <rect x="20" y="20" width="660" height="190" rx="10" fill="#1e293b" stroke="#475569"/>
+  <text x="36" y="42" fill="#cbd5e1" font-size="12" font-weight="600">A Firecracker snapshot is 2 files (+ external disk images)</text>
+
+  <rect x="40" y="60" width="200" height="130" rx="6" fill="#2a1f1a" stroke="#f59e0b"/>
+  <text x="140" y="80" fill="#fbbf24" font-size="12" font-weight="600" text-anchor="middle">memory file</text>
+  <text x="140" y="100" fill="#94a3b8" font-size="10" text-anchor="middle">full guest RAM,</text>
+  <text x="140" y="114" fill="#94a3b8" font-size="10" text-anchor="middle">sparse on disk</text>
+  <text x="140" y="140" fill="#e2e8f0" font-size="10" text-anchor="middle">restored via mmap(MAP_PRIVATE);</text>
+  <text x="140" y="154" fill="#e2e8f0" font-size="10" text-anchor="middle">pages faulted in on guest access</text>
+  <text x="140" y="174" fill="#94a3b8" font-size="10" text-anchor="middle">(or via userfaultfd handler)</text>
+
+  <rect x="260" y="60" width="200" height="130" rx="6" fill="#1e2540" stroke="#a78bfa"/>
+  <text x="360" y="80" fill="#c4b5fd" font-size="12" font-weight="600" text-anchor="middle">state file</text>
+  <text x="360" y="100" fill="#94a3b8" font-size="10" text-anchor="middle">vCPU registers</text>
+  <text x="360" y="114" fill="#94a3b8" font-size="10" text-anchor="middle">KVM internal state</text>
+  <text x="360" y="128" fill="#94a3b8" font-size="10" text-anchor="middle">device state machines</text>
+  <text x="360" y="142" fill="#94a3b8" font-size="10" text-anchor="middle">virtio queues</text>
+  <text x="360" y="156" fill="#94a3b8" font-size="10" text-anchor="middle">interrupt controller</text>
+  <text x="360" y="170" fill="#94a3b8" font-size="10" text-anchor="middle">+ CRC64 (corruption check)</text>
+
+  <rect x="480" y="60" width="200" height="130" rx="6" fill="#1a2840" stroke="#60a5fa" stroke-dasharray="4 3"/>
+  <text x="580" y="80" fill="#93c5fd" font-size="12" font-weight="600" text-anchor="middle">disk images</text>
+  <text x="580" y="100" fill="#94a3b8" font-size="10" text-anchor="middle">NOT in the snapshot;</text>
+  <text x="580" y="114" fill="#94a3b8" font-size="10" text-anchor="middle">caller manages externally</text>
+  <text x="580" y="140" fill="#e2e8f0" font-size="10" text-anchor="middle">snapshots can be reused</text>
+  <text x="580" y="154" fill="#e2e8f0" font-size="10" text-anchor="middle">across microVMs by also</text>
+  <text x="580" y="168" fill="#e2e8f0" font-size="10" text-anchor="middle">cloning the disk via CoW</text>
+</svg>
+        <div class="caption">What's in a snapshot, and what isn't.</div>
+      </div>
+
+      <p>The memory file is the big one — it's the same size as the guest's RAM allocation. But because it's <code>mmap</code>ed with <span class="x" data-term="MAP_PRIVATE" data-def="An mmap flag that maps a file into the process address space but makes writes copy-on-write rather than writing back to the file. Firecracker uses it on snapshot memory files so a restored microVM can mutate guest RAM without modifying the shared backing file."><code>MAP_PRIVATE</code></span> on restore, pages are only physically materialized when the guest actually touches them. A freshly restored 512 MiB microVM might cost the host only a few MiB of RSS until the workload starts touching memory.</p>
+
+      <h3>What's <em>not</em> in the snapshot</h3>
+      <ul>
+        <li><strong>Block-device contents.</strong> The host backing file is referenced by path, not by content. To clone a snapshot across N microVMs you also need to clone the rootfs — usually via copy-on-write (overlayfs, dm-snapshot, or a filesystem with reflink support).</li>
+        <li><strong>Open network connections.</strong> The guest's TCP state is in guest memory, so it survives the snapshot. But the host's TAP and any NAT state are gone after restore; existing TCP sessions break. Long-lived connections do not survive snapshots.</li>
+        <li><strong>MMDS data store contents.</strong> The MMDS network config (MAC, IP, ports) <em>is</em> persisted, but the key-value data store itself is not — so guest-specific values like instance IDs don't leak across microVMs that share a snapshot.</li>
+        <li><strong>vsock connections.</strong> At snapshot time the virtio-vsock device sends a <code>VIRTIO_VSOCK_EVENT_TRANSPORT_RESET</code> to the guest; the guest driver tears down active connections on resume. Only listening sockets survive (with their CID rewritten to the restored <code>guest_cid</code>).</li>
+      </ul>
+
+      <h3>The reuse problem</h3>
+      <p>If you snapshot a microVM and then restore N copies of it, every copy starts with <strong>identical RNG state, identical kernel boot-time entropy, identical TLS session caches, identical machine IDs.</strong> This is bad. Two microVMs deriving the same TLS server's keypair from the same seed will produce the same keys.</p>
+      <p>The mitigation is <span class="x" data-term="VMGenID" data-def="Virtual Machine Generation ID. A 128-bit identifier exposed to the guest via ACPI that the hypervisor changes whenever the VM's state is forked or restored from a snapshot. Linux 5.18+ rereads it and reseeds the kernel CSPRNG on change."><a href="https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-machine-generation-identifier">VMGenID</a></span>, a 128-bit ID exposed through <span class="x" data-term="ACPI" data-def="Advanced Configuration and Power Interface. A firmware-level standard for describing system topology, power states, and devices to the OS. Firecracker generates a minimal ACPI table set so the guest kernel can enumerate vCPUs, memory regions, and the VMGenID device.">ACPI</span> that changes when a snapshot is restored. A guest kernel that knows about VMGenID (Linux 5.18+ has it) will reseed its <span class="x" data-term="CSPRNG" data-def="Cryptographically Secure Pseudo-Random Number Generator. A PRNG whose output is computationally indistinguishable from true randomness, suitable for keys, nonces, TLS. The Linux kernel CSPRNG seeds /dev/urandom and getrandom().">CSPRNG</span> on change. The <em>userspace</em> reuse problem isn't solved by VMGenID — applications that cached secrets in memory before the snapshot still need to know to re-derive them. The Firecracker docs flag this explicitly and the responsibility is firmly on the workload author.</p>
+      <div class="callout warn">
+        <span class="label">In practice</span>
+        <p>Lambda's snapshot-based <span class="x" data-term="SnapStart" data-def="AWS Lambda's snapshot-restore feature for cold-start reduction. Pre-initializes a function's runtime, snapshots the microVM, then restores N copies on demand. Includes a post-restore hook callers can use to re-derive per-instance secrets, mitigating snapshot-reuse pitfalls.">"SnapStart"</span> feature solves this by running an explicit re-init hook after each restore — your Java runtime gets a callback that says "you were just restored, regenerate per-instance secrets now." Don't assume the kernel-level VMGenID is enough for your workload.</p>
+      </div>
+
+      <h3>Restore performance</h3>
+      <p>Cold restore is fast because almost no work happens up front: the state file is small (kilobytes to a few MB), memory is <code>mmap</code>ed lazily, and KVM resumes the vCPUs from their saved register state. Reported restore-to-first-instruction latencies are in the low tens of milliseconds. Throughput-sensitive workloads will then pay the page-fault cost as memory warms up; for cold-start-sensitive workloads like Lambda, this trade is exactly right.</p>
+      <p>For workloads that want more control over the restore path — e.g., to fetch pages from a remote store, or to track which pages are still un-touched — Firecracker supports a <span class="x" data-term="userfaultfd" data-def="A Linux mechanism for userspace to handle page faults on its own memory. The VMM can intercept the guest's first touch of a not-yet-loaded page and serve it from a remote source (network, compressed blob) instead of relying on the kernel's mmap fault path — useful for live migration and snapshot restore."><code>userfaultfd</code></span> backend instead of plain <code>mmap</code>. An external handler process receives a notification on every guest page fault and decides what to return.</p>
+    </section>
+
+    <section id="mmds-vsock-net">
+      <h2>MMDS, vsock, networking</h2>
+
+      <h3>MMDS — the in-guest metadata service</h3>
+      <p>The <strong>microVM Metadata Service</strong> is Firecracker's equivalent of AWS EC2's <span class="x" data-term="IMDS" data-def="Instance Metadata Service. The AWS EC2 mechanism for a guest to query its own configuration (instance ID, IAM credentials, user-data) by GETting from the link-local address 169.254.169.254. IMDSv2 requires a session token to mitigate SSRF.">IMDS</span>. The orchestrator <code>PUT</code>s a JSON document to the Firecracker API; the guest <code>GET</code>s it from <code>169.254.169.254</code> by default (the IMDS magic address — configurable per VM via the <code>ipv4_address</code> field in <code>/mmds/config</code>) over one of its configured network interfaces. Two versions:</p>
+      <ul>
+        <li><strong>v1:</strong> simple unauthenticated GET. Deprecated for the same reason EC2 deprecated IMDSv1 — SSRF attacks against guest workloads.</li>
+        <li><strong>v2:</strong> session-token-required, modelled on EC2 IMDSv2. The native headers are <code>X-metadata-token{,-ttl-seconds}</code>, and the EC2 names (<code>X-aws-ec2-metadata-token…</code>) are accepted as aliases. The data store response defaults to a JSON payload; setting <code>imds_compat: true</code> switches to EC2's IMDS text format so unmodified AWS SDK code works against it.</li>
+      </ul>
+      <p>MMDS is implemented inside Firecracker's network device emulation: packets to the magic address are intercepted at the virtio-net layer before they hit the host TAP and answered by the in-process HTTP responder. The data store is <strong>not</strong> persisted across snapshots, by design.</p>
+
+      <h3>vsock — host-guest IPC</h3>
+      <p>Standard <span class="x" data-term="AF_VSOCK / CID" data-def="Linux socket family for VM-to-host communication. Like AF_INET but the address is a 32-bit Context ID (CID) instead of an IP. Host is always CID 2; each guest gets its own CID. Faster than TCP because it has no network stack overhead."><code>AF_VSOCK</code></span> in the guest, but Firecracker translates each end to an <code>AF_UNIX</code> socket on the host:</p>
+      <ul>
+        <li><strong>Host-initiated:</strong> orchestrator connects to a Unix socket, writes <code>CONNECT &lt;port&gt;\n</code>, Firecracker opens an AF_VSOCK channel to the guest on that port and bridges bytes.</li>
+        <li><strong>Guest-initiated:</strong> guest opens an AF_VSOCK connection to host CID 2, Firecracker connects to a Unix socket at <code>&lt;uds_path&gt;_&lt;port&gt;</code> on the host.</li>
+      </ul>
+      <p>Useful when you want a control channel between an orchestrator and the guest that doesn't go over the network. Lambda uses it for the runtime's communication with the Lambda invoke service.</p>
+
+      <h3>Networking</h3>
+      <p>Each <code>virtio-net</code> device is backed by a host <span class="x" data-term="TAP" data-def="A virtual Layer-2 network device in the Linux kernel. Userspace processes (like Firecracker) read and write raw Ethernet frames to a TAP fd; the kernel presents it as a regular network interface that can be bridged or NATed. The standard host-side bridge for VirtIO-net."><strong>TAP</strong></span> device. Firecracker does no network plumbing — it doesn't create the TAP, doesn't set up routes, doesn't manage NAT or bridges. That's the orchestrator's job: create a TAP, attach it to a bridge (or a netns with NAT rules), then tell Firecracker the TAP name.</p>
+      <p>Within Firecracker, the only network feature is <strong>token-bucket rate limiting</strong> per device, configurable in bandwidth (bytes/second) and ops (packets/second), with both rates having independent burst capacity. The rate limiter sits between the guest's virtio queue and the host TAP write; packets that exceed the budget are queued, not dropped.</p>
+    </section>
+
+    <section id="comparison">
+      <h2>Firecracker vs QEMU, gVisor, runc</h2>
+      <p>This comparison gets misframed often. These aren't equivalent technologies; they're points on a spectrum of <em>isolation strength</em> traded against <em>resource cost</em>:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>Firecracker</th><th>QEMU</th><th>gVisor</th><th>runc / containers</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Isolation mechanism</td><td>KVM + hardware virt</td><td>KVM + hardware virt</td><td>User-space syscall interception</td><td>Linux namespaces + cgroups</td></tr>
+            <tr><td>Shared kernel with host?</td><td>No — separate guest kernel</td><td>No — separate guest kernel</td><td>No — Sentry intercepts syscalls</td><td>Yes — shared host kernel</td></tr>
+            <tr><td>Devices emulated</td><td>~8 VirtIO + serial/i8042</td><td>40+ (PCI, USB, SCSI, GPU, …)</td><td>None — syscall-level</td><td>None — bare kernel access</td></tr>
+            <tr><td>Threads per workload</td><td>2 + N vCPUs</td><td>Many; varies</td><td>Several (Sentry, Gofer)</td><td>Shared with parent</td></tr>
+            <tr><td>Boot / start time</td><td>~125 ms (cold), &lt;50 ms (snapshot)</td><td>seconds</td><td>~100 ms</td><td>~10–50 ms</td></tr>
+            <tr><td>RAM overhead</td><td>~5 MiB</td><td>50–200 MiB</td><td>~15 MiB</td><td>~1 MiB</td></tr>
+            <tr><td>Designed for multi-tenant?</td><td>Yes</td><td>Optional</td><td>Yes</td><td>Single-tenant by default</td></tr>
+            <tr><td>Codebase</td><td>~115k LOC Rust</td><td>millions LOC C</td><td>~150k LOC Go</td><td>~50k LOC Go</td></tr>
+            <tr><td>Live migration</td><td>No</td><td>Yes</td><td>No</td><td>n/a (process)</td></tr>
+            <tr><td>Open source</td><td>Apache 2.0</td><td>GPL v2</td><td>Apache 2.0</td><td>Apache 2.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>vs QEMU</h4>
+      <p>Same fundamental mechanism (KVM), radically different surface area. QEMU is a general-purpose machine emulator: it can boot a 386, a PowerPC, an ARM SoC, a Raspberry Pi. Firecracker can boot exactly one machine — a Linux guest on x86_64 or aarch64, using the PVH entry where available and the Linux 64-bit boot protocol otherwise. The formally supported guest kernels are 5.10 and 6.1 LTS (per <code>docs/kernel-policy.md</code>); newer kernels often work but aren't covered by the policy. If you want to run Windows, run an unmodified existing VM image, or hot-add a USB controller, you want QEMU. If you want to run thousands of identical Linux serverless workloads with minimal overhead, you want Firecracker. (Notably, QEMU itself <em>can</em> be configured with the <code>microvm</code> machine type for similar minimalism — Firecracker's value over that path is the Rust safety story and the operational opinionatedness.)</p>
+
+      <h4>vs gVisor</h4>
+      <p>gVisor is the opposite philosophy: instead of giving the guest its own kernel, gVisor intercepts the guest's syscalls in userspace (<span class="x" data-term="Sentry / Gofer" data-def="gVisor's two main userspace processes. Sentry is a sandboxed userspace process that re-implements the Linux syscall surface and runs the application's syscalls on its behalf; Gofer is a separate process that mediates file-system access for Sentry, so Sentry itself doesn't need filesystem syscalls.">"Sentry"</span>) and re-implements them. The result is a much smaller per-workload memory footprint and no hardware-virt requirement, but at the cost of slower syscalls and incomplete Linux compatibility. Firecracker says: "trust the Linux kernel completely, contain it inside hardware virtualization." gVisor says: "don't trust the Linux kernel at all, re-implement it in safer code." Different teams reach different conclusions on the same problem; both are deployed at scale.</p>
+
+      <h4>vs containers (runc)</h4>
+      <p>Not really comparable. A container shares the host kernel. Every syscall the workload makes is executed by the same kernel that other tenants' workloads also rely on. For trusted workloads, that's fine — and faster than anything else listed here. For untrusted multi-tenant workloads, it's not a defensible boundary on its own. The industry convention is to nest: run a container <em>inside</em> a Firecracker microVM (Fargate's model) or inside a gVisor sandbox.</p>
+    </section>
+
+    <section id="aws">
+      <h2>Where Firecracker fits at AWS</h2>
+      <p>Firecracker is open-source but built and primarily maintained by AWS. The three production workloads it underpins:</p>
+      <ul>
+        <li><strong>AWS Lambda.</strong> Every function invocation runs in a Firecracker microVM. Lambda's pre-2018 architecture used dedicated EC2 instances per concurrent tenant; the move to Firecracker is what enabled per-function microVMs at the density Lambda needs. Snapshot-based "SnapStart" (launched for Java in late 2022, since broadened to Python and .NET) is built on Firecracker's snapshot/restore.</li>
+        <li><strong>AWS Fargate (ECS).</strong> Each ECS Fargate task runs inside a Firecracker microVM; the user's container runs inside that microVM. So Fargate-on-ECS is "containers in microVMs," and the security boundary that matters is the microVM, not the container. (EKS Fargate's data plane is less openly documented and is not confirmed to use Firecracker in the same way.)</li>
+        <li><strong>AWS App Runner</strong> and a number of other internal services use Firecracker under the hood, though the public posture varies.</li>
+      </ul>
+      <p>Outside AWS, Firecracker has become the default substrate for a generation of serverless and edge-compute platforms — Fly.io, Koyeb, Northflank, and others. <span class="x" data-term="Kata Containers" data-def="An OCI-compatible container runtime that puts each container (or pod) in its own lightweight VM. Speaks the Kubernetes CRI; supports Firecracker and QEMU as alternative VMM backends. The shipping option for VM-isolated Kubernetes pods.">Kata Containers</span> supports Firecracker as a VMM backend for Kubernetes pods that want VM-grade isolation. The OSS adoption is real and ongoing.</p>
+    </section>
+
+    <section id="source">
+      <h2>Reading the source</h2>
+      <p>If you want to verify any of the above against the actual code, here's where to look in <a href="https://github.com/firecracker-microvm/firecracker">firecracker-microvm/firecracker</a>:</p>
+      <ul>
+        <li><code>src/firecracker/src/main.rs</code> — process entry, CLI parsing, signal handler installation, branch into API vs no-API mode.</li>
+        <li><code>src/vmm/src/lib.rs</code> — VMM crate root; the top-level module structure mirrors the architecture (arch, devices, device_manager, vstate, vmm_config, builder, snapshot, rpc_interface).</li>
+        <li><code>src/vmm/src/builder.rs</code> — <code>build_microvm_for_boot</code> (cold path) and <code>build_microvm_from_snapshot</code> (restore) turn a configured set of resources into a running VM. <code>build_and_boot_microvm</code> is the top-level entry that wraps the cold path. Read these to see the boot path in code.</li>
+        <li><code>src/vmm/src/device_manager/mod.rs</code> — where devices are wired into the bus and into the IRQ chip.</li>
+        <li><code>src/vmm/src/devices/virtio/</code> — one directory per VirtIO device: <code>block/</code>, <code>net/</code>, <code>vsock/</code>, <code>balloon/</code>, <code>rng/</code>, <code>pmem/</code>, <code>mem/</code>, plus the <code>vhost_user</code> backend. Each contains a state machine for the virtio queue plus the device-specific logic.</li>
+        <li><code>src/vmm/src/devices/legacy/</code> — serial UART, i8042, RTC. Small and focused.</li>
+        <li><code>src/vmm/src/vmm_config/</code> — the JSON-serializable types that back the REST API. Reading these gives you the configuration surface in one place.</li>
+        <li><code>src/jailer/src/main.rs</code> — the jailer binary. Self-contained and short; worth reading end-to-end.</li>
+        <li><code>src/seccompiler/</code> — the seccomp filter compiler. Filter rules live under <code>resources/seccomp/</code> as JSON.</li>
+        <li><code>src/vmm/src/vstate/</code> — KVM setup, vCPU thread management, memory regions.</li>
+        <li><code>src/vmm/src/snapshot/</code> — snapshot serialization, persistence format, restore logic.</li>
+      </ul>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong>The Firecracker NSDI 2020 paper</strong> — Agache et al., "Firecracker: Lightweight Virtualization for Serverless Applications." The authoritative description of the design goals and how they trade off. The honest place to read about boot-time and density numbers.</li>
+        <li><strong><a href="https://github.com/firecracker-microvm/firecracker/tree/main/docs">docs/</a> in the repo</strong> — the official design.md plus dedicated docs for jailer, snapshots, vsock, MMDS, hugepages, networking, metrics, tracing. Inconsistently maintained, but always the most current.</li>
+        <li><strong><a href="https://github.com/firecracker-microvm/firecracker/blob/main/CHARTER.md">CHARTER.md</a></strong> — the "sacred and malicious" framing in its original form. Short and worth reading.</li>
+        <li><strong>AWS re:Invent talks SVS404 / SVS402</strong> — multiple years' worth of Lambda-architecture talks have details on how Firecracker is deployed in practice (host packing, snapshot warm-pool, SnapStart's invalidation hook).</li>
+        <li><strong><span class="x" data-term="rust-vmm / crosvm" data-def="rust-vmm is a community-maintained set of Rust crates (KVM bindings, VirtIO queues, etc.) shared by multiple Rust VMMs. crosvm is Google's VMM that runs Linux apps and Android in Chrome OS — Firecracker and crosvm share rust-vmm ancestry."><a href="https://github.com/rust-vmm">rust-vmm</a></span></strong> — the upstream crate ecosystem Firecracker depends on. If you want to write your own KVM-based VMM in Rust, this is where to start.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026, based on Firecracker's main branch through late 2025. If anything reads as authoritative on facts that have since changed, treat the source as ground truth.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('fc-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('fc-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('fc-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Hover on desktop / focus
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    // Tap on mobile/touch
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  // Dismiss tap-popover on outside click
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  // Hide on scroll/resize to avoid drift
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+})();
+</script>
+</body>
+</html>

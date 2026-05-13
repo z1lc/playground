@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biggest Tech IPO Each Year (ppm of S&amp;P 500)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-block;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .back-link:hover { color: #fbbf24; }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .chart-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 16px 20px;
+    }
+    .summary-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .summary-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+    .summary-card p { margin-bottom: 10px; }
+    .summary-card p:last-child { margin-bottom: 0; }
+    .summary-card a { color: #fbbf24; text-decoration: none; }
+    .summary-card a:hover { text-decoration: underline; }
+
+    .ipo-tip {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      min-width: 240px;
+    }
+    .ipo-tip-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fbbf24;
+    }
+    .ipo-tip-year {
+      color: #94a3b8;
+      font-weight: 400;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .ipo-tip-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 2px 0;
+      color: #cbd5e1;
+    }
+    .ipo-tip-row span:first-child { color: #94a3b8; }
+    .ipo-tip-emphasis {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid #334155;
+      font-weight: 600;
+    }
+    .ipo-tip-emphasis span { color: #fbbf24 !important; }
+    .ipo-tip-sector {
+      font-size: 11.5px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 20px 10px 40px; }
+      h1 { font-size: 1.3rem; }
+      .subtitle { font-size: 0.85rem; margin-bottom: 18px; }
+      .chart-card { padding: 12px 4px 12px; }
+      .summary-card { padding: 16px 18px; font-size: 13px; }
+      .ipo-tip { min-width: 200px; font-size: 12px; }
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.2.0",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+      "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+      "htm": "https://esm.sh/htm@3.1.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+    import htm from 'htm';
+    const html = htm.bind(React.createElement);
+
+    // Biggest US-listed tech IPO each year, 1990-2025.
+    // Eligibility: traditional IPOs + direct listings. Excludes spinoffs of existing
+    // public companies (Lucent 1996, Agilent 1999, Mobileye 2022) and tracking stocks
+    // (AT&T Wireless 2000). Subsidiary IPOs (VMware 2007) count.
+    // Tech scope: software, internet, hardware, semis, EV/auto-tech, tech-adjacent
+    // fintech (Visa, MA, Coinbase), telecom. Excludes pure biotech.
+    // ppm = ipoCapUSD / sp500CapUSD * 1e6, pre-rounded for display consistency.
+    // Gap years (ppm: null) break the line.
+    const TECH_IPOS = [
+      { year: 1990, company: "Cisco Systems",      date: "1990-02-16", ipoCapUSD: 224e6,  sp500CapUSD: 2.7e12,  ppm: 83,    sector: "networking" },
+      { year: 1991, company: "Qualcomm",           date: "1991-12-13", ipoCapUSD: 403e6,  sp500CapUSD: 3.4e12,  ppm: 119,   sector: "semis / telecom" },
+      { year: 1992, company: "America Online",     date: "1992-03-19", ipoCapUSD: 70e6,   sp500CapUSD: 3.5e12,  ppm: 20,    sector: "internet" },
+      { year: 1993, company: "Intuit",             date: "1993-03-12", ipoCapUSD: 200e6,  sp500CapUSD: 3.9e12,  ppm: 51,    sector: "software" },
+      { year: 1994, company: null,                 date: null,         ipoCapUSD: null,   sp500CapUSD: null,    ppm: null,  sector: null },
+      { year: 1995, company: "Pixar",              date: "1995-11-29", ipoCapUSD: 1.4e9,  sp500CapUSD: 4.7e12,  ppm: 298,   sector: "tech / media" },
+      // 1996: Lucent ($17.3B) excluded as AT&T spinoff. Yahoo! is next-largest qualifying tech IPO.
+      { year: 1996, company: "Yahoo!",             date: "1996-04-12", ipoCapUSD: 850e6,  sp500CapUSD: 5.5e12,  ppm: 155,   sector: "internet" },
+      // 1997: China Telecom ($30B) was a global offering with primary HK listing + NYSE ADR — borderline. Defaulted to Amazon as cleaner US-primary tech IPO.
+      { year: 1997, company: "Amazon",             date: "1997-05-15", ipoCapUSD: 438e6,  sp500CapUSD: 7.9e12,  ppm: 55,    sector: "internet" },
+      { year: 1998, company: "eBay",               date: "1998-09-24", ipoCapUSD: 715e6,  sp500CapUSD: 9.1e12,  ppm: 79,    sector: "internet" },
+      // 1999: Agilent ($13B) excluded as HP spinoff. NVIDIA chosen per user's example.
+      { year: 1999, company: "NVIDIA",             date: "1999-01-22", ipoCapUSD: 626e6,  sp500CapUSD: 12.0e12, ppm: 52,    sector: "semis" },
+      // 2000: AT&T Wireless ($68B) excluded as tracking stock. Palm is next-largest qualifying tech IPO.
+      { year: 2000, company: "Palm Inc.",          date: "2000-03-02", ipoCapUSD: 21.4e9, sp500CapUSD: 12.5e12, ppm: 1712,  sector: "hardware" },
+      // 2001: Agere ($9.8B) excluded as Lucent spinoff. Nothing else notable.
+      { year: 2001, company: null,                 date: null,         ipoCapUSD: null,   sp500CapUSD: null,    ppm: null,  sector: null },
+      { year: 2002, company: "PayPal",             date: "2002-02-15", ipoCapUSD: 800e6,  sp500CapUSD: 9.5e12,  ppm: 84,    sector: "fintech" },
+      { year: 2003, company: "FormFactor",         date: "2003-06-12", ipoCapUSD: 280e6,  sp500CapUSD: 10.0e12, ppm: 28,    sector: "semis" },
+      { year: 2004, company: "Google",             date: "2004-08-19", ipoCapUSD: 23.0e9, sp500CapUSD: 11.3e12, ppm: 2035,  sector: "internet" },
+      { year: 2005, company: null,                 date: null,         ipoCapUSD: null,   sp500CapUSD: null,    ppm: null,  sector: null },
+      { year: 2006, company: "Mastercard",         date: "2006-05-25", ipoCapUSD: 5.3e9,  sp500CapUSD: 12.5e12, ppm: 424,   sector: "fintech" },
+      // 2007: VMware was an EMC subsidiary IPO (new shares to public, parent retained majority). Counts as IPO.
+      { year: 2007, company: "VMware",             date: "2007-08-14", ipoCapUSD: 11.0e9, sp500CapUSD: 13.0e12, ppm: 846,   sector: "software" },
+      { year: 2008, company: "Visa Inc.",          date: "2008-03-19", ipoCapUSD: 36.0e9, sp500CapUSD: 11.5e12, ppm: 3130,  sector: "fintech" },
+      { year: 2009, company: "Avago Technologies", date: "2009-08-06", ipoCapUSD: 3.4e9,  sp500CapUSD: 9.4e12,  ppm: 362,   sector: "semis" },
+      { year: 2010, company: "Tesla",              date: "2010-06-29", ipoCapUSD: 1.7e9,  sp500CapUSD: 10.0e12, ppm: 170,   sector: "EV" },
+      { year: 2011, company: "Groupon",            date: "2011-11-04", ipoCapUSD: 12.7e9, sp500CapUSD: 11.0e12, ppm: 1155,  sector: "internet" },
+      { year: 2012, company: "Facebook",           date: "2012-05-18", ipoCapUSD: 104e9,  sp500CapUSD: 12.7e12, ppm: 8189,  sector: "internet" },
+      { year: 2013, company: "Twitter",            date: "2013-11-07", ipoCapUSD: 18.3e9, sp500CapUSD: 16.3e12, ppm: 1123,  sector: "internet" },
+      { year: 2014, company: "Alibaba",            date: "2014-09-19", ipoCapUSD: 168e9,  sp500CapUSD: 18.7e12, ppm: 8984,  sector: "internet" },
+      { year: 2015, company: "First Data",         date: "2015-10-15", ipoCapUSD: 14.0e9, sp500CapUSD: 18.0e12, ppm: 778,   sector: "fintech" },
+      { year: 2016, company: "ZTO Express",        date: "2016-10-27", ipoCapUSD: 14.0e9, sp500CapUSD: 19.0e12, ppm: 737,   sector: "logistics-tech" },
+      { year: 2017, company: "Snap Inc.",          date: "2017-03-02", ipoCapUSD: 24.0e9, sp500CapUSD: 22.0e12, ppm: 1091,  sector: "internet / social" },
+      // 2018: Spotify direct listing — counts under "tradition + direct listings".
+      { year: 2018, company: "Spotify",            date: "2018-04-03", ipoCapUSD: 26.5e9, sp500CapUSD: 22.5e12, ppm: 1178,  sector: "internet / audio" },
+      { year: 2019, company: "Uber",               date: "2019-05-10", ipoCapUSD: 75.5e9, sp500CapUSD: 24.7e12, ppm: 3057,  sector: "internet" },
+      { year: 2020, company: "Airbnb",             date: "2020-12-10", ipoCapUSD: 47.0e9, sp500CapUSD: 31.0e12, ppm: 1516,  sector: "internet" },
+      { year: 2021, company: "Rivian",             date: "2021-11-10", ipoCapUSD: 66.5e9, sp500CapUSD: 41.0e12, ppm: 1622,  sector: "EV" },
+      // 2022: Mobileye ($16.7B) excluded as Intel spinoff. Nothing else notable in a brutal year for tech IPOs.
+      { year: 2022, company: null,                 date: null,         ipoCapUSD: null,   sp500CapUSD: null,    ppm: null,  sector: null },
+      { year: 2023, company: "Arm Holdings",       date: "2023-09-14", ipoCapUSD: 54.5e9, sp500CapUSD: 36.0e12, ppm: 1514,  sector: "semis" },
+      { year: 2024, company: "ServiceTitan",       date: "2024-12-12", ipoCapUSD: 6.3e9,  sp500CapUSD: 51.0e12, ppm: 124,   sector: "software" },
+      // 2025: CoreWeave (~$23B at $40 offer) > Figma (~$19.3B at $33 offer) by offering market cap.
+      { year: 2025, company: "CoreWeave",          date: "2025-03-28", ipoCapUSD: 23.0e9, sp500CapUSD: 50.0e12, ppm: 460,   sector: "AI infra" },
+    ];
+
+    const fmtUSD = (n) => {
+      if (n >= 1e9) return '$' + (n / 1e9).toFixed(n >= 10e9 ? 0 : 1) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(0) + 'M';
+      return '$' + n.toLocaleString();
+    };
+    const fmtTrillion = (n) => '$' + (n / 1e12).toFixed(1) + 'T';
+
+    function CustomTooltip({ active, payload }) {
+      if (!active || !payload || !payload.length) return null;
+      const r = payload[0].payload;
+      if (r.ppm == null) return null;
+      return html`
+        <div class="ipo-tip">
+          <div class="ipo-tip-title">
+            ${r.company}<span class="ipo-tip-year">(${r.year})</span>
+          </div>
+          <div class="ipo-tip-row">
+            <span>IPO date</span>
+            <span>${r.date}</span>
+          </div>
+          <div class="ipo-tip-row">
+            <span>IPO valuation</span>
+            <span>${fmtUSD(r.ipoCapUSD)}</span>
+          </div>
+          <div class="ipo-tip-row">
+            <span>S&P 500 total</span>
+            <span>${fmtTrillion(r.sp500CapUSD)}</span>
+          </div>
+          <div class="ipo-tip-row ipo-tip-emphasis">
+            <span>% of S&P 500</span>
+            <span>${r.ppm.toLocaleString()} ppm</span>
+          </div>
+          ${r.sector ? html`<div class="ipo-tip-sector">${r.sector}</div>` : null}
+        </div>
+      `;
+    }
+
+    function App() {
+      return html`
+        <div class="container">
+          <a class="back-link" href="../">← Back to playground</a>
+          <h1>Biggest Tech IPO Each Year (ppm of S&P 500)</h1>
+          <p class="subtitle">
+            Each year's biggest US-listed tech IPO from 1990–2025, sized as parts per million
+            (ppm) of the S&P 500's total market capitalization on that IPO's pricing date.
+            Hover any point for company, valuation, and S&P total. Gaps are years with no notable tech IPO.
+          </p>
+          <div class="chart-card">
+            <${ResponsiveContainer} width="100%" height=${480}>
+              <${LineChart} data=${TECH_IPOS} margin=${{ top: 20, right: 30, left: 10, bottom: 20 }}>
+                <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
+                <${XAxis}
+                  dataKey="year"
+                  type="number"
+                  domain=${[1990, 2025]}
+                  ticks=${[1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025]}
+                  tick=${{ fill: '#cbd5e1', fontSize: 12 }}
+                />
+                <${YAxis}
+                  scale="log"
+                  domain=${[10, 10000]}
+                  ticks=${[10, 100, 1000, 10000]}
+                  tickFormatter=${(v) => v.toLocaleString() + ' ppm'}
+                  tick=${{ fill: '#94a3b8', fontSize: 12 }}
+                  width=${80}
+                  allowDataOverflow=${false}
+                />
+                <${Tooltip}
+                  content=${(props) => html`<${CustomTooltip} ...${props} />`}
+                  cursor=${{ stroke: '#475569', strokeDasharray: '3 3' }}
+                  wrapperStyle=${{ outline: 'none' }}
+                />
+                <${Line}
+                  type="monotone"
+                  dataKey="ppm"
+                  stroke="#fbbf24"
+                  strokeWidth=${2.5}
+                  dot=${{ r: 3, fill: '#fbbf24', stroke: '#fbbf24' }}
+                  activeDot=${{ r: 6, fill: '#fbbf24', stroke: '#0f172a', strokeWidth: 2 }}
+                  connectNulls=${false}
+                  isAnimationActive=${false}
+                />
+              </>
+            </>
+          </div>
+
+          <div class="summary-card">
+            <h2>Methodology</h2>
+            <p>
+              <strong>What this shows.</strong> For each year 1990–2025, the biggest US-listed tech IPO
+              of that year, sized as parts per million (ppm) of the S&P 500's total market capitalization
+              on that IPO's pricing date. Years with no notable tech IPO show as gaps.
+            </p>
+            <p>
+              <strong>Tech scope.</strong> Software, internet, hardware, semiconductors, EV/auto-tech
+              (Tesla, Rivian), tech-adjacent fintech (Visa, Mastercard, Coinbase), telecom. Excludes pure biotech.
+            </p>
+            <p>
+              <strong>What counts as an IPO.</strong> Traditional IPOs and direct listings (e.g., Spotify 2018).
+              Excludes spinoffs of existing public companies (Lucent 1996, Agilent 1999, Mobileye 2022) and
+              tracking stocks (AT&T Wireless 2000). Where a year's biggest event is a spinoff, the next-largest
+              qualifying tech IPO is shown — or a gap if none reach a meaningful size.
+            </p>
+            <p>
+              <strong>Sources.</strong> IPO market caps from SEC filings and contemporaneous press
+              (CNBC, Reuters, Bloomberg, Wikipedia). S&P 500 total market caps interpolated from quarterly
+              figures (<a href="https://siblisresearch.com/data/us-stock-market-value/" target="_blank" rel="noopener">Siblis Research</a>,
+              <a href="https://www.finhacker.cz/en/top-20-sp-500-companies-by-market-cap/" target="_blank" rel="noopener">finhacker.cz</a>)
+              and the ^GSPC index level on each IPO date.
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

@@ -80,6 +80,37 @@
       border-left-color: var(--accent);
       background: rgba(245,158,11,0.06);
     }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: rgba(255,255,255,0.06);
+      border-color: var(--muted);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(245,158,11,0.1);
+    }
+    .copy-md-btn.failed {
+      color: #f87171;
+      border-color: #f87171;
+      background: rgba(248,113,113,0.08);
+    }
 
     .toc-toggle {
       display: none;
@@ -374,6 +405,7 @@
       <a href="#aws">Where it fits at AWS</a>
       <a href="#source">Reading the source</a>
       <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
     </nav>
   </aside>
 
@@ -1087,6 +1119,199 @@ PUT /actions <span class="kw">HTTP/1.1</span>
   window.addEventListener('resize', function () {
     if (activeTap) hidePop();
   });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline (modern LLMs parse SVG fine),
+      // followed by the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      // Headings
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Paragraphs
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Lists
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      // Code blocks
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      // Tables
+      if (tag === 'table') return tableToMd(node);
+
+      // Callouts → blockquote
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      // Inline formatting
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      // Default: walk children
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    // Normalize whitespace
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
 })();
 </script>
 </body>

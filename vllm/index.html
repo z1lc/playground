@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vLLM: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-2: #f8fafc;
+      --bg-3: #f1f5f9;
+      --fg: #0f172a;
+      --fg-2: #1e293b;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #4f46e5;
+      --accent-2: #4338ca;
+      --accent-soft: #eef2ff;
+      --amber: #b45309;
+      --amber-soft: #fffbeb;
+      --green: #047857;
+      --green-soft: #ecfdf5;
+      --red: #b91c1c;
+      --red-soft: #fef2f2;
+      --blue: #1d4ed8;
+      --blue-soft: #eff6ff;
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 56px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 32px 96px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 28px;
+      align-self: start;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 6px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.4;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-2); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 500;
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 9px 12px;
+      background: var(--bg);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: var(--bg-2);
+      border-color: var(--border-2);
+      box-shadow: var(--shadow);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .copy-md-btn.failed {
+      color: var(--red);
+      border-color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .doc-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.022em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--fg);
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 60px; scroll-margin-top: 24px; }
+    section > h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.012em;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg);
+    }
+    section > h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 30px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 22px 0 8px;
+      color: var(--accent-2);
+    }
+    section p { margin-bottom: 14px; color: var(--fg-2); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(79, 70, 229, 0.25);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg-2); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 22px; }
+    section li { margin-bottom: 6px; color: var(--fg-2); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+      font-size: 0.86em;
+      background: var(--bg-3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); font-style: italic; }
+    .kw  { color: #7c3aed; font-weight: 500; }
+    .str { color: #047857; }
+    .fn  { color: #b45309; }
+    .num { color: #b91c1c; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: var(--accent-soft);
+      border: 1px solid #c7d2fe;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow);
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; color: var(--fg-2); }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--amber-soft);
+      border-left: 3px solid var(--amber);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--blue-soft); border-left-color: var(--blue); }
+    .callout.note .label { color: var(--blue); }
+    .callout.warn { background: var(--red-soft); border-left-color: var(--red); }
+    .callout.warn .label { color: var(--red); }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout p { color: var(--fg-2); }
+
+    /* ---------- Tables ---------- */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 14px 0 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--bg); }
+    thead { background: var(--bg-2); }
+    th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-2); }
+    th {
+      font-weight: 600;
+      color: var(--fg);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      margin: 20px 0 24px;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 14px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(180, 83, 9, 0.55);
+      cursor: help;
+      color: inherit;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--amber); border-bottom-color: var(--amber); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 340px;
+      background: var(--fg);
+      border: 1px solid var(--fg-2);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #f8fafc;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: #fbbf24;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+    .explainer-pop code {
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: inherit;
+    }
+
+    /* ---------- Misc ---------- */
+    .meta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 28px 22px 64px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.75rem; }
+      section > h2 { font-size: 1.3rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 20px 16px 52px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#background">Background: LLM serving</a>
+      <a href="#why">Why vLLM exists</a>
+      <a href="#model">Mental model in 60 seconds</a>
+      <a href="#kvcache">The KV cache problem</a>
+      <a href="#paged">PagedAttention</a>
+      <a href="#blocks">Block-level memory mgmt</a>
+      <a href="#batching">Continuous batching</a>
+      <a href="#prefill-decode">Prefill, decode, chunked prefill</a>
+      <a href="#apc">Automatic prefix caching</a>
+      <a href="#distributed">Distributed inference</a>
+      <a href="#spec">Speculative decoding</a>
+      <a href="#design">Why the design composes</a>
+      <a href="#comparison">vs TRT-LLM, SGLang, TGI</a>
+      <a href="#adoption">Where vLLM fits</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">⚡</span>vLLM</h1>
+    <div class="meta-row">
+      <span>Describes the vLLM V1 engine · current as of mid-2026 · unofficial</span>
+    </div>
+    <p class="doc-subtitle">A design doc for the open-source LLM inference engine — written for systems engineers (no LLM expertise required). We'll cover what makes serving large models hard and the OS-paging analogy at vLLM's core.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong>vLLM treats LLM serving as a memory-management problem.</strong> Each request's working state (the "<span class="x" data-term="KV cache" data-def="The per-request session state an LLM keeps in GPU memory between generation steps so it doesn't redo work. Grows in size as the request produces more output, and after model weights themselves is the single largest consumer of GPU memory.">KV cache</span>") grows as the request runs, and older systems wasted 60–80% of GPU memory holding it. <span class="x" data-term="PagedAttention" data-def="vLLM's core memory technique. Each request's KV cache lives in fixed-size blocks scattered through GPU memory, with a per-request lookup table (analog: a page table in OS virtual memory). Eliminates fragmentation and reservation waste, pushing effective utilization to ~96%.">PagedAttention</span> applies OS-style virtual memory and paging to this state and pushes utilization to ~96%, which is where the 2–4× throughput win comes from.</li>
+        <li><strong>The runtime makes a fresh scheduling decision every ~10–80 ms.</strong> Requests join, finish, or get evicted at every model step, so the GPU never idles waiting for the slowest in-progress request. The scheduler can also mix expensive "process the prompt" work for one request with cheap "generate the next token" work for others in the same step (<span class="x" data-term="Chunked prefill" data-def="A scheduling technique that splits the expensive 'process the prompt' work into chunks and mixes each chunk with cheap 'generate next token' work from other requests in the same model step. Keeps the GPU busy by combining compute-heavy and memory-bandwidth-heavy work.">chunked prefill</span>) to keep the GPU utilization high.</li>
+        <li><strong>The architecture is built so its features compose.</strong> The HTTP/API process is separate from the engine process, and the scheduler is built around a single uniform primitive — which is why chunked prefill, prefix caching, speculative decoding, and multimodal inputs all work together cleanly instead of fighting each other.</li>
+      </ul>
+    </div>
+
+    <section id="background">
+      <h2>Background: how LLM serving works</h2>
+      <p>If you've never run an LLM in production, four ideas are enough to follow the rest of this doc.</p>
+      <ol>
+        <li><strong>Models speak in <span class="x" data-term="Token" data-def="A subword chunk — typically 3–5 characters of English. An LLM's input and output are sequences of token IDs (integers), produced by a tokenizer. Roughly: 1 token ≈ 0.75 English words.">tokens</span>, not characters.</strong> A tokenizer breaks the input string into ~3–4-character chunks, each represented by an integer ID. "Hello, world!" might be five tokens. Everything below works at the token level.</li>
+        <li><strong>Generation is <span class="x" data-term="Autoregressive" data-def="A generation strategy where the model produces one token at a time, and each new token is appended to the input before producing the next. The loop runs until a stop signal (max length, end-of-sequence token, server-side stop string).">autoregressive</span>: one token at a time, in a loop.</strong> The model takes the prompt, predicts the next token, appends it to the input, and repeats. A 500-token response is 500 model forward passes. The autoregressive loop is what makes inference fundamentally serial inside a single request.</li>
+        <li><strong>Every model layer revisits every previous token.</strong> The mechanism is called "<span class="x" data-term="Attention" data-def="The transformer's core operation. At each layer and each step, every token attends to (reads from) every previous token in the sequence. Naively this means recomputing per-token state on every step; the KV cache exists to avoid that.">attention</span>", and what matters for this doc is the consequence: to predict token 501 you have to look at all 500 tokens before it. To avoid recomputing those 500 tokens' per-layer state on every step, the system caches it — that's the <strong>KV cache</strong> (named after the two matrices the cache holds, "keys" and "values"). The cache is per-request, grows linearly with sequence length, and lives in GPU memory.</li>
+        <li><strong>GPU memory is the binding constraint.</strong> An <span class="x" data-term="A100 / H100 / B200" data-def="NVIDIA's datacenter GPUs. A100 (2020) has 40 or 80 GB of high-bandwidth memory (HBM). H100 (2022) has 80 GB. B200 (2024) has 192 GB. HBM is fast on-package memory next to the GPU compute die; everything an LLM does in a forward pass must fit there.">A100 GPU</span> has 80 GB of fast on-package memory (HBM). Loading a 13B-parameter model takes 26 GB before you serve a single request. The KV cache competes for what remains. More concurrent requests means more KV cache; ceiling out the KV cache means refusing to admit more requests.</li>
+      </ol>
+      <p>These four facts together explain why "LLM serving" is mostly "GPU memory management." vLLM exists because the pre-2023 systems handled that memory naively and threw away most of it.</p>
+    </section>
+
+    <section id="why">
+      <h2>Why vLLM exists</h2>
+      <p>The two facts from the background section — the KV cache is the dominant memory consumer, and requests in the same batch finish at different times — interact badly under a naive design.</p>
+      <p><strong>The fragmentation problem.</strong> Pre-vLLM systems allocated each request's KV cache as one contiguous chunk of GPU memory, sized for the maximum response length the request might produce. A request that <em>could</em> generate 4096 tokens got 4096 tokens' worth of slots, even if it actually only generated 200. The leftover slots couldn't be given to other requests because the memory was already claimed. The paper measures that real systems used only <strong>20–38% of the KV cache budget</strong> for actual token state. The rest was waste.</p>
+      <p><strong>The batching problem.</strong> A user asking for a one-line answer and a user asking for a 4,000-token essay live in the same batch for a while, then one of them should leave. Naive batching pads every request to the longest length and waits for the slowest one — wasting compute, latency, and memory.</p>
+      <p>By 2022 the second problem had a known fix: <strong>iteration-level scheduling</strong>, where the server admits and retires requests at every model step instead of every batch. The <a href="https://www.usenix.org/conference/osdi22/presentation/yu">Orca paper (OSDI '22)</a> introduced it. But Orca and contemporary systems still allocated KV cache as one contiguous slab per request — the first problem was untouched.</p>
+      <p>vLLM is the synthesis: keep iteration-level scheduling, <em>and</em> treat the KV cache the way an operating system treats process memory — paged, allocated lazily as the request grows, reference-counted, copy-on-write. The headline result is 2–4× higher throughput at equivalent latency. The deeper claim is that <strong>LLM serving is mostly a memory-allocator problem</strong>: once you accept that frame, almost every other feature (prefix caching, chunked prefill, parallel sampling) falls out of the same block-allocator interface.</p>
+      <div class="callout note">
+        <span class="label">Origin</span>
+        <p>vLLM came out of the Sky Computing Lab at UC Berkeley (Woosuk Kwon, Zhuohan Li, et al.), <a href="https://arxiv.org/pdf/2309.06180">published at SOSP '23</a>, and was deployed as the backend for <a href="https://vllm.ai/blog/2023-06-20-vllm">LMSYS Chatbot Arena and Vicuna</a> in mid-2023. The project is now Apache-2.0 and the dominant open-source LLM inference engine, maintained by a community of 2000+ contributors across Berkeley, the LF AI &amp; Data foundation, and most major model labs.</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Mental model in 60 seconds</h2>
+      <p>A running vLLM server looks like this:</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 470" role="img" aria-label="vLLM stack diagram">
+  <defs>
+    <linearGradient id="gpuG" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="1" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Client -->
+  <rect x="220" y="20" width="280" height="42" rx="6" fill="#eff6ff" stroke="#1d4ed8"/>
+  <text x="360" y="40" fill="#1e3a8a" font-size="12" text-anchor="middle" font-weight="600">Client (curl, OpenAI SDK, LangChain, …)</text>
+  <text x="360" y="55" fill="#475569" font-size="10" text-anchor="middle">POST /v1/chat/completions, /v1/completions</text>
+  <line x1="360" y1="62" x2="360" y2="78" stroke="#94a3b8"/>
+
+  <!-- API server process -->
+  <rect x="60" y="80" width="600" height="76" rx="8" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="80" y="100" fill="#5b21b6" font-size="11" font-weight="700">API SERVER PROCESS</text>
+  <text x="80" y="116" fill="#475569" font-size="10">vllm/entrypoints/openai/api_server.py — HTTP, OpenAI-compatible routes</text>
+  <rect x="80" y="124" width="180" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="170" y="140" fill="#334155" font-size="10" text-anchor="middle">tokenizer / detokenizer</text>
+  <rect x="270" y="124" width="180" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="360" y="140" fill="#334155" font-size="10" text-anchor="middle">multimodal preprocessing</text>
+  <rect x="460" y="124" width="180" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="550" y="140" fill="#334155" font-size="10" text-anchor="middle">request validation, logits proc</text>
+
+  <text x="360" y="172" fill="#475569" font-size="10" text-anchor="middle">⇅ ZMQ sockets (RequestType / EngineCoreOutput) ⇅</text>
+
+  <!-- Engine core process -->
+  <rect x="60" y="180" width="600" height="100" rx="8" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="80" y="200" fill="#3730a3" font-size="11" font-weight="700">ENGINECORE PROCESS</text>
+  <text x="80" y="215" fill="#475569" font-size="10">vllm/v1/engine/core.py — model execution + scheduling</text>
+
+  <rect x="80" y="226" width="170" height="44" rx="4" fill="#ffffff" stroke="#a5b4fc"/>
+  <text x="165" y="244" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">Scheduler</text>
+  <text x="165" y="258" fill="#64748b" font-size="9" text-anchor="middle">picks tokens per step</text>
+
+  <rect x="260" y="226" width="170" height="44" rx="4" fill="#ffffff" stroke="#a5b4fc"/>
+  <text x="345" y="244" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">KV cache manager</text>
+  <text x="345" y="258" fill="#64748b" font-size="9" text-anchor="middle">block pool · ref counts · hash index</text>
+
+  <rect x="440" y="226" width="200" height="44" rx="4" fill="#ffffff" stroke="#a5b4fc"/>
+  <text x="540" y="244" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">Executor</text>
+  <text x="540" y="258" fill="#64748b" font-size="9" text-anchor="middle">mp · ray · uniproc backends</text>
+
+  <!-- Workers -->
+  <rect x="60" y="300" width="600" height="90" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="80" y="320" fill="#065f46" font-size="11" font-weight="700">WORKERS (one per GPU)</text>
+  <text x="80" y="335" fill="#475569" font-size="10">vllm/v1/worker/gpu_worker.py + gpu_model_runner.py</text>
+
+  <rect x="80" y="346" width="170" height="36" rx="4" fill="#ffffff" stroke="#6ee7b7"/>
+  <text x="165" y="362" fill="#065f46" font-size="11" text-anchor="middle">model runner</text>
+  <text x="165" y="375" fill="#64748b" font-size="9" text-anchor="middle">runs the forward pass</text>
+
+  <rect x="260" y="346" width="170" height="36" rx="4" fill="#ffffff" stroke="#6ee7b7"/>
+  <text x="345" y="362" fill="#065f46" font-size="11" text-anchor="middle">attention backend</text>
+  <text x="345" y="375" fill="#64748b" font-size="9" text-anchor="middle">computes attention math</text>
+
+  <rect x="440" y="346" width="200" height="36" rx="4" fill="#ffffff" stroke="#6ee7b7"/>
+  <text x="540" y="362" fill="#065f46" font-size="11" text-anchor="middle">distributed init</text>
+  <text x="540" y="375" fill="#64748b" font-size="9" text-anchor="middle">GPU-to-GPU communication</text>
+
+  <!-- GPU memory -->
+  <rect x="60" y="408" width="600" height="42" rx="8" fill="url(#gpuG)" stroke="#4338ca"/>
+  <text x="360" y="426" fill="#3730a3" font-size="12" text-anchor="middle" font-weight="700">GPU memory (HBM)</text>
+  <text x="360" y="441" fill="#475569" font-size="10" text-anchor="middle">model weights · KV cache blocks · activations · workspace</text>
+
+  <!-- arrows -->
+  <line x1="360" y1="156" x2="360" y2="180" stroke="#94a3b8"/>
+  <line x1="360" y1="280" x2="360" y2="300" stroke="#94a3b8"/>
+  <line x1="360" y1="390" x2="360" y2="408" stroke="#94a3b8"/>
+</svg>
+        <div class="caption">A running vLLM server. Two host processes, then N worker processes (one per GPU on a node).</div>
+      </div>
+
+      <p>A few things worth noting up front:</p>
+      <ul>
+        <li><strong>The HTTP server and the engine run as separate OS processes.</strong> The "API server" handles HTTP, tokenization (string → token IDs), and other preprocessing. The "EngineCore" handles scheduling and the GPU forward pass. They talk over <span class="x" data-term="ZMQ" data-def="ZeroMQ — a low-overhead message-passing library. Used here to send requests/responses between the HTTP-handling process and the GPU-driving process so neither blocks the other.">ZMQ</span> sockets. The split matters because tokenization is CPU-bound and Python's GIL would otherwise make it contend with the engine; keeping it in its own process keeps the GPU-driving loop off the critical path.</li>
+        <li><strong>The scheduler and KV cache manager are centralized — one of each, no matter how many GPUs.</strong> Even with 8 GPUs running the same model, a single scheduler decides each step what runs, and a single KV cache manager hands out block IDs. The workers (one per GPU) receive the resulting block tables and execute.</li>
+        <li><strong>The worker is where the model actually runs on a GPU.</strong> Each worker owns one GPU, holds a copy of the model weights (or its share of them — see <a href="#distributed">Distributed inference</a>), and runs the forward pass plus the attention math.</li>
+        <li><strong>There is no separate "control plane" daemon.</strong> The HTTP server is the orchestrator, and the engine is its only dependency. Multi-node deployments add a coordinator (Ray) on top, but the single-node case is just two processes.</li>
+      </ul>
+    </section>
+
+    <section id="kvcache">
+      <h2>The KV cache problem</h2>
+      <p>To understand the size of the problem, look at where GPU memory actually goes on a representative setup: a 40 GB A100 running a 13-billion-parameter model.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 286" role="img" aria-label="KV cache budget on a 40GB A100 running OPT-13B">
+  <!-- 40GB bar -->
+  <text x="20" y="32" fill="#0f172a" font-size="12" font-weight="700">A100 40 GB · serving OPT-13B (paper §3, Fig. 1)</text>
+
+  <rect x="20" y="44" width="680" height="44" rx="6" fill="#eef2ff" stroke="#94a3b8"/>
+  <!-- weights 65% -->
+  <rect x="20" y="44" width="442" height="44" fill="#a5b4fc"/>
+  <text x="241" y="68" fill="#1e1b4b" font-size="11" text-anchor="middle" font-weight="600">Model weights · ~65% (26 GB, static)</text>
+  <!-- KV cache 30% -->
+  <rect x="462" y="44" width="204" height="44" fill="#6ee7b7"/>
+  <text x="564" y="68" fill="#064e3b" font-size="11" text-anchor="middle" font-weight="600">KV cache · ~30%</text>
+  <!-- other 5% -->
+  <rect x="666" y="44" width="34" height="44" fill="#fcd34d"/>
+  <text x="685" y="68" fill="#78350f" font-size="9" text-anchor="middle">act.</text>
+
+  <!-- zoom indicator -->
+  <line x1="462" y1="88" x2="20" y2="116" stroke="#94a3b8" stroke-dasharray="3 3"/>
+  <line x1="666" y1="88" x2="700" y2="116" stroke="#94a3b8" stroke-dasharray="3 3"/>
+
+  <!-- zoom: how the KV budget is used -->
+  <text x="20" y="134" fill="#0f172a" font-size="12" font-weight="700">Zoom: how the KV budget is actually used (paper §3.1, Fig. 2 — Orca baselines vs vLLM)</text>
+
+  <!-- Orca Max -->
+  <text x="20" y="158" fill="#475569" font-size="10">Orca-Max (reserve full max_len)</text>
+  <rect x="220" y="148" width="480" height="16" fill="#fef2f2" stroke="#fca5a5"/>
+  <rect x="220" y="148" width="98" height="16" fill="#10b981"/>
+  <text x="269" y="160" fill="#ffffff" font-size="9" text-anchor="middle" font-weight="600">20.4%</text>
+
+  <!-- Orca Pow2 -->
+  <text x="20" y="184" fill="#475569" font-size="10">Orca-Pow2 (round-up to power of 2)</text>
+  <rect x="220" y="174" width="480" height="16" fill="#fef2f2" stroke="#fca5a5"/>
+  <rect x="220" y="174" width="129" height="16" fill="#10b981"/>
+  <text x="285" y="186" fill="#ffffff" font-size="9" text-anchor="middle" font-weight="600">26.8%</text>
+
+  <!-- Orca Oracle -->
+  <text x="20" y="210" fill="#475569" font-size="10">Orca-Oracle (knows true length)</text>
+  <rect x="220" y="200" width="480" height="16" fill="#fef2f2" stroke="#fca5a5"/>
+  <rect x="220" y="200" width="183" height="16" fill="#10b981"/>
+  <text x="312" y="212" fill="#ffffff" font-size="9" text-anchor="middle" font-weight="600">38.2%</text>
+
+  <!-- vLLM -->
+  <text x="20" y="236" fill="#0f172a" font-size="10" font-weight="600">vLLM (PagedAttention)</text>
+  <rect x="220" y="226" width="480" height="16" fill="#fef2f2" stroke="#fca5a5"/>
+  <rect x="220" y="226" width="462" height="16" fill="#10b981"/>
+  <text x="451" y="238" fill="#ffffff" font-size="9" text-anchor="middle" font-weight="600">96.3%</text>
+
+  <!-- legend -->
+  <rect x="220" y="258" width="12" height="12" rx="2" fill="#10b981"/>
+  <text x="240" y="268" fill="#475569" font-size="10">used (actual token state)</text>
+  <rect x="430" y="258" width="12" height="12" rx="2" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="450" y="268" fill="#475569" font-size="10">reserved + fragmented = wasted</text>
+</svg>
+        <div class="caption">Pre-vLLM KV cache utilization, even with an oracle, never crosses 40%. vLLM eliminates reservation and external fragmentation.</div>
+      </div>
+
+      <p>Two numbers tell the story:</p>
+      <ul>
+        <li><strong>~30%</strong> — the fraction of GPU memory left for KV cache after model weights are loaded. Weights are static and non-negotiable; the KV cache is where the design has any choice at all.</li>
+        <li><strong>20–38%</strong> — the fraction of <em>that</em> 30% that pre-vLLM systems used for actual token state. The rest was waste, split across three flavors:</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Where the waste came from</th><th>Why it happened</th></tr></thead>
+          <tbody>
+            <tr><td>Slots reserved for tokens that never get generated</td><td>The system allocates room for the worst-case response length up front. A 200-token reply on a model that supports 4096-token contexts is paying for 4096 slots.</td></tr>
+            <tr><td>Padding inside an allocation</td><td>If the allocator rounds up to a power of two, a 257-token request takes 512 slots.</td></tr>
+            <tr><td>Gaps between requests' allocations</td><td>Classic memory-allocator fragmentation. Request A finishes, leaving a 600-token-sized hole between B and C that can't accept the 800-token request now arriving.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The PagedAttention design follows from one observation: <strong>all three of these waste categories vanish if KV cache is allocated in small, uniform blocks instead of one contiguous chunk per request.</strong> Reserved-but-unused slots go away because you allocate one block at a time, only when a request needs it. Padding shrinks to at most one block per request (the partially-filled last one). Gaps go away because any free block fits anywhere — they're all the same size.</p>
+    </section>
+
+    <section id="paged">
+      <h2>PagedAttention</h2>
+      <p>The technique is directly modeled on OS virtual memory. The vLLM paper labels its own diagrams with the OS terms, and the correspondence is one-to-one:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>OS virtual memory</th><th>vLLM PagedAttention</th></tr></thead>
+          <tbody>
+            <tr><td>Process</td><td>Request (one user's in-progress generation)</td></tr>
+            <tr><td>Page</td><td>KV block — a small fixed-size slot holding the cached state for ~16 tokens</td></tr>
+            <tr><td>Page table</td><td>Block table — one per request, mapping "logical block N" → "physical block address X" in GPU memory</td></tr>
+            <tr><td>Physical frame</td><td>Physical KV block in GPU memory</td></tr>
+            <tr><td>Lazy allocation</td><td>The allocator hands out a new physical block only when a request fills up its current one</td></tr>
+            <tr><td>Copy-on-write</td><td>Same: when one request needs to mutate a block another is reading, the block is copied and the writer's table updated</td></tr>
+            <tr><td>Page sharing (shared libraries)</td><td>Prefix caching — two requests with the same prompt prefix can share the same physical blocks for that prefix</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A KV block typically holds the cached state for 16 tokens — small enough that the leftover space in a partially-filled block is negligible, large enough that the block-table lookups don't dominate.</p>
+      <p>The cost of the design is that the GPU code computing attention now has to walk a per-request lookup table instead of reading one contiguous region of memory. The paper measures this at <strong>about 20% slower</strong> on the attention math itself — but attention is only one slice of the total forward pass, and the memory savings let you batch 2–4× more requests through, so end-to-end throughput goes up sharply.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 360" role="img" aria-label="PagedAttention block table mapping">
+  <text x="20" y="28" fill="#0f172a" font-size="12" font-weight="700">Block table maps each request's logical blocks to physical blocks (which need not be contiguous)</text>
+
+  <!-- Logical blocks for Request A -->
+  <text x="40" y="60" fill="#3730a3" font-size="11" font-weight="600">Request A — logical view</text>
+  <rect x="40" y="68" width="60" height="36" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="70" y="82" fill="#3730a3" font-size="10" text-anchor="middle">L0</text>
+  <text x="70" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 0-15</text>
+  <rect x="106" y="68" width="60" height="36" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="136" y="82" fill="#3730a3" font-size="10" text-anchor="middle">L1</text>
+  <text x="136" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 16-31</text>
+  <rect x="172" y="68" width="60" height="36" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="202" y="82" fill="#3730a3" font-size="10" text-anchor="middle">L2</text>
+  <text x="202" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 32-47</text>
+  <rect x="238" y="68" width="60" height="36" rx="4" fill="#eef2ff" stroke="#4f46e5" stroke-dasharray="3 3"/>
+  <text x="268" y="82" fill="#3730a3" font-size="10" text-anchor="middle">L3</text>
+  <text x="268" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 48-58</text>
+
+  <!-- Block table for A -->
+  <text x="40" y="138" fill="#0f172a" font-size="11" font-weight="600">block_table_A = [P12, P3, P27, P5]</text>
+
+  <!-- Logical blocks for Request B (shares prefix with A) -->
+  <text x="380" y="60" fill="#7c3aed" font-size="11" font-weight="600">Request B (same prompt as A so far)</text>
+  <rect x="380" y="68" width="60" height="36" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="410" y="82" fill="#5b21b6" font-size="10" text-anchor="middle">L0</text>
+  <text x="410" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 0-15</text>
+  <rect x="446" y="68" width="60" height="36" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="476" y="82" fill="#5b21b6" font-size="10" text-anchor="middle">L1</text>
+  <text x="476" y="96" fill="#475569" font-size="9" text-anchor="middle">tok 16-31</text>
+  <rect x="512" y="68" width="60" height="36" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="542" y="82" fill="#5b21b6" font-size="10" text-anchor="middle">L2</text>
+  <text x="542" y="96" fill="#475569" font-size="9" text-anchor="middle">(own)</text>
+
+  <text x="380" y="138" fill="#0f172a" font-size="11" font-weight="600">block_table_B = [P12, P3, P19]</text>
+
+  <!-- Physical block pool -->
+  <text x="20" y="180" fill="#0f172a" font-size="12" font-weight="700">Physical KV block pool (in GPU HBM)</text>
+  <rect x="20" y="194" width="680" height="120" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+
+  <!-- physical blocks (some labeled, some greyed) -->
+  <g>
+    <rect x="36" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="64" y="230" fill="#475569" font-size="10" text-anchor="middle">P0</text>
+    <rect x="98" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="126" y="230" fill="#475569" font-size="10" text-anchor="middle">P1</text>
+    <rect x="160" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="188" y="230" fill="#475569" font-size="10" text-anchor="middle">P2</text>
+    <rect x="222" y="210" width="56" height="32" rx="4" fill="#eef2ff" stroke="#4f46e5"/><text x="250" y="226" fill="#3730a3" font-size="10" text-anchor="middle">P3</text><text x="250" y="238" fill="#3730a3" font-size="8" text-anchor="middle">refcnt=2</text>
+    <rect x="284" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="312" y="230" fill="#475569" font-size="10" text-anchor="middle">P4</text>
+    <rect x="346" y="210" width="56" height="32" rx="4" fill="#eef2ff" stroke="#4f46e5"/><text x="374" y="226" fill="#3730a3" font-size="10" text-anchor="middle">P5</text><text x="374" y="238" fill="#3730a3" font-size="8" text-anchor="middle">A · L3</text>
+    <rect x="408" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="436" y="230" fill="#475569" font-size="10" text-anchor="middle">P6</text>
+    <rect x="470" y="210" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="498" y="230" fill="#475569" font-size="10" text-anchor="middle">P7</text>
+    <rect x="532" y="210" width="56" height="32" rx="4" fill="#eef2ff" stroke="#4f46e5"/><text x="560" y="226" fill="#3730a3" font-size="10" text-anchor="middle">P12</text><text x="560" y="238" fill="#3730a3" font-size="8" text-anchor="middle">refcnt=2</text>
+    <rect x="594" y="210" width="56" height="32" rx="4" fill="#f5f3ff" stroke="#7c3aed"/><text x="622" y="226" fill="#5b21b6" font-size="10" text-anchor="middle">P19</text><text x="622" y="238" fill="#5b21b6" font-size="8" text-anchor="middle">B · L2</text>
+
+    <rect x="36" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="64" y="282" fill="#475569" font-size="10" text-anchor="middle">P20</text>
+    <rect x="98" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="126" y="282" fill="#475569" font-size="10" text-anchor="middle">P21</text>
+    <rect x="160" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="188" y="282" fill="#475569" font-size="10" text-anchor="middle">P22</text>
+    <rect x="222" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="250" y="282" fill="#475569" font-size="10" text-anchor="middle">P23</text>
+    <rect x="284" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="312" y="282" fill="#475569" font-size="10" text-anchor="middle">P24</text>
+    <rect x="346" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="374" y="282" fill="#475569" font-size="10" text-anchor="middle">P25</text>
+    <rect x="408" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="436" y="282" fill="#475569" font-size="10" text-anchor="middle">P26</text>
+    <rect x="470" y="262" width="56" height="32" rx="4" fill="#eef2ff" stroke="#4f46e5"/><text x="498" y="278" fill="#3730a3" font-size="10" text-anchor="middle">P27</text><text x="498" y="290" fill="#3730a3" font-size="8" text-anchor="middle">A · L2</text>
+    <rect x="532" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="560" y="282" fill="#475569" font-size="10" text-anchor="middle">P28</text>
+    <rect x="594" y="262" width="56" height="32" rx="4" fill="#fef2f2" stroke="#94a3b8"/><text x="622" y="282" fill="#475569" font-size="10" text-anchor="middle">P29</text>
+  </g>
+
+  <text x="20" y="334" fill="#475569" font-size="10">P3 and P12 are shared — A and B have the same prompt prefix, so they map to the same physical blocks (ref count 2 each).</text>
+  <text x="20" y="350" fill="#475569" font-size="10">The attention kernel walks the block table; physical blocks need not be contiguous, sequential, or even in the same order across requests.</text>
+</svg>
+        <div class="caption">Two requests sharing a prompt prefix. Their block tables point into the same physical pool; when one diverges, copy-on-write splits the affected block.</div>
+      </div>
+    </section>
+
+    <section id="blocks">
+      <h2>Block-level memory management</h2>
+      <p>Sitting underneath PagedAttention is a small allocator that looks a lot like a slab allocator: a pool of identically-sized blocks, three operations on them, and a reference count on each. The whole interface is:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Operation</th><th>What it does</th><th>Used by</th></tr></thead>
+          <tbody>
+            <tr><td><code>allocate</code></td><td>Hand out a free block — unless an existing block already contains the same content (prefix cache hit), in which case just bump that block's reference count.</td><td>New requests starting up; running requests that fill their current tail block and need another.</td></tr>
+            <tr><td><code>fork</code></td><td>Create a second logical reference to a block. Both holders share it read-only.</td><td>Generating multiple alternative completions for the same prompt.</td></tr>
+            <tr><td><code>free</code></td><td>Drop a reference. When the count reaches zero, the block goes onto an LRU list for later reuse. The block isn't zeroed — its content hash is retained so a future request can rediscover it via prefix caching.</td><td>Requests finishing or being evicted.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Reference counting and copy-on-write</h3>
+      <p>Every physical block carries a reference count. If two requests share a block (because they had the same prompt prefix, or because one was forked from the other), the count is 2. Writes to a shared block trigger <strong>copy-on-write</strong> — exactly the same pattern Linux uses for <code>fork()</code>: allocate a new block, copy the contents over, decrement the old block's count, and update the writer's lookup table to point at the new block.</p>
+      <p>This pays off whenever a workload involves sequences that share a prefix. The paper reports <strong>up to 55% memory savings</strong> on workloads that ask the model to generate several alternative completions of the same prompt — the prompt's blocks are all shared until one continuation diverges from the others.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 290" role="img" aria-label="Copy-on-write for parallel sampling">
+  <defs>
+    <marker id="arrowEnd1" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Before write: A1 and A2 stacked, both point to shared P5 -->
+  <text x="20" y="26" fill="#0f172a" font-size="12" font-weight="700">Before A1 writes — both samples share the tail block P5 (refcnt = 2)</text>
+
+  <rect x="20" y="44" width="220" height="40" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="130" y="66" fill="#3730a3" font-size="10" text-anchor="middle">Sample A1 block_table</text>
+  <text x="130" y="80" fill="#475569" font-size="9" text-anchor="middle">[P12, P3, P5]</text>
+
+  <rect x="20" y="96" width="220" height="40" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="130" y="118" fill="#5b21b6" font-size="10" text-anchor="middle">Sample A2 block_table</text>
+  <text x="130" y="132" fill="#475569" font-size="9" text-anchor="middle">[P12, P3, P5]</text>
+
+  <rect x="430" y="70" width="130" height="40" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="495" y="92" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">P5</text>
+  <text x="495" y="106" fill="#3730a3" font-size="9" text-anchor="middle">refcnt = 2</text>
+
+  <line x1="240" y1="64" x2="428" y2="84" stroke="#4f46e5" stroke-width="1.4" marker-end="url(#arrowEnd1)"/>
+  <line x1="240" y1="116" x2="428" y2="96" stroke="#7c3aed" stroke-width="1.4" marker-end="url(#arrowEnd1)"/>
+
+  <!-- After write -->
+  <text x="20" y="180" fill="#0f172a" font-size="12" font-weight="700">A1 writes a new token → P5 must change → copy-on-write: allocate P31, copy, redirect A1</text>
+
+  <rect x="20" y="198" width="170" height="40" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="105" y="220" fill="#3730a3" font-size="10" text-anchor="middle">Sample A1 block_table</text>
+  <text x="105" y="234" fill="#475569" font-size="9" text-anchor="middle">[P12, P3, P31]</text>
+
+  <rect x="208" y="198" width="170" height="40" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="293" y="220" fill="#5b21b6" font-size="10" text-anchor="middle">Sample A2 block_table</text>
+  <text x="293" y="234" fill="#475569" font-size="9" text-anchor="middle">[P12, P3, P5]</text>
+
+  <rect x="396" y="198" width="110" height="40" rx="4" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="451" y="220" fill="#5b21b6" font-size="11" text-anchor="middle" font-weight="600">P5</text>
+  <text x="451" y="234" fill="#5b21b6" font-size="9" text-anchor="middle">refcnt = 1</text>
+
+  <rect x="524" y="198" width="140" height="40" rx="4" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="594" y="220" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">P31 (new)</text>
+  <text x="594" y="234" fill="#3730a3" font-size="9" text-anchor="middle">refcnt = 1</text>
+
+  <text x="20" y="266" fill="#475569" font-size="10">Copy P5 → P31, write the new token into P31. A2 keeps reading the unchanged P5.</text>
+  <text x="20" y="282" fill="#475569" font-size="10">Subsequent A1 writes go straight to P31 — no further copies.</text>
+</svg>
+        <div class="caption">Copy-on-write only triggers on the diverging block; all earlier prefix blocks stay shared.</div>
+      </div>
+
+      <h3>Eviction</h3>
+      <p>When a new request needs a block but the pool is empty, the allocator evicts. Free blocks (reference count zero) sit on an LRU list; the least-recently-used one gets recycled first. Crucially the block isn't zeroed on free — its content hash is kept, so if the same prompt prefix shows up later, the block can be resurrected without recomputing it.</p>
+      <div class="callout">
+        <span class="label">Subtle detail</span>
+        <p>The very last block of a request — the one only partially filled with that request's specific final tokens — is least likely to be reused by anyone else. The eviction policy is biased to throw tail blocks away first, so blocks belonging to shared prefixes (system prompts, document Q&amp;A contexts) tend to stay cached longer.</p>
+      </div>
+    </section>
+
+    <section id="batching">
+      <h2>Continuous batching &amp; the scheduler</h2>
+      <p>"Continuous batching" is the technique of revisiting the batch on every model step instead of every request. vLLM didn't invent it (the <a href="https://www.usenix.org/conference/osdi22/presentation/yu">Orca paper, OSDI '22</a> did), but it's what vLLM's block allocator enables: because allocating and freeing memory is now cheap, the scheduler can afford to make a fresh decision every step.</p>
+
+      <h3>What "every step" means</h3>
+      <p>A model forward pass takes roughly 10–80 ms depending on model size and batch. That is the scheduling unit. Every step:</p>
+      <ol>
+        <li>The scheduler picks a set of in-flight requests and decides how many tokens each one will process this step. The output is essentially a dict of <code>{request_id: num_tokens}</code>.</li>
+        <li>The allocator hands out any blocks those requests need.</li>
+        <li>The worker runs one model forward pass, producing the next token for each request.</li>
+        <li>The scheduler updates state: requests that hit a stop condition are removed; new requests waiting in the queue are admitted if memory allows.</li>
+      </ol>
+      <p>The unified <code>{request_id: num_tokens}</code> representation is a deliberate design point that matters more than it looks. The next section explains why.</p>
+
+      <h3>What if memory runs out?</h3>
+      <p>What happens when a request mid-generation needs another block but the pool is full? The answer is <strong>recompute</strong>: drop the request's KV cache, put the request back on the waiting queue, and re-run its prefix from scratch when it's rescheduled. The recompute is cheaper than it sounds — the prefix is processed in one shot, in parallel, which the GPU is fast at — and combined with prefix caching, an evicted request's blocks often survive on the LRU list anyway, so the "recompute" is mostly a cache hit.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 280" role="img" aria-label="Continuous batching timeline showing mixed prefill and decode">
+  <text x="20" y="24" fill="#0f172a" font-size="12" font-weight="700">Continuous batching — what runs in each model forward pass</text>
+
+  <!-- timeline header -->
+  <line x1="168" y1="60" x2="702" y2="60" stroke="#cbd5e1"/>
+  <g font-size="10" fill="#475569" text-anchor="middle">
+    <text x="193" y="50">step 1</text>
+    <text x="285" y="50">step 2</text>
+    <text x="377" y="50">step 3</text>
+    <text x="469" y="50">step 4</text>
+    <text x="561" y="50">step 5</text>
+    <text x="653" y="50">step 6</text>
+  </g>
+
+  <!-- rows for requests -->
+  <text x="14" y="88" fill="#0f172a" font-size="10" font-weight="600">R1 · short prompt</text>
+  <rect x="170" y="74" width="44" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="192" y="88" fill="#7c2d12" font-size="9" text-anchor="middle">prefill</text>
+  <rect x="218" y="74" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="229" y="88" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="262" y="74" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="273" y="88" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="354" y="74" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="365" y="88" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="446" y="74" width="34" height="20" rx="3" fill="#94a3b8"/>
+  <text x="463" y="88" fill="#ffffff" font-size="9" text-anchor="middle">stop</text>
+
+  <text x="14" y="124" fill="#0f172a" font-size="10" font-weight="600">R2 · long prompt</text>
+  <rect x="170" y="110" width="64" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="202" y="124" fill="#7c2d12" font-size="9" text-anchor="middle">prefill 1/3</text>
+  <rect x="262" y="110" width="64" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="294" y="124" fill="#7c2d12" font-size="9" text-anchor="middle">prefill 2/3</text>
+  <rect x="354" y="110" width="64" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="386" y="124" fill="#7c2d12" font-size="9" text-anchor="middle">prefill 3/3</text>
+  <rect x="446" y="110" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="457" y="124" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="538" y="110" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="549" y="124" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="630" y="110" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="641" y="124" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+
+  <text x="14" y="160" fill="#0f172a" font-size="10" font-weight="600">R3 · joins at step 3</text>
+  <rect x="354" y="146" width="44" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="376" y="160" fill="#7c2d12" font-size="9" text-anchor="middle">prefill</text>
+  <rect x="446" y="146" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="457" y="160" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="538" y="146" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="549" y="160" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="630" y="146" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="641" y="160" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+
+  <text x="14" y="196" fill="#0f172a" font-size="10" font-weight="600">R4 · preempted</text>
+  <rect x="170" y="182" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="181" y="196" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="262" y="182" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="273" y="196" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="354" y="182" width="22" height="20" rx="3" fill="#6ee7b7" stroke="#047857"/>
+  <text x="365" y="196" fill="#064e3b" font-size="9" text-anchor="middle">d</text>
+  <rect x="446" y="182" width="40" height="20" rx="3" fill="#fca5a5" stroke="#b91c1c"/>
+  <text x="466" y="196" fill="#7f1d1d" font-size="9" text-anchor="middle">evict</text>
+  <rect x="630" y="182" width="68" height="20" rx="3" fill="#fbbf24" stroke="#b45309"/>
+  <text x="664" y="196" fill="#7c2d12" font-size="9" text-anchor="middle">recompute</text>
+
+  <!-- Legend -->
+  <rect x="170" y="228" width="14" height="14" rx="2" fill="#fbbf24" stroke="#b45309"/>
+  <text x="190" y="239" fill="#475569" font-size="10">prefill (prompt chunk)</text>
+  <rect x="356" y="228" width="14" height="14" rx="2" fill="#6ee7b7" stroke="#047857"/>
+  <text x="376" y="239" fill="#475569" font-size="10">decode (one token)</text>
+  <rect x="518" y="228" width="14" height="14" rx="2" fill="#fca5a5" stroke="#b91c1c"/>
+  <text x="538" y="239" fill="#475569" font-size="10">evicted</text>
+
+  <text x="14" y="268" fill="#475569" font-size="10" font-style="italic">Each step's batch is mixed — e.g. step 1 runs R2's prefill chunk alongside R1's and R4's decodes.</text>
+</svg>
+        <div class="caption">A continuous-batching timeline. Step 1 runs R2's first prefill chunk alongside R1's and R4's decodes; R3 joins at step 3; R4 is evicted at step 4 and recomputed at step 6.</div>
+      </div>
+    </section>
+
+    <section id="prefill-decode">
+      <h2>Prefill, decode, and chunked prefill</h2>
+      <p>Serving a single request is not one workload — it's two, with very different shapes. Understanding them is the foundation for most LLM-serving optimization.</p>
+
+      <h3>Prefill: processing the prompt</h3>
+      <p>When a request first arrives, the system has to build up its KV cache by running the model once over the entire prompt. Because all the prompt's tokens are known up front, this single forward pass processes them in parallel. The GPU does a lot of computation per byte of model weight it loads — which is what the GPU is good at — so prefill is <strong>compute-bound</strong>: the bottleneck is how many math operations the GPU can do per second.</p>
+
+      <h3>Decode: generating one token at a time</h3>
+      <p>Once the prompt is processed, the request enters the autoregressive loop: produce one new token, append it, produce the next, repeat. Each new-token forward pass does only a tiny amount of math per byte of weight loaded — there's just one new token to process at this layer — so the bottleneck shifts to <strong>memory bandwidth</strong>: how fast the GPU can read its own weights from HBM. The compute units sit mostly idle, waiting for weights to arrive.</p>
+
+      <p>These two regimes shape the two latency metrics users see:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Prefill</th><th>Decode</th></tr></thead>
+          <tbody>
+            <tr><td>When it runs</td><td>Once, when the request arrives</td><td>Many times, once per output token</td></tr>
+            <tr><td>Bottleneck</td><td>GPU math throughput</td><td>HBM-to-compute memory bandwidth</td></tr>
+            <tr><td>Latency it affects</td><td>Time to first token (TTFT) — how long the user waits before any output appears</td><td>Time between output tokens — how fast the response "types out"</td></tr>
+            <tr><td>Sensitive to</td><td>Prompt length</td><td>Batch size (more requests in the same step amortize the weight loads)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Chunked prefill: mixing the two</h3>
+      <p>The naive approach runs prefill and decode in separate steps. But then a new arriving request triggers a prefill step that pauses every in-flight decode — the bigger the prompt, the longer existing users wait for their next token — and conversely, decode-only steps leave the GPU's math units mostly idle.</p>
+      <p><strong>Chunked prefill</strong> solves both problems. A long prefill (say, 4096 tokens) is split into pieces (say, 1024 tokens each), and each piece runs in the <em>same</em> model step as the ongoing decodes for other requests. Because prefill is compute-heavy and decode is memory-bandwidth-heavy, mixing them in one step uses both kinds of GPU resource — prefill fills the compute units that decode leaves idle, and decode rides along on the weight loads prefill is already paying for. End result: the GPU stays busy on both axes at once, and no user is starved.</p>
+      <p>This works cleanly because of the unified <code>{request_id: num_tokens}</code> scheduler. To the scheduler, a request processing the first 1024 tokens of its prompt and a request generating its 50th output token look identical — both are just numbers in the dict. Chunked prefill is on by default.</p>
+    </section>
+
+    <section id="apc">
+      <h2>Automatic prefix caching (APC)</h2>
+      <p>If two requests start with the same prompt prefix, the KV cache for that prefix is bit-for-bit identical between them. The block design exists in part to share it. Automatic prefix caching is the feature that makes that sharing happen with no help from the caller.</p>
+
+      <h3>How blocks are identified</h3>
+      <p>Each block is identified by a hash that depends on (a) its tokens and (b) the hash of the block before it. Because of the chain, two requests with the same first N tokens produce the same first N block hashes; the (N+1)th hashes diverge as soon as a token differs. A global hash → block lookup table makes the check O(1): when a new request arrives, the allocator walks the prompt's blocks, looks each one up by hash, and reuses any block that already exists.</p>
+      <p>The hash also incorporates a few "extras" — the active <span class="x" data-term="LoRA" data-def="Low-Rank Adaptation. A fine-tuning method that bolts a small set of additional weights onto a frozen base model to specialize it for a task. vLLM can serve many LoRA adapters from one base model; the adapter ID is part of each block's hash so two requests using different adapters don't accidentally share cache.">LoRA</span> adapter ID, image/audio input hashes, an optional per-tenant "salt" string — so two requests that differ only on those don't accidentally share cache.</p>
+
+      <h3>When it pays</h3>
+      <p>Three workload shapes get most of the benefit:</p>
+      <ul>
+        <li><strong>System prompts.</strong> Every request to a chat endpoint shares the same multi-thousand-token "you are a helpful assistant…" prefix. Cache it once, share it across every request.</li>
+        <li><strong>Few-shot prompting.</strong> Requests that include several example input/output pairs before the actual user input. The paper reports up to <strong>3.58× throughput</strong> over Orca-Oracle on a translation benchmark with a 5-example shared prefix.</li>
+        <li><strong>Multi-turn chat.</strong> Turn N reuses the KV cache built up over turns 1…N−1. Without prefix caching, every turn pays to re-process the entire conversation. With it, only the new user message gets processed.</li>
+      </ul>
+      <p>The largest single case by sheer KV volume is document Q&amp;A: a 50,000-token document is processed once, then every subsequent question against it reuses the same cache.</p>
+      <div class="callout note">
+        <span class="label">In practice</span>
+        <p>The bookkeeping is designed so the per-block hash lookup costs effectively nothing even when nothing matches — the official docs put it at "<em>near-zero, even when the cache hit rate is 0%</em>." So prefix caching is on by default, and most users never need to think about it.</p>
+      </div>
+    </section>
+
+    <section id="distributed">
+      <h2>Distributed inference</h2>
+      <p>An H100 GPU has 80 GB of HBM. A LLaMA-3-70B model is about 140 GB before any cache. For big models, you must split the model across multiple GPUs. The two standard ways to split a dense model:</p>
+      <ul>
+        <li><strong>Tensor parallelism (TP)</strong> — every GPU runs every layer, but each one does only a slice of the work, and they synchronize at every layer boundary. Analogy: a team of cooks each preparing one quadrant of every dish and combining at every step. Each GPU has 1/N of the model weights and computes 1/N of each layer's output, then they share their partial results so everyone can continue.</li>
+        <li><strong>Pipeline parallelism (PP)</strong> — different GPUs hold different layers, and a request flows through them in sequence. Analogy: an assembly line — GPU 1 runs layers 1–10, GPU 2 runs layers 11–20, and so on. Only the activations between layers travel between GPUs, so the bandwidth requirements are much lower.</li>
+      </ul>
+      <p>Where each one wins: TP needs a fast interconnect between GPUs (because they sync often) but keeps end-to-end latency low. PP tolerates slower interconnects but adds latency proportional to the number of stages. The rule of thumb from the official distributed-inference blog: "<em>use pipeline parallelism across nodes and tensor parallelism within nodes for slow interconnects; extend tensor parallelism across nodes if interconnects are efficient.</em>" In practice: TP within a server (typically 8-way over NVLink), PP across servers when one server isn't enough.</p>
+
+      <h3>Expert parallelism (for Mixture-of-Experts models)</h3>
+      <p>Most frontier models today are <span class="x" data-term="Mixture of Experts (MoE)" data-def="A model architecture whose feed-forward layers are split into many independent 'expert' sub-networks, plus a small router that sends each token to only a few of them. The total parameter count is huge, but only a fraction runs for any given token — which is what lets these models be so large yet still affordable to serve. Examples: DeepSeek-V3, Mixtral, Qwen-MoE, Llama 4.">Mixture-of-Experts</span> (MoE) models — DeepSeek-V3, Mixtral, Qwen-MoE, Llama 4. Instead of one big feed-forward block that every token passes through, an MoE layer holds many smaller "experts" (8, 128, even 256 of them) plus a tiny router that sends each token to just a few — often the top 2 to 8. The model's <em>total</em> parameter count is enormous, but only a small slice actually runs for any given token. That's what makes these models affordable to serve at their size, and it changes how you split them across GPUs.</p>
+      <p>Analogy: a hospital with hundreds of specialists. Triage (the router) sends each patient (token) to the two relevant specialists rather than parading them past every doctor. The hospital is huge, but each patient consumes only two specialists' time.</p>
+      <p><strong>Expert parallelism (EP)</strong> spreads the experts across GPUs — GPU 0 owns experts 0–63, GPU 1 owns 64–127, and so on. Because the router can send any token to any expert, each MoE layer needs an <em>all-to-all</em> exchange: every GPU ships each of its tokens to whichever GPU owns the expert it was routed to, the experts run, then a second all-to-all sends the results back. That all-to-all shuffle is a different communication pattern from tensor parallelism's all-reduce (a sum), and it is usually the bottleneck for MoE serving — which is why vLLM invests in fast all-to-all kernels and "wide EP" deployments that fan a model's experts across dozens of GPUs.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 250" role="img" aria-label="Expert parallelism: an MoE layer routing tokens to the GPU that owns each expert">
+  <defs>
+    <marker id="epArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#4f46e5"/>
+    </marker>
+  </defs>
+  <text x="14" y="22" fill="#0f172a" font-size="12" font-weight="700">An MoE layer under expert parallelism</text>
+
+  <!-- input tokens -->
+  <rect x="14" y="96" width="132" height="58" rx="6" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="80" y="120" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">Tokens</text>
+  <text x="80" y="137" fill="#475569" font-size="9" text-anchor="middle">router → top-k experts</text>
+
+  <!-- dispatch -->
+  <text x="204" y="113" fill="#4f46e5" font-size="9" text-anchor="middle">all-to-all dispatch</text>
+  <line x1="148" y1="125" x2="258" y2="125" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#epArrow)"/>
+
+  <!-- expert GPUs -->
+  <rect x="266" y="28" width="190" height="42" rx="6" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="361" y="54" fill="#065f46" font-size="11" text-anchor="middle">GPU 0 · experts 0–63</text>
+  <rect x="266" y="80" width="190" height="42" rx="6" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="361" y="106" fill="#065f46" font-size="11" text-anchor="middle">GPU 1 · experts 64–127</text>
+  <rect x="266" y="132" width="190" height="42" rx="6" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="361" y="158" fill="#065f46" font-size="11" text-anchor="middle">GPU 2 · experts 128–191</text>
+  <rect x="266" y="184" width="190" height="42" rx="6" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="361" y="210" fill="#065f46" font-size="11" text-anchor="middle">GPU 3 · experts 192–255</text>
+
+  <!-- combine -->
+  <text x="516" y="113" fill="#4f46e5" font-size="9" text-anchor="middle">all-to-all combine</text>
+  <line x1="462" y1="125" x2="570" y2="125" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#epArrow)"/>
+
+  <!-- output tokens -->
+  <rect x="576" y="96" width="130" height="58" rx="6" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="641" y="120" fill="#3730a3" font-size="11" text-anchor="middle" font-weight="600">Tokens</text>
+  <text x="641" y="137" fill="#475569" font-size="9" text-anchor="middle">→ next layer</text>
+
+  <text x="14" y="244" fill="#475569" font-size="9.5" font-style="italic">Attention layers run data- or tensor-parallel; only the MoE layers shuffle tokens across GPUs.</text>
+</svg>
+        <div class="caption">Expert parallelism. Each token is routed to a few of the many experts, shuffled to whichever GPU owns them via an all-to-all, processed, then shuffled back.</div>
+      </div>
+
+      <p>EP is combined with the other strategies rather than replacing them: in a typical large MoE deployment, the attention layers (which are dense) run data- or tensor-parallel while the MoE layers run expert-parallel, all in one server group. The flag is <code>--enable-expert-parallel</code>.</p>
+
+      <h3>One scheduler, many workers</h3>
+      <p>One architectural choice deserves attention. Even with 8 GPUs serving the same model, vLLM keeps <strong>a single scheduler and a single KV cache manager</strong>. Every step:</p>
+      <ul>
+        <li>The scheduler decides which requests run and computes their block tables.</li>
+        <li>It broadcasts the resulting block tables to all GPU workers.</li>
+        <li>Each worker holds the same set of block IDs but only its slice of each block's data. The forward pass runs, the workers share partial results at the synchronization points, and the step ends.</li>
+      </ul>
+      <p>Workers don't negotiate among themselves about which blocks to use — they all trust the central scheduler's assignment. This is what keeps the design tractable. Coordinating block allocation between 8 independent caches per node would be a distributed-systems problem; centralizing it is a single-process bookkeeping problem.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 360" role="img" aria-label="vLLM tensor parallel layout: centralized scheduler, distributed workers">
+  <!-- Scheduler -->
+  <rect x="220" y="20" width="280" height="60" rx="8" fill="#eef2ff" stroke="#4f46e5"/>
+  <text x="360" y="42" fill="#3730a3" font-size="12" text-anchor="middle" font-weight="700">Scheduler + KV cache manager</text>
+  <text x="360" y="60" fill="#475569" font-size="10" text-anchor="middle">one logical block table per request</text>
+  <text x="360" y="73" fill="#475569" font-size="10" text-anchor="middle">broadcasts to all workers every step</text>
+
+  <!-- Broadcast arrows -->
+  <line x1="240" y1="80" x2="120" y2="130" stroke="#4f46e5" stroke-dasharray="4 3"/>
+  <line x1="300" y1="80" x2="280" y2="130" stroke="#4f46e5" stroke-dasharray="4 3"/>
+  <line x1="420" y1="80" x2="440" y2="130" stroke="#4f46e5" stroke-dasharray="4 3"/>
+  <line x1="480" y1="80" x2="600" y2="130" stroke="#4f46e5" stroke-dasharray="4 3"/>
+
+  <text x="540" y="105" fill="#4f46e5" font-size="10">block_table broadcast</text>
+
+  <!-- Workers / GPUs -->
+  <g>
+    <rect x="40" y="140" width="160" height="120" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="120" y="162" fill="#065f46" font-size="12" text-anchor="middle" font-weight="700">GPU 0</text>
+    <text x="120" y="180" fill="#475569" font-size="10" text-anchor="middle">1/N of the model</text>
+    <rect x="56" y="190" width="128" height="60" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="120" y="208" fill="#0f172a" font-size="10" text-anchor="middle">KV blocks</text>
+    <text x="120" y="222" fill="#0f172a" font-size="9" text-anchor="middle">P0, P1, P2, …</text>
+    <text x="120" y="238" fill="#475569" font-size="9" text-anchor="middle">(its slice)</text>
+  </g>
+
+  <g>
+    <rect x="210" y="140" width="160" height="120" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="290" y="162" fill="#065f46" font-size="12" text-anchor="middle" font-weight="700">GPU 1</text>
+    <text x="290" y="180" fill="#475569" font-size="10" text-anchor="middle">1/N of the model</text>
+    <rect x="226" y="190" width="128" height="60" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="290" y="208" fill="#0f172a" font-size="10" text-anchor="middle">KV blocks</text>
+    <text x="290" y="222" fill="#0f172a" font-size="9" text-anchor="middle">P0, P1, P2, …</text>
+    <text x="290" y="238" fill="#475569" font-size="9" text-anchor="middle">(its slice)</text>
+  </g>
+
+  <g>
+    <rect x="380" y="140" width="160" height="120" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="460" y="162" fill="#065f46" font-size="12" text-anchor="middle" font-weight="700">GPU 2</text>
+    <text x="460" y="180" fill="#475569" font-size="10" text-anchor="middle">1/N of the model</text>
+    <rect x="396" y="190" width="128" height="60" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="460" y="208" fill="#0f172a" font-size="10" text-anchor="middle">KV blocks</text>
+    <text x="460" y="222" fill="#0f172a" font-size="9" text-anchor="middle">P0, P1, P2, …</text>
+    <text x="460" y="238" fill="#475569" font-size="9" text-anchor="middle">(its slice)</text>
+  </g>
+
+  <g>
+    <rect x="550" y="140" width="160" height="120" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+    <text x="630" y="162" fill="#065f46" font-size="12" text-anchor="middle" font-weight="700">GPU 3</text>
+    <text x="630" y="180" fill="#475569" font-size="10" text-anchor="middle">1/N of the model</text>
+    <rect x="566" y="190" width="128" height="60" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="630" y="208" fill="#0f172a" font-size="10" text-anchor="middle">KV blocks</text>
+    <text x="630" y="222" fill="#0f172a" font-size="9" text-anchor="middle">P0, P1, P2, …</text>
+    <text x="630" y="238" fill="#475569" font-size="9" text-anchor="middle">(its slice)</text>
+  </g>
+
+  <!-- All-reduce: every GPU exchanges & sums along a shared axis -->
+  <defs>
+    <marker id="ar" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <line x1="120" y1="278" x2="630" y2="278" stroke="#dc2626" stroke-width="1.4" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <line x1="120" y1="260" x2="120" y2="278" stroke="#dc2626" stroke-width="1.1"/>
+  <line x1="290" y1="260" x2="290" y2="278" stroke="#dc2626" stroke-width="1.1"/>
+  <line x1="460" y1="260" x2="460" y2="278" stroke="#dc2626" stroke-width="1.1"/>
+  <line x1="630" y1="260" x2="630" y2="278" stroke="#dc2626" stroke-width="1.1"/>
+
+  <text x="375" y="300" fill="#b91c1c" font-size="11" text-anchor="middle" font-weight="600">all-reduce: GPUs sum each other's partial results at sync points (per layer)</text>
+  <text x="375" y="320" fill="#475569" font-size="10" text-anchor="middle">Latency cost grows with #workers; aggregate throughput grows faster</text>
+  <text x="375" y="340" fill="#475569" font-size="10" text-anchor="middle">Same block IDs on every GPU. Each GPU stores only its slice of each block.</text>
+</svg>
+        <div class="caption">Tensor parallelism in vLLM. One central scheduler hands block tables to all GPUs; each GPU holds the same block IDs but only its share of each block's contents.</div>
+      </div>
+
+      <h3>Executor backends</h3>
+      <p>Spawning and managing worker processes is the job of the "executor." vLLM has three:</p>
+      <ul>
+        <li><strong>uniproc</strong> — one process, one GPU. Simplest case, used for single-GPU deployments.</li>
+        <li><strong>multiproc</strong> — Python multiprocessing, one worker process per GPU on a single machine. The default for tensor parallelism within one server.</li>
+        <li><strong>Ray</strong> — uses the <a href="https://www.ray.io/">Ray</a> distributed runtime to spawn and coordinate workers across multiple machines. Required when one server isn't enough GPU.</li>
+      </ul>
+    </section>
+
+    <section id="spec">
+      <h2>Speculative decoding</h2>
+      <p>Decoding spends most of its time loading weights from memory, not computing. <span class="x" data-term="Speculative decoding" data-def="A latency optimization where a cheap predictor proposes the next several tokens, and the main model verifies them in a single forward pass. If the predictor was right, multiple tokens are produced per main-model step. If not, the first wrong token is corrected.">Speculative decoding</span> uses that slack: a cheap predictor proposes several next tokens at once, and the main model verifies them in one forward pass. If the proposal was right, multiple tokens come out of the same step. If not, the first wrong token is corrected. The main model runs one pass per step either way — but the average tokens-per-step is higher than 1.</p>
+      <p>The predictor can be:</p>
+      <ul>
+        <li>A <strong>smaller "draft" model</strong> (e.g., a 7B model drafting for a 70B model). Up to 1.5× speedup.</li>
+        <li>A pure <strong>pattern match against the prompt</strong> (no model at all). Surprisingly strong when the response repeats material from the input, like summarization or code editing — up to 2.8× speedup on summarization.</li>
+        <li>Extra "heads" bolted onto the main model that predict multiple next tokens directly (EAGLE, MEDUSA in the literature).</li>
+      </ul>
+
+      <h3>Where it stops helping</h3>
+      <p>The technique only pays when the GPU has spare compute. At high request rates, the GPU is already saturated by the existing batch, and the extra work of verifying speculative tokens competes for the same compute. The official blog reports <strong>1.4× to 1.8× slowdowns</strong> at high request rates. Speculative decoding is a latency optimization for low-throughput regimes; it can hurt at high throughput.</p>
+    </section>
+
+    <section id="design">
+      <h2>Why the design composes</h2>
+      <p>The features described above — chunked prefill, prefix caching, speculative decoding, plus multimodal inputs and multi-LoRA serving — are not bolted-on extras. They all fall out of one design decision, and it's worth making explicit because it's the kind of thing system-design interviews reward.</p>
+      <p>The scheduler represents every step as a single uniform primitive: a <code>{request_id: num_tokens}</code> dictionary. There is no separate "prefill mode" and "decode mode," no special batch shape for one or the other. A request processing the first 1024 tokens of its prompt and a request generating its 50th output token are both just an entry in that dict.</p>
+      <p>Because every request is the same kind of object to the scheduler, the features stack instead of fighting:</p>
+      <ul>
+        <li><strong>Chunked prefill</strong> is just allowing a request's entry to be a partial token count.</li>
+        <li><strong>Prefix caching</strong> is just letting a request start with some of its blocks already populated.</li>
+        <li><strong>Speculative decoding</strong> is just letting a request advance by more than one token in a step.</li>
+      </ul>
+      <p>Each is a small variation on the same uniform unit, which is why they combine without a combinatorial explosion of special cases. The general lesson: <strong>the right core abstraction for the scheduler determines what can later become a feature.</strong> A system whose central primitive makes new features fight each other accumulates complexity that no amount of later cleanup can fully undo — so the primitive is worth getting right early.</p>
+    </section>
+
+    <section id="comparison">
+      <h2>vLLM vs TensorRT-LLM, SGLang, TGI</h2>
+      <p>An honest comparison is harder than it looks. The vLLM team published throughput numbers against TGI and FasterTransformer in the 2023 paper, but does not publish current head-to-head benchmarks against TensorRT-LLM or SGLang in any primary source. So what follows is the architectural differences, not relative speed numbers.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>vLLM</th><th>TensorRT-LLM</th><th>SGLang</th><th>HF TGI</th><th>llama.cpp</th></tr></thead>
+          <tbody>
+            <tr><td>KV cache scheme</td><td>PagedAttention (blocks)</td><td>Paged KV (NVIDIA's implementation)</td><td>RadixAttention (radix tree of prefix sharing)</td><td>Paged KV</td><td>One buffer per sequence</td></tr>
+            <tr><td>Hardware</td><td>NVIDIA + AMD + Intel + TPU + AWS Inferentia</td><td>NVIDIA only</td><td>NVIDIA + AMD</td><td>NVIDIA + AMD + Gaudi</td><td>CPU + most consumer GPUs</td></tr>
+            <tr><td>Code generation</td><td>JIT-compiled with PyTorch tooling</td><td>Ahead-of-time compiled into a TensorRT engine</td><td>JIT-compiled with custom kernels</td><td>Eager or JIT-compiled</td><td>Hand-written C++</td></tr>
+            <tr><td>Scheduler granularity</td><td>Per-step, unified prefill/decode</td><td>Per-step</td><td>Per-step, radix-tree-aware</td><td>Per-step</td><td>Single request at a time</td></tr>
+            <tr><td>License</td><td>Apache 2.0</td><td>Apache 2.0</td><td>Apache 2.0</td><td>Apache 2.0</td><td>MIT</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A few framings of the choices:</p>
+      <ul>
+        <li><strong>vLLM vs TensorRT-LLM:</strong> vendor-neutral vs NVIDIA-only. TensorRT-LLM compiles each model into a hardware-specific binary ahead of time, which lets it optimize aggressively for a specific GPU but locks you to NVIDIA and adds a build step. vLLM trades some peak throughput on NVIDIA for portability across vendors and a single binary that loads any model from HuggingFace at runtime.</li>
+        <li><strong>vLLM vs SGLang:</strong> different prefix-sharing data structures. vLLM uses a flat pool of blocks with hash-based lookup; SGLang organizes the same idea as a radix tree, which can be more efficient for workloads with many branching shared prefixes (LLM agents, programmatic prompting). Both are in active development.</li>
+        <li><strong>vLLM vs TGI:</strong> TGI was the prior open-source state of the art (the 2023 vLLM paper reports 3.5× higher throughput than TGI). HuggingFace's strength is tight integration with the HuggingFace model hub; TGI is still the easiest way to serve a model directly from a HuggingFace repo. vLLM has since overtaken on throughput and feature surface.</li>
+        <li><strong>vLLM vs llama.cpp:</strong> different problems. llama.cpp targets local/laptop inference on CPU and consumer GPUs with aggressive quantization; vLLM targets multi-tenant datacenter serving. They share almost no design decisions.</li>
+      </ul>
+    </section>
+
+    <section id="adoption">
+      <h2>Where vLLM fits</h2>
+      <p>The primary sources name a few production deployments and several partnerships. The picture is incomplete by design — most large production users haven't published.</p>
+      <ul>
+        <li><strong>LMSYS Chatbot Arena and Vicuna.</strong> The 2023 vLLM blog reports vLLM as the backbone behind LMSYS Vicuna and Chatbot Arena starting mid-April 2023, handling "<em>60K daily requests</em>" while "<em>reducing the GPU usage by half</em>" vs the prior HuggingFace-based setup. The first real production-scale deployment.</li>
+        <li><strong>NVIDIA.</strong> Co-optimization partnership; recent blogs report vLLM-on-Blackwell numbers from joint work.</li>
+        <li><strong>DeepSeek.</strong> The wide-expert-parallel blog reports serving DeepSeek-V3 (a 256-expert MoE model) at 2,200 tokens/sec on H200 using vLLM's wide expert-parallel deployment — experts fanned across many GPUs, as described above.</li>
+        <li><strong>Sky Lab origin.</strong> Born in the Sky Computing Lab at UC Berkeley (the lab that also produced Ray, Mesos, and Spark).</li>
+        <li><strong>Community.</strong> The README cites 2,000+ contributors. It is the default OpenAI-API-compatible serving stack for a huge number of self-hosted deployments.</li>
+      </ul>
+      <p>The OpenAI-compatibility layer matters more than any single name. vLLM exposes the same HTTP endpoints as OpenAI's API (<code>/v1/chat/completions</code>, etc.), so the OpenAI client libraries work against a vLLM endpoint with no code changes — only the base URL changes. This is the protocol most LLM applications were built against; vLLM inherits that ecosystem for free.</p>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong><a href="https://arxiv.org/pdf/2309.06180">Efficient Memory Management for Large Language Model Serving with PagedAttention</a></strong> — Kwon, Li, Zhuang, et al., SOSP 2023. The paper. Read this first if you want one source for everything above.</li>
+        <li><strong><a href="https://docs.vllm.ai/">docs.vllm.ai</a></strong> — official docs. The <code>design/</code> subtree is the highest-signal reading.</li>
+        <li><strong><a href="https://vllm.ai/blog/2025-01-27-v1-alpha-release">vLLM engine architecture blog</a></strong> — the clearest articulation of the engine design (separate API/engine processes, the unified scheduler).</li>
+        <li><strong><a href="https://vllm.ai/blog/2024-10-17-spec-decode">Speculative decoding in vLLM</a></strong> — official numbers and failure modes.</li>
+        <li><strong><a href="https://vllm.ai/blog/2025-02-17-distributed-inference">Distributed inference with vLLM</a></strong> — guidance on tensor- vs pipeline-parallel.</li>
+        <li><strong><a href="https://github.com/vllm-project/vllm">vllm-project/vllm</a></strong> — the source. Modern code lives under the <code>vllm/v1/</code> subtree; <code>vllm/v1/engine/core.py</code>, <code>vllm/v1/core/scheduler.py</code>, and <code>vllm/v1/core/kv_cache_manager.py</code> are the highest-signal entry points.</li>
+        <li><strong><a href="https://sky.cs.berkeley.edu/project/vllm/">Sky Lab vLLM project page</a></strong> — UC Berkeley's project home.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026, describing the vLLM engine as of mid-2026. If anything reads as authoritative on facts that have since changed, treat the source as ground truth. The PagedAttention paper is at <a href="https://arxiv.org/pdf/2309.06180">arxiv.org/pdf/2309.06180</a>; the design docs are under <a href="https://docs.vllm.ai/">docs.vllm.ai</a>.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('vllm-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('vllm-toc-open', open ? '1' : '0');
+    });
+  }
+
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('vllm-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      if (tag === 'table') return tableToMd(node);
+
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

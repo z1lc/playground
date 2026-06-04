@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClickHouse: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #2563eb;
+      --accent-2: #1d4ed8;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #eff6ff;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(37,99,235,0.25);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #7c3aed; }
+    .str { color: #15803d; }
+    .fn { color: var(--accent); }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(37,99,235,0.05), rgba(37,99,235,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(37,99,235,0.55);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#why">Why ClickHouse exists</a>
+      <a href="#model">Mental model in 60 seconds</a>
+      <a href="#storage">Storage: parts, granules, marks</a>
+      <a href="#indexing">Sparse primary &amp; skipping indexes</a>
+      <a href="#execution">Vectorized execution</a>
+      <a href="#distributed">Distributed query</a>
+      <a href="#replication">Replication &amp; Keeper</a>
+      <a href="#compression-ingest">Compression &amp; ingestion</a>
+      <a href="#mutations-recent">Mutations &amp; what's new</a>
+      <a href="#cloud">ClickHouse Cloud</a>
+      <a href="#alternatives">vs Snowflake, BigQuery, Druid, DuckDB</a>
+      <a href="#ai">Where it fits in AI infra</a>
+      <a href="#source">Reading the source</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">🐘</span>ClickHouse</h1>
+    <p class="doc-subtitle">A senior engineer's design doc for the OLAP database — storage layout, vectorized execution, distributed query, replication, and ClickHouse Cloud's separated compute and storage.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong>ClickHouse is a columnar <span class="x" data-term="OLAP DBMS" data-def="Online Analytical Processing database. Optimized for high-throughput scans and aggregations over append-mostly tables. Contrast OLTP (row-oriented, point-read/write, transactional).">OLAP DBMS</span></strong> optimized for high-throughput SELECTs over append-mostly tables. Data lives in immutable <span class="x" data-term="Part" data-def="Immutable directory produced by one INSERT (or by merging). Contains compressed column files, mark files, primary-index file, metadata. The unit of merge, replication, and TTL.">parts</span> that background processes merge, indexed by a <span class="x" data-term="Sparse primary index" data-def="One primary-key entry per granule (not per row), held in RAM. Binary search on the leading column; generic exclusion search on suffix columns. ~1000 entries can address 8.1M rows.">sparse primary index</span> that points at <span class="x" data-term="Granule" data-def="Smallest indivisible read unit inside a part. Default 8192 rows. The sparse primary index has one entry per granule.">granules</span> (8192 rows each by default).</li>
+        <li><strong>Query execution is <span class="x" data-term="Vectorized execution" data-def="Operators process chunks of column values (~8K rows × N columns) rather than one row at a time. Enables SIMD and amortizes dispatch cost. Pioneered by MonetDB/X100.">vectorized</span></strong> over column chunks with runtime-dispatched SIMD (SSE 4.2 → AVX-512), <span class="x" data-term="JIT compilation (LLVM)" data-def="After an expression evaluates N times, ClickHouse fuses adjacent ops (`a*b + c`) into a single LLVM-compiled function and caches it. Cuts interpreter overhead on hot paths.">LLVM-JIT</span>-fused hot expressions, and 30+ specialized hash-table variants for joins and aggregations. Joins now spill via grace hash when memory exceeds 50%.</li>
+        <li><strong>The Cloud product (<span class="x" data-term="SharedMergeTree" data-def="ClickHouse Cloud's cloud-native engine. Parts live on object storage, metadata in Keeper. Compute is stateless: no local disks, no server-to-server replication, auto-scale to zero.">SharedMergeTree</span>, 2024+) separates compute and storage:</strong> parts live on S3, metadata in <span class="x" data-term="ClickHouse Keeper" data-def="C++ rewrite of ZooKeeper using embedded NuRaft (Raft). Sequences the replication log and DDL. Recommended over ZK; standard deployment is 3 nodes on dedicated hosts.">Keeper</span>, and replicas are stateless — they no longer ship data part-to-part.</li>
+      </ul>
+    </div>
+
+    <section id="why">
+      <h2>Why ClickHouse exists</h2>
+      <p>Analytical workloads look almost nothing like transactional ones. A point-of-sale system writes one row per purchase and looks it up by primary key. A web analytics system writes one row per page view and asks "how many sessions per hour, by country, over the last 30 days" — over billions of rows. Row-oriented engines, which interleave all columns of one row contiguously on disk, are good at the first job and bad at the second: a query that touches three of forty columns still drags every byte of every row through I/O and cache. Columnar storage is the standard fix — store each column in its own file, in sorted order, with codec-appropriate compression — and was widely understood by the time ClickHouse showed up in 2016.</p>
+      <p>What ClickHouse added was an unusually opinionated combination of choices on top of "columnar." A sparse rather than dense primary index, kept in RAM. Background merges of immutable parts in place of an LSM memtable. Vectorized execution operating on chunks of columns rather than rows. A single hash-table-per-query model with 30+ template specializations. SIMD kernels dispatched at runtime by CPU feature. And a deployment story — single C++ binary, no JVM, no external coordinator beyond ZooKeeper/Keeper — that made it possible to run at high density on commodity hardware.</p>
+      <p>The system originated inside Yandex.Metrica, a web-analytics product that needed to serve interactive aggregations over hundreds of billions of clickstream events. (The name is a contraction of <em>Clickstream Data Warehouse</em>.) Open-sourced in 2016, formalized in the <a href="https://www.vldb.org/pvldb/vol17/p3731-schulze.pdf">VLDB 2024 paper</a>, ClickHouse has since become the default OLAP engine for time-series telemetry, logs, and event streams — workloads that look a lot like clickstreams, even when they aren't.</p>
+      <div class="callout note">
+        <span class="label">Framing</span>
+        <p>An analytical database, at the level of abstraction that matters here, is two engines bolted together: a <strong>compression engine</strong> that minimizes the bytes you read off disk, and a <strong>scan engine</strong> that minimizes the cycles you spend processing those bytes. ClickHouse is unusually opinionated on both. Most of the rest of this doc is a tour of how each is built.</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Mental model in 60 seconds</h2>
+      <p>From the bottom up, a running ClickHouse cluster looks like this:</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 460" role="img" aria-label="ClickHouse cluster architecture stack">
+  <!-- Storage layer (bottom) -->
+  <rect x="20" y="380" width="560" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="40" y="402" fill="#0f172a" font-size="12" font-weight="600">Persistent storage</text>
+  <text x="40" y="420" fill="#475569" font-size="11">Local disks (OSS) · object storage S3/GCS/Azure (Cloud) · compressed column files</text>
+
+  <!-- MergeTree storage engine -->
+  <rect x="20" y="310" width="560" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="40" y="332" fill="#0f172a" font-size="12" font-weight="600">MergeTree storage engine</text>
+  <text x="40" y="350" fill="#475569" font-size="11">parts · granules · marks · sparse PK · skipping indexes · background merges</text>
+
+  <!-- Execution engine -->
+  <rect x="20" y="240" width="560" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="40" y="262" fill="#0f172a" font-size="12" font-weight="600">Execution engine</text>
+  <text x="40" y="280" fill="#475569" font-size="11">vectorized processor graph · SIMD (SSE4.2 → AVX-512) · LLVM JIT · 30+ hash tables · grace-hash spill</text>
+
+  <!-- Planner -->
+  <rect x="20" y="170" width="560" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="40" y="192" fill="#0f172a" font-size="12" font-weight="600">Parser, analyzer, planner</text>
+  <text x="40" y="210" fill="#475569" font-size="11">SQL → AST → query tree (new analyzer) → logical plan → physical pipeline</text>
+
+  <!-- Distributed routing -->
+  <rect x="20" y="100" width="560" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="40" y="122" fill="#0f172a" font-size="12" font-weight="600">Distributed router · replication</text>
+  <text x="40" y="140" fill="#475569" font-size="11">Distributed table → shard fan-out · two-stage aggregation · ReplicatedMergeTree log replay</text>
+
+  <!-- Client API -->
+  <rect x="20" y="30" width="560" height="60" rx="6" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="40" y="52" fill="#0f172a" font-size="12" font-weight="600">Client API surface</text>
+  <text x="40" y="70" fill="#475569" font-size="11">HTTP · native TCP · gRPC · MySQL/Postgres wire protocols · 90+ file formats</text>
+
+  <!-- Keeper sidebar -->
+  <rect x="610" y="100" width="90" height="270" rx="6" fill="#f8fafc" stroke="#2563eb" stroke-dasharray="4 3"/>
+  <text x="655" y="120" fill="#2563eb" font-size="11" font-weight="600" text-anchor="middle">ClickHouse</text>
+  <text x="655" y="134" fill="#2563eb" font-size="11" font-weight="600" text-anchor="middle">Keeper</text>
+  <text x="655" y="155" fill="#475569" font-size="10" text-anchor="middle">3-node</text>
+  <text x="655" y="170" fill="#475569" font-size="10" text-anchor="middle">Raft quorum</text>
+  <circle cx="635" cy="200" r="4" fill="#2563eb"/>
+  <circle cx="655" cy="200" r="4" fill="#2563eb"/>
+  <circle cx="675" cy="200" r="4" fill="#2563eb"/>
+  <text x="655" y="235" fill="#475569" font-size="10" text-anchor="middle">replication log</text>
+  <text x="655" y="250" fill="#475569" font-size="10" text-anchor="middle">DDL log</text>
+  <text x="655" y="265" fill="#475569" font-size="10" text-anchor="middle">part manifest</text>
+  <text x="655" y="280" fill="#475569" font-size="10" text-anchor="middle">(Cloud only)</text>
+
+  <!-- Dashed coordination arrows from Keeper into routing and storage -->
+  <line x1="610" y1="135" x2="580" y2="135" stroke="#2563eb" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="610" y1="340" x2="580" y2="340" stroke="#2563eb" stroke-width="1" stroke-dasharray="4 3"/>
+</svg>
+        <div class="caption">A running ClickHouse cluster. Solid lines are data flow; dashed lines are Keeper-mediated coordination.</div>
+      </div>
+
+      <p>A few things to know up front:</p>
+      <ul>
+        <li><strong>Sharding and replication are both opt-in.</strong> A single-node ClickHouse install is a useful database. <span class="x" data-term="Distributed table" data-def="Virtual table on the initiator holding no data. Queries fan out to the underlying shard-local tables per the configured sharding key and cluster topology.">Distributed tables</span> add horizontal partitioning across shards; <span class="x" data-term="ReplicatedMergeTree" data-def="MergeTree variant that records every change (INSERT, MERGE, ALTER) in Keeper. Replicas replay the log asynchronously. Default insert acks after 1 replica; `insert_quorum` strengthens.">ReplicatedMergeTree</span> adds redundancy per shard. Most production deployments use both.</li>
+        <li><strong>The <span class="x" data-term="MergeTree" data-def="Core ClickHouse storage engine family. Stores data as immutable sorted parts; background processes merge parts within each partition.">MergeTree</span> family is the only production-grade engine.</strong> ClickHouse has dozens of table engines (Log, Memory, Buffer, Kafka, S3, MySQL, Distributed…), but the analytical-DB story is MergeTree. The other engines are mostly facades over external sources or specialized helpers.</li>
+        <li><strong>There is no memtable.</strong> Writes go directly to disk as immutable parts; a fresh part is created per INSERT (or per coalesced batch in the async-insert path). This is not LSM — there's no <code>RocksDB</code>-style in-memory buffer in front of the merge tree.</li>
+        <li><strong>Coordination runs through Keeper, not through the ClickHouse servers themselves.</strong> Servers do not gossip. Every replication log entry, every DDL operation, every part announcement passes through a small Keeper quorum. The health of Keeper directly bounds the health of the cluster.</li>
+      </ul>
+    </section>
+
+    <section id="storage">
+      <h2>Storage: parts, granules, marks</h2>
+      <p>This is the layer the rest of ClickHouse is built on. The unit is the <strong>part</strong>: an immutable directory on disk produced by exactly one INSERT (or by merging existing parts). Inside a part, each column is stored separately in its own compressed file, sorted by the table's <code>ORDER BY</code> clause. Background processes periodically merge smaller parts into larger ones using a k-way merge sort, up to a default cap of about 150 GB per merged part. Parts in different <strong>partitions</strong> never merge with each other — partitioning is purely a logical separation, typically by date, that bounds the merge cost and enables coarse-grained drop/move operations.</p>
+
+      <p>The on-disk shape of a part comes in two layouts. <strong>Wide format</strong> stores each column in its own pair of files (<code>column.bin</code> + <code>column.mrk</code>); <strong>Compact format</strong> bundles all columns into a single file. The threshold between them is controlled by <code>min_bytes_for_wide_part</code> and <code>min_rows_for_wide_part</code> — small parts get the compact layout to avoid filesystem overhead from thousands of tiny files; large parts get the wide layout so column scans only read the columns they need.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 400" role="img" aria-label="Anatomy of a part and the granule">
+  <!-- Part box (left) -->
+  <rect x="20" y="40" width="300" height="320" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="170" y="62" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Part (immutable directory)</text>
+  <text x="170" y="78" fill="#475569" font-size="10" text-anchor="middle">e.g. /var/lib/clickhouse/data/db/tbl/202605_3_3_0/</text>
+
+  <!-- Column files -->
+  <rect x="36" y="98" width="125" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="98" y="118" fill="#0f172a" font-size="10" text-anchor="middle">user_id.bin</text>
+  <rect x="168" y="98" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="238" y="118" fill="#0f172a" font-size="10" text-anchor="middle">user_id.mrk2</text>
+
+  <rect x="36" y="138" width="125" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="98" y="158" fill="#0f172a" font-size="10" text-anchor="middle">ts.bin</text>
+  <rect x="168" y="138" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="238" y="158" fill="#0f172a" font-size="10" text-anchor="middle">ts.mrk2</text>
+
+  <rect x="36" y="178" width="125" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="98" y="198" fill="#0f172a" font-size="10" text-anchor="middle">event.bin</text>
+  <rect x="168" y="178" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="238" y="198" fill="#0f172a" font-size="10" text-anchor="middle">event.mrk2</text>
+
+  <!-- Index file (highlighted) -->
+  <rect x="36" y="226" width="272" height="34" rx="4" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="172" y="246" fill="#0f172a" font-size="10" text-anchor="middle">primary.idx  (sparse: one entry per granule)</text>
+
+  <!-- Skipping indexes -->
+  <rect x="36" y="266" width="272" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="172" y="286" fill="#0f172a" font-size="10" text-anchor="middle">skp_idx_*.idx  +  skp_idx_*.mrk2  (skipping)</text>
+
+  <!-- Metadata -->
+  <rect x="36" y="306" width="272" height="34" rx="4" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="172" y="326" fill="#475569" font-size="10" text-anchor="middle">columns.txt · checksums.txt · count.txt</text>
+
+  <!-- Zoom-in arrow -->
+  <line x1="320" y1="200" x2="380" y2="200" stroke="#94a3b8" stroke-width="1"/>
+  <polygon points="380 200, 372 196, 372 204" fill="#94a3b8"/>
+  <text x="350" y="190" fill="#475569" font-size="9" text-anchor="middle">zoom</text>
+
+  <!-- Inside one column file -->
+  <rect x="390" y="40" width="310" height="320" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="545" y="62" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Inside user_id.bin</text>
+  <text x="545" y="78" fill="#475569" font-size="10" text-anchor="middle">compressed blocks (64 KB – 1 MB each)</text>
+
+  <!-- Compressed blocks -->
+  <rect x="410" y="100" width="270" height="40" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="545" y="125" fill="#0f172a" font-size="10" text-anchor="middle">[ compressed block 0 ]</text>
+  <rect x="410" y="150" width="270" height="40" rx="4" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="545" y="175" fill="#0f172a" font-size="10" text-anchor="middle">[ compressed block 1 ]</text>
+  <rect x="410" y="200" width="270" height="40" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="545" y="225" fill="#0f172a" font-size="10" text-anchor="middle">[ compressed block 2 ]</text>
+
+  <!-- Mark file annotation -->
+  <text x="410" y="270" fill="#0f172a" font-size="11" font-weight="600">Mark = (block_offset, in_block_offset)</text>
+  <text x="410" y="288" fill="#475569" font-size="10">→ seeks straight to a granule's bytes</text>
+  <text x="410" y="306" fill="#475569" font-size="10">without scanning the column.</text>
+
+  <text x="410" y="335" fill="#0f172a" font-size="11" font-weight="600">Granule = 8192 rows (default)</text>
+  <text x="410" y="350" fill="#475569" font-size="10">~1000 PK entries address 8.1M rows.</text>
+</svg>
+        <div class="caption">A part contains one compressed column file plus one mark file per column, an index file, and a small bag of metadata. Granules are the unit of indexing and pruning, not the unit of compression.</div>
+      </div>
+
+      <p>Two units inside a part deserve careful attention: the <strong>granule</strong> and the <strong>compressed block</strong>. Granules are the unit of indexing; the default is <code>index_granularity = 8192</code> rows. Compressed blocks are the unit of I/O and decompression; their uncompressed sizes range roughly from 64 KB to 1 MB depending on the data. The two are not the same. A <strong><span class="x" data-term="Mark file" data-def="Per-column file mapping each granule to (compressed_block_offset, in_block_offset) so the reader seeks directly to the granule's bytes. Stored as `*.mrk` or `*.mrk2`.">mark file</span></strong> bridges them: per column, per granule, it stores the offset of the granule's bytes both within the compressed-block stream and within the uncompressed block. That mapping is what lets the reader skip straight to the bytes for a needed granule without scanning the column from the start.</p>
+
+      <div class="callout warn">
+        <span class="label">Default worth not changing</span>
+        <p>The 8192-row granule default is a tradeoff. Smaller granules mean finer pruning (a query that touches one row reads 8K rows, not 80K), but more entries in the sparse primary index and more mark entries per column. Larger granules compress better but waste more I/O on small lookups. The defaults are well-tuned for typical analytical workloads; reach for non-defaults only after you've measured a real workload bottleneck.</p>
+      </div>
+
+      <h3>MergeTree variants</h3>
+      <p>The base <code>MergeTree</code> engine is append-only. The variants change what happens during the merge step — letting you express upsert, aggregation, and time-series compaction semantics declaratively, at write time, rather than rewriting them as ad-hoc batch jobs.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Engine</th><th>Merge-time semantics</th><th>Use case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>MergeTree</td><td>k-way sort merge; no row collapsing</td><td>Append-only events, logs, time series</td></tr>
+            <tr><td>ReplacingMergeTree</td><td>Within a PK, keep the latest row (by insertion time or an optional <code>version</code> column)</td><td>Upserts; mutable dimension tables</td></tr>
+            <tr><td>SummingMergeTree</td><td>Sum numeric columns sharing a PK</td><td>Pre-aggregated rollup tables (one row per (dimension, time-bucket))</td></tr>
+            <tr><td>AggregatingMergeTree</td><td>Merge <code>AggregateFunction</code> columns via their <code>-Merge</code> finalizers</td><td>Real-time materialized rollups for any associative aggregate (p50, p95, uniq, …)</td></tr>
+            <tr><td>CollapsingMergeTree</td><td>Pair rows with <code>sign = +1</code> and <code>sign = -1</code>; emit only the net</td><td>State-machine compaction (open/close, in/out)</td></tr>
+            <tr><td>VersionedCollapsingMergeTree</td><td>Same as Collapsing but resolves conflicts via a <code>version</code> column</td><td>Same use case under concurrent writes</td></tr>
+            <tr><td>GraphiteMergeTree</td><td>Time-bucketed rollups configured by retention rules</td><td>Graphite-style metrics with retention tiers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>A typical MergeTree DDL looks like this:</p>
+<pre><code><span class="kw">CREATE TABLE</span> events
+(
+    user_id   <span class="kw">UInt64</span>,
+    ts        <span class="kw">DateTime64</span>(3),
+    event     <span class="kw">LowCardinality</span>(<span class="kw">String</span>),
+    payload   <span class="kw">String</span>
+)
+<span class="kw">ENGINE</span> = <span class="fn">MergeTree</span>()
+<span class="kw">PARTITION BY</span> <span class="fn">toYYYYMM</span>(ts)
+<span class="kw">ORDER BY</span> (user_id, ts)
+<span class="kw">SETTINGS</span> index_granularity = <span class="str">8192</span>;</code></pre>
+
+      <p>Reading this top to bottom: rows are bucketed into monthly partitions; within each part, rows are sorted by <code>(user_id, ts)</code>; and within each part, the sparse primary index has one entry every 8192 rows. The <code>PARTITION BY</code> expression is what makes a <code>DROP PARTITION '202405'</code> a near-instant metadata operation rather than a row scan — it just unlinks the relevant part directories.</p>
+    </section>
+
+    <section id="indexing">
+      <h2>Sparse primary index, skipping, and projections</h2>
+      <p>This is the most-misunderstood ClickHouse mechanic, and the source of most of its scan-time advantage. The "primary index" in ClickHouse is not what a B-tree-using database means by the term. It is <strong>sparse</strong>: only the first row of each granule produces an index entry. A table with 8.1 million rows and the default granularity has roughly a thousand index entries — small enough to keep entirely in RAM, on every server, for every part of every table. That fact is the load-bearing one. The index never needs to be paged in or out, never spills, never grows linearly with row count.</p>
+
+      <p>The lookup uses two algorithms depending on which key column the query filters on. For a predicate on the <em>leading</em> key column, ClickHouse does a binary search over the in-memory index entries — O(log<sub>2</sub> n) comparisons — and returns the range of granules that could contain matching rows. For a predicate on a <em>non-leading</em> column, it falls back to a "generic exclusion search" that walks the index using ternary logic (all-match, none-match, mixed) and only prunes granules where it can prove no row matches. The practical implication: the leftmost columns of <code>ORDER BY</code> are the ones that earn their keep. Common practice is to order from low to high cardinality (e.g. <code>ORDER BY (tenant_id, customer_id, ts)</code>) so each successive column further narrows the candidate granules of its predecessors.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 340" role="img" aria-label="Sparse primary index lookup and skipping indexes">
+  <!-- PK index in RAM -->
+  <rect x="20" y="20" width="680" height="60" rx="6" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="40" y="40" fill="#0f172a" font-size="12" font-weight="600">Sparse primary index (in RAM)</text>
+  <text x="40" y="56" fill="#475569" font-size="10">first PK value per granule · ~1000 entries / 8.1M rows · binary search on leading column</text>
+  <g font-family="monospace" font-size="9.5" fill="#0f172a">
+    <text x="40" y="74">[0]→g0  [1]→g1  [2]→g2  …  [497]→g497  [498]→g498  …  [999]→g999</text>
+  </g>
+
+  <!-- Arrow -->
+  <line x1="360" y1="86" x2="360" y2="110" stroke="#94a3b8" stroke-width="1"/>
+  <polygon points="360 118, 356 110, 364 110" fill="#94a3b8"/>
+
+  <!-- Skipping indexes -->
+  <rect x="20" y="120" width="680" height="80" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="40" y="140" fill="#0f172a" font-size="12" font-weight="600">Skipping indexes (per granule, per indexed column)</text>
+  <rect x="40" y="152" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="110" y="172" fill="#0f172a" font-size="10" text-anchor="middle">minmax</text>
+  <rect x="190" y="152" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="260" y="172" fill="#0f172a" font-size="10" text-anchor="middle">set</text>
+  <rect x="340" y="152" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="410" y="172" fill="#0f172a" font-size="10" text-anchor="middle">bloom_filter</text>
+  <rect x="490" y="152" width="140" height="34" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="560" y="172" fill="#0f172a" font-size="10" text-anchor="middle">text  (full-text)</text>
+
+  <!-- Arrow -->
+  <line x1="360" y1="206" x2="360" y2="230" stroke="#94a3b8" stroke-width="1"/>
+  <polygon points="360 238, 356 230, 364 230" fill="#94a3b8"/>
+
+  <!-- Granule strip -->
+  <text x="20" y="258" fill="#0f172a" font-size="11" font-weight="600">Granules selected for read</text>
+  <g>
+    <!-- 30 granule cells, a handful highlighted -->
+    <g fill="#f1f5f9" stroke="#cbd5e1">
+      <rect x="20" y="270" width="22" height="36"/>
+      <rect x="43" y="270" width="22" height="36"/>
+      <rect x="66" y="270" width="22" height="36"/>
+      <rect x="89" y="270" width="22" height="36"/>
+      <rect x="112" y="270" width="22" height="36"/>
+      <rect x="135" y="270" width="22" height="36"/>
+      <rect x="158" y="270" width="22" height="36"/>
+      <rect x="181" y="270" width="22" height="36"/>
+      <rect x="204" y="270" width="22" height="36"/>
+      <rect x="227" y="270" width="22" height="36"/>
+      <rect x="250" y="270" width="22" height="36"/>
+      <rect x="273" y="270" width="22" height="36"/>
+      <rect x="296" y="270" width="22" height="36"/>
+      <rect x="319" y="270" width="22" height="36"/>
+      <rect x="365" y="270" width="22" height="36"/>
+      <rect x="388" y="270" width="22" height="36"/>
+      <rect x="411" y="270" width="22" height="36"/>
+      <rect x="434" y="270" width="22" height="36"/>
+      <rect x="457" y="270" width="22" height="36"/>
+      <rect x="480" y="270" width="22" height="36"/>
+      <rect x="526" y="270" width="22" height="36"/>
+      <rect x="549" y="270" width="22" height="36"/>
+      <rect x="572" y="270" width="22" height="36"/>
+      <rect x="595" y="270" width="22" height="36"/>
+      <rect x="618" y="270" width="22" height="36"/>
+      <rect x="641" y="270" width="22" height="36"/>
+      <rect x="664" y="270" width="22" height="36"/>
+    </g>
+    <!-- highlighted granules -->
+    <g fill="#2563eb" stroke="#1d4ed8">
+      <rect x="342" y="270" width="22" height="36"/>
+      <rect x="503" y="270" width="22" height="36"/>
+    </g>
+  </g>
+  <text x="360" y="324" fill="#475569" font-size="10" text-anchor="middle">~2 of ~30 granules survive pruning → read set is &lt;10% of part</text>
+</svg>
+        <div class="caption">The PK narrows the candidate range; skipping indexes prune further per granule; the executor reads only the surviving granules' compressed bytes.</div>
+      </div>
+
+      <h3>Skipping indexes</h3>
+      <p>A <span class="x" data-term="Skipping index" data-def="Secondary index (minmax / set / bloom / text) computed per granule. Lets the planner skip granules that can't satisfy a predicate. Applies only to new data unless materialized.">skipping index</span> is a secondary structure stored alongside the part (<code>skp_idx_*.idx</code> + <code>skp_idx_*.mrk2</code>) that summarizes one column per granule. At query time, ClickHouse evaluates the predicate against the index summary; if the summary proves no row in the granule can match, the granule is skipped. The names are old enough that the documentation calls them <em>data skipping indexes</em>; the practical effect is the same as zone maps or block-level bloom filters in other systems.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Kind</th><th>What it stores</th><th>Good for</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>minmax</td><td>Min and max value per granule</td><td>Loosely-sorted numeric or date columns</td></tr>
+            <tr><td>set</td><td>Up to N distinct values per granule (<code>set(N)</code>)</td><td>Low-cardinality categoricals clustered in granules</td></tr>
+            <tr><td>bloom_filter</td><td>Bloom filter per granule (configurable false-positive rate)</td><td>Equality / IN-set predicates on high-cardinality columns</td></tr>
+            <tr><td>text</td><td>Tokenized inverted index per granule (replaces deprecated <code>tokenbf_v1</code> / <code>ngrambf_v1</code>)</td><td>Full-text search and <code>LIKE</code> queries</td></tr>
+            <tr><td>vector_similarity</td><td>HNSW graph per granule on <code>Array(Float32)</code> columns</td><td>Approximate-nearest-neighbor (see below)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Two gotchas to internalize. First, skipping indexes only apply to <em>new</em> data: existing parts are not retroactively indexed unless you run <code>ALTER TABLE … MATERIALIZE INDEX</code>. Second, an index that doesn't actually prune granules is pure overhead — both at write time (computing the summary) and at read time (evaluating the predicate). A bloom filter on a column that the planner could already exclude via the PK is a tax, not a help. Measure.</p>
+
+      <div class="callout">
+        <span class="label">Vocabulary</span>
+        <p><code>ORDER BY</code> chooses the sort within a part — and therefore the compression locality. <code>PRIMARY KEY</code> chooses what gets the in-RAM index. They are usually the same tuple, and if you specify only <code>ORDER BY</code>, ClickHouse derives a primary key from it. The case where they differ: <code>PRIMARY KEY</code> can be a prefix of <code>ORDER BY</code>, when you want to limit RAM use without changing the sort.</p>
+      </div>
+
+      <h3>Projections</h3>
+      <p>A <span class="x" data-term="Projection" data-def="Alternative sort order or pre-aggregation materialized inside each part. Planner picks the projection that minimizes work. Like a covering index, per-part.">projection</span> is an alternative sort order — or a pre-aggregated rollup — maintained <em>inside</em> each part. The planner evaluates which projection (if any) would do the least work for a query and silently substitutes it. The mental model is "covering index, but at part granularity": projections share the part's lifecycle (created with the part, dropped with the part, merged when the part merges), and so they are always consistent with the base data without external rebuild. Trade: every projection costs you on write, since each insert must produce all of the part's projections in addition to the base sort.</p>
+
+      <h3>Column statistics and vector ANN</h3>
+      <p>For the new cost-based planner, ClickHouse maintains optional <strong>column statistics</strong> (HyperLogLog sketches for cardinality, t-digest for percentiles) that feed join-order and selectivity decisions. These are still being rolled out in 24.x–26.x and are not yet always-on.</p>
+
+      <p>Approximate <strong>vector search</strong> is exposed as a skipping-index variant: <code>INDEX … TYPE vector_similarity('hnsw', 'cosineDistance')</code> on an <code>Array(Float32)</code> column builds a per-granule HNSW graph (via the embedded <span class="x" data-term="HNSW" data-def="Hierarchical Navigable Small World. Approximate-nearest-neighbor graph index for vector similarity search. ClickHouse exposes it as a skipping-index variant on `Array(Float32)` columns.">HNSW</span> implementation from USearch). It supports L2, cosine, and dot-product distances, fixed dimensions per index, and a much coarser default granularity (~100M rows) than ordinary skipping indexes. It is a useful colocation feature — vectors next to the rows they describe, queried with normal SQL — but is not designed to compete with purpose-built vector databases on QPS or at the high-billions scale.</p>
+    </section>
+
+    <section id="execution">
+      <h2>Vectorized execution: chunks, SIMD, JIT</h2>
+      <p>If the storage layer is "fewer bytes off disk," the execution layer is "fewer cycles per byte." ClickHouse approaches this with the same trick as MonetDB/X100: operators consume and produce <strong>chunks of columns</strong> (typically thousands of values at a time), not rows. A Volcano-style pull pipeline that returns one row per <code>next()</code> call would spend most of its cycles on dispatch overhead. A chunk-at-a-time pipeline turns those cycles into useful work — every operator is a tight inner loop over an array of values, the CPU prefetcher sees a predictable access pattern, and the same loops can be auto-vectorized or hand-written with SIMD intrinsics.</p>
+
+      <p>The pipeline itself is a graph of <strong>processors</strong>, each a small state machine in one of three states: <em>need-chunk</em> (waiting for input), <em>ready</em> (has work to do), and <em>done</em>. Worker threads traverse the graph, picking up ready processors and advancing them. Adjacent same-lane processors get a scheduling hint so cache lines stay warm. Some operators are <strong>pipeline breakers</strong> — aggregations, sorts, the build side of a hash join — that force the current pipeline to drain before downstream work can start; others (filters, projections, the probe side of a hash join) pass chunks straight through.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 380" role="img" aria-label="Query lifecycle from SELECT to SIMD scan">
+  <!-- SQL box -->
+  <rect x="20" y="20" width="280" height="44" rx="6" fill="#f6f8fa" stroke="#94a3b8"/>
+  <text x="36" y="38" fill="#0f172a" font-size="11" font-weight="600">SQL</text>
+  <text x="36" y="54" font-family="monospace" font-size="10" fill="#475569">SELECT p99(latency_ms) FROM events …</text>
+
+  <!-- Arrow -->
+  <line x1="160" y1="64" x2="160" y2="84" stroke="#94a3b8"/>
+  <polygon points="160 92, 156 84, 164 84" fill="#94a3b8"/>
+
+  <!-- Parser/Analyzer/Planner chain -->
+  <rect x="20" y="96" width="84" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="62" y="120" fill="#0f172a" font-size="10" text-anchor="middle">AST</text>
+
+  <rect x="116" y="96" width="84" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="158" y="115" fill="#0f172a" font-size="10" text-anchor="middle">query tree</text>
+  <text x="158" y="127" fill="#475569" font-size="9" text-anchor="middle">(new analyzer)</text>
+
+  <rect x="212" y="96" width="84" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="254" y="115" fill="#0f172a" font-size="10" text-anchor="middle">logical plan</text>
+  <text x="254" y="127" fill="#475569" font-size="9" text-anchor="middle">+ optimize</text>
+
+  <line x1="104" y1="116" x2="116" y2="116" stroke="#94a3b8"/>
+  <line x1="200" y1="116" x2="212" y2="116" stroke="#94a3b8"/>
+
+  <line x1="160" y1="136" x2="160" y2="156" stroke="#94a3b8"/>
+  <polygon points="160 164, 156 156, 164 156" fill="#94a3b8"/>
+
+  <!-- Processor pipeline -->
+  <rect x="20" y="170" width="660" height="120" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="36" y="190" fill="#0f172a" font-size="11" font-weight="600">Physical pipeline: processor graph</text>
+
+  <rect x="40" y="210" width="100" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="90" y="232" fill="#0f172a" font-size="10" text-anchor="middle">ReadFromMergeTree</text>
+  <text x="90" y="246" fill="#475569" font-size="9" text-anchor="middle">(parallel lanes)</text>
+
+  <rect x="160" y="210" width="100" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="210" y="232" fill="#0f172a" font-size="10" text-anchor="middle">Filter</text>
+  <text x="210" y="246" fill="#475569" font-size="9" text-anchor="middle">(vectorized)</text>
+
+  <rect x="280" y="210" width="100" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="330" y="232" fill="#0f172a" font-size="10" text-anchor="middle">Projection</text>
+  <text x="330" y="246" fill="#475569" font-size="9" text-anchor="middle">(JIT-fused)</text>
+
+  <rect x="400" y="210" width="120" height="50" rx="4" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="460" y="232" fill="#0f172a" font-size="10" text-anchor="middle">Aggregate</text>
+  <text x="460" y="246" fill="#475569" font-size="9" text-anchor="middle">(pipeline breaker)</text>
+
+  <rect x="540" y="210" width="120" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="600" y="232" fill="#0f172a" font-size="10" text-anchor="middle">Sink → client</text>
+
+  <line x1="140" y1="235" x2="160" y2="235" stroke="#94a3b8"/>
+  <line x1="260" y1="235" x2="280" y2="235" stroke="#94a3b8"/>
+  <line x1="380" y1="235" x2="400" y2="235" stroke="#94a3b8"/>
+  <line x1="520" y1="235" x2="540" y2="235" stroke="#94a3b8"/>
+
+  <text x="40" y="275" fill="#475569" font-size="9.5">chunks of columns (≈8K rows × N cols) flow left-to-right; arrows are chunks, not rows.</text>
+
+  <!-- Side annotation -->
+  <rect x="20" y="306" width="660" height="58" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="36" y="324" fill="#0f172a" font-size="11" font-weight="600">Hot path</text>
+  <text x="36" y="340" fill="#475569" font-size="10">→ SIMD kernel chosen at startup by <tspan font-family="monospace">cpuid</tspan>: SSE 4.2 → AVX2 → AVX-512.</text>
+  <text x="36" y="356" fill="#475569" font-size="10">→ LLVM JIT fuses adjacent expressions (<tspan font-family="monospace">a*b + c</tspan>) into a single compiled function, cached.</text>
+</svg>
+        <div class="caption">A query's life. SQL becomes a processor graph; chunks of columns flow through it; SIMD and JIT are applied where they pay off.</div>
+      </div>
+
+      <p>Two more pieces of the execution story are worth knowing. First, ClickHouse maintains <strong>over 30 hash-table variants</strong>, templated by key shape and cardinality, for joins and <code>GROUP BY</code>. The runtime picks the right one — a two-level hash table for high-cardinality grouping, a flat lookup table for tiny key spaces, a string-specialized table with embedded hashes for short string keys. This shows up as a measurable advantage on cardinality-heavy aggregations.</p>
+
+      <p>Second, joins now spill. The <strong><span class="x" data-term="Grace hash join" data-def="Join that spills hash-table partitions to disk when memory exceeds a threshold. Default trigger: `max_bytes_ratio_before_external_join = 0.5`. Trades latency for not OOMing.">grace hash join</span></strong> triggers automatically when the build-side hash table would exceed <code>max_bytes_ratio_before_external_join</code> (default 0.5 — i.e. half of available memory). It partitions the build side to disk in non-blocking shared partitions and continues the probe in streaming fashion. The result is that a join whose right side doesn't fit in RAM no longer OOMs; it merely slows down. Combined with the new analyzer's better cost estimates, joins are the area of ClickHouse that has improved most in the 24.x–26.x window.</p>
+
+      <div class="callout note">
+        <span class="label">New analyzer</span>
+        <p>The query analyzer is in the middle of a long-running rewrite — from a legacy AST-walking pass to a typed "query tree" representation that can run more aggressive optimizations (filter pushdown, common-subexpression elimination, monotonicity-aware index reads). It has been enabled by default since 24.4 and is gradually subsuming the legacy interpreter. Some edge cases still require <code>allow_experimental_analyzer = 0</code> to fall back; the <code>analyzer_compatibility_*</code> settings document what's known not to round-trip.</p>
+      </div>
+    </section>
+
+    <section id="distributed">
+      <h2>Distributed query: shards and two-stage aggregation</h2>
+      <p>ClickHouse scales horizontally by sharding — splitting a table across multiple servers — and within each shard, replicating for redundancy and read parallelism. The <strong>Distributed</strong> table engine is the abstraction the client talks to. It holds no data itself; it is a thin routing layer that knows the cluster topology (from <code>config.xml</code> / <code>remote_servers</code>) and translates a query against the Distributed table into a fan-out of subqueries against the underlying shard-local tables. The shard a row lands on is decided by a sharding expression — typically <code>cityHash64(user_id)</code> or similar — modulo the total shard weight.</p>
+
+      <p>The interesting part is what happens for queries with <code>GROUP BY</code>. A naive fan-out would have each shard return its rows to an initiator, which would do all the work. ClickHouse instead performs <strong><span class="x" data-term="Two-stage aggregation" data-def="Shards emit intermediate aggregate states (e.g. `avgState` = sum+count, not avg); initiator calls the matching `-Merge` finalizer. Lets associative aggregates scale across shards.">two-stage aggregation</span></strong>: each shard computes <em>intermediate</em> aggregate states, ships only those states to the initiator, and the initiator merges them. For <code>avg</code>, the intermediate state is the pair <code>(sum, count)</code>, not the final average; for <code>uniqExact</code>, it's a hash set; for <code>quantilesTDigest</code>, it's a t-digest sketch. The shape is exposed in SQL via the <code>-State</code> / <code>-Merge</code> aggregate function combinators:</p>
+
+<pre><code><span class="com">-- intermediate state shipped from each shard:</span>
+<span class="kw">SELECT</span> <span class="fn">avgState</span>(latency_ms) <span class="kw">FROM</span> events_local <span class="kw">GROUP BY</span> region;
+
+<span class="com">-- initiator finalizes:</span>
+<span class="kw">SELECT</span> <span class="fn">avgMerge</span>(s) <span class="kw">FROM</span> (<span class="com">/* ... fanned out subquery ... */</span>) <span class="kw">GROUP BY</span> region;</code></pre>
+
+      <p>You rarely see this written explicitly; the planner does it for you when the query goes through a Distributed table. But understanding the shape matters when you build incremental materialized views — the target table of an <code>AggregatingMergeTree</code> stores the same intermediate states, and the same <code>-Merge</code> functions are how you read them back.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 420" role="img" aria-label="Cluster anatomy: shards × replicas with Keeper">
+  <!-- Keeper at top -->
+  <rect x="240" y="14" width="240" height="74" rx="6" fill="#f8fafc" stroke="#2563eb" stroke-dasharray="4 3"/>
+  <text x="360" y="34" fill="#2563eb" font-size="11" font-weight="600" text-anchor="middle">ClickHouse Keeper (Raft quorum)</text>
+  <circle cx="320" cy="52" r="4" fill="#2563eb"/>
+  <circle cx="360" cy="52" r="4" fill="#2563eb"/>
+  <circle cx="400" cy="52" r="4" fill="#2563eb"/>
+  <text x="360" y="78" fill="#475569" font-size="9.5" text-anchor="middle">DDL log · replication log · part manifests</text>
+
+  <!-- Client → initiator on left -->
+  <rect x="20" y="180" width="80" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="60" y="204" fill="#0f172a" font-size="11" text-anchor="middle">client</text>
+
+  <line x1="100" y1="200" x2="130" y2="200" stroke="#94a3b8"/>
+  <polygon points="138 200, 130 196, 130 204" fill="#94a3b8"/>
+
+  <!-- Initiator marked separately, sits in shard 1 -->
+
+  <!-- 3 shards × 2 replicas grid (columns = shards, rows = replicas) -->
+  <g>
+    <!-- shard headers -->
+    <text x="220" y="106" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">shard A</text>
+    <text x="395" y="106" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">shard B</text>
+    <text x="570" y="106" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">shard C</text>
+
+    <!-- replica row 1 -->
+    <rect x="150" y="120" width="140" height="60" rx="6" fill="#e0e7ff" stroke="#2563eb"/>
+    <text x="220" y="138" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica A1 (initiator)</text>
+    <text x="220" y="156" fill="#475569" font-size="9.5" text-anchor="middle">routes + finalizes</text>
+    <text x="220" y="170" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+
+    <rect x="325" y="120" width="140" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="395" y="138" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica B1</text>
+    <text x="395" y="156" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+
+    <rect x="500" y="120" width="140" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="570" y="138" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica C1</text>
+    <text x="570" y="156" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+
+    <!-- replica row 2 -->
+    <rect x="150" y="200" width="140" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="220" y="218" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica A2</text>
+    <text x="220" y="236" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+
+    <rect x="325" y="200" width="140" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="395" y="218" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica B2</text>
+    <text x="395" y="236" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+
+    <rect x="500" y="200" width="140" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="570" y="218" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">replica C2</text>
+    <text x="570" y="236" fill="#475569" font-size="9.5" text-anchor="middle">events_local</text>
+  </g>
+
+  <!-- Keeper coordination arrows (dashed) into each replica -->
+  <line x1="320" y1="88" x2="220" y2="120" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="360" y1="88" x2="395" y2="120" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="400" y1="88" x2="570" y2="120" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- Fan-out arrows from initiator -->
+  <line x1="290" y1="150" x2="325" y2="150" stroke="#94a3b8"/>
+  <polygon points="333 150, 325 146, 325 154" fill="#94a3b8"/>
+  <line x1="290" y1="150" x2="500" y2="150" stroke="#94a3b8"/>
+  <polygon points="508 150, 500 146, 500 154" fill="#94a3b8"/>
+
+  <!-- Return arrows: partial states -->
+  <line x1="395" y1="180" x2="290" y2="180" stroke="#2563eb"/>
+  <polygon points="282 180, 290 176, 290 184" fill="#2563eb"/>
+  <line x1="570" y1="180" x2="290" y2="180" stroke="#2563eb"/>
+
+  <text x="360" y="294" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Query lifecycle</text>
+  <text x="40" y="316" fill="#475569" font-size="10">1. Client sends SELECT to the initiator (any replica that owns the Distributed table).</text>
+  <text x="40" y="332" fill="#475569" font-size="10">2. Initiator sends shard-local subqueries (one per shard, one chosen replica per shard) → gray arrows.</text>
+  <text x="40" y="348" fill="#475569" font-size="10">3. Each shard's replica computes partial aggregate states locally and returns them → blue arrows.</text>
+  <text x="40" y="364" fill="#475569" font-size="10">4. Initiator applies the -Merge finalizer per group, returns to client.</text>
+  <text x="40" y="380" fill="#475569" font-size="10">5. INSERTs (not shown): Distributed picks a shard per row; ReplicatedMergeTree handles intra-shard replication via Keeper.</text>
+</svg>
+        <div class="caption">Cluster anatomy. Keeper (dashed) sequences metadata; data flows (solid) move through the initiator, fanned out to one chosen replica per shard.</div>
+      </div>
+
+      <p>A few practical details. The recommended INSERT path through a Distributed table is to set <code>internal_replication = true</code>, which tells the Distributed engine to write to <em>one</em> replica per shard and let ReplicatedMergeTree handle the within-shard fan-out via Keeper. The alternative — <code>false</code>, which has the Distributed engine itself replicate writes to every replica — exists for historical reasons and is rarely the right choice today. Shard topology is static: there is no automatic rebalancing on node add. Re-sharding is a manual operation (insert into a new cluster, swap atomically, drop the old).</p>
+
+      <p><strong>Parallel replicas</strong>, added in the 23.x–24.x window, push this further. The work for a single query is divided at granule granularity across the replicas of <em>one</em> shard, with the initiator acting as a coordinator and other replicas as workers that pull granule ranges off a shared queue. Faster replicas steal slower replicas' work; the cache locality of "this part lives on this replica" is preserved via a consistent-hashed assignment. The feature is best for read-heavy workloads with large per-shard data; it explicitly does not yet help queries that use <code>FINAL</code>, queries that depend on projections, or queries whose coordination overhead exceeds the speedup (small queries, complex joins).</p>
+
+      <div class="callout warn">
+        <span class="label">Tradeoff to know</span>
+        <p>Static topology is a real constraint. Adding a shard does not automatically move data to it — new writes flow there proportionally, but existing data sits where it was. For a workload that needs to scale compute elastically without re-sharding pain, ClickHouse Cloud's SharedMergeTree (next section but one) is the answer; on open-source, plan capacity carefully.</p>
+      </div>
+    </section>
+
+    <section id="replication">
+      <h2>Replication and ClickHouse Keeper</h2>
+      <p>Within a shard, redundancy is provided by <strong>ReplicatedMergeTree</strong>. Every state-changing operation — INSERT, MERGE, ALTER, MUTATION — is recorded as an entry in a replication log stored in <span class="x" data-term="ClickHouse Keeper" data-def="C++ rewrite of ZooKeeper using embedded NuRaft (Raft). Sequences the replication log and DDL. Recommended over ZK; standard deployment is 3 nodes on dedicated hosts.">ClickHouse Keeper</span>. Each replica subscribes to the log, replays entries asynchronously, and either applies them locally (rerunning a merge, executing an ALTER) or fetches the resulting part from a peer (saving redundant CPU on heavy merges). Replicas are not "primary" and "secondary" — any replica can accept writes, and writes propagate via the log.</p>
+
+      <p>Two defaults define the consistency profile. First, <strong>an INSERT returns success after exactly one replica has the data</strong>; replication catches up asynchronously. This is good for ingest throughput and bad if you read your own writes from a different replica milliseconds later. The <code>insert_quorum</code> setting strengthens this: <code>insert_quorum = 2</code> waits until two replicas have the data; <code>insert_quorum = 'auto'</code> waits for a majority. Second, recovery is automatic for small divergences: on startup, a replica validates its local parts against the Keeper part manifest and fetches anything it's missing.</p>
+
+      <p>The coordination service is itself worth understanding. ClickHouse Keeper is a C++ reimplementation of ZooKeeper using the embedded <a href="https://github.com/eBay/NuRaft">NuRaft</a> Raft library. It exposes ZK's wire protocol (so existing ZK clients and tooling work) but is dramatically lighter on memory and faster on coordination-heavy workloads. The official guidance is to deploy 3 Keeper nodes on dedicated hosts in production — small VMs are fine; what matters is that Keeper isn't competing for resources with the ClickHouse server processes it coordinates.</p>
+
+      <h3>OSS replication vs. Cloud replication, at a glance</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Property</th><th>OSS ReplicatedMergeTree</th><th>Cloud SharedMergeTree</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Where parts live</td><td>Local disk of every replica</td><td>Object storage; compute holds only cache</td></tr>
+            <tr><td>How data propagates</td><td>Replica fetches part from peer (or re-merges locally)</td><td>All replicas see the same S3 objects; no peer fetch</td></tr>
+            <tr><td>Practical replica count</td><td>Small (3–10); replication log overhead grows</td><td>Designed for hundreds per table</td></tr>
+            <tr><td>Default quorum</td><td>1 replica acks; tunable via <code>insert_quorum</code></td><td>Automatic quorum (write commits to Keeper)</td></tr>
+            <tr><td>Stateful compute?</td><td>Yes — each replica owns its disk</td><td>No — compute is stateless, scales to zero</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout note">
+        <span class="label">Mental model</span>
+        <p>Keeper is to ClickHouse what etcd is to Kubernetes: a small consensus service that the whole rest of the system depends on for correctness. Most of the time you don't think about it. When Keeper is degraded — slow leader election, disk full, network partition — the symptoms appear everywhere: stalled INSERTs, stuck merges, failing DDL. Treat Keeper sizing and monitoring as first-class operational work, not an afterthought.</p>
+      </div>
+    </section>
+
+    <section id="compression-ingest">
+      <h2>Compression and ingestion</h2>
+
+      <h3>Compression</h3>
+      <p>Each column is independently compressed, by a pipeline of one or more codecs that can be chained together. The default in open-source ClickHouse has historically been <code>LZ4</code> (fast, modest ratio); ClickHouse Cloud's default is <code>ZSTD(1)</code>, which is the right balance for most workloads. Heavier ZSTD levels rarely pay back the compression-time cost. The codec is set per-column in the DDL:</p>
+
+<pre><code><span class="kw">CREATE TABLE</span> metrics
+(
+    host  <span class="kw">LowCardinality</span>(<span class="kw">String</span>)            <span class="kw">CODEC</span>(<span class="fn">ZSTD</span>(<span class="str">1</span>)),
+    ts    <span class="kw">DateTime64</span>(<span class="str">3</span>)                      <span class="kw">CODEC</span>(<span class="fn">Delta</span>, <span class="fn">ZSTD</span>(<span class="str">1</span>)),
+    value <span class="kw">Float64</span>                            <span class="kw">CODEC</span>(<span class="fn">Gorilla</span>, <span class="fn">LZ4</span>)
+) <span class="kw">ENGINE</span> = <span class="fn">MergeTree</span>() <span class="kw">ORDER BY</span> (host, ts);</code></pre>
+
+      <p>Codec families fall into a few groups:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Family</th><th>Examples</th><th>Good for</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Generic</td><td><code>LZ4</code>, <code>ZSTD(N)</code></td><td>Almost everything; sane default per column</td></tr>
+            <tr><td>Sorted-integer / monotonic</td><td><code>Delta</code>, <code>DoubleDelta</code>, <code>GCD</code>, <code>T64</code></td><td>Timestamps, monotonic IDs, sequence numbers</td></tr>
+            <tr><td>Floating-point time series</td><td><code>Gorilla</code>, <code>FPC</code>, <code>ALP</code></td><td>Gauges, metric values, measurements</td></tr>
+            <tr><td>Encryption</td><td><code>AES_128_GCM_SIV</code>, <code>AES_256_GCM_SIV</code></td><td>At-rest column-level encryption</td></tr>
+            <tr><td>Dictionary (wrapper, not a codec)</td><td><code>LowCardinality(String)</code></td><td>Repeating high-cardinality-but-bounded strings (countries, status codes, user agents)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Chained codecs are written outer-to-inner left-to-right: <code>CODEC(Delta, ZSTD(1))</code> means "compute deltas first, then ZSTD the deltas." For a typical metrics column, the delta of consecutive timestamps is near-zero, so ZSTD's dictionary can pack the result extremely tightly. The combinations matter — <code>ZSTD</code> alone on a monotonic timestamp column will typically compress 5–10× worse than <code>Delta + ZSTD</code>.</p>
+
+      <p><code>LowCardinality(T)</code> deserves a special note. It dictionary-encodes the column: a small per-part dictionary maps each distinct value to an integer code, and the column file stores the codes. For columns with millions of rows but only thousands of distinct values, it's a massive storage and CPU win — equality comparisons compare integers, not strings. The break-even cardinality is roughly 10⁶ distinct values; above that, the dictionary itself becomes expensive.</p>
+
+      <h3>Ingestion</h3>
+      <p>The standard write path is a synchronous <code>INSERT</code>: the client sends a batch of rows, ClickHouse writes one new part to disk, the part is announced to Keeper (for replicated tables), and the call returns. <strong>One part per INSERT</strong> is the rule, and it is why "small frequent inserts" is the canonical anti-pattern: every INSERT pays the fixed cost of allocating a new directory, computing per-column compression, writing mark and index files, and registering the part. The standard advice is to batch — at least 1000 rows, ideally 10,000–100,000.</p>
+
+      <p>When the writer is a fleet of small agents that can't batch on their own — telemetry sidecars, IoT devices, agent log shippers — the answer is <strong><span class="x" data-term="Async insert" data-def="Server-side buffer that coalesces small inserts before writing a part (flush at 100 MiB / 200 ms / 450 queries; adaptive since 24.2). Avoids the many-small-parts pathology.">asynchronous inserts</span></strong> (<code>async_insert = 1</code>). ClickHouse buffers incoming rows server-side and writes one part per coalesced batch. Buffers flush on three triggers: byte size (100 MiB by default), age (200 ms by default; 1000 ms on Cloud), or query count (450). Since 24.2 the byte and time thresholds are <em>adaptive</em>: when load is light, ClickHouse waits longer to coalesce more rows; under bursty load, it flushes sooner. <code>wait_for_async_insert = 1</code> (default) blocks the client until the part is durably written; <code>= 0</code> is fire-and-forget and trades durability for latency.</p>
+
+      <p>Both INSERT paths support automatic deduplication. ClickHouse hashes the contents of recent parts (~100 by default) and silently skips an incoming INSERT whose payload matches one of them. The window means a client can safely retry an INSERT after a timeout without producing a duplicate part — useful for at-least-once delivery from queueing systems like Kafka.</p>
+
+      <h3>Materialized views</h3>
+      <p>Two flavors, and they look very different at runtime.</p>
+      <p>An <strong><span class="x" data-term="Materialized view (incremental)" data-def="Insert-time trigger that pushes new rows through the view's SELECT into a target table. Updates computed at write, not read. Contrast with refreshable MVs.">incremental materialized view</span></strong> is an insert-time trigger. When a row is written to the source table, the view's SELECT runs against just the new rows (not the whole table) and the result is inserted into a target table. The combination of an <code>AggregatingMergeTree</code> target with <code>-State</code> aggregate functions produces the same shape as a distributed query's intermediate state — and reading the rollup later uses the matching <code>-Merge</code> finalizers. The result is a real-time aggregate that's never wrong, never out of date, and never needs a nightly batch job.</p>
+      <p>A <strong>refreshable materialized view</strong>, added more recently, runs on a schedule (<code>REFRESH EVERY 1 MINUTE</code>) and replaces its target table's contents atomically. This is the right shape for joins that can't be incrementalized, for full-table rebuilds, and for periodic snapshots. It is closer to a Spark/Airflow job than to a trigger.</p>
+    </section>
+
+    <section id="mutations-recent">
+      <h2>Mutations and what changed since 2023</h2>
+      <p>ClickHouse's mutation story used to be simple and harsh: <code>ALTER TABLE … DELETE WHERE …</code> and <code>ALTER TABLE … UPDATE … WHERE …</code> are <em>mutations</em> that <strong>rewrite affected parts entirely</strong>. They are correct but slow — for a delete that touches 0.001% of a 50 TB table, you still rewrite every part containing a deleted row. For analytical workloads where deletes are rare (GDPR erasures, regulatory holds, very occasional corrections), this is fine. For workloads with more frequent mutation, it isn't.</p>
+
+      <h3>Lightweight delete</h3>
+      <p><code>DELETE FROM … WHERE …</code> (without <code>ALTER</code>) is the modern lightweight path. Instead of rewriting parts, ClickHouse maintains a hidden <code>_row_exists</code> bitmap column per part; a delete just flips bits. Reads transparently filter out flipped rows. Physical removal happens lazily, during the next background merge that touches the affected part. The trade: SELECTs against tables with many lightweight deletes pay a small per-granule cost to evaluate the bitmap, and skipping indexes are not yet supported on patched columns.</p>
+
+      <h3>Lightweight update (beta)</h3>
+      <p>A 2024+ feature, still flagged as experimental on most engines. Rather than rewrite the affected parts, ClickHouse writes a <strong>patch part</strong> that contains only the changed column values for the changed rows. At read time, the patch part is overlaid on the base part — the reader applies patches transparently. Background merges eventually fold the patch back into a full rewritten part. The advantage over mutations is that the update cost is proportional to the rows updated, not the part size. Limitations are non-trivial: skipping indexes on patched columns don't help, the feature requires per-table enabling (<code>enable_block_number_column</code> + <code>enable_block_offset_column</code>), and frequent updates can pile up patch parts that slow down reads until they're merged.</p>
+
+      <h3>JSON and Dynamic types</h3>
+      <p>The native <code>JSON</code> type (different from the older <code>Object('json')</code>) stores semi-structured documents by splitting each detected path into its own <strong>subcolumn</strong>. Querying <code>events.json.user_id</code> reads only the <code>user_id</code> subcolumn, not the whole JSON blob. ClickHouse handles up to 1024 paths per block by default; paths beyond that fall back to a shared binary representation. The <code>Dynamic</code> type generalizes this further — a column that can hold any type, with the top <code>max_types = 32</code> distinct types getting subcolumn treatment. Combined, they let you build observability or event-store schemas without committing to a fixed structure.</p>
+
+      <h3>S3-backed MergeTree (open-source)</h3>
+      <p>Even outside Cloud, MergeTree parts can live on object storage. The <code>S3</code> disk type plus storage policies let you tier hot parts on local NVMe and cold parts on S3, with parts moving automatically based on age (<code>TTL TO DISK 's3'</code>) or size. Reads do asynchronous prefetch and an optional local filesystem cache. It is slower than local NVMe but cheap, and a single-tier "all S3" deployment is the on-prem analog of the Cloud product.</p>
+
+      <h3>Query cache</h3>
+      <p>The query cache (introduced in 23.x) caches materialized result sets keyed by the query's normalized AST. A subsequent identical query within the TTL window (default 60 s) skips execution entirely. <strong>It is not invalidated on writes</strong> — a stale result will be served for up to <code>query_cache_ttl</code> seconds after the underlying table changes. This is fine for dashboarding queries where 60 s of staleness is acceptable; it is a footgun for operational queries that need to see fresh data. Non-deterministic functions (<code>now()</code>, <code>rand()</code>) cause the cache to be skipped automatically. User-scoped row policies are not shared across users.</p>
+
+      <div class="callout warn">
+        <span class="label">Footgun</span>
+        <p>Treat the query cache as a read-mostly optimization for slow-changing data. If your tables receive ingest at sub-minute cadence and downstream readers expect fresh data, leave <code>use_query_cache = 0</code>. Do not enable it globally and assume the TTL is "short enough."</p>
+      </div>
+    </section>
+
+    <section id="cloud">
+      <h2>ClickHouse Cloud: separated compute and storage</h2>
+      <p>The hosted ClickHouse Cloud product, announced in 2022 and generally available since 2023, replaces the open-source replication story with a different architecture. It is the same SQL surface, the same MergeTree engine family at a SQL level, but underneath, the storage and replication layers are completely different. For system-design purposes it pattern-matches to Snowflake: <strong>storage in object storage, metadata in a small consensus service, stateless compute that scales independently</strong>.</p>
+
+      <p>The cloud-native engine is <strong>SharedMergeTree</strong>, which replaces ReplicatedMergeTree for tables in Cloud. The key shifts:</p>
+
+      <ul>
+        <li><strong>Parts live exclusively in object storage</strong> (S3 / GCS / Azure Blob). There is no per-replica copy of part data. A replica reading a part fetches it from S3, optionally caching the bytes locally.</li>
+        <li><strong>Metadata lives only in Keeper.</strong> The Keeper-stored part manifest is the source of truth for which parts exist, what's in them, and what's been deleted. Compute nodes hold no persistent state beyond an in-memory cache view.</li>
+        <li><strong>Compute is stateless.</strong> A compute node has CPU and RAM and a local filesystem cache, but no local disks holding table data. It can be added, removed, restarted, or migrated to a different host with zero data movement.</li>
+        <li><strong>Insert acknowledgement is metadata-grounded.</strong> An INSERT commits when (a) the new part has been written to object storage <em>and</em> (b) the part record has been replicated to a Keeper quorum. Local disk fsync is not on the durability path.</li>
+        <li><strong>Quorum inserts are automatic.</strong> There is no <code>insert_quorum</code> knob — the Keeper-quorum write is the quorum.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 400" role="img" aria-label="ClickHouse Cloud: separated compute and storage">
+  <!-- Two compute services -->
+  <rect x="20" y="20" width="280" height="120" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="160" y="40" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Service A (stateless compute)</text>
+  <text x="160" y="56" fill="#475569" font-size="9.5" text-anchor="middle">3 compute nodes · auto-scale 0–N</text>
+  <rect x="40" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="80" y="98" fill="#0f172a" font-size="10" text-anchor="middle">node 1</text>
+  <rect x="130" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="170" y="98" fill="#0f172a" font-size="10" text-anchor="middle">node 2</text>
+  <rect x="220" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="260" y="98" fill="#0f172a" font-size="10" text-anchor="middle">node 3</text>
+
+  <rect x="320" y="20" width="280" height="120" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="460" y="40" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Service B (stateless compute)</text>
+  <text x="460" y="56" fill="#475569" font-size="9.5" text-anchor="middle">isolated CPU/RAM · shared storage</text>
+  <rect x="340" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="380" y="98" fill="#0f172a" font-size="10" text-anchor="middle">node 1</text>
+  <rect x="430" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="470" y="98" fill="#0f172a" font-size="10" text-anchor="middle">node 2</text>
+  <rect x="520" y="70" width="80" height="50" rx="4" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="560" y="98" fill="#475569" font-size="10" text-anchor="middle">…</text>
+
+  <!-- Keeper sidebar -->
+  <rect x="620" y="20" width="80" height="120" rx="6" fill="#f8fafc" stroke="#2563eb" stroke-dasharray="4 3"/>
+  <text x="660" y="40" fill="#2563eb" font-size="11" font-weight="600" text-anchor="middle">Keeper</text>
+  <circle cx="640" cy="64" r="4" fill="#2563eb"/>
+  <circle cx="660" cy="64" r="4" fill="#2563eb"/>
+  <circle cx="680" cy="64" r="4" fill="#2563eb"/>
+  <text x="660" y="88" fill="#475569" font-size="9" text-anchor="middle">metadata</text>
+  <text x="660" y="100" fill="#475569" font-size="9" text-anchor="middle">part manifest</text>
+  <text x="660" y="112" fill="#475569" font-size="9" text-anchor="middle">DDL log</text>
+  <text x="660" y="124" fill="#475569" font-size="9" text-anchor="middle">quorum acks</text>
+
+  <!-- Arrows from compute → cache -->
+  <line x1="160" y1="140" x2="200" y2="180" stroke="#94a3b8"/>
+  <line x1="460" y1="140" x2="400" y2="180" stroke="#94a3b8"/>
+
+  <!-- Distributed cache -->
+  <rect x="120" y="180" width="480" height="60" rx="8" fill="#e0e7ff" stroke="#2563eb"/>
+  <text x="360" y="202" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Distributed cache service (consistent-hashed, network-accessible)</text>
+  <text x="360" y="220" fill="#475569" font-size="9.5" text-anchor="middle">survives node restart · shared across compute nodes in a zone</text>
+
+  <!-- Arrow from cache → S3 -->
+  <line x1="360" y1="240" x2="360" y2="270" stroke="#94a3b8"/>
+  <polygon points="360 278, 356 270, 364 270" fill="#94a3b8"/>
+
+  <!-- Object storage -->
+  <rect x="120" y="280" width="480" height="60" rx="8" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="360" y="304" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Object storage (S3 / GCS / Azure Blob)</text>
+  <text x="360" y="322" fill="#475569" font-size="9.5" text-anchor="middle">all parts · all replicas see the same bytes · 11 nines durability</text>
+
+  <!-- Keeper coordination dashed arrows -->
+  <line x1="620" y1="200" x2="600" y2="200" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+  <line x1="620" y1="310" x2="600" y2="310" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <!-- Bottom annotation -->
+  <rect x="20" y="356" width="680" height="36" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="32" y="376" fill="#475569" font-size="10">Insert ack = part written to S3 ✓ + metadata committed to Keeper ✓ · no local disk fsync · scale to zero in seconds.</text>
+</svg>
+        <div class="caption">ClickHouse Cloud. Compute is stateless; durability lives in S3 + Keeper. The distributed cache sits between, so cache state survives compute restarts.</div>
+      </div>
+
+      <p>Three knock-on architectural consequences are worth knowing.</p>
+
+      <p>First, <strong>read latency from S3 would be a problem</strong> — a 50 ms RTT to object storage is fine for a batch query but unacceptable for a sub-second OLAP query. ClickHouse Cloud addresses this with a <strong>distributed cache service</strong>: a network-accessible, consistent-hashed cache that sits between compute and S3. Cached blocks survive compute restarts (because they live in the cache service, not the compute pod), and the consistent hash means that adding or removing compute nodes doesn't invalidate the cache.</p>
+
+      <p>Second, <strong>compute groups can share storage</strong>. A "warehouse" in Cloud terminology is a group of compute services that share the same object-storage folder. You can have a read-write service for ingestion sized for write throughput, plus a read-only service sized for analytical queries, plus a dev/staging service — all over the same underlying data, with independent CPU/RAM budgets. The one operational subtlety is that multiple read-write services in the same warehouse can contend on background merges; that's the documented constraint, and the standard pattern is one read-write service plus N read-only services.</p>
+
+      <p>Third, <strong>elasticity is real</strong>. Because compute is stateless, scaling a service down to zero between queries is a single-digit-second operation; scaling up does not require warm-up or data sync; adding more compute does not require re-sharding. This is what makes the Cloud product the closest analog in the OLAP world to serverless data warehouses.</p>
+
+      <div class="callout note">
+        <span class="label">Contrast with OSS</span>
+        <p>In open-source ClickHouse, a replica that wants to serve queries first needs the parts — physically — on its local disk. Add a replica, ship it the parts. In Cloud, a compute node just needs network access to S3 and Keeper; the parts are already there. This is what lets Cloud scale to hundreds of replicas per table where ReplicatedMergeTree would saturate the replication log.</p>
+      </div>
+    </section>
+
+    <section id="alternatives">
+      <h2>vs Snowflake, BigQuery, Druid / Pinot, DuckDB</h2>
+      <p>These systems get compared often and miscompared often. They're not all the same shape — a hosted warehouse, an embedded analytical library, and a real-time slice-and-dice engine solve different problems, even if all of them are "columnar OLAP." A side-by-side helps:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th></th><th>ClickHouse</th><th>Snowflake</th><th>BigQuery</th><th>Druid / Pinot</th><th>DuckDB</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Deployment</td><td>OSS self-host or managed Cloud</td><td>Closed-source SaaS only</td><td>Closed-source SaaS only</td><td>OSS self-host (managed via Imply / StarTree)</td><td>Embedded library (in-process)</td></tr>
+            <tr><td>Storage architecture</td><td>OSS: shared-nothing local parts + replication. Cloud: parts on S3 + Keeper.</td><td>Compute/storage separated; FDN micro-partitions on cloud blob</td><td>Compute/storage separated; Capacitor columnar on Colossus</td><td>Segments on deep storage + local cache; historical / middle-manager tiers</td><td>Single process; reads native files, Parquet, CSV</td></tr>
+            <tr><td>Query engine</td><td>Vectorized + SIMD + LLVM JIT, processor graph, 30+ hash tables, grace-hash spill</td><td>Vectorized; micro-partition pruning; mature optimizer</td><td>Vectorized Dremel; tree of mixers / leaves</td><td>Druid: real-time + historical tiers. Pinot: column store + star-tree index</td><td>Vectorized push-based pipeline</td></tr>
+            <tr><td>Ingest</td><td>Bulk + async; one part per INSERT; 20K+ rows/batch recommended</td><td>Bulk via stage tables; Snowpipe for streaming</td><td>Streaming inserts + batch loads</td><td>Stream-native, Kafka-tight</td><td>Append via SQL; not designed for streaming</td></tr>
+            <tr><td>Real-time ingest</td><td>Strong (async inserts, MVs, Kafka engine)</td><td>Snowpipe; not the sweet spot</td><td>Streaming inserts (Storage Write API)</td><td>Built for it — sub-second freshness</td><td>Not designed for it</td></tr>
+            <tr><td>Update semantics</td><td>Append-mostly; lightweight DELETE (bitmap), lightweight UPDATE (patch parts, beta); Replacing / Aggregating for upserts</td><td>Full ANSI UPDATE / DELETE / MERGE</td><td>Full DML; rate-limited on some tables</td><td>Append-only; reingest to update</td><td>Full DML</td></tr>
+            <tr><td>Concurrency model</td><td>Many concurrent queries; resource profiles + queues</td><td>Warehouse abstraction; auto-suspend; serverless reader</td><td>Slot-based; serverless</td><td>Tiered: historical + broker fan-out</td><td>Single-process</td></tr>
+            <tr><td>Pricing</td><td>OSS free; Cloud = compute-second + storage-GB</td><td>Warehouse-second credits + storage</td><td>On-demand bytes scanned, or flat slots + storage</td><td>Self-host TCO; managed varies</td><td>Free OSS</td></tr>
+            <tr><td>Sweet spot</td><td>Wide-table analytics, real-time observability, time-series, agent telemetry</td><td>Heterogeneous warehousing, SQL-first BI</td><td>Ad-hoc analytics over GCP data lakes; serverless scale</td><td>Slice-and-dice OLAP cubes with sub-second p99</td><td>Local analytics, notebooks, prototyping</td></tr>
+            <tr><td>Where it falters</td><td>Complex joins (improving), workload isolation, transactional updates</td><td>Cost at scale; cold starts; vendor lock-in</td><td>Per-query cost predictability; egress cost</td><td>Limited SQL (Pinot improving); operational complexity</td><td>Not distributed; not a server</td></tr>
+            <tr><td>Open source?</td><td>Apache 2.0</td><td>No</td><td>No</td><td>Apache 2.0</td><td>MIT</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>vs Snowflake</h4>
+      <p>The Cloud product's storage/compute separation lines up closely with Snowflake's. The differences are in the surrounding choices: Snowflake is closed-source SaaS with full ANSI DML and a more polished concurrency story (warehouses, auto-suspend, serverless reader); ClickHouse trades that for raw scan throughput, real-time ingest as a first-class feature, and the optionality of running the open-source build wherever you want. For BI workloads where queries are heterogeneous and the data is heavily relational, Snowflake's optimizer remains more forgiving; for high-volume repetitive aggregations against append-mostly tables, ClickHouse is typically faster and cheaper.</p>
+
+      <h4>vs BigQuery</h4>
+      <p>BigQuery is serverless-by-design with Google-scale storage underneath (Colossus). You don't manage clusters or warehouses; you pay per query. ClickHouse gives you per-cluster control and predictable cost — important when the workload is high-volume rather than ad-hoc. If you have a handful of expensive queries that run thousands of times a day, ClickHouse's amortized cost is dramatically lower; if you have an analyst team that occasionally explores a 100-TB data lake, BigQuery's "no infrastructure" model is hard to beat.</p>
+
+      <h4>vs Druid / Pinot</h4>
+      <p>These are the closest kin to ClickHouse — built for the same shape of workload (high-cardinality time-series, real-time ingest, low-latency slice-and-dice). Druid and Pinot include richer per-segment indexing (star-tree, inverted indexes) and were designed around tightly-coupled streaming ingest from Kafka. ClickHouse arrives at similar latencies with a more general SQL surface, simpler operations (no separate broker / historical / coordinator tiers), and a less opinionated stance on the streaming pipeline. The tradeoff is in the indexes — Druid's slice-and-dice cube semantics outperform ClickHouse on certain shapes of low-latency dashboard queries.</p>
+
+      <h4>vs DuckDB</h4>
+      <p>Not really competitors; both are columnar, both are vectorized, both borrow ideas from each other and from MonetDB. DuckDB is an embedded library — it runs in your Python process, your notebook kernel, your dbt job — and excels at single-machine analytics over local files (Parquet, CSV, Arrow). ClickHouse is a server. A common pattern is to use DuckDB for ad-hoc exploration and prototyping and ClickHouse for the production data plane that serves the same queries to many users.</p>
+
+      <p><em>Honorable mentions:</em> StarRocks (MPP fork heritage), Apache Doris (similar lineage), Tinybird (managed ClickHouse with a developer-experience layer), MotherDuck (managed DuckDB).</p>
+    </section>
+
+    <section id="ai">
+      <h2>Where ClickHouse fits in AI infrastructure</h2>
+      <p>This section is the one most relevant to system-design interviews at AI-first companies. The short version: most of the data an AI system generates as a byproduct of being an AI system — agent traces, prompt/response logs, eval scores, model-serving metrics — is shaped exactly like the workload ClickHouse was designed for. None of the rest of the doc has been AI-specific; this section connects the pieces.</p>
+
+      <h3>1. Why an analytical DB matters for AI workloads</h3>
+      <p>The data produced by AI systems is almost entirely <strong>append-only events with mixed-cardinality dimensions</strong>: every LLM call generates a row with a model name (low cardinality), a tenant ID (medium), a request ID (high), a timestamp (sortable), and a payload of latency / tokens / cost / outcome metrics. Queries against this data are overwhelmingly aggregations and time-bucketed rollups — "p95 latency by model by hour," "token spend by tenant this month," "error rate by tool in the last 5 minutes." This is the shape that columnar OLAP engines win on by an order of magnitude over row-oriented databases, and ClickHouse in particular wins because the workload is also high-cardinality and high-ingest.</p>
+
+      <h3>2. Agent and LLM observability</h3>
+      <p>The single biggest production use case in the 2024–2026 window. Companies storing every span of an agent's execution — LLM call, tool call, retry, error, latency, cost — need a backend that ingests fast, compresses tightly, and answers high-cardinality slice queries in milliseconds. Primary-source case studies on the ClickHouse engineering blog: <a href="https://clickhouse.com/blog/langfuse-llm-analytics">Langfuse</a> (open-source LLM observability, now part of ClickHouse) and <a href="https://clickhouse.com/blog/helicones-migration-from-postgres-to-clickhouse-for-advanced-llm-monitoring">Helicone</a> (LLM proxy and analytics) both describe migrating from Postgres to ClickHouse to handle real-time observability over fast-growing trace volumes. The architecture they share is essentially: agent SDK → Kafka or async-insert → ClickHouse → dashboards over materialized views.</p>
+
+      <h3>3. Real-time eval rollups via incremental materialized views</h3>
+      <p>Eval pipelines produce per-completion judgments (faithfulness, exact-match, toxicity, tool-use correctness). Stored raw in a MergeTree table — one row per (eval_id, completion_id, judge, score, timestamp) — they get heavy. The leverage is to define an <strong>incremental materialized view</strong> whose target is a <code>SummingMergeTree</code> or <code>AggregatingMergeTree</code> table keyed on <code>(eval_id, model, hour)</code>. Each new completion's row triggers the view, which pushes summary stats — mean score, p50 / p95 via t-digest <code>-State</code>, count by tag — into the rollup. The result is a real-time eval dashboard that never goes stale and never needs a periodic recompute. Reading the rollup uses the <code>-Merge</code> finalizers from the <a href="#distributed">distributed-query section</a>.</p>
+
+      <h3>4. Feature store and event log</h3>
+      <p>For ML training, the offline feature store is mostly a wide table of <code>(entity_id, timestamp, feature_value)</code> tuples. <code>PARTITION BY toYYYYMM(timestamp) ORDER BY (entity_id, timestamp)</code> plus skipping indexes on <code>entity_id</code> makes point-in-time training-set construction efficient — given a list of (entity, prediction_time) pairs, find the most recent feature value per entity at or before the prediction time. ClickHouse is not a replacement for Feast or Tecton (which handle online serving, feature versioning, and dual-write consistency), but it's a frequently-used ground-truth event log <em>underneath</em> those systems.</p>
+
+      <h3>5. Embeddings and vector search</h3>
+      <p>ClickHouse's <code>vector_similarity</code> index (HNSW via the embedded USearch library) is a pragmatic choice when you want to <strong>colocate embeddings with the metadata they describe</strong> and do hybrid SQL+vector queries — "give me the 10 nearest embeddings to this query vector, filtered to documents owned by tenant X, created in the last 7 days." It is not designed to outscale dedicated vector databases (Pinecone, Qdrant, Weaviate) on pure-vector QPS, and the default granularity for the index is intentionally coarse (~100M rows). The right question to ask in an interview is "where would you put the vector index" — colocated with the metadata in the same table is often the answer for hybrid workloads; dedicated vector store for pure similarity at scale.</p>
+
+      <h3>6. Cost characteristics on repetitive log data</h3>
+      <p>The single most underrated property for AI workloads. Agent telemetry is repetitive — model names, tool names, tenant IDs, status codes are all small dictionaries. With <code>LowCardinality(String)</code> on those columns and <code>ZSTD(1)</code> on free-text fields (prompts, responses, error messages), 5–20× compression ratios are routine. Combined with object-storage-backed MergeTree (open-source S3 disk, or ClickHouse Cloud's SharedMergeTree), the marginal cost of storing months of complete agent traces becomes small enough that <strong>"store everything by default"</strong> stops being an extravagance and becomes the default. That changes how teams think about observability budgets, debugging, and retraining data.</p>
+
+      <p>The framing from the introduction holds: an analytical database is a compression engine plus a scan engine. AI workloads — high volume, repetitive structure, append-mostly, queried analytically — happen to fit the shape of both engines extremely well.</p>
+    </section>
+
+    <section id="source">
+      <h2>Reading the source</h2>
+      <p>To verify any claim in this doc against the real implementation, here's where to look in <a href="https://github.com/ClickHouse/ClickHouse">ClickHouse/ClickHouse</a>:</p>
+      <ul>
+        <li><code>src/Storages/MergeTree/MergeTreeData.{h,cpp}</code> — the main parts manager: lifecycle, attach, detach, mutation queue.</li>
+        <li><code>src/Storages/MergeTree/IMergeTreeDataPart.h</code> — the abstract part interface. Concrete subclasses for wide vs compact format.</li>
+        <li><code>src/Storages/MergeTree/Compaction/MergeSelectors/SimpleMergeSelector.h</code> — the default size-based merge selector. TTL and "all" variants are siblings.</li>
+        <li><code>src/Storages/MergeTree/KeyCondition.{h,cpp}</code> — primary-key condition analysis and granule pruning. Worth reading carefully; this is where the index magic happens.</li>
+        <li><code>src/Storages/MergeTree/MergeTreeIndices.h</code> — the registry and factory for skipping-index kinds. One file per kind: <code>MergeTreeIndexMinMax.h</code>, <code>MergeTreeIndexBloomFilter.h</code>, etc.</li>
+        <li><code>src/Storages/MergeTree/MergeTreeIndexVectorSimilarity.h</code> — the vector ANN index. Thin wrapper over USearch.</li>
+        <li><code>src/Processors/IProcessor.h</code> — the base class for the chunk-at-a-time processor graph. Every operator inherits from this.</li>
+        <li><code>src/QueryPipeline/QueryPipeline.h</code> + <code>QueryPipelineBuilder.h</code> — how a logical plan turns into a runnable processor graph.</li>
+        <li><code>src/Storages/StorageDistributed.h</code> + <code>src/QueryPipeline/RemoteQueryExecutor.h</code> — distributed query: routing, fan-out, intermediate-state collection.</li>
+        <li><code>src/Storages/StorageReplicatedMergeTree.h</code> — the replication state machine. Reads the Keeper log, applies entries, fetches parts.</li>
+        <li><code>src/Coordination/KeeperServer.h</code> + <code>KeeperStateMachine.h</code> — the Keeper service itself. Uses NuRaft from <code>contrib/NuRaft/</code>.</li>
+        <li><code>src/Compression/ICompressionCodec.h</code> + per-codec <code>CompressionCodec*.cpp</code> — codec implementations. Short and focused, one file per codec.</li>
+        <li><code>src/Interpreters/AsynchronousInsertQueue.{h,cpp}</code> — server-side coalescing of async inserts.</li>
+        <li><code>src/Analyzer/</code> + <code>src/Planner/</code> — the new query analyzer (query-tree) and planner. <code>src/Planner/README.md</code> is the design doc.</li>
+        <li><code>CHANGELOG.md</code> at the repo root — the most reliable source of "what shipped when" for the post-2023 features described above.</li>
+      </ul>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong>ClickHouse — Lightning Fast Analytics for Everyone.</strong> Schulze, Schreiber, Yatsishin, Dahimene, and Milovidov. VLDB 2024. <a href="https://www.vldb.org/pvldb/vol17/p3731-schulze.pdf">PDF</a>. The authoritative description of the architecture, written by the engineers who built it. The honest place to read about merge thresholds, hash-table counts, ClickBench numbers.</li>
+        <li><strong><a href="https://clickhouse.com/docs">clickhouse.com/docs</a></strong> — the official documentation. Engine semantics, SQL reference, settings catalog. Where to verify defaults.</li>
+        <li><strong><a href="https://clickhouse.com/blog">clickhouse.com/blog</a></strong> — the ClickHouse engineering blog. Filter for posts by ClickHouse engineers (SharedMergeTree, distributed cache, warehouses, parallel replicas posts are the canonical references for those features).</li>
+        <li><strong><a href="https://github.com/ClickHouse/ClickHouse/blob/master/CHANGELOG.md">CHANGELOG.md</a></strong> in the repo — the only consistently up-to-date source for "what changed in release N." Skim the last 12 months when you suspect a feature has moved.</li>
+        <li><strong><a href="https://github.com/ClickHouse/ClickHouse/blob/master/docs/development/architecture.md">docs/development/architecture.md</a></strong> — the in-tree architecture overview. Short, opinionated, and useful as a sanity check.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026, based on ClickHouse main branch through late 2025 and the VLDB 2024 paper. Verify against the primary sources above if you're about to write production code or make a hiring decision based on a claim in this doc.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('ch-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('ch-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('ch-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Hover on desktop / focus
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    // Tap on mobile/touch
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  // Dismiss tap-popover on outside click
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  // Hide on scroll/resize to avoid drift
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline (modern LLMs parse SVG fine),
+      // followed by the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      // Headings
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Paragraphs
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Lists
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      // Code blocks
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      // Tables
+      if (tag === 'table') return tableToMd(node);
+
+      // Callouts → blockquote
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      // Inline formatting
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      // Default: walk children
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    // Normalize whitespace
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

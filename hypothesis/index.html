@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hypothesis: Property-Based Testing in Python</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #16a34a;
+      --accent-2: #15803d;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #f0fdf4;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(22,163,74,0.3);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #7c3aed; }
+    .str { color: #15803d; }
+    .fn { color: #2563eb; }
+    .out { color: var(--muted); }
+    .bad { color: #b91c1c; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(22,163,74,0.06), rgba(22,163,74,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(22,163,74,0.6);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#why">Why property-based testing</a>
+      <a href="#model">Mental model in 60 seconds</a>
+      <a href="#first">Your first property test</a>
+      <a href="#strategies">Strategies: describing inputs</a>
+      <a href="#shrinking">Shrinking to a minimal case</a>
+      <a href="#properties">What properties to test</a>
+      <a href="#end-to-end">A bug, end to end</a>
+      <a href="#beyond">Beyond @given</a>
+      <a href="#stateful">Stateful testing</a>
+      <a href="#pytest">Pytest &amp; CI</a>
+      <a href="#pitfalls">Pitfalls &amp; best practices</a>
+      <a href="#source">Source &amp; ecosystem</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">🧪</span>Hypothesis</h1>
+    <p class="doc-subtitle">A working Python developer's guide to property-based testing — stop hand-picking examples, describe what should always be true, and let Hypothesis hunt for the counterexample.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong><span class="x" data-term="Hypothesis" data-def="The de-facto property-based testing library for Python. You write properties; it generates inputs, finds counterexamples, and shrinks them to a minimal failing case. Works inside pytest, unittest, and nose.">Hypothesis</span> is <span class="x" data-term="Property-based testing" data-def="A testing style where you assert general properties that must hold for all valid inputs, then let the framework generate many inputs trying to falsify them. Contrast example-based tests, which only check the cases you hand-wrote.">property-based testing</span> for Python.</strong> Instead of asserting <code>f(2, 3) == 5</code>, you assert a rule that should hold for <em>every</em> input, and the library tries to break it.</li>
+        <li><strong>You describe inputs with <span class="x" data-term="Strategy" data-def="A recipe that tells Hypothesis how to generate (and how to shrink) a kind of input. st.integers(), st.text(), and st.lists(...) are strategies; you compose them to describe your function's inputs.">strategies</span> and decorate a test with <span class="x" data-term="@given" data-def="The decorator that turns an ordinary test function into a property test. You hand it strategies; Hypothesis calls your function many times with generated values.">@given</span>.</strong> It runs your test on ~100 generated examples by default, probing edge cases a human would skip — empty lists, NaN, huge ints, weird Unicode.</li>
+        <li><strong>When a property fails, <span class="x" data-term="Shrinking" data-def="When a test fails, Hypothesis automatically searches for a smaller, simpler input that still fails — so you debug a minimal counterexample instead of a random mess.">shrinking</span> reduces the failing input to its simplest form</strong> and saves it to a local <span class="x" data-term="Example database" data-def="A local cache (the .hypothesis/ directory) of previously-failing inputs. Hypothesis replays them first on the next run, so a fixed bug stays fixed and failures reproduce deterministically.">database</span> so the failure reproduces on every future run. You debug <code>[100]</code>, not <code>[5, 87, 142, 3, 91, 60]</code>.</li>
+      </ul>
+    </div>
+
+    <section id="why">
+      <h2>Why property-based testing</h2>
+      <p>An example-based test encodes one row of a truth table. You picked the input, you computed the expected output by hand, and you wrote them down. That is a fine way to pin behavior you already understand — but it only ever checks the cases <em>you thought of</em>, and the bugs that reach production are, almost by definition, in the cases you didn't.</p>
+      <p>Property-based testing inverts the relationship. You don't supply inputs; you describe the <em>shape</em> of all valid inputs and state a property that must hold across them. Hypothesis then generates a stream of examples — deliberately biased toward the awkward ones — and tries to find a single input that violates the property. If it can't after a hundred tries, the test passes. If it can, it hands you the smallest example that breaks.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 264" role="img" aria-label="Example-based testing samples a few points; property-based testing probes the whole input space">
+  <!-- left panel -->
+  <text x="180" y="22" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="600">Example-based</text>
+  <text x="180" y="39" text-anchor="middle" fill="#475569" font-size="10.5">the cases you thought of</text>
+  <rect x="30" y="48" width="300" height="172" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="252" y="158" width="72" height="56" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-dasharray="4 3"/>
+  <text x="288" y="183" text-anchor="middle" fill="#b91c1c" font-size="9">edge</text>
+  <text x="288" y="196" text-anchor="middle" fill="#b91c1c" font-size="9">cases</text>
+  <circle cx="92" cy="96" r="5" fill="#2563eb"/>
+  <circle cx="156" cy="142" r="5" fill="#2563eb"/>
+  <circle cx="120" cy="186" r="5" fill="#2563eb"/>
+  <circle cx="206" cy="108" r="5" fill="#2563eb"/>
+  <text x="180" y="244" text-anchor="middle" fill="#475569" font-size="9.5">bug sits in a corner nobody sampled → it ships</text>
+
+  <!-- right panel -->
+  <text x="540" y="22" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="600">Property-based</text>
+  <text x="540" y="39" text-anchor="middle" fill="#475569" font-size="10.5">generators probe the whole space</text>
+  <rect x="390" y="48" width="300" height="172" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="612" y="158" width="72" height="56" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-dasharray="4 3"/>
+  <circle cx="430" cy="78" r="4.5" fill="#16a34a"/>
+  <circle cx="486" cy="110" r="4.5" fill="#16a34a"/>
+  <circle cx="540" cy="74" r="4.5" fill="#16a34a"/>
+  <circle cx="598" cy="100" r="4.5" fill="#16a34a"/>
+  <circle cx="655" cy="84" r="4.5" fill="#16a34a"/>
+  <circle cx="452" cy="150" r="4.5" fill="#16a34a"/>
+  <circle cx="512" cy="170" r="4.5" fill="#16a34a"/>
+  <circle cx="560" cy="138" r="4.5" fill="#16a34a"/>
+  <circle cx="424" cy="196" r="4.5" fill="#16a34a"/>
+  <circle cx="500" cy="200" r="4.5" fill="#16a34a"/>
+  <circle cx="588" cy="186" r="4.5" fill="#16a34a"/>
+  <circle cx="600" cy="60" r="4.5" fill="#16a34a"/>
+  <circle cx="470" cy="66" r="4.5" fill="#16a34a"/>
+  <circle cx="648" cy="186" r="7" fill="#dc2626"/>
+  <text x="648" y="189.5" text-anchor="middle" fill="#ffffff" font-size="8.5" font-weight="700">✗</text>
+  <text x="540" y="244" text-anchor="middle" fill="#15803d" font-size="9.5">a generated example lands on the bug → it's caught</text>
+</svg>
+        <div class="caption">Same function, same input space. Example tests check a handful of points; a generator covers the edges where bugs hide.</div>
+      </div>
+
+      <p>This is more than fuzzing. <span class="x" data-term="Fuzzing" data-def="Feeding random or malformed input to a program to find crashes. Property-based testing is fuzzing plus a specification: it checks that results are correct, not merely that nothing crashed.">Fuzzing</span> throws noise at your code and watches for crashes. Property-based testing throws noise at your code and checks that the <em>result is still correct</em> — that a round-trip survived, an invariant held, the answer matched a reference. The hard part isn't generating data; it's articulating what "correct" means for all inputs at once. The rest of this page is about getting good at that.</p>
+      <div class="callout note">
+        <span class="label">Lineage</span>
+        <p>The idea comes from <span class="x" data-term="QuickCheck" data-def="The original property-based testing library, from Haskell (2000). Hypothesis brings the idea to Python but with a different, generator-driven shrinking model that needs no hand-written shrinkers.">QuickCheck</span> in Haskell (2000). Hypothesis adapts it to Python with one decisive difference: you never write shrinkers by hand. Because shrinking is built into every strategy, anything you can generate, Hypothesis can also minimize.</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Mental model in 60 seconds</h2>
+      <p>A Hypothesis test is a loop wrapped around your assertions. One strategy feeds it inputs; your function body is the property; the framework runs it many times and, on the first failure, switches from "generate" mode to "minimize" mode.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 220" role="img" aria-label="The Hypothesis test loop: draw, run, repeat on pass, shrink and report on fail">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/>
+    </marker>
+    <marker id="arG" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#16a34a"/>
+    </marker>
+    <marker id="arR" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect x="14" y="44" width="158" height="60" rx="6" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="93" y="66" text-anchor="middle" fill="#7c3aed" font-size="10" font-weight="700">STRATEGY</text>
+  <text x="93" y="86" text-anchor="middle" fill="#0f172a" font-size="10.5" font-family="monospace">st.lists(st.integers())</text>
+
+  <rect x="196" y="44" width="150" height="60" rx="6" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="271" y="66" text-anchor="middle" fill="#15803d" font-size="10" font-weight="700">DRAW AN EXAMPLE</text>
+  <text x="271" y="86" text-anchor="middle" fill="#0f172a" font-size="11" font-family="monospace">xs = [3, -1, 0]</text>
+
+  <rect x="370" y="44" width="150" height="60" rx="6" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="445" y="66" text-anchor="middle" fill="#2563eb" font-size="10" font-weight="700">RUN PROPERTY</text>
+  <text x="445" y="86" text-anchor="middle" fill="#0f172a" font-size="10.5">your assert statements</text>
+
+  <rect x="544" y="44" width="160" height="60" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="624" y="68" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="600">pass or fail?</text>
+  <text x="624" y="87" text-anchor="middle" fill="#475569" font-size="9.5">keep going · or shrink</text>
+
+  <line x1="172" y1="74" x2="194" y2="74" stroke="#94a3b8" marker-end="url(#ar)"/>
+  <line x1="346" y1="74" x2="368" y2="74" stroke="#94a3b8" marker-end="url(#ar)"/>
+  <line x1="520" y1="74" x2="542" y2="74" stroke="#94a3b8" marker-end="url(#ar)"/>
+
+  <polyline points="624,44 624,20 271,20 271,42" fill="none" stroke="#16a34a" stroke-dasharray="4 3" marker-end="url(#arG)"/>
+  <text x="447" y="15" text-anchor="middle" fill="#15803d" font-size="9.5">pass ✓ — repeat up to max_examples (100)</text>
+
+  <line x1="624" y1="104" x2="624" y2="150" stroke="#dc2626" marker-end="url(#arR)"/>
+  <text x="636" y="130" fill="#dc2626" font-size="9.5">fail ✗</text>
+
+  <rect x="544" y="150" width="160" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="624" y="171" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700">SHRINK</text>
+  <text x="624" y="189" text-anchor="middle" fill="#0f172a" font-size="10">reduce to a minimal case</text>
+
+  <rect x="298" y="150" width="222" height="54" rx="6" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="409" y="171" text-anchor="middle" fill="#b91c1c" font-size="10" font-weight="700">REPORT + SAVE</text>
+  <text x="409" y="189" text-anchor="middle" fill="#0f172a" font-size="9.5">falsifying example → .hypothesis/</text>
+  <line x1="542" y1="177" x2="522" y2="177" stroke="#94a3b8" marker-end="url(#ar)"/>
+</svg>
+        <div class="caption">Generate → run → repeat on success; on the first failure, shrink to the minimal counterexample, then report and cache it.</div>
+      </div>
+
+      <p>Four facts that fall out of this model and explain most of Hypothesis's behavior:</p>
+      <ul>
+        <li><strong>It runs your test many times.</strong> The default is <span class="x" data-term="max_examples" data-def="The setting controlling how many generated inputs Hypothesis tries per test before declaring success. Defaults to 100; raise it for more thorough (and slower) runs.">100 examples</span>. A passing property-based test is a much stronger statement than a passing example test — but also slower, so the count is tunable.</li>
+        <li><strong>Generation is biased, not uniform.</strong> Strategies deliberately over-sample boundary values: <code>0</code>, <code>-1</code>, empty collections, <code>NaN</code>, max-width integers, surrogate characters. The boring middle of the space is where bugs aren't.</li>
+        <li><strong>Failures are minimized, then remembered.</strong> The <span class="x" data-term="Falsifying example" data-def="The input Hypothesis prints when a property fails: the minimal case it found that makes your assertions false. It is what you paste into a debugger.">falsifying example</span> is cached on disk and replayed first next time, so a failure is reproducible even though generation is random.</li>
+        <li><strong>It expects determinism.</strong> Given the same input your property must reach the same verdict. Non-determinism (clocks, network, global RNG) confuses both shrinking and replay — Hypothesis will flag it as <span class="x" data-term="Flaky" data-def="A test that passes and fails non-deterministically. Hypothesis detects when a previously-failing example stops failing on replay and reports it as flaky rather than silently hiding it.">flaky</span>.</li>
+      </ul>
+    </section>
+
+    <section id="first">
+      <h2>Your first property test</h2>
+      <p>Install it with <code>pip install hypothesis</code> (or <code>uv add --dev hypothesis</code>). A property test is an ordinary <code>test_</code> function with a <code>@given</code> decorator; pytest discovers and runs it like any other. The classic starter property is the <span class="x" data-term="Round-trip" data-def="Encode then decode (or serialize then parse) should return the original value: decode(encode(x)) == x. One of the highest-value, lowest-effort properties you can assert.">round-trip</span>: serialize a value, parse it back, and assert you got the same thing.</p>
+
+<pre><code><span class="kw">import</span> json
+<span class="kw">from</span> hypothesis <span class="kw">import</span> given, strategies <span class="kw">as</span> st
+
+<span class="fn">@given</span>(st.<span class="fn">dictionaries</span>(st.<span class="fn">text</span>(), st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_json_round_trips</span>(value):
+    <span class="kw">assert</span> json.<span class="fn">loads</span>(json.<span class="fn">dumps</span>(value)) == value</code></pre>
+
+      <p>Run it with <code>pytest</code>. Hypothesis generates ~100 dictionaries — empty ones, ones with <code>""</code> keys, ones with control characters, ones with huge integers — and checks that each survives the trip through JSON. There is no expected-output column to maintain; the property <em>is</em> the spec.</p>
+      <p>Now watch it find a bug. Here's a helper that returns the last character of a string — with an omission its author didn't notice:</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">last_char</span>(s):
+    <span class="kw">return</span> s[-<span class="kw">1</span>]                 <span class="com"># forgets that s might be empty</span>
+
+<span class="fn">@given</span>(st.<span class="fn">text</span>())
+<span class="kw">def</span> <span class="fn">test_last_char_is_in_string</span>(s):
+    <span class="kw">assert</span> <span class="fn">last_char</span>(s) <span class="kw">in</span> s</code></pre>
+
+      <p>pytest fails almost instantly, and the report is the whole point:</p>
+
+<pre><code><span class="out">    def last_char(s):
+></span>       <span class="bad">return s[-1]                 # forgets that s might be empty</span>
+<span class="bad">E       IndexError: string index out of range</span>
+
+<span class="out">----------------------------- Hypothesis ------------------------------</span>
+<span class="bad">Falsifying example: test_last_char_is_in_string(
+    s='',
+)</span></code></pre>
+
+      <p>Hypothesis didn't reach for a clever input — it reached for the simplest one. The empty string is among the first things it tries, and it's exactly the case the author forgot. Someone writing examples by hand tends to start from <code>"hello"</code> and never circle back to <code>""</code>. The falsifying example names the bug in one line: <code>s=''</code>.</p>
+    </section>
+
+    <section id="strategies">
+      <h2>Strategies: describing inputs</h2>
+      <p>A strategy is a value generator that also knows how to shrink. The <code>hypothesis.strategies</code> module (conventionally imported as <code>st</code>) ships strategies for essentially every built-in type, and combinators to build the rest. You rarely write generation logic yourself; you compose.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Strategy</th><th>Generates</th><th>Common arguments</th></tr></thead>
+          <tbody>
+            <tr><td><code>st.integers()</code></td><td>Python ints (unbounded)</td><td><code>min_value</code>, <code>max_value</code></td></tr>
+            <tr><td><code>st.floats()</code></td><td>floats incl. <code>nan</code>/<code>inf</code></td><td><code>allow_nan</code>, <code>allow_infinity</code>, <code>min_value</code></td></tr>
+            <tr><td><code>st.text()</code></td><td>Unicode strings</td><td><code>alphabet</code>, <code>min_size</code>, <code>max_size</code></td></tr>
+            <tr><td><code>st.booleans()</code></td><td><code>True</code> / <code>False</code></td><td>—</td></tr>
+            <tr><td><code>st.lists(elem)</code></td><td>lists of <code>elem</code></td><td><code>min_size</code>, <code>max_size</code>, <code>unique</code></td></tr>
+            <tr><td><code>st.dictionaries(k, v)</code></td><td>dicts</td><td><code>min_size</code>, <code>max_size</code></td></tr>
+            <tr><td><code>st.tuples(a, b, …)</code></td><td>fixed-shape tuples</td><td>positional strategies</td></tr>
+            <tr><td><code>st.sampled_from(seq)</code></td><td>one value from <code>seq</code></td><td>great for enums</td></tr>
+            <tr><td><code>st.just(x)</code> / <code>st.none()</code></td><td>a constant / <code>None</code></td><td>—</td></tr>
+            <tr><td><code>st.datetimes()</code></td><td><code>datetime</code> objects</td><td><code>timezones</code>, <code>min_value</code></td></tr>
+            <tr><td><code>st.from_regex(p)</code></td><td>strings matching <code>p</code></td><td><code>fullmatch=True</code></td></tr>
+            <tr><td><code>st.builds(C, …)</code></td><td>instances of class <code>C</code></td><td>strategies per field</td></tr>
+            <tr><td><code>st.from_type(T)</code></td><td>values for a type hint</td><td>infers from <code>T</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Strategies are composable values. Pass them to other strategies, take a union with <code>st.one_of(...)</code> (or the <code>|</code> operator), and transform them with two methods you'll use constantly:</p>
+
+<pre><code><span class="com"># .map(f): generate, then transform</span>
+even_ints = st.<span class="fn">integers</span>().<span class="fn">map</span>(<span class="kw">lambda</span> n: n * <span class="kw">2</span>)
+sorted_lists = st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()).<span class="fn">map</span>(<span class="fn">sorted</span>)
+
+<span class="com"># .filter(pred): keep only values that pass — use sparingly (see Pitfalls)</span>
+nonzero = st.<span class="fn">integers</span>().<span class="fn">filter</span>(<span class="kw">lambda</span> n: n != <span class="kw">0</span>)
+
+<span class="com"># a union of shapes — e.g. a JSON-ish scalar</span>
+scalars = st.<span class="fn">none</span>() | st.<span class="fn">booleans</span>() | st.<span class="fn">integers</span>() | st.<span class="fn">text</span>()</code></pre>
+
+      <p>When later values depend on earlier ones — a list and a valid index into it, a start date and an end date after it — reach for <span class="x" data-term="@composite" data-def="A decorator for writing custom strategies whose draws depend on each other. Inside, you call draw(...) to pull values from other strategies and assemble a more complex one.">@composite</span>. It gives you a <code>draw</code> function so you can write generation as ordinary procedural code:</p>
+
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> strategies <span class="kw">as</span> st
+
+<span class="fn">@st.composite</span>
+<span class="kw">def</span> <span class="fn">list_and_index</span>(draw):
+    xs = <span class="fn">draw</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>(), min_size=<span class="kw">1</span>))
+    i = <span class="fn">draw</span>(st.<span class="fn">integers</span>(min_value=<span class="kw">0</span>, max_value=<span class="fn">len</span>(xs) - <span class="kw">1</span>))
+    <span class="kw">return</span> xs, i
+
+<span class="fn">@given</span>(<span class="fn">list_and_index</span>())
+<span class="kw">def</span> <span class="fn">test_index_is_valid</span>(pair):
+    xs, i = pair
+    <span class="kw">assert</span> xs[i] <span class="kw">in</span> xs</code></pre>
+
+      <p>Because the index is drawn <em>from</em> the list's length, it is always valid — there is no wasted generation and nothing to filter. Constraints encoded in the strategy are also preserved during shrinking, which is the deeper reason to prefer constructive generation over filtering.</p>
+    </section>
+
+    <section id="shrinking">
+      <h2>Shrinking to a minimal case</h2>
+      <p>Shrinking is Hypothesis's signature feature and the reason its failures are actually useful. The first input that breaks a property is usually large and random — a 40-element list, a string full of control codes. Before reporting, Hypothesis repeatedly simplifies that input, re-running your test on each candidate, keeping any that still fail, until it can't get smaller. What you see is the essence of the bug with all the noise removed.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 640 244" role="img" aria-label="A sprawling failing list is shrunk step by step to a single-element minimal counterexample">
+  <defs>
+    <marker id="ard" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="92" y="22" width="456" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="320" y="46" text-anchor="middle" font-family="monospace" font-size="13" fill="#0f172a">[5, 87, 142, 3, 91, 60]  ✗</text>
+
+  <rect x="170" y="78" width="300" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="320" y="102" text-anchor="middle" font-family="monospace" font-size="13" fill="#0f172a">[142, 3, 91]  ✗</text>
+
+  <rect x="232" y="134" width="176" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="320" y="158" text-anchor="middle" font-family="monospace" font-size="13" fill="#0f172a">[142]  ✗</text>
+
+  <rect x="240" y="190" width="160" height="42" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="320" y="216" text-anchor="middle" font-family="monospace" font-size="13" fill="#15803d" font-weight="700">[100]  ✗ minimal</text>
+
+  <line x1="320" y1="60" x2="320" y2="78" stroke="#94a3b8" marker-end="url(#ard)"/>
+  <line x1="320" y1="116" x2="320" y2="134" stroke="#94a3b8" marker-end="url(#ard)"/>
+  <line x1="320" y1="172" x2="320" y2="190" stroke="#94a3b8" marker-end="url(#ard)"/>
+
+  <text x="560" y="120" fill="#475569" font-size="10">drop elements,</text>
+  <text x="560" y="135" fill="#475569" font-size="10">then shrink</text>
+  <text x="560" y="150" fill="#475569" font-size="10">values toward 0</text>
+</svg>
+        <div class="caption">For the (deliberately false) property "every element is &lt; 100", Hypothesis discards elements, then reduces the survivor, landing on <code>[100]</code> — the simplest list that still violates it.</div>
+      </div>
+
+      <p>Two properties make this reliable. First, shrinking is <em>built into the strategy</em>, so you never write a shrinker: a list shrinks by dropping elements and shrinking each survivor, an integer shrinks toward zero, a string shrinks toward shorter and toward simpler characters. Second, and more subtly, Hypothesis uses <span class="x" data-term="Integrated shrinking" data-def="Hypothesis shrinks the raw sequence of choices a strategy made, not the final value by type. This means anything you can generate can be shrunk, and constraints baked into the strategy (like 'this index is in range') are preserved while shrinking.">integrated shrinking</span> — it minimizes the underlying choices the generator made, not the output value. That is why a value built with <code>.map(lambda n: n * 2)</code> still shrinks to an even number, and why the index from the <code>@composite</code> example above stays in range no matter how far it's reduced. The constraints you generated under are the constraints it shrinks under.</p>
+      <div class="callout note">
+        <span class="label">Why it matters</span>
+        <p>A failing test you can't reduce is a debugging session. A failing test reduced to <code>[100]</code> or <code>s='  '</code> is usually a glance. Shrinking is what turns "the fuzzer found something" into "here is the bug."</p>
+      </div>
+    </section>
+
+    <section id="properties">
+      <h2>What properties should I test?</h2>
+      <p>The skill in property-based testing is finding properties — assertions that are true for all inputs without restating the implementation. A handful of patterns cover most real cases. When you're stuck, run down this list and ask which ones fit.</p>
+
+      <h3>Round-trip / inverse</h3>
+      <p>If two functions are inverses, applying both should return the original. Encode/decode, serialize/parse, compress/decompress, save/load. The cheapest high-value property there is.</p>
+<pre><code><span class="kw">import</span> gzip
+<span class="fn">@given</span>(st.<span class="fn">binary</span>())
+<span class="kw">def</span> <span class="fn">test_gzip_round_trip</span>(data):
+    <span class="kw">assert</span> gzip.<span class="fn">decompress</span>(gzip.<span class="fn">compress</span>(data)) == data</code></pre>
+
+      <h3>Comparison against a <span class="x" data-term="Test oracle" data-def="A trusted reference you compare against — a slow-but-obvious implementation, an inverse function, or a known-good library. The property reduces to: the code under test agrees with the oracle.">test oracle</span></h3>
+      <p>If you have a simple, obviously-correct (often slow) implementation, assert your optimized one agrees with it on every input. Great for refactors, caches, and performance rewrites.</p>
+<pre><code><span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_fast_sort_matches_builtin</span>(xs):
+    <span class="kw">assert</span> <span class="fn">my_fast_sort</span>(xs) == <span class="fn">sorted</span>(xs)</code></pre>
+
+      <h3><span class="x" data-term="Invariant" data-def="Something that must stay true before and after an operation — length preserved, elements conserved, a balance never going negative — regardless of the specific input.">Invariants</span></h3>
+      <p>Some facts must survive an operation even if you can't predict the exact output. Sorting must preserve the multiset of elements; a transfer must conserve total money.</p>
+<pre><code><span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_sort_preserves_elements</span>(xs):
+    <span class="kw">assert</span> <span class="fn">Counter</span>(<span class="fn">sorted</span>(xs)) == <span class="fn">Counter</span>(xs)</code></pre>
+
+      <h3><span class="x" data-term="Idempotent" data-def="Applying the operation twice gives the same result as applying it once: f(f(x)) == f(x). True of sorting, normalizing, deduplicating, and most 'clean up' functions.">Idempotence</span></h3>
+      <p>Many "normalize" or "clean up" operations should be stable under reapplication: doing them twice equals doing them once.</p>
+<pre><code><span class="fn">@given</span>(st.<span class="fn">text</span>())
+<span class="kw">def</span> <span class="fn">test_normalize_is_idempotent</span>(s):
+    once = <span class="fn">normalize</span>(s)
+    <span class="kw">assert</span> <span class="fn">normalize</span>(once) == once</code></pre>
+
+      <h3>Algebraic laws</h3>
+      <p>Commutativity, associativity, identity elements. If order shouldn't matter, say so.</p>
+<pre><code><span class="fn">@given</span>(st.<span class="fn">sets</span>(st.<span class="fn">integers</span>()), st.<span class="fn">sets</span>(st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_union_is_commutative</span>(a, b):
+    <span class="kw">assert</span> a | b == b | a</code></pre>
+
+      <h3>"It never crashes"</h3>
+      <p>The weakest property, but a real one — and a great starting point for messy, exception-prone code like parsers. Any unhandled exception fails the test.</p>
+<pre><code><span class="fn">@given</span>(st.<span class="fn">text</span>())
+<span class="kw">def</span> <span class="fn">test_parser_does_not_crash</span>(s):
+    <span class="fn">parse</span>(s)   <span class="com"># raising anything unexpected = failure</span></code></pre>
+    </section>
+
+    <section id="end-to-end">
+      <h2>A bug, end to end</h2>
+      <p>Tie it together. Here's a plausible-looking function to merge two already-sorted lists, with a real bug, and the test oracle property that catches it.</p>
+<pre><code><span class="kw">def</span> <span class="fn">merge</span>(a, b):
+    <span class="str">"""Merge two sorted lists into one sorted list."""</span>
+    out, i, j = [], <span class="kw">0</span>, <span class="kw">0</span>
+    <span class="kw">while</span> i &lt; <span class="fn">len</span>(a) <span class="kw">and</span> j &lt; <span class="fn">len</span>(b):
+        <span class="kw">if</span> a[i] &lt;= b[j]:
+            out.<span class="fn">append</span>(a[i]); i += <span class="kw">1</span>
+        <span class="kw">else</span>:
+            out.<span class="fn">append</span>(b[j]); j += <span class="kw">1</span>
+    <span class="kw">return</span> out + a[i:]           <span class="com"># bug: forgets b's leftover tail</span>
+
+<span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()), st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_merge_matches_sorted</span>(a, b):
+    <span class="kw">assert</span> <span class="fn">merge</span>(<span class="fn">sorted</span>(a), <span class="fn">sorted</span>(b)) == <span class="fn">sorted</span>(a + b)</code></pre>
+
+      <p>The body looks fine on a quick read, and hand-picked examples like <code>merge([1, 3], [2, 4])</code> pass — when the lists interleave, the loop consumes both. But the loop stops the moment <em>either</em> list runs out, and the function only appends what's left of <code>a</code>. Anything still in <code>b</code> is silently dropped. Hypothesis finds the smallest input that exposes it:</p>
+
+<pre><code><span class="out">Falsifying example: test_merge_matches_sorted(
+    a=[],
+    b=[0],
+)</span>
+<span class="bad">E   assert [] == [0]</span></code></pre>
+
+      <p>The minimal trigger is two single-element lists that share a value. With <code>a=[0], b=[0]</code>, neither branch is wrong individually, but the loop exits after one append and the bug surfaces only when both lists hold the same number. That is exactly the kind of boundary a human skips and a generator hits on its second or third try. Once you've fixed it, lock the case in permanently so it's checked first on every future run:</p>
+
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> example, given, strategies <span class="kw">as</span> st
+
+<span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()), st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()))
+<span class="fn">@example</span>(a=[], b=[<span class="kw">0</span>])      <span class="com"># regression: leftover tail of b</span>
+<span class="kw">def</span> <span class="fn">test_merge_matches_sorted</span>(a, b):
+    <span class="kw">assert</span> <span class="fn">merge</span>(<span class="fn">sorted</span>(a), <span class="fn">sorted</span>(b)) == <span class="fn">sorted</span>(a + b)</code></pre>
+    </section>
+
+    <section id="beyond">
+      <h2>Beyond @given</h2>
+      <p>The decorator gets you most of the value, but a handful of other tools handle the cases real test suites run into.</p>
+
+      <h3><code>@example</code> — pin explicit cases</h3>
+      <p>Mix specific, must-always-run inputs into a property test: known edge cases, past regressions, the example from the docstring. They run before generation and don't shrink.</p>
+
+      <h3><code>@settings</code> — tune the run</h3>
+      <p>Control example count, time budget, and more. Two you'll touch most are <code>max_examples</code> and <span class="x" data-term="deadline" data-def="A per-example time budget (200 ms by default). If a single example runs longer, Hypothesis flags it. Set deadline=None for I/O-bound or variable-time tests.">deadline</span>.</p>
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> given, settings, strategies <span class="kw">as</span> st
+
+<span class="fn">@settings</span>(max_examples=<span class="kw">1000</span>, deadline=<span class="kw">None</span>)
+<span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>()))
+<span class="kw">def</span> <span class="fn">test_thoroughly</span>(xs):
+    ...</code></pre>
+      <p>For different environments, register named profiles once and select one with an env var (<code>HYPOTHESIS_PROFILE=ci pytest</code>):</p>
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> settings
+
+settings.<span class="fn">register_profile</span>(<span class="str">"ci"</span>, max_examples=<span class="kw">1000</span>, deadline=<span class="kw">None</span>)
+settings.<span class="fn">register_profile</span>(<span class="str">"dev"</span>, max_examples=<span class="kw">20</span>)</code></pre>
+
+      <h3><code>assume()</code> — discard bad inputs</h3>
+      <p>When a generated example violates a precondition, <span class="x" data-term="assume" data-def="Discards the current generated example when a precondition isn't met, asking Hypothesis to try another — instead of failing the test. Prefer constructive strategies when most examples would be discarded.">assume()</span> throws it out and asks for another, rather than failing. Reach for it only when you can't express the constraint in the strategy itself.</p>
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> assume, given, strategies <span class="kw">as</span> st
+
+<span class="fn">@given</span>(st.<span class="fn">integers</span>(), st.<span class="fn">integers</span>())
+<span class="kw">def</span> <span class="fn">test_divmod_identity</span>(a, b):
+    <span class="fn">assume</span>(b != <span class="kw">0</span>)
+    q, r = <span class="fn">divmod</span>(a, b)
+    <span class="kw">assert</span> q * b + r == a</code></pre>
+
+      <h3>Replay &amp; the example database</h3>
+      <p>Every failure is stored under <code>.hypothesis/examples</code> and tried first next time, so fixed bugs stay fixed and failures reproduce without a seed. For sharing a one-off repro, Hypothesis prints a <code>@seed(...)</code> or <code>@reproduce_failure(...)</code> decorator you can paste in temporarily — but a permanent <code>@example</code> is the better home for a case worth keeping.</p>
+
+      <h3><code>target()</code> — steer the search</h3>
+      <p>For optimization-flavored properties, report a score and Hypothesis will hunt for inputs that maximize it. <span class="x" data-term="target" data-def="Targeted property-based testing: report a numeric score with target(value), and Hypothesis steers generation toward inputs that maximize it (for example, worst-case latency or memory).">Targeted</span> search shines on things like worst-case latency or queue depth.</p>
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> given, target, strategies <span class="kw">as</span> st
+
+<span class="fn">@given</span>(st.<span class="fn">lists</span>(st.<span class="fn">integers</span>(), min_size=<span class="kw">1</span>))
+<span class="kw">def</span> <span class="fn">test_latency_under_budget</span>(jobs):
+    latency = <span class="fn">simulate</span>(jobs)
+    <span class="fn">target</span>(latency)              <span class="com"># push toward worst cases</span>
+    <span class="kw">assert</span> latency &lt; BUDGET_MS</code></pre>
+
+      <h3>Ghostwriter — generate the test</h3>
+      <p>Not sure where to start? The <span class="x" data-term="Ghostwriter" data-def="A tool (the `hypothesis write ...` CLI) that inspects a function or module and emits a starter property test — for instance, round-trip tests for an encode/decode pair, or oracle tests comparing two functions.">ghostwriter</span> inspects a function and prints a runnable starter test. <code>hypothesis write gzip.compress</code> emits a round-trip skeleton; pipe it to a file and refine.</p>
+    </section>
+
+    <section id="stateful">
+      <h2>Stateful testing</h2>
+      <p>Single-input properties don't fit objects with internal state — a cache, a connection pool, a parser with a buffer. The bug usually isn't one bad call; it's an unlucky <em>sequence</em> of calls. <span class="x" data-term="Stateful testing" data-def="Instead of single inputs, Hypothesis generates whole sequences of method calls against an object and checks invariants after each step, then shrinks the failing sequence to the shortest reproducer.">Stateful testing</span> lets Hypothesis generate those sequences for you.</p>
+      <p>You subclass <code>RuleBasedStateMachine</code>, mark methods as <code>@rule</code>s (the operations Hypothesis may call, with strategies for their arguments) and <code>@invariant</code>s (checked after every step). A common pattern runs the real object beside a simple model and asserts they never disagree.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 188" role="img" aria-label="Hypothesis generates a sequence of operations and checks an invariant after each step until one fails">
+  <defs>
+    <marker id="ars" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="24" y="44" width="170" height="56" rx="6" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="109" y="68" text-anchor="middle" font-family="monospace" font-size="12" fill="#0f172a">deposit(50)</text>
+  <text x="109" y="86" text-anchor="middle" font-size="10" fill="#475569">balance → 50</text>
+
+  <rect x="248" y="44" width="170" height="56" rx="6" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="333" y="68" text-anchor="middle" font-family="monospace" font-size="12" fill="#0f172a">withdraw(30)</text>
+  <text x="333" y="86" text-anchor="middle" font-size="10" fill="#475569">balance → 20</text>
+
+  <rect x="472" y="44" width="170" height="56" rx="6" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="557" y="68" text-anchor="middle" font-family="monospace" font-size="12" fill="#0f172a">withdraw(40)</text>
+  <text x="557" y="86" text-anchor="middle" font-size="10" fill="#b91c1c">balance → -20 ✗</text>
+
+  <line x1="194" y1="72" x2="246" y2="72" stroke="#94a3b8" marker-end="url(#ars)"/>
+  <line x1="418" y1="72" x2="470" y2="72" stroke="#94a3b8" marker-end="url(#ars)"/>
+
+  <text x="109" y="130" text-anchor="middle" font-size="11" fill="#16a34a" font-weight="600">invariant ✓</text>
+  <text x="333" y="130" text-anchor="middle" font-size="11" fill="#16a34a" font-weight="600">invariant ✓</text>
+  <text x="557" y="130" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="600">balance ≥ 0 ✗</text>
+
+  <text x="360" y="162" text-anchor="middle" font-size="10" fill="#475569">Hypothesis searches over sequences — and shrinks the failing one to its shortest form.</text>
+</svg>
+        <div class="caption">The bug needs a specific order of operations. Stateful testing generates and then minimizes the sequence, not just the arguments.</div>
+      </div>
+
+<pre><code><span class="kw">from</span> hypothesis <span class="kw">import</span> strategies <span class="kw">as</span> st
+<span class="kw">from</span> hypothesis.stateful <span class="kw">import</span> RuleBasedStateMachine, rule, invariant
+
+<span class="kw">class</span> <span class="fn">AccountMachine</span>(RuleBasedStateMachine):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.account = <span class="fn">Account</span>()   <span class="com"># system under test</span>
+        self.model = <span class="kw">0</span>             <span class="com"># trusted shadow balance</span>
+
+    <span class="fn">@rule</span>(amount=st.<span class="fn">integers</span>(min_value=<span class="kw">1</span>, max_value=<span class="kw">1000</span>))
+    <span class="kw">def</span> <span class="fn">deposit</span>(self, amount):
+        self.account.<span class="fn">deposit</span>(amount)
+        self.model += amount
+
+    <span class="fn">@rule</span>(amount=st.<span class="fn">integers</span>(min_value=<span class="kw">1</span>, max_value=<span class="kw">1000</span>))
+    <span class="kw">def</span> <span class="fn">withdraw</span>(self, amount):
+        self.account.<span class="fn">withdraw</span>(amount)
+        self.model -= amount
+
+    <span class="fn">@invariant</span>()
+    <span class="kw">def</span> <span class="fn">matches_model</span>(self):
+        <span class="kw">assert</span> self.account.<span class="fn">balance</span>() == self.model
+
+<span class="com"># expose to pytest — note the .TestCase class attribute</span>
+TestAccount = AccountMachine.TestCase</code></pre>
+      <p>The last line is the bit people get wrong: the runnable test is the <code>.TestCase</code> class attribute on your machine, assigned to a module-level <code>Test*</code> name so pytest collects it. Hypothesis then drives random programs through your rules and, on failure, prints the shortest sequence of calls that breaks an invariant.</p>
+    </section>
+
+    <section id="pytest">
+      <h2>Pytest &amp; CI</h2>
+      <p>Hypothesis is framework-agnostic but pytest-native in practice: a <code>@given</code> function is collected and reported like any other test, failures show up as normal assertion errors, and the <code>hypothesis</code> plugin adds a statistics summary under <code>pytest --hypothesis-show-statistics</code>.</p>
+
+      <h3>Fixtures: the one real gotcha</h3>
+      <p>You can use pytest fixtures alongside <code>@given</code> — list the fixture parameters that <code>@given</code> doesn't fill — but a <strong>function-scoped fixture runs once for the whole test, not once per generated example</strong>. State built up in the fixture is shared across all examples. For per-example setup, do the work inside the test body (or draw it), and keep fixtures for expensive, read-only resources.</p>
+<pre><code><span class="kw">import</span> pytest
+<span class="kw">from</span> hypothesis <span class="kw">import</span> given, strategies <span class="kw">as</span> st
+
+<span class="fn">@pytest.fixture</span>
+<span class="kw">def</span> <span class="fn">client</span>():
+    <span class="kw">return</span> <span class="fn">make_client</span>()        <span class="com"># created ONCE, reused for every example</span>
+
+<span class="fn">@given</span>(name=st.<span class="fn">text</span>())
+<span class="kw">def</span> <span class="fn">test_round_trips</span>(client, name):
+    client.<span class="fn">put</span>(name)
+    <span class="kw">assert</span> client.<span class="fn">get</span>() == name</code></pre>
+
+      <h3>Determinism in CI</h3>
+      <p>Generation is random across runs, which is usually what you want — more runs explore more space. For perfectly reproducible CI, set <span class="x" data-term="derandomize" data-def="A setting that makes Hypothesis pick examples deterministically from a fixed seed, so a given test run is byte-for-byte reproducible across machines and CI runs.">derandomize=True</span>. For anything I/O-bound or variable in timing, set <code>deadline=None</code> so a slow example isn't reported as a failure. And commit nothing from <code>.hypothesis/</code> except where you intentionally share a failure database.</p>
+      <div class="callout warn">
+        <span class="label">Drawing mid-test</span>
+        <p>When you need a value that depends on what the code did so far, use <code>st.data()</code> and draw inside the body: <code>@given(data=st.data())</code>, then <code>x = data.draw(st.integers())</code>. It composes when <code>@composite</code> would be awkward — at the cost of slightly noisier failure output.</p>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <h2>Pitfalls &amp; best practices</h2>
+      <ul>
+        <li><strong>Don't over-filter.</strong> <code>.filter()</code> and <code>assume()</code> discard examples; if most are thrown away, generation slows to a crawl and a <span class="x" data-term="Health check" data-def="Built-in warnings about tests that generate too slowly, filter away too many examples, or produce oversized data — signals that a strategy needs tightening rather than suppressing.">health check</span> fires. Prefer constructing valid data directly — bound an <code>st.integers(min_value=…)</code>, draw an index from a length — over generating broadly and filtering.</li>
+        <li><strong>Keep tests deterministic.</strong> Reading the clock, the network, or the global <code>random</code> module makes a property pass and fail for the "same" input. Either inject those values through strategies or stub them; Hypothesis will otherwise flag the test as flaky.</li>
+        <li><strong>Mind the deadline on slow code.</strong> The 200 ms-per-example budget catches accidental blow-ups, but legitimately slow tests should set <code>deadline=None</code> rather than fight it.</li>
+        <li><strong>Avoid implicit assumptions.</strong> <code>@given(st.integers())</code> really does include <code>0</code> and huge negatives; <code>st.floats()</code> really does include <code>nan</code> and <code>inf</code>. If your property only holds on a subset, encode that subset in the strategy — the failures it finds otherwise are real.</li>
+        <li><strong>Make properties meaningful, not tautological.</strong> A property that reimplements the function it tests proves nothing. The best properties come from a different angle than the implementation: an inverse, an oracle, a conserved quantity.</li>
+        <li><strong>Let it run more in CI than locally.</strong> A profile with <code>max_examples=20</code> for a fast edit loop and <code>1000</code> for CI gives quick feedback without sacrificing coverage where it counts.</li>
+      </ul>
+    </section>
+
+    <section id="source">
+      <h2>Source &amp; ecosystem</h2>
+      <p>Hypothesis is open source, actively developed, and small enough to read. A few pointers if you want to go deeper than this page.</p>
+      <ul>
+        <li><strong><a href="https://github.com/hypothesisWorks/hypothesis">hypothesisWorks/hypothesis</a></strong> — the repo. The Python package lives under <code>hypothesis-python/</code>; <code>src/hypothesis/strategies/</code> is where every built-in strategy is defined, and a great place to learn how generation and shrinking are implemented.</li>
+        <li><strong><code>hypothesis.extra</code></strong> — first-party extensions for the libraries you actually test: <code>hypothesis.extra.numpy</code> generates arrays with controlled dtypes and shapes, <code>hypothesis.extra.pandas</code> generates DataFrames and typed columns, and there's support for Django models and dateutil timezones.</li>
+        <li><strong>Ghostwriter &amp; the CLI</strong> — <code>hypothesis write &lt;module-or-function&gt;</code> bootstraps tests; <code>hypothesis codemod</code> helps with API migrations.</li>
+        <li><strong>HypoFuzz</strong> — a companion tool that runs your existing Hypothesis tests as a coverage-guided fuzzer for long, CI-style campaigns, reusing the same example database.</li>
+      </ul>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong><a href="https://hypothesis.readthedocs.io/en/latest/">Official documentation</a></strong> — start with the <a href="https://hypothesis.readthedocs.io/en/latest/quickstart.html">Quickstart</a>, then the <a href="https://hypothesis.readthedocs.io/en/latest/reference/strategies.html">strategies reference</a> and the <a href="https://hypothesis.readthedocs.io/en/latest/stateful.html">stateful testing</a> guide. The authoritative source for the current API.</li>
+        <li><strong><a href="https://hypothesis.works/">hypothesis.works</a></strong> — the project's articles, including <a href="https://hypothesis.works/articles/what-is-property-based-testing/">What is property-based testing?</a> and <a href="https://hypothesis.works/articles/how-hypothesis-works/">How Hypothesis works</a> (the definitive explanation of integrated shrinking).</li>
+        <li><strong><a href="https://github.com/rsokl/testing-tutorial">rsokl/testing-tutorial</a></strong> — a hands-on PyCon tutorial that builds from plain pytest up to Hypothesis with exercises.</li>
+        <li><strong>Walkthroughs</strong> — <a href="https://semaphore.io/blog/property-based-testing-python-hypothesis-pytest">Property-based testing with Hypothesis and pytest</a> (Semaphore) and <a href="https://pytest-with-eric.com/pytest-advanced/hypothesis-testing-python/">Hypothesis testing in Python</a> (pytest-with-eric) cover the same ground with extra worked examples.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026 against the latest Hypothesis. Code samples target the current API; where anything here drifts from the official docs, treat the docs as ground truth.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('hyp-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('hyp-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('hyp-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Hover on desktop / focus
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    // Tap on mobile/touch
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  // Dismiss tap-popover on outside click
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  // Hide on scroll/resize to avoid drift
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline (modern LLMs parse SVG fine),
+      // followed by the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      // Headings
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Paragraphs
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Lists
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      // Code blocks
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      // Tables
+      if (tag === 'table') return tableToMd(node);
+
+      // Callouts → blockquote
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      // Inline formatting
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      // Default: walk children
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    // Normalize whitespace
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

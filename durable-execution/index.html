@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Durable Execution: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #7c3aed;
+      --accent-2: #6d28d9;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #f5f3ff;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(124,58,237,0.25);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #0e7490; }
+    .str { color: #15803d; }
+    .fn { color: #2563eb; }
+    .out { color: var(--muted); }
+    .bad { color: #b91c1c; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(124,58,237,0.06), rgba(124,58,237,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+    svg text.mono { font-family: var(--font-mono); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(124,58,237,0.55);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#why">Why durable execution exists</a>
+      <a href="#model">The programming model</a>
+      <a href="#replay">Event history &amp; replay</a>
+      <a href="#toolkit">The durable toolkit</a>
+      <a href="#architecture">Inside the server</a>
+      <a href="#versioning">Changing code on a live workflow</a>
+      <a href="#lineage">One lineage: Temporal &amp; Cadence</a>
+      <a href="#run">Running it in production</a>
+      <a href="#hn">What Hacker News thinks</a>
+      <a href="#alternatives">The alternatives</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">♾️</span>Durable Execution</h1>
+    <p class="doc-subtitle">A senior engineer's design doc for the runtime behind <strong>Temporal</strong> and <strong>Cadence</strong> — the idea that ordinary code can survive process crashes, host failures, deploys, and multi-month waits by rebuilding its own state from an append-only event log. Workflows as code, deterministic replay, the durable toolkit, the server internals, versioning long-running code, and the Cadence→Temporal fork.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong><span class="x" data-term="Durable execution" data-def="The ability of a program to keep its state and progress across process, host, and network failures — picking up exactly where it left off, with no lost progress, orphaned work, or manual recovery. The engine, not your code, owns the durability.">Durable execution</span> makes a running program crash-proof.</strong> You write a <span class="x" data-term="Workflow" data-def="A function or method whose state — local variables, call stack, in-flight waits — is preserved across failures. Must be deterministic. Temporal's slogan: 'write code as if failure doesn't exist.'">Workflow</span> as normal procedural code; the engine guarantees it runs to completion exactly once, whether that takes a second or a year — Temporal's pitch is <em>"write code as if failure doesn't exist."</em></li>
+        <li><strong>The trick is <span class="x" data-term="Event sourcing" data-def="Persisting a workflow as an ordered log of events (the Event History) rather than as a mutable state snapshot. The log is the source of truth; current state is whatever you get by replaying it.">an event-sourced history</span> plus <span class="x" data-term="Deterministic replay" data-def="Reconstructing a workflow's in-memory state by re-running its code against the recorded Event History instead of restoring a snapshot. Demands that the code be deterministic so the re-run produces the same sequence of actions.">deterministic replay</span>.</strong> Every step is appended to a durable log; after a crash a fresh worker rebuilds state by re-running the code against that log. The catch: workflow code must be <strong>deterministic</strong>, so all I/O, clocks, and randomness move into retryable <span class="x" data-term="Activity" data-def="A plain function that performs one real-world action — a network call, a DB write, sending an email. Activities may be non-deterministic and are retried automatically; their results are recorded in the Event History.">Activities</span>.</li>
+        <li><strong>Temporal and Cadence are the two engines, and one codebase split in two.</strong> Cadence was built at Uber; <strong>Temporal is a 2019 fork by Cadence's original creators</strong>. They share an almost identical model and even the same server architecture. This doc uses Temporal's vocabulary as primary (server <strong>v1.31</strong>) and maps Cadence's terms (current <strong>v1.4</strong>) alongside.</li>
+      </ul>
+    </div>
+
+    <section id="why">
+      <h2>Why durable execution exists</h2>
+      <p>Consider a checkout that has to charge a card, reserve inventory, wait up to three days for a shipping partner to confirm, email a receipt, and refund everything if any step ultimately fails. None of that is hard logic. What's hard is that the process must survive a deploy, a pod eviction, or a datacenter blip at <em>any</em> instant, and resume without double-charging or losing track of where it was.</p>
+      <p>The traditional way to build this is to shred the procedure into fragments glued together by infrastructure: a row in a database holding a <code>status</code> column, a queue per step, a cron to sweep for stuck rows, retry/back-off wrappers, idempotency keys to dedupe the at-least-once delivery, and a dead-letter queue for the rest. Each piece is reasonable; together they reconstruct, badly, a single thing — <strong>a program whose execution survives failure</strong>. The business logic ends up scattered across queue topology and database state where no one can read it as a story.</p>
+      <ul>
+        <li><strong>State lives outside the code.</strong> "Where is this order?" is answered by joining a status column against queue depth, not by reading a function top to bottom.</li>
+        <li><strong>Partial failure is everywhere.</strong> A crash between "charged the card" and "recorded that we charged the card" is a bug you must design around at every single step.</li>
+        <li><strong>Waiting is expensive.</strong> Blocking three days for a callback means either holding a process open or inventing yet another timer-and-resume dance.</li>
+        <li><strong>Retries duplicate work.</strong> At-least-once queues mean every consumer must be idempotent, or you charge twice.</li>
+      </ul>
+      <p>Durable execution inverts the arrangement. You write the procedure as one ordinary function — charge, reserve, <code>await</code> the confirmation, email, and a compensation path on failure — and a <strong>workflow engine</strong> makes that function itself durable. Cadence's original framing from Uber is the cleanest statement of the ambition: stop describing orchestration in a DSL or YAML and instead let developers <em>"write workflows as freely as writing programs,"</em> on the thesis that <strong>"any program is a workflow."</strong> Temporal phrases the result as a promise to the developer: your code <em>"execute[s] effectively once and to completion, regardless of whether it takes seconds or years."</em></p>
+      <div class="callout note">
+        <span class="label">A runtime, not a library or a DSL</span>
+        <p>Durable execution is not a framework you call and a queue you wire up. It is a <strong>stateful runtime</strong>: a cluster that persists every step of your program and a set of <span class="x" data-term="Worker" data-def="Your process that hosts the workflow and activity code. It long-polls the server for tasks, executes them, and reports results back. Workers are stateless and horizontally scalable; the server holds the durable state.">workers</span> that host your code. Your functions don't change shape — they're still procedural code in Go, Java, Python, or TypeScript — but the engine snapshots their progress so they can be killed and resumed at will. The rest of this doc is a tour of how that runtime pulls it off.</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>The programming model</h2>
+      <p>The model has four nouns. Learn these and the rest is detail.</p>
+      <ul>
+        <li><strong>Workflow.</strong> Your durable function. It expresses the orchestration — the order of steps, the waits, the branching, the error handling — and the engine preserves its state across failures. A <span class="x" data-term="Workflow Definition" data-def="The code that defines a workflow. Combined with a request to run it (and an input), it produces a Workflow Execution — one running instance with its own id and history.">Workflow Definition</span> is the code; a <span class="x" data-term="Workflow Execution" data-def="One running instance of a Workflow Definition, uniquely identified and backed by its own Event History. It can run for seconds or years.">Workflow Execution</span> is one running instance of it.</li>
+        <li><strong>Activity.</strong> A plain function that does one real-world thing — call a service, write a row, charge a card. Activities are where all the messy, non-deterministic, failure-prone work lives. The engine <strong>retries them automatically</strong> on failure and records each result.</li>
+        <li><strong>Worker.</strong> Your process that hosts the workflow and activity code. It <span class="x" data-term="Long poll" data-def="The worker holds a request open against the server until a task is available (or it times out), then immediately re-polls. It only asks for work when it has spare capacity, which makes the queue self-balancing and back-pressured.">long-polls</span> the server for work, runs it, and reports back. Workers are stateless and scale horizontally; you can kill them at any time.</li>
+        <li><strong>Task Queue.</strong> A named queue the server uses to hand tasks to workers. You start a workflow "on" a task queue, and the workers polling that queue pick it up. <em>(Cadence calls this a <span class="x" data-term="Task List" data-def="Cadence's name for what Temporal calls a Task Queue — the named queue that routes tasks to workers. Same concept, different label.">Task List</span>.)</em></li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 340" role="img" aria-label="The four nouns in one loop: a Client starts a workflow, the Worker long-polls the Task Queue, runs Workflow and Activity code, and the service appends every step to the durable Event History">
+  <!-- Client -->
+  <rect x="18" y="78" width="122" height="56" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="79" y="101" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Client</text>
+  <text x="79" y="119" fill="#475569" font-size="9" text-anchor="middle" class="mono">start_workflow()</text>
+
+  <!-- 1 · start -->
+  <circle cx="165" cy="90" r="8" fill="#7c3aed"/>
+  <text x="165" y="93.5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">1</text>
+  <line x1="140" y1="106" x2="180" y2="106" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="188 106, 179 101.5, 179 110.5" fill="#94a3b8"/>
+  <text x="165" y="124" fill="#6d28d9" font-size="9" text-anchor="middle">start</text>
+
+  <!-- Temporal Service -->
+  <rect x="190" y="26" width="260" height="296" rx="10" fill="#faf7ff" stroke="#7c3aed"/>
+  <text x="320" y="48" fill="#6d28d9" font-size="12" font-weight="700" text-anchor="middle">Temporal Service</text>
+
+  <!-- Task Queue: an actual queue -->
+  <text x="320" y="74" fill="#0f172a" font-size="10.5" font-weight="600" text-anchor="middle">Task Queue</text>
+  <rect x="208" y="84" width="224" height="42" rx="21" fill="#ffffff" stroke="#7c3aed"/>
+  <rect x="220" y="93" width="52" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="246" y="109" fill="#6d28d9" font-size="8.5" text-anchor="middle">task</text>
+  <rect x="280" y="93" width="52" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="306" y="109" fill="#6d28d9" font-size="8.5" text-anchor="middle">task</text>
+  <rect x="340" y="93" width="52" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="366" y="109" fill="#6d28d9" font-size="8.5" text-anchor="middle">task</text>
+  <text x="404" y="111" fill="#c4b5fd" font-size="13" font-weight="700">››</text>
+
+  <!-- Event History cylinder -->
+  <path d="M232 208 v70 a88 11 0 0 0 176 0 v-70" fill="#ffffff" stroke="#7c3aed"/>
+  <ellipse cx="320" cy="208" rx="88" ry="11" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="320" y="238" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Event History</text>
+  <text x="320" y="254" fill="#475569" font-size="9" text-anchor="middle">every step appended</text>
+  <text x="320" y="269" fill="#6d28d9" font-size="9" font-style="italic" text-anchor="middle">the source of truth</text>
+  <text x="320" y="308" fill="#6d28d9" font-size="9" font-style="italic" text-anchor="middle">durable — state survives anything</text>
+
+  <!-- 2 · long-poll -->
+  <circle cx="470" cy="72" r="8" fill="#7c3aed"/>
+  <text x="470" y="75.5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">2</text>
+  <text x="482" y="76" fill="#6d28d9" font-size="9">long-poll</text>
+  <line x1="540" y1="96" x2="458" y2="96" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <polygon points="450 96, 459 91.5, 459 100.5" fill="#7c3aed"/>
+
+  <!-- 3 · task -->
+  <line x1="450" y1="122" x2="532" y2="122" stroke="#7c3aed" stroke-width="1.5"/>
+  <polygon points="540 122, 531 117.5, 531 126.5" fill="#7c3aed"/>
+  <circle cx="470" cy="140" r="8" fill="#7c3aed"/>
+  <text x="470" y="143.5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">3</text>
+  <text x="482" y="144" fill="#6d28d9" font-size="9">task</text>
+
+  <!-- 4 · results -->
+  <circle cx="470" cy="222" r="8" fill="#7c3aed"/>
+  <text x="470" y="225.5" fill="#ffffff" font-size="9.5" font-weight="700" text-anchor="middle">4</text>
+  <line x1="540" y1="240" x2="422" y2="240" stroke="#7c3aed" stroke-width="1.5"/>
+  <polygon points="414 240, 423 235.5, 423 244.5" fill="#7c3aed"/>
+  <text x="477" y="258" fill="#6d28d9" font-size="8.5" text-anchor="middle">results + commands</text>
+
+  <!-- Worker -->
+  <rect x="540" y="26" width="164" height="296" rx="10" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="622" y="48" fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle">Worker</text>
+  <text x="622" y="62" fill="#475569" font-size="9" text-anchor="middle">(your process)</text>
+
+  <rect x="554" y="84" width="136" height="84" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="622" y="106" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Workflow</text>
+  <text x="622" y="122" fill="#475569" font-size="9" text-anchor="middle">deterministic</text>
+  <text x="622" y="135" fill="#475569" font-size="9" text-anchor="middle">orchestration only —</text>
+  <text x="622" y="148" fill="#475569" font-size="9" text-anchor="middle">no direct I/O</text>
+
+  <line x1="622" y1="168" x2="622" y2="190" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="622 198, 617.5 190, 626.5 190" fill="#94a3b8"/>
+  <text x="632" y="186" fill="#475569" font-size="8.5">calls</text>
+
+  <rect x="554" y="200" width="136" height="84" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="622" y="222" fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">Activities</text>
+  <text x="622" y="238" fill="#475569" font-size="9" text-anchor="middle">real I/O · may fail</text>
+  <text x="622" y="251" fill="#475569" font-size="9" text-anchor="middle">auto-retried</text>
+  <text x="622" y="264" fill="#475569" font-size="9" text-anchor="middle">→ APIs, DBs, email</text>
+
+  <text x="622" y="308" fill="#6d28d9" font-size="9" font-style="italic" text-anchor="middle">stateless — kill it anytime</text>
+</svg>
+        <div class="caption">One loop, four nouns: the client starts a workflow, the worker long-polls the Task Queue and runs the code, and every step is appended to the durable Event History. Workers hold no durable state — the server does.</div>
+      </div>
+
+      <p>Here is the whole loop in the <a href="https://docs.temporal.io/develop/python">Temporal Python SDK</a>. The workflow is plain <code>async</code> code; the side effects are isolated in activities; the worker wires them to a task queue:</p>
+<pre><code><span class="kw">from</span> datetime <span class="kw">import</span> timedelta
+<span class="kw">from</span> temporalio <span class="kw">import</span> activity, workflow
+<span class="kw">from</span> temporalio.client <span class="kw">import</span> Client
+<span class="kw">from</span> temporalio.worker <span class="kw">import</span> Worker
+<span class="kw">from</span> temporalio.common <span class="kw">import</span> RetryPolicy
+
+<span class="com"># --- Activities: where all the I/O lives (may be non-deterministic) ---</span>
+<span class="fn">@activity.defn</span>
+<span class="kw">async def</span> <span class="fn">charge_card</span>(order_id: str, amount_cents: int) -> str:
+    <span class="kw">return await</span> payments.charge(order_id, amount_cents)   <span class="com"># real network call</span>
+
+<span class="fn">@activity.defn</span>
+<span class="kw">async def</span> <span class="fn">send_receipt</span>(order_id: str) -> <span class="kw">None</span>:
+    <span class="kw">await</span> email.send(order_id)
+
+<span class="com"># --- Workflow: deterministic orchestration only, no direct I/O ---</span>
+<span class="fn">@workflow.defn</span>
+<span class="kw">class</span> CheckoutWorkflow:
+    <span class="fn">@workflow.run</span>
+    <span class="kw">async def</span> <span class="fn">run</span>(self, order_id: str, amount_cents: int) -> str:
+        confirmation = <span class="kw">await</span> workflow.execute_activity(
+            charge_card, args=[order_id, amount_cents],
+            start_to_close_timeout=timedelta(seconds=<span class="str">30</span>),
+            retry_policy=RetryPolicy(maximum_attempts=<span class="str">5</span>),   <span class="com"># auto-retried</span>
+        )
+        <span class="kw">await</span> workflow.execute_activity(
+            send_receipt, order_id,
+            start_to_close_timeout=timedelta(seconds=<span class="str">30</span>),
+        )
+        <span class="kw">return</span> confirmation
+
+<span class="com"># --- Worker: long-polls a Task Queue and runs the code above ---</span>
+<span class="kw">async def</span> <span class="fn">main</span>():
+    client = <span class="kw">await</span> Client.connect(<span class="str">"localhost:7233"</span>, namespace=<span class="str">"default"</span>)
+    worker = Worker(
+        client, task_queue=<span class="str">"checkout"</span>,
+        workflows=[CheckoutWorkflow], activities=[charge_card, send_receipt],
+    )
+    <span class="kw">await</span> worker.run()</code></pre>
+
+      <div class="callout warn">
+        <span class="label">The one rule: workflows orchestrate, activities act</span>
+        <p>Everything that touches the outside world — network, disk, the clock, randomness, environment — belongs in an <strong>Activity</strong>, never in workflow code. The workflow is a pure conductor: it decides <em>what</em> to do and <em>in what order</em>, and the engine guarantees that decision sequence is durable. The next section is why that rule isn't a style preference but a hard requirement of how the durability works.</p>
+      </div>
+    </section>
+
+    <section id="replay">
+      <h2>Event history &amp; replay</h2>
+      <p>A workflow is not persisted as a snapshot of its variables. It is persisted as an <strong><span class="x" data-term="Event History" data-def="The complete, ordered, append-only log of everything that has happened in a Workflow Execution — every activity scheduled and completed, every timer, signal, and decision. It is the single source of truth for the workflow's state.">Event History</span></strong>: an append-only log of everything that has happened — <code>WorkflowExecutionStarted</code>, <code>ActivityTaskScheduled</code>, <code>ActivityTaskCompleted</code>, <code>TimerStarted</code>, <code>TimerFired</code>, and so on. The log is the source of truth. The workflow's "current state" is simply <em>whatever you get by replaying that log through the code.</em></p>
+      <p>That is how a workflow survives a crash. When a worker dies mid-execution, the server hands the workflow to another worker, which <strong>replays the history from the beginning</strong>: it re-runs your function, but every step that already has a recorded result returns that result instantly instead of doing the work again. The activity that already completed isn't re-invoked — its recorded output is fed back. A timer that already fired doesn't wait again. When replay reaches the last recorded event, the in-memory state — local variables, position in the code, pending <code>await</code>s — is exactly what it was before the crash, and execution continues forward.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 344" role="img" aria-label="After a crash, a new worker re-runs the workflow code from the top against the recorded Event History: recorded results are fed back instantly with no side effects, and execution continues live at the first step without a recorded result">
+  <text x="170" y="22" fill="#b91c1c" font-size="9.5" text-anchor="middle">💥 worker A died mid-run</text>
+  <text x="170" y="40" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">Worker B re-runs the code from the top</text>
+  <text x="558" y="22" fill="#475569" font-size="9.5" text-anchor="middle">…but the log survived</text>
+  <text x="558" y="40" fill="#6d28d9" font-size="11" font-weight="700" text-anchor="middle">Event History (durable)</text>
+
+  <!-- code panel -->
+  <rect x="24" y="52" width="292" height="254" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="40" y="80" fill="#475569" font-size="9.5" class="mono">async def run(order):</text>
+
+  <rect x="36" y="103" width="268" height="30" rx="5" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="52" y="122" fill="#0f172a" font-size="9.5" class="mono">conf = await charge_card(…)</text>
+
+  <rect x="36" y="159" width="268" height="30" rx="5" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="52" y="178" fill="#0f172a" font-size="9.5" class="mono">await workflow.sleep(3 days)</text>
+
+  <rect x="36" y="201" width="268" height="30" rx="5" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="44" y="220" fill="#16a34a" font-size="9">▶</text>
+  <text x="56" y="220" fill="#0f172a" font-size="9.5" class="mono">await send_receipt(…)</text>
+
+  <text x="170" y="258" fill="#475569" font-size="8.5" font-style="italic" text-anchor="middle">after replay: conf == "ch_8a1f" again —</text>
+  <text x="170" y="272" fill="#475569" font-size="8.5" font-style="italic" text-anchor="middle">locals &amp; call stack rebuilt, no snapshot needed</text>
+
+  <!-- history panel -->
+  <rect x="420" y="52" width="276" height="254" rx="8" fill="#faf7ff" stroke="#7c3aed"/>
+  <rect x="432" y="64" width="252" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="440" y="80" fill="#0f172a" font-size="8.5" class="mono">1 WorkflowExecutionStarted</text>
+  <rect x="432" y="92" width="252" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="440" y="108" fill="#0f172a" font-size="8.5" class="mono">2 ActivityTaskScheduled</text>
+  <rect x="432" y="120" width="252" height="24" rx="4" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="440" y="136" fill="#0f172a" font-size="8.5" class="mono">3 ActivityTaskCompleted "ch_8a1f"</text>
+  <rect x="432" y="148" width="252" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="440" y="164" fill="#0f172a" font-size="8.5" class="mono">4 TimerStarted (3 days)</text>
+  <rect x="432" y="176" width="252" height="24" rx="4" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="440" y="192" fill="#0f172a" font-size="8.5" class="mono">5 TimerFired</text>
+  <rect x="432" y="204" width="252" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="440" y="220" fill="#0f172a" font-size="8.5" class="mono">6 ActivityTaskScheduled</text>
+
+  <line x1="558" y1="231" x2="558" y2="240" stroke="#16a34a" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <polygon points="558 246, 554 239, 562 239" fill="#16a34a"/>
+  <rect x="432" y="248" width="252" height="24" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-dasharray="4 3"/>
+  <text x="440" y="264" fill="#15803d" font-size="8.5" class="mono">7 ActivityTaskCompleted ← appended live</text>
+  <text x="558" y="290" fill="#475569" font-size="8.5" font-style="italic" text-anchor="middle">append-only ↓</text>
+
+  <!-- replayed: recorded results fed back into the code -->
+  <path d="M420 104 h-8 v28 h8" fill="none" stroke="#a78bfa"/>
+  <line x1="412" y1="118" x2="328" y2="120" stroke="#7c3aed" stroke-width="1.3"/>
+  <polygon points="320 121, 329 116.5, 329 125.5" fill="#7c3aed"/>
+  <text x="366" y="100" fill="#6d28d9" font-size="8.5" font-weight="600" text-anchor="middle">result "ch_8a1f"</text>
+  <text x="366" y="111" fill="#475569" font-size="8" text-anchor="middle">fed from the log</text>
+
+  <path d="M420 160 h-8 v28 h8" fill="none" stroke="#a78bfa"/>
+  <line x1="412" y1="174" x2="328" y2="175" stroke="#7c3aed" stroke-width="1.3"/>
+  <polygon points="320 176, 329 171.5, 329 180.5" fill="#7c3aed"/>
+  <text x="366" y="156" fill="#6d28d9" font-size="8.5" font-weight="600" text-anchor="middle">timer already fired</text>
+  <text x="366" y="167" fill="#475569" font-size="8" text-anchor="middle">no waiting again</text>
+
+  <!-- live from here -->
+  <line x1="320" y1="216" x2="404" y2="216" stroke="#16a34a" stroke-width="1.3"/>
+  <polygon points="412 216, 403 211.5, 403 220.5" fill="#16a34a"/>
+  <text x="366" y="196" fill="#15803d" font-size="8.5" font-weight="600" text-anchor="middle">no result in the log</text>
+  <text x="366" y="207" fill="#15803d" font-size="8" text-anchor="middle">→ runs for real</text>
+
+  <!-- legend -->
+  <rect x="150" y="318" width="12" height="12" rx="3" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="168" y="328" fill="#475569" font-size="8.5">replayed — value comes from the log, instantly</text>
+  <rect x="404" y="318" width="12" height="12" rx="3" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="422" y="328" fill="#475569" font-size="8.5">live — actually executes from here</text>
+</svg>
+        <div class="caption">State is never snapshotted; it is re-derived by replaying the log. Recorded steps return their stored results, so replay is fast and side-effect-free.</div>
+      </div>
+
+      <h3>Why workflow code must be deterministic</h3>
+      <p>Replay only works if re-running the code produces the <em>same sequence of actions</em> it produced the first time. If the original run scheduled "charge card" as its second step, the replay must also reach "charge card" as its second step — otherwise the recorded results no longer line up with what the code is asking for, and the engine raises a <span class="x" data-term="Non-determinism error" data-def="Raised when a replay produces a different sequence of commands than the recorded history — e.g. because the code branched on the wall clock or a random number. It fails the Workflow Task rather than corrupting state.">non-determinism error</span> rather than corrupt the execution. So workflow code must be <strong>deterministic</strong>: given the same history, it must always make the same calls in the same order.</p>
+      <p>That forbids, <em>directly in workflow code</em>, anything whose value can change between runs: the wall clock, random numbers, UUIDs, reading a file or database, iterating a hash map in undefined order, or spawning unmanaged threads. The engine doesn't ban these capabilities — it relocates them. Non-deterministic work goes into <strong>activities</strong> (whose results get recorded), and for the common cases the SDK provides replay-safe equivalents that read from the history instead of the real world:</p>
+<pre><code><span class="fn">@workflow.run</span>
+<span class="kw">async def</span> <span class="fn">run</span>(self) -> <span class="kw">None</span>:
+    <span class="com"># WRONG — non-deterministic: replay can diverge and fail the task</span>
+    now   = <span class="bad">datetime.now()</span>          <span class="com"># real wall clock</span>
+    token = <span class="bad">uuid.uuid4()</span>            <span class="com"># real randomness</span>
+    rows  = <span class="bad">await db.query(...)</span>     <span class="com"># direct I/O</span>
+
+    <span class="com"># RIGHT — replay-safe SDK APIs, or push the work into an Activity</span>
+    now   = workflow.now()             <span class="com"># deterministic time, from history</span>
+    token = workflow.uuid4()           <span class="com"># deterministic, seeded from history</span>
+    rows  = <span class="kw">await</span> workflow.execute_activity(load_rows, ...)</code></pre>
+
+      <h3>Commands and events: the round trip</h3>
+      <p>The workflow code never writes to the database itself. Instead, when a worker runs a <span class="x" data-term="Workflow Task" data-def="A task that asks a worker to advance a workflow: replay history to the current point, run forward until the code blocks, and return the Commands it generated. Cadence calls this a Decision Task.">Workflow Task</span>, it replays to the current point, runs forward until the code blocks on something (an activity result, a timer, a signal), and emits <strong><span class="x" data-term="Command" data-def="An instruction a worker returns to the server after advancing a workflow — e.g. ScheduleActivityTask, StartTimer, CompleteWorkflowExecution. The server turns commands into the events it appends to history.">Commands</span></strong> describing what it wants to happen next: <code>ScheduleActivityTask</code>, <code>StartTimer</code>, <code>CompleteWorkflowExecution</code>. The server validates those commands, turns them into <strong>Events</strong>, appends them to the history, and acts on them — dispatching the activity, arming the timer. The result later arrives as another event, which triggers the next Workflow Task, and the cycle repeats. <em>(Cadence calls the worker's instructions <span class="x" data-term="Decision" data-def="Cadence's term for what Temporal renames a Command/Workflow Task. 'Behind the scenes, the workflow decision is driving the whole workflow.' Same mechanism, older name.">Decisions</span> and the task a Decision Task — the same mechanism under an older name.)</em></p>
+      <p>This is also what makes a three-day wait free. A <code>workflow.sleep(timedelta(days=3))</code> doesn't hold a thread for three days; it emits a <code>StartTimer</code> command, the workflow is evicted from memory entirely, and three days later the <code>TimerFired</code> event wakes it on whatever worker is free. Durability and long waits fall out of the same event-log mechanism.</p>
+      <div class="callout warn">
+        <span class="label">The classic foot-gun</span>
+        <p>Because correctness depends on replay matching history, an innocent edit — adding an <code>if datetime.now().hour &lt; 12</code> branch, reordering two activity calls, upgrading a library that changes iteration order — can break workflows that are <em>already running</em>, since their old history no longer matches the new code. This is the single sharpest edge of the model, and the reason <a href="#versioning">versioning live workflows</a> gets its own section.</p>
+      </div>
+    </section>
+
+    <section id="toolkit">
+      <h2>The durable toolkit</h2>
+      <p>On top of workflows and activities sits a small set of primitives that cover most real orchestration. Each is durable and replay-safe, recorded in the same event history.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Primitive</th><th>What it's for</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="x" data-term="Signal" data-def="An asynchronous, fire-and-forget message delivered into a running workflow that can change its state. Signals are processed in the order received. The sender cannot await a return value.">Signal</span></td><td>Push new information into a running workflow — a cancellation, an approval, an updated address</td><td>async write, no reply</td></tr>
+            <tr><td><span class="x" data-term="Query" data-def="A synchronous, read-only request for a workflow's current state. Query handlers must not mutate state or block. Used to inspect progress without touching the execution.">Query</span></td><td>Read a workflow's current state from outside, without changing it</td><td>sync read</td></tr>
+            <tr><td><span class="x" data-term="Update" data-def="A synchronous, tracked write into a running workflow: the caller waits for a result or an error, and the change is recorded in history. A signal you can get an answer from.">Update</span></td><td>Write into a workflow <em>and</em> get a result back — a tracked, validated change</td><td>sync write + reply</td></tr>
+            <tr><td><span class="x" data-term="Durable Timer" data-def="A sleep or deadline recorded as a TimerStarted event. The workflow is evicted from memory while it waits and woken by a TimerFired event — so a timer can span months at no runtime cost.">Durable Timer</span></td><td>Sleep, deadlines, time-outs that can span months at zero runtime cost</td><td>time</td></tr>
+            <tr><td><span class="x" data-term="Child Workflow" data-def="A workflow started and supervised by another workflow, with its own Event History. Lets you decompose a large process and reuse workflows as building blocks.">Child Workflow</span></td><td>Decompose a big process; reuse a workflow as a sub-routine with its own history</td><td>spawn</td></tr>
+            <tr><td><span class="x" data-term="Continue-As-New" data-def="Atomically finishes the current execution and starts a fresh one with the same workflow id and a brand-new, empty Event History. Used by long-running loops to stop history from growing without bound.">Continue-As-New</span></td><td>Restart a long-running loop with a fresh, empty history to bound its size</td><td>self-restart</td></tr>
+            <tr><td><span class="x" data-term="Side Effect" data-def="Runs a short snippet of non-deterministic code exactly once and records its result in history, so replay returns the stored value. A lighter-weight alternative to a full Activity for things like generating an id.">Side Effect</span></td><td>Record a one-off non-deterministic value (e.g. a UUID) without a full activity</td><td>recorded value</td></tr>
+            <tr><td><span class="x" data-term="Heartbeat" data-def="A periodic ping from a long-running Activity to the server, signalling progress and liveness. It can carry a checkpoint payload so a retried Activity can resume instead of restarting.">Heartbeat</span></td><td>Let a long activity report liveness and checkpoint progress for retries</td><td>activity → server</td></tr>
+            <tr><td><span class="x" data-term="Retry Policy" data-def="A set of rules — initial interval, backoff coefficient, maximum interval, maximum attempts — telling the server how to retry a failed Activity (or Workflow). Retries are automatic and configurable per call.">Retry Policy</span></td><td>Declare how failures are retried: interval, backoff, max attempts</td><td>config</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Signals, queries, and timers compose into the patterns that are painful to hand-roll. Here a subscription bills every month, sleeps durably between charges for as long as the customer stays subscribed, and reacts to an out-of-band cancellation — a process that may live for years across countless deploys and crashes:</p>
+<pre><code><span class="fn">@workflow.defn</span>
+<span class="kw">class</span> SubscriptionWorkflow:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="kw">None</span>:
+        self._cancelled = <span class="kw">False</span>
+        self._status = <span class="str">"active"</span>
+
+    <span class="fn">@workflow.run</span>
+    <span class="kw">async def</span> <span class="fn">run</span>(self, user_id: str) -> str:
+        <span class="kw">while not</span> self._cancelled:
+            <span class="kw">await</span> workflow.execute_activity(charge_month, user_id, ...)
+            <span class="com"># Durable sleep — survives crashes, can span weeks</span>
+            <span class="kw">await</span> workflow.sleep(timedelta(days=<span class="str">30</span>))
+        self._status = <span class="str">"cancelled"</span>
+        <span class="kw">return</span> self._status
+
+    <span class="fn">@workflow.signal</span>                <span class="com"># async write into a running workflow</span>
+    <span class="kw">def</span> <span class="fn">cancel</span>(self) -> <span class="kw">None</span>:
+        self._cancelled = <span class="kw">True</span>
+
+    <span class="fn">@workflow.query</span>                 <span class="com"># read-only; must not mutate state</span>
+    <span class="kw">def</span> <span class="fn">status</span>(self) -> str:
+        <span class="kw">return</span> self._status</code></pre>
+      <p>The caller drives it through a handle, possibly months apart, from anywhere:</p>
+<pre><code>handle = <span class="kw">await</span> client.start_workflow(
+    SubscriptionWorkflow.run, <span class="str">"user-42"</span>,
+    id=<span class="str">"sub-user-42"</span>, task_queue=<span class="str">"billing"</span>,
+)
+<span class="kw">await</span> handle.signal(SubscriptionWorkflow.cancel)         <span class="com"># … months later</span>
+<span class="kw">print</span>(<span class="kw">await</span> handle.query(SubscriptionWorkflow.status))   <span class="out"># "cancelled"</span></code></pre>
+
+      <h3>Sagas: failure that unwinds itself</h3>
+      <p>The checkout that has to undo a charge when shipping ultimately fails is the <span class="x" data-term="Saga" data-def="A pattern for multi-step processes that need all-or-nothing semantics without a distributed transaction: each step has a compensating action, and on failure the already-completed steps are compensated in reverse order. Durable execution makes the bookkeeping a try/except.">Saga pattern</span>, and durable execution turns its bookkeeping into ordinary control flow. You record a compensating action after each successful step, and on failure run the compensations in reverse. Because the workflow's local state is durable, the list of "things to undo" survives crashes for free — no separate saga log, no reconciler:</p>
+<pre><code>compensations = []
+<span class="kw">try</span>:
+    <span class="kw">await</span> workflow.execute_activity(charge_card, ...)
+    compensations.append(refund_card)
+    <span class="kw">await</span> workflow.execute_activity(reserve_inventory, ...)
+    compensations.append(release_inventory)
+    <span class="kw">await</span> workflow.execute_activity(ship_order, ...)
+<span class="kw">except</span> Exception:
+    <span class="kw">for</span> undo <span class="kw">in</span> <span class="fn">reversed</span>(compensations):   <span class="com"># unwind in reverse</span>
+        <span class="kw">await</span> workflow.execute_activity(undo, ...)
+    <span class="kw">raise</span></code></pre>
+    </section>
+
+    <section id="architecture">
+      <h2>Inside the server</h2>
+      <p>Workers are stateless; all the durability lives in the server. Both Temporal and Cadence — unsurprisingly, given the shared lineage — decompose that server into the <strong>same four internal services</strong>, each independently scalable, talking to a pluggable datastore.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 360" role="img" aria-label="The server's four internal services: a stateless Frontend gateway in front of the sharded History service, Matching with its task queues, and an internal Worker, over pluggable persistence and visibility stores">
+  <!-- external clients & workers -->
+  <rect x="180" y="14" width="360" height="42" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="360" y="32" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">Your Clients &amp; Workers</text>
+  <text x="360" y="47" fill="#475569" font-size="9" text-anchor="middle">outside the cluster · gRPC · long-poll</text>
+  <line x1="360" y1="56" x2="360" y2="72" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="360 78, 355.5 70, 364.5 70" fill="#94a3b8"/>
+
+  <!-- frontend layer -->
+  <rect x="80" y="80" width="560" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="360" y="99" fill="#0f172a" font-size="11.5" font-weight="700" text-anchor="middle">Frontend</text>
+  <text x="360" y="114" fill="#475569" font-size="9" text-anchor="middle">stateless API gateway · auth · rate-limits · routes — the only entry point · not sharded</text>
+
+  <line x1="144" y1="126" x2="144" y2="166" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="144 172, 139.5 164, 148.5 164" fill="#94a3b8"/>
+  <line x1="371" y1="126" x2="371" y2="172" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="371 178, 366.5 170, 375.5 170" fill="#94a3b8"/>
+  <line x1="575" y1="126" x2="575" y2="172" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="575 178, 570.5 170, 579.5 170" fill="#94a3b8"/>
+
+  <!-- History: a stack of shards -->
+  <rect x="76" y="168" width="168" height="84" rx="6" fill="#ffffff" stroke="#c4b5fd"/>
+  <rect x="68" y="174" width="168" height="84" rx="6" fill="#ffffff" stroke="#c4b5fd"/>
+  <rect x="60" y="180" width="168" height="84" rx="6" fill="#ffffff" stroke="#7c3aed" stroke-width="1.3"/>
+  <text x="144" y="200" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">History</text>
+  <text x="144" y="217" fill="#475569" font-size="8.5" text-anchor="middle">owns workflow state &amp;</text>
+  <text x="144" y="229" fill="#475569" font-size="8.5" text-anchor="middle">the Event History;</text>
+  <text x="144" y="241" fill="#475569" font-size="8.5" text-anchor="middle">drives executions forward</text>
+  <text x="144" y="257" fill="#6d28d9" font-size="8.5" font-weight="600" text-anchor="middle">sharded by workflow id</text>
+
+  <!-- Matching -->
+  <rect x="286" y="180" width="170" height="84" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="371" y="200" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">Matching</text>
+  <rect x="300" y="208" width="142" height="16" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="371" y="219.5" fill="#475569" font-size="7.5" text-anchor="middle" class="mono">task-queue: checkout</text>
+  <rect x="300" y="228" width="142" height="16" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="371" y="239.5" fill="#475569" font-size="7.5" text-anchor="middle" class="mono">task-queue: billing</text>
+  <text x="371" y="258" fill="#475569" font-size="8.5" text-anchor="middle">matches tasks → polling workers</text>
+
+  <line x1="248" y1="222" x2="278" y2="222" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="284 222, 275 217.5, 275 226.5" fill="#94a3b8"/>
+  <text x="264" y="213" fill="#475569" font-size="7.5" text-anchor="middle">tasks</text>
+
+  <!-- system worker -->
+  <rect x="486" y="180" width="178" height="84" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="575" y="200" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">Worker (system)</text>
+  <text x="575" y="217" fill="#475569" font-size="8.5" text-anchor="middle">runs the server's own</text>
+  <text x="575" y="229" fill="#475569" font-size="8.5" text-anchor="middle">background workflows:</text>
+  <text x="575" y="241" fill="#475569" font-size="8.5" text-anchor="middle">archival, replication…</text>
+  <text x="575" y="257" fill="#6d28d9" font-size="8.5" font-style="italic" text-anchor="middle">≠ your application workers</text>
+
+  <!-- stores -->
+  <line x1="144" y1="264" x2="170" y2="284" stroke="#7c3aed" stroke-width="2.5"/>
+  <polygon points="174 288, 171.2 280.1, 165.8 287.3" fill="#7c3aed"/>
+  <text x="60" y="282" fill="#6d28d9" font-size="8" font-weight="600">commits every event</text>
+
+  <line x1="220" y1="266" x2="446" y2="288" stroke="#94a3b8" stroke-width="1"/>
+  <polygon points="452 289, 445.5 283.8, 444.6 292.8" fill="#94a3b8"/>
+  <text x="352" y="288" fill="#475569" font-size="8" text-anchor="middle">indexes for search</text>
+
+  <path d="M88 296 v36 a112 10 0 0 0 224 0 v-36" fill="#faf7ff" stroke="#7c3aed"/>
+  <ellipse cx="200" cy="296" rx="112" ry="10" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="200" y="318" fill="#0f172a" font-size="10.5" font-weight="700" text-anchor="middle">Persistence</text>
+  <text x="200" y="332" fill="#475569" font-size="8.5" text-anchor="middle">Cassandra · MySQL · PostgreSQL</text>
+
+  <path d="M408 296 v36 a112 10 0 0 0 224 0 v-36" fill="#ffffff" stroke="#94a3b8"/>
+  <ellipse cx="520" cy="296" rx="112" ry="10" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="520" y="318" fill="#0f172a" font-size="10.5" font-weight="700" text-anchor="middle">Visibility</text>
+  <text x="520" y="332" fill="#475569" font-size="8.5" text-anchor="middle">list &amp; search · Elasticsearch (advanced)</text>
+</svg>
+        <div class="caption">The same four services in both engines. Workers stay external and stateless; the History service and its datastore hold the durable truth.</div>
+      </div>
+
+      <ul>
+        <li><strong>Frontend.</strong> A stateless gateway that terminates the gRPC API, authenticates, rate-limits, and routes calls to the other services. It holds no state, so you scale it like any web tier — it is the one service that is <em>not</em> sharded.</li>
+        <li><strong>History.</strong> The heart. It owns each workflow's mutable state and Event History, drives executions forward, and persists every event. To scale, the workflow id space is <strong><span class="x" data-term="Sharding" data-def="Partitioning workflows across many History shards by hashing the workflow id, so the load of millions of concurrent executions spreads across the cluster. Each shard owns a slice of the id space.">sharded</span></strong> across the cluster — each shard owns a slice of the id space.</li>
+        <li><strong>Matching.</strong> Hosts the user-facing Task Queues and matches pending tasks to the workers long-polling for them. Task queues are created on demand and effectively unlimited.</li>
+        <li><strong>Worker (internal/system).</strong> Runs the server's <em>own</em> background workflows — replication, archival, periodic system maintenance. Distinct from your worker processes, which live outside the server.</li>
+      </ul>
+      <p>Underneath sits a pluggable <strong>persistence</strong> layer — <strong>Cassandra</strong>, <strong>MySQL</strong>, or <strong>PostgreSQL</strong> — and a separate <strong>visibility</strong> store that powers "list and search my workflows." Basic visibility runs on the same database; <span class="x" data-term="Advanced Visibility" data-def="Rich listing and filtering of workflows by custom Search Attributes, backed by Elasticsearch (and supported on modern SQL stores). Lets you query 'all open orders for region=EU' across millions of executions.">advanced visibility</span> — filtering millions of executions by custom search attributes — is backed by <strong>Elasticsearch</strong>.</p>
+      <div class="callout note">
+        <span class="label">Where the durability actually lives</span>
+        <p>Nothing about your application is durable because <em>your</em> process is reliable — it isn't, and the engine assumes it will die. Durability is an emergent property of one thing: the History service committing each event to a replicated datastore before acknowledging progress. Lose every worker and every frontend, and an in-flight workflow is intact the moment new workers connect.</p>
+      </div>
+    </section>
+
+    <section id="versioning">
+      <h2>Changing code on a live workflow</h2>
+      <p>Determinism buys durability, but it bills you at deploy time. A workflow execution started today may still be running in six months, replaying its history against <em>whatever code the worker is running then</em>. If you have edited the workflow in a way that changes the sequence of commands it produces, the replay of an old execution diverges from its recorded history — the <a href="#replay">non-determinism error</a> from earlier. You cannot freely edit code that has live executions.</p>
+      <p>Both engines offer two first-party ways out.</p>
+      <h3>Patching</h3>
+      <p>A <span class="x" data-term="Patch" data-def="A guarded branch (Temporal: patched()/Go GetVersion(); Cadence: GetVersion) keyed by a change id. The first time it runs it records a marker in history, so old executions deterministically take the old branch and new ones take the new branch.">patch</span> lets old and new logic coexist behind a guarded branch keyed by a change id. The first time an execution hits <code>workflow.patched("id")</code> it records a marker in its history; from then on, that execution always takes the branch matching its marker. Executions that started before the change keep replaying the old path deterministically; new executions take the new one. Once every pre-patch execution has drained, you call <code>deprecate_patch</code> and later delete the dead branch.</p>
+<pre><code><span class="fn">@workflow.run</span>
+<span class="kw">async def</span> <span class="fn">run</span>(self, order_id: str) -> <span class="kw">None</span>:
+    <span class="kw">await</span> workflow.execute_activity(reserve_inventory, order_id, ...)
+    <span class="kw">if</span> workflow.patched(<span class="str">"ship-v2"</span>):
+        <span class="kw">await</span> workflow.execute_activity(ship_v2, order_id, ...)   <span class="com"># new executions</span>
+    <span class="kw">else</span>:
+        <span class="kw">await</span> workflow.execute_activity(ship_v1, order_id, ...)   <span class="com"># old, in-flight</span></code></pre>
+      <h3>Worker Versioning</h3>
+      <p>The newer, and now generally recommended, approach is to version the <em>workers</em> instead of branching the code. You tag a worker deployment with a <span class="x" data-term="Build ID" data-def="A version label on a worker deployment. The server pins each workflow to the Build ID it started on (or auto-upgrades it), so old code and new code run side by side without in-code patch branches.">Build ID</span> and roll it out as a versioned deployment. The server then keeps each workflow on a compatible version: <strong>pinned</strong> workflows run to completion on the exact version they started on, while <strong>auto-upgrade</strong> workflows move to the new version as it rolls out. Old and new code run side by side — "rainbow deployments" — with gradual traffic ramping and instant rollback, and no patch branches cluttering the workflow. Temporal's guidance is blunt: if you can run versioned worker deployments, prefer Worker Versioning over patching.</p>
+    </section>
+
+    <section id="lineage">
+      <h2>One lineage: Temporal &amp; Cadence</h2>
+      <p>Temporal and Cadence look so alike because they <em>are</em> alike: Temporal is a fork of Cadence, made by the people who wrote Cadence. The story also explains why the two will feel uncannily similar in any sample you read.</p>
+      <p>Cadence's creators — <strong>Maxim Fateev</strong> and <strong>Samar Abbas</strong> — had earlier launched the first public version of <strong>AWS Simple Workflow Service</strong> (Maxim also led the work that became Amazon SQS). They reunited at <strong>Uber</strong> starting in 2015 to build <strong>Cadence</strong>, a "fault-oblivious" workflow engine on the thesis that "any program is a workflow"; it grew to power over a thousand services at Uber. In <strong>2019</strong> the two founded <strong>Temporal Technologies</strong> around a fork of Cadence, hardening the model and broadening the SDK ecosystem. Uber kept investing in Cadence — it now lives under the open <code>cadence-workflow</code> GitHub organization, was contributed to the <span class="x" data-term="CNCF" data-def="The Cloud Native Computing Foundation — the Linux Foundation body that hosts open-source infrastructure projects such as Kubernetes. Cadence was contributed to the CNCF in 2025.">CNCF</span> in 2025, and remains in heavy production use there.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 188" role="img" aria-label="Git-style timeline: Cadence begins at Uber in 2015; in 2019 its original creators fork the codebase to found Temporal; both lines continue active development today, at Cadence v1.4 and Temporal v1.31">
+  <!-- year gridlines -->
+  <line x1="130" y1="34" x2="130" y2="160" stroke="#e2e8f0"/>
+  <line x1="350" y1="34" x2="350" y2="160" stroke="#e2e8f0"/>
+  <line x1="640" y1="34" x2="640" y2="160" stroke="#e2e8f0"/>
+  <text x="130" y="26" fill="#475569" font-size="10" font-weight="600" text-anchor="middle">2015</text>
+  <text x="350" y="26" fill="#475569" font-size="10" font-weight="600" text-anchor="middle">2019</text>
+  <text x="640" y="26" fill="#475569" font-size="10" font-weight="600" text-anchor="middle">today</text>
+
+  <!-- Cadence lane -->
+  <text x="100" y="66" fill="#7c3aed" font-size="10.5" font-weight="700" text-anchor="end">Cadence</text>
+  <text x="100" y="79" fill="#475569" font-size="8.5" text-anchor="end">at Uber</text>
+  <line x1="110" y1="70" x2="648" y2="70" stroke="#7c3aed" stroke-width="2.5"/>
+  <polygon points="660 70, 649 64.5, 649 75.5" fill="#7c3aed"/>
+  <circle cx="170" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="215" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="260" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="305" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="410" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="470" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="530" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="590" cy="70" r="3" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <circle cx="130" cy="70" r="5.5" fill="#7c3aed"/>
+  <circle cx="350" cy="70" r="5.5" fill="#7c3aed"/>
+  <text x="240" y="56" fill="#94a3b8" font-size="8.5" font-style="italic" text-anchor="middle">one codebase</text>
+  <text x="130" y="96" fill="#475569" font-size="8" text-anchor="middle">Fateev &amp; Abbas, ex-AWS SWF</text>
+
+  <!-- the fork -->
+  <path d="M350 70 C 395 70, 400 140, 445 140" fill="none" stroke="#6d28d9" stroke-width="2.5"/>
+  <line x1="445" y1="140" x2="648" y2="140" stroke="#6d28d9" stroke-width="2.5"/>
+  <polygon points="660 140, 649 134.5, 649 145.5" fill="#6d28d9"/>
+  <circle cx="480" cy="140" r="3" fill="#ffffff" stroke="#6d28d9" stroke-width="1.5"/>
+  <circle cx="530" cy="140" r="3" fill="#ffffff" stroke="#6d28d9" stroke-width="1.5"/>
+  <circle cx="580" cy="140" r="3" fill="#ffffff" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="342" y="108" fill="#475569" font-size="8.5" text-anchor="end">the original creators leave Uber,</text>
+  <text x="342" y="120" fill="#6d28d9" font-size="8.5" font-weight="600" text-anchor="end">fork the code → found Temporal</text>
+
+  <!-- where each line is today -->
+  <text x="595" y="92" fill="#7c3aed" font-size="9.5" font-weight="600" text-anchor="middle">Cadence v1.4</text>
+  <text x="595" y="105" fill="#475569" font-size="8" text-anchor="middle">cadence-workflow org · Uber-scale focus</text>
+  <text x="560" y="160" fill="#6d28d9" font-size="9.5" font-weight="600" text-anchor="middle">Temporal v1.31</text>
+  <text x="560" y="173" fill="#475569" font-size="8" text-anchor="middle">Temporal Technologies · Temporal Cloud</text>
+</svg>
+        <div class="caption">One codebase, split in 2019. Both remain actively developed — which is why their concepts, and even their server internals, line up almost one to one.</div>
+      </div>
+
+      <p>The split left a thin layer of renamed vocabulary over an identical model. If you know one engine, this table is most of what you need to read the other:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Temporal</th><th>Cadence</th><th>What it is</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Task Queue</td><td>Task List</td><td>The named queue routing tasks to workers</td></tr>
+            <tr><td>Namespace</td><td>Domain</td><td>The unit of isolation/multi-tenancy a workflow runs in</td></tr>
+            <tr><td>Workflow Task</td><td>Decision (Task)</td><td>The task that advances a workflow and emits its next commands</td></tr>
+            <tr><td>Command</td><td>Decision</td><td>The instruction a worker returns (schedule activity, start timer…)</td></tr>
+            <tr><td colspan="2">Workflow · Activity · Worker · Signal · Query · Timer · Child Workflow · Continue-As-New · Side Effect</td><td>identical names in both</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Where they diverge is positioning, by Cadence's own account: Temporal prioritized ecosystem breadth and a commercial cloud, while Cadence stayed focused on the reliability, multi-tenancy, and cost-efficiency Uber needs at very high scale. The programming model you'd write against is, for most intents, the same.</p>
+    </section>
+
+    <section id="run">
+      <h2>Running it in production</h2>
+      <p>A durable-execution platform is a stateful distributed system with a datastore behind it, so the operational question is who runs that system — you or a vendor.</p>
+      <ul>
+        <li><strong>Self-hosted.</strong> Both engines are open source: you run the server cluster and operate the backing store (Cassandra/MySQL/PostgreSQL, plus Elasticsearch for advanced visibility). Maximum control; you own capacity planning, upgrades, and the database.</li>
+        <li><strong>Managed.</strong> <strong>Temporal Cloud</strong>, from Temporal Technologies, is a hosted Temporal Service with an SLA, namespace management, SAML auth, and audit logging — you bring only workers. Managed <strong>Cadence</strong> is offered by <strong>Instaclustr by NetApp</strong>. In both cases your workers still run in your own infrastructure; only the server and datastore are hosted.</li>
+      </ul>
+      <p><strong>SDK reach</strong> is one practical difference between the two. Temporal officially ships SDKs for <strong>Go, Java, Python, TypeScript, .NET, Ruby, and PHP</strong>; Cadence's first-party clients are <strong>Go and Java</strong> (with community Python/Ruby and the iWF framework on top). The Python in this doc is Temporal's SDK for that reason.</p>
+      <div class="callout note">
+        <span class="label">Where durable execution sits</span>
+        <p>It overlaps a crowded field — <strong>AWS Step Functions</strong> (orchestration as JSON state machines), <strong>Apache Airflow</strong> (DAG scheduling for data pipelines), <strong>Netflix Conductor</strong> (JSON-defined orchestration), and the do-it-yourself queue-plus-cron. The distinguishing bet of Temporal and Cadence is the one Cadence's creators started with: express orchestration as <em>ordinary code in a general-purpose language</em> rather than a DSL, and let the engine make that code durable. Whether that's worth its operational weight is exactly what the next two sections take up — first what practitioners make of it, then the lighter engines that have sprung up in answer.</p>
+      </div>
+    </section>
+
+    <section id="hn">
+      <h2>What Hacker News thinks</h2>
+      <p>Durable execution has been chewed over on Hacker News for years. Two threads bracket the arc: the 2019 launch discussion of <a href="https://news.ycombinator.com/item?id=19732447">"Cadence: Uber's Workflow Orchestration Engine"</a> (243 points), and the 2022 <a href="https://news.ycombinator.com/item?id=30365301">"Temporal raises $103M in Series B funding"</a> thread (92 points). The sentiment across both is admiring but far from unanimous.</p>
+      <h3>The praise</h3>
+      <ul>
+        <li><strong>It solves a real, genuinely hard problem.</strong> The dominant view is that coordinating long-running, failure-prone, multi-step processes — normally hand-rolled from queues, a status column, and cron — is fragile glue code, and durable execution replaces an entire category of edge cases. A recurring analogy: this is to manual state-and-queue plumbing what garbage collection was to manual memory management.</li>
+        <li><strong>Workflows as code beat YAML and DSLs.</strong> Strong, repeated preference for writing orchestration as ordinary procedural code over JSON/YAML state machines, on the argument that generic config languages become unmaintainable for non-trivial logic.</li>
+        <li><strong>The durability "clicks" once you get it.</strong> Commenters describe the guarantee — start a workflow and it's effectively indestructible short of losing the database — as the moment the model wins them over, reaching for hibernation and Kubernetes-reconciler analogies.</li>
+        <li><strong>Founder pedigree buys credibility.</strong> The team's history (AWS Simple Workflow, Uber Cadence) comes up often; one of the original AWS Step Functions designers even joined the 2019 discussion, lending it unusual authority.</li>
+      </ul>
+      <h3>The skepticism</h3>
+      <ul>
+        <li><strong>Self-hosting is operationally heavy — and under-documented.</strong> The single most common complaint: running it yourself (a Cassandra/SQL backend, the cluster, monitoring) is a lot, and production self-hosting was felt to be poorly documented — which, fairly or not, pushes people toward the paid cloud.</li>
+        <li><strong>It's overkill for simple apps.</strong> Many argued a plain SQL backend, a Celery queue, a handful of Airflow DAGs, or cron is enough, and that plenty of teams reach for this imagining a scale they don't have.</li>
+        <li><strong>The determinism model has real foot-guns.</strong> Replay semantics and the ban on non-deterministic workflow code are called non-obvious and easy to trip over, with debugging harder than an imperative task queue.</li>
+        <li><strong>Versioning live workflows is admittedly painful</strong> — a point conceded even by commenters from the Temporal side.</li>
+        <li><strong>"We tried it and backed out."</strong> The most-cited caution came from a team that dropped it over the learning curve and limited visibility, feeling it "shifted the problem from one place to another."</li>
+      </ul>
+      <div class="callout note">
+        <span class="label">Read the threads with a grain of salt</span>
+        <p>Two honesty notes. First, much of the sharpest <em>advocacy</em> in both threads comes from people affiliated with Temporal or Cadence — the arguments are good, but they aren't disinterested; the sharpest <em>cautions</em> tend to come from independent users. Second, the 2022 thread is a <strong>funding announcement</strong>, not a technical launch, so its comments skew toward business-model and lock-in questions rather than the programming model. Net read: well-regarded for genuinely complex orchestration, widely seen as overkill — and operationally taxing — for everything else.</p>
+      </div>
+    </section>
+
+    <section id="alternatives">
+      <h2>The alternatives: a lighter wave</h2>
+      <p>The complaints in the last section — heavy to operate, overkill for the simple case — are precisely the brief a wave of newer engines set out to fill. Since roughly 2024, and sharply accelerated by <strong>AI agents</strong> (long-running, failure-prone loops that beg for durability), durable execution has gone from a niche two-horse race to a crowded field. Almost every newcomer defines itself against Temporal's operational weight, and they sort along three axes: <strong>a library or a standalone service</strong>, <strong>your existing database or a purpose-built store</strong>, and <strong>durability that is explicit in your code or invisible underneath it</strong>.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 398" role="img" aria-label="The three axes the field sorts along — what you deploy and operate, where durable state lives, and how durability appears in your code — with each engine placed on every axis, and fully managed offerings as the zero-infrastructure opt-out">
+  <!-- axis 1: what you deploy -->
+  <text x="24" y="20" fill="#6d28d9" font-size="8.5" font-weight="700" letter-spacing="0.8">AXIS 1 · WHAT YOU DEPLOY AND OPERATE</text>
+  <line x1="70" y1="92" x2="644" y2="92" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="58 92, 70 87, 70 97" fill="#94a3b8"/>
+  <polygon points="656 92, 644 87, 644 97" fill="#94a3b8"/>
+  <text x="58" y="110" fill="#475569" font-size="9">a library in your process</text>
+  <text x="656" y="110" fill="#475569" font-size="9" text-anchor="end">a cluster you operate</text>
+
+  <rect x="88" y="60" width="48" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="112" y="72.5" fill="#0f172a" font-size="9" text-anchor="middle">DBOS</text>
+  <line x1="112" y1="78" x2="112" y2="89" stroke="#cbd5e1"/>
+  <circle cx="112" cy="92" r="3" fill="#94a3b8"/>
+
+  <rect x="144" y="38" width="68" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="178" y="50.5" fill="#0f172a" font-size="9" text-anchor="middle">pg_durable</text>
+  <line x1="178" y1="56" x2="178" y2="89" stroke="#cbd5e1"/>
+  <circle cx="178" cy="92" r="3" fill="#94a3b8"/>
+
+  <rect x="325" y="60" width="54" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="352" y="72.5" fill="#0f172a" font-size="9" text-anchor="middle">Restate</text>
+  <line x1="352" y1="78" x2="352" y2="89" stroke="#cbd5e1"/>
+  <circle cx="352" cy="92" r="3" fill="#94a3b8"/>
+
+  <rect x="397" y="38" width="54" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="424" y="50.5" fill="#0f172a" font-size="9" text-anchor="middle">Hatchet</text>
+  <line x1="424" y1="56" x2="424" y2="89" stroke="#cbd5e1"/>
+  <circle cx="424" cy="92" r="3" fill="#94a3b8"/>
+
+  <rect x="450" y="60" width="56" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="478" y="72.5" fill="#0f172a" font-size="9" text-anchor="middle">Flawless</text>
+  <line x1="478" y1="78" x2="478" y2="89" stroke="#cbd5e1"/>
+  <circle cx="478" cy="92" r="3" fill="#94a3b8"/>
+
+  <rect x="534" y="60" width="104" height="18" rx="9" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="586" y="72.5" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle">Temporal · Cadence</text>
+  <line x1="586" y1="78" x2="586" y2="89" stroke="#cbd5e1"/>
+  <circle cx="586" cy="92" r="3" fill="#7c3aed"/>
+
+  <!-- axis 2: where state lives -->
+  <text x="24" y="132" fill="#6d28d9" font-size="8.5" font-weight="700" letter-spacing="0.8">AXIS 2 · WHERE DURABLE STATE LIVES</text>
+  <line x1="70" y1="204" x2="644" y2="204" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="58 204, 70 199, 70 209" fill="#94a3b8"/>
+  <polygon points="656 204, 644 199, 644 209" fill="#94a3b8"/>
+  <text x="58" y="222" fill="#475569" font-size="9">the database you already run</text>
+  <text x="656" y="222" fill="#475569" font-size="9" text-anchor="end">a purpose-built store</text>
+
+  <rect x="84" y="172" width="48" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="108" y="184.5" fill="#0f172a" font-size="9" text-anchor="middle">DBOS</text>
+  <line x1="108" y1="190" x2="108" y2="201" stroke="#cbd5e1"/>
+  <circle cx="108" cy="204" r="3" fill="#94a3b8"/>
+
+  <rect x="140" y="150" width="68" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="174" y="162.5" fill="#0f172a" font-size="9" text-anchor="middle">pg_durable</text>
+  <line x1="174" y1="168" x2="174" y2="201" stroke="#cbd5e1"/>
+  <circle cx="174" cy="204" r="3" fill="#94a3b8"/>
+
+  <rect x="215" y="172" width="54" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="242" y="184.5" fill="#0f172a" font-size="9" text-anchor="middle">Hatchet</text>
+  <line x1="242" y1="190" x2="242" y2="201" stroke="#cbd5e1"/>
+  <circle cx="242" cy="204" r="3" fill="#94a3b8"/>
+
+  <rect x="447" y="172" width="54" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="474" y="184.5" fill="#0f172a" font-size="9" text-anchor="middle">Restate</text>
+  <line x1="474" y1="190" x2="474" y2="201" stroke="#cbd5e1"/>
+  <circle cx="474" cy="204" r="3" fill="#94a3b8"/>
+
+  <rect x="482" y="150" width="56" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="510" y="162.5" fill="#0f172a" font-size="9" text-anchor="middle">Flawless</text>
+  <line x1="510" y1="168" x2="510" y2="201" stroke="#cbd5e1"/>
+  <circle cx="510" cy="204" r="3" fill="#94a3b8"/>
+
+  <rect x="540" y="172" width="104" height="18" rx="9" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="592" y="184.5" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle">Temporal · Cadence</text>
+  <line x1="592" y1="190" x2="592" y2="201" stroke="#cbd5e1"/>
+  <circle cx="592" cy="204" r="3" fill="#7c3aed"/>
+
+  <!-- axis 3: how durability appears in code -->
+  <text x="24" y="244" fill="#6d28d9" font-size="8.5" font-weight="700" letter-spacing="0.8">AXIS 3 · HOW DURABILITY APPEARS IN YOUR CODE</text>
+  <line x1="70" y1="316" x2="644" y2="316" stroke="#94a3b8" stroke-width="1.2"/>
+  <polygon points="58 316, 70 311, 70 321" fill="#94a3b8"/>
+  <polygon points="656 316, 644 311, 644 321" fill="#94a3b8"/>
+  <text x="58" y="334" fill="#475569" font-size="9">explicit — you mark every step</text>
+  <text x="656" y="334" fill="#475569" font-size="9" text-anchor="end">invisible — plain code resumes</text>
+
+  <rect x="88" y="284" width="104" height="18" rx="9" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="140" y="296.5" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle">Temporal · Cadence</text>
+  <line x1="140" y1="302" x2="140" y2="313" stroke="#cbd5e1"/>
+  <circle cx="140" cy="316" r="3" fill="#7c3aed"/>
+
+  <rect x="215" y="262" width="50" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="240" y="274.5" fill="#0f172a" font-size="9" text-anchor="middle">Inngest</text>
+  <line x1="240" y1="280" x2="240" y2="313" stroke="#cbd5e1"/>
+  <circle cx="240" cy="316" r="3" fill="#94a3b8"/>
+
+  <rect x="268" y="284" width="48" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="292" y="296.5" fill="#0f172a" font-size="9" text-anchor="middle">DBOS</text>
+  <line x1="292" y1="302" x2="292" y2="313" stroke="#cbd5e1"/>
+  <circle cx="292" cy="316" r="3" fill="#94a3b8"/>
+
+  <rect x="345" y="262" width="54" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="372" y="274.5" fill="#0f172a" font-size="9" text-anchor="middle">Restate</text>
+  <line x1="372" y1="280" x2="372" y2="313" stroke="#cbd5e1"/>
+  <circle cx="372" cy="316" r="3" fill="#94a3b8"/>
+
+  <rect x="520" y="284" width="56" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="548" y="296.5" fill="#0f172a" font-size="9" text-anchor="middle">Flawless</text>
+  <line x1="548" y1="302" x2="548" y2="313" stroke="#cbd5e1"/>
+  <circle cx="548" cy="316" r="3" fill="#94a3b8"/>
+
+  <rect x="588" y="262" width="44" height="18" rx="9" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="610" y="274.5" fill="#0f172a" font-size="9" text-anchor="middle">Golem</text>
+  <line x1="610" y1="280" x2="610" y2="313" stroke="#cbd5e1"/>
+  <circle cx="610" cy="316" r="3" fill="#94a3b8"/>
+
+  <!-- the opt-out -->
+  <rect x="24" y="352" width="672" height="38" rx="8" fill="#faf7ff" stroke="#7c3aed" stroke-dasharray="6 4"/>
+  <text x="360" y="367" fill="#6d28d9" font-size="9.5" font-weight="700" text-anchor="middle">…or fully managed — a vendor runs the engine, you keep only your workers and functions</text>
+  <text x="360" y="381" fill="#475569" font-size="8.5" text-anchor="middle">Temporal Cloud · AWS Step Functions · Azure Durable Functions · Google Cloud Workflows · Cloudflare Workflows · Inngest Cloud</text>
+</svg>
+        <div class="caption">Temporal and Cadence (violet) anchor the heavyweight, most-explicit end of every axis; the Postgres-native and WASM camps each pull a different axis toward zero; fully managed opts out of operating anything.</div>
+      </div>
+
+      <h3>"Just use your database"</h3>
+      <p><strong><a href="https://www.dbos.dev/">DBOS</a></strong> is the sharpest contrast to Temporal: durable execution as an in-process <em>library</em>, not a cluster. You annotate functions with <code>@DBOS.workflow()</code> and <code>@DBOS.step()</code>, and the decorators checkpoint each step's result into <strong>Postgres</strong> tables; on a crash it replays from the last finished step. There is no separate workflow server — "just your program and Postgres" — and a state transition is a ~1&nbsp;ms database write rather than a server round-trip. (It grew out of a Stanford/MIT project with Postgres's creator Michael Stonebraker advising.)</p>
+<pre><code><span class="kw">from</span> dbos <span class="kw">import</span> DBOS
+
+<span class="fn">@DBOS.step</span>()                    <span class="com"># a checkpoint: its result is recorded in Postgres</span>
+<span class="kw">def</span> <span class="fn">charge_card</span>(order_id: str) -> str:
+    <span class="kw">return</span> payments.charge(order_id)
+
+<span class="fn">@DBOS.workflow</span>()                <span class="com"># durable: on crash, resumes at the last finished step</span>
+<span class="kw">def</span> <span class="fn">checkout</span>(order_id: str) -> <span class="kw">None</span>:
+    charge_card(order_id)
+    send_receipt(order_id)      <span class="com"># also a @DBOS.step()</span></code></pre>
+      <p><strong><a href="https://hatchet.run/">Hatchet</a></strong> makes the same Postgres-native bet but keeps the orchestrator as a separate service, treating durable execution as one feature of a broader task queue. <strong>Microsoft's <a href="https://github.com/microsoft/pg_durable">pg_durable</a></strong> pushes the idea furthest — durable workflows authored in a SQL DSL and run <em>inside</em> Postgres as an extension — and two widely read 2025 write-ups, Armin Ronacher's "Absurd Workflows" and Gunnar Morling's SQLite engine, show the whole pattern in a few thousand lines over a plain database.</p>
+      <p>On Hacker News this camp drew one consistent objection: it moves control flow out of code-and-Git and into the database, and makes Postgres the scaling ceiling — "the step journaling is pretty brutal to postgres," said more than one engineer who had built the embedded approach and later ripped it back out to an external system. The equally consistent rebuttal: most services never reach that ceiling, and <em>not</em> running a separate distributed system is worth a great deal.</p>
+
+      <h3>One binary, or a new runtime</h3>
+      <p><strong><a href="https://restate.dev/">Restate</a></strong> answers "don't run a cluster" a different way: the entire engine is a <em>single self-contained Rust binary</em> with a built-in durable log, so you "download and start and you are done." Its core unit is not a workflow but a durable RPC handler, with <span class="x" data-term="Virtual objects" data-def="Restate's durable RPC handlers that also own keyed, consistent state — in effect a durable virtual actor. Handler and state live together and survive failures, so you don't bolt a workflow engine onto a separate datastore.">virtual objects</span> giving handlers consistent keyed state; the headline claims are low latency and a push model that fits serverless/Lambda better than a pull-based worker. <strong><a href="https://flawless.dev/">Flawless</a></strong> goes further still: it compiles workflows to <strong>WebAssembly</strong> and snapshots the WASM stack and heap, so durability is <em>implicit</em> — there are no step wrappers, just code that happens to be resumable. The price is a single-language cage (Rust→WASM) and a curated set of permitted host calls.</p>
+
+      <h3>Serverless &amp; the managed clouds</h3>
+      <p><strong><a href="https://www.inngest.com/">Inngest</a></strong> brings durable <code>step.*()</code> calls to an event-driven, push-based serverless runtime, and has proposed <strong>StepKit</strong> as a backend-agnostic "durable execution standard" that runs on Cloudflare, Netlify, or self-hosted. Around it sit the cloud-native managed offerings, several of which predate the current wave: <strong>AWS Step Functions</strong> (JSON state machines), <strong>Azure Durable Functions</strong> (built on the Durable Task Framework — a sibling of the same AWS-SWF lineage that produced Cadence), <strong>Google Cloud Workflows</strong>, and <strong>Cloudflare Workflows</strong>. The trade is the familiar one: zero infrastructure in exchange for some vendor lock-in and, often, a DSL instead of code.</p>
+
+      <h3>Adjacent: the DAG orchestrators</h3>
+      <p>One step away sit the pipeline schedulers — <strong>Apache Airflow</strong>, <strong>Prefect</strong>, <strong>Dagster</strong> — and the script-and-low-code tools <strong>Windmill</strong> and <strong>n8n</strong>. These are DAG-first rather than durable-code-first, and aimed at data engineers or business users; the durable-execution founders mostly cede that lane rather than fight for it. Others worth knowing in the broader space include <strong>Trigger.dev</strong>, <strong>Resonate</strong> (durable promises), <strong>Golem</strong> (WASM durable execution), <strong>LittleHorse</strong>, and <strong>Orkes / Netflix Conductor</strong>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Engine</th><th>Shape &amp; store</th><th>Durability mechanism</th><th>The pitch vs Temporal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Temporal / Cadence</td><td>Self-hosted cluster (or managed); Cassandra / MySQL / Postgres</td><td>Event history + deterministic replay</td><td>— the incumbent: polyglot, proven at very high scale</td></tr>
+            <tr><td>DBOS</td><td>In-process library; Postgres</td><td>Step results checkpointed to DB tables</td><td>No server to run; ~1 ms per step</td></tr>
+            <tr><td>Restate</td><td>Single Rust binary; built-in log</td><td>Journaled durable RPC &amp; steps</td><td>One binary, low latency, FaaS-friendly</td></tr>
+            <tr><td>Hatchet</td><td>Service; Postgres</td><td>Durable tasks over a task queue</td><td>The Postgres you already run; MIT-licensed</td></tr>
+            <tr><td>Inngest</td><td>Serverless, push-based; managed or self-host</td><td>Durable <code>step.*()</code> over events</td><td>Deploy-anywhere, event-driven</td></tr>
+            <tr><td>Flawless</td><td>New WASM runtime</td><td>WASM stack/heap snapshot</td><td>Durability with no step wrappers (Rust only)</td></tr>
+            <tr><td>Step Functions / Durable Functions</td><td>Managed cloud</td><td>JSON state machine / DTFx replay</td><td>Zero infra, at the cost of a DSL / lock-in</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">Read the field with two facts in hand</span>
+        <p>First, the honest limit every one of these threads converged on: <strong>durable execution buys you at-least-once, not exactly-once.</strong> A step can crash after it acts but before it records, so individual side effects still must be idempotent — the engine guarantees the <em>sequence</em> resumes, not that any single external call happened exactly once. Second, much of the loudest advocacy in these comparisons comes from the tools' own founders, and neutral head-to-head benchmarks are scarce; treat latency and scale claims as positioning until measured. Where the newcomers genuinely win is operational simplicity and developer experience for the common case. Where Temporal and Cadence still win is polyglot orchestration, very high scale, and heavy per-step compute you would rather not run inside your database.</p>
+      </div>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong><a href="https://temporal.io/">Temporal — official site</a></strong> and <strong><a href="https://docs.temporal.io/">docs.temporal.io</a></strong>. The concept encyclopedia, SDK guides, and the source of this doc's Temporal terminology and the Python examples.</li>
+        <li><strong><a href="https://github.com/temporalio/temporal">temporalio/temporal on GitHub</a></strong>. The server (Go), release notes, and the README's statement of the Cadence fork lineage.</li>
+        <li><strong><a href="https://cadenceworkflow.io/">cadenceworkflow.io</a></strong> and its <strong><a href="https://cadenceworkflow.io/docs/">docs</a></strong>. Cadence's concepts ("fault-oblivious stateful workflow"), the Task List / Domain / Decision vocabulary, and the Cadence-vs-Temporal FAQ.</li>
+        <li><strong><a href="https://github.com/cadence-workflow/cadence">cadence-workflow/cadence on GitHub</a></strong>. The Cadence server and releases (current v1.4).</li>
+        <li><strong><a href="https://www.uber.com/en/blog/announcing-cadence/">Uber Engineering — Cadence</a></strong>. The "any program is a workflow" thesis and Uber's production scale, from the team that built it.</li>
+        <li><strong>The Hacker News threads:</strong> <a href="https://news.ycombinator.com/item?id=19732447">Cadence (2019)</a> and <a href="https://news.ycombinator.com/item?id=30365301">Temporal's Series B (2022)</a> — the source of the sentiment section.</li>
+        <li><strong>The alternatives:</strong> <a href="https://www.dbos.dev/">DBOS</a>, <a href="https://restate.dev/">Restate</a>, <a href="https://hatchet.run/">Hatchet</a>, <a href="https://www.inngest.com/">Inngest</a>, and the managed <a href="https://aws.amazon.com/step-functions/">AWS Step Functions</a> and <a href="https://learn.microsoft.com/azure/azure-functions/durable/">Azure Durable Functions</a> — the lighter engines surveyed above.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026, against Temporal server v1.31 and Cadence v1.4, using each project's own primary sources. Where anything here drifts from the official docs and source, treat those as ground truth — durable-execution platforms move quickly, especially around versioning and the managed-cloud feature sets.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('de-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('de-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('de-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Hover on desktop / focus
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    // Tap on mobile/touch
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  // Dismiss tap-popover on outside click
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  // Hide on scroll/resize to avoid drift
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline (modern LLMs parse SVG fine),
+      // followed by the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      // Headings
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Paragraphs
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Lists
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      // Code blocks
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      // Tables
+      if (tag === 'table') return tableToMd(node);
+
+      // Callouts → blockquote
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      // Inline formatting
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      // Default: walk children
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    // Normalize whitespace
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

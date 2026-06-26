@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPO index exposure — VT vs VTI vs VOO vs EUSA</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: clip; }
+    body {
+      background: #FAF7F2;
+      color: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 48px 20px;
+    }
+    tbody tr:last-child td { border-bottom: none !important; }
+
+    .x-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: transparent;
+      outline: none;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+    .x-slider::-webkit-slider-runnable-track { height: 8px; background: transparent; border: none; }
+    .x-slider::-moz-range-track { height: 8px; background: transparent; border: none; }
+    .x-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #E07A5F;
+      border: 3px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      cursor: grab;
+      margin-top: -5px;
+      transition: transform 0.1s;
+    }
+    .x-slider::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    .x-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+    .x-slider::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #E07A5F;
+      border: 3px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      cursor: grab;
+    }
+
+    .seg {
+      display: inline-flex;
+      background: #F0EBE3;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .seg button {
+      appearance: none;
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5a5a5a;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .seg button.active {
+      background: #E07A5F;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    /* The EUSA column is the equal-weight outlier — set it off with a divider. */
+    .eusa-col { border-left: 1px solid #E8E0D5; }
+
+    .cell-sub { display: block; }
+
+    @media (max-width: 720px) {
+      body { padding: 24px 12px; }
+      .controls-row { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; }
+      /* Drop the table card's chrome on mobile and go edge-to-edge to reclaim width. */
+      .table-card {
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 -12px !important;
+      }
+      .table-card th, .table-card td {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+      .table-card th:first-child, .table-card td:first-child { padding-left: 16px !important; }
+      .table-card th:last-child, .table-card td:last-child { padding-right: 16px !important; }
+    }
+
+    /* When really cramped, drop the sub-text/sub-labels and let the 5 columns
+       shrink to fit so the EUSA column stays visible (no horizontal scroll). */
+    @media (max-width: 540px) {
+      .cell-sub, .fund-sub { display: none; }
+      .table-card table { min-width: 0 !important; table-layout: fixed !important; }
+      .table-card th, .table-card td { padding-left: 7px !important; padding-right: 7px !important; }
+      .table-card th:first-child, .table-card td:first-child { padding-left: 14px !important; }
+      .table-card th:last-child, .table-card td:last-child { padding-right: 14px !important; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "htm": "https://esm.sh/htm@3.1.1"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useState, useEffect, useRef } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import htm from 'htm';
+    const html = htm.bind(React.createElement);
+
+    const T = {
+      pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
+      textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
+      border: '#E8E0D5', borderLight: '#f0ebe3',
+      buttonBg: '#F0EBE3', accent: '#E07A5F', accentText: '#fff',
+      tooltipBg: '#1a1a1a', tooltipText: '#fff',
+      cardShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      good: '#3D8A6B', bad: '#C44A37',
+    };
+
+    // ---- Data ---------------------------------------------------------------
+    // INVESTED: how much you hold in the fund. Everything scales linearly in it.
+    const INVESTED_OPTIONS = [10e3, 100e3, 200e3, 1e6];
+
+    // The three private companies, with assumed PUBLIC FREE-FLOAT fractions.
+    // Float matters because cap-weighted indexes weight by *float-adjusted* cap:
+    // an insider-heavy IPO (SpaceX ~ Musk control + lockups) floats only a sliver,
+    // so it earns far less index weight than its headline valuation implies.
+    // These floats are ASSUMPTIONS, not disclosures — the "Full float" toggle sets
+    // them all to 100% for the naive view.
+    const COMPANIES = [
+      { id: 'spacex',    name: 'SpaceX',    floatPct: 0.04 },
+      { id: 'openai',    name: 'OpenAI',    floatPct: 0.12 },
+      { id: 'anthropic', name: 'Anthropic', floatPct: 0.12 },
+    ];
+
+    // Aggregate FREE-FLOAT market cap of each cap-weighted fund's index ("W_F").
+    // This is the denominator that sets a holding's weight: weight = floated cap / W_F.
+    // IMPORTANT: it's the index's float-adjusted aggregate, NOT the ETF's fund AUM.
+    //
+    // Derived by anchoring on three ~100%-float US mega-caps: a stock's Vanguard-
+    // published weight ÷ its market cap pins the index total, W_F = median(cap / weight).
+    // Weights are Vanguard's published holdings as of 2026-04-30; the caps are as of the
+    // SAME date (shares × 2026-04-30 close) so the ratio is self-consistent.
+    // Cross-check: the computed VT total (~$114.9T) matches the FTSE Global All Cap
+    // factsheet "Net MCap" of $115.65T (29 May 2026) to within 0.7% — independent
+    // primary-source validation. CRSP (VTI) publishes no aggregate; the S&P 500
+    // factsheet prints only a $67.8T FULL-cap figure, so the anchor supplies VOO's
+    // float-adjusted total (~$61.8T).
+    const ANCHORS = [
+      // stock        cap on 2026-04-30      weight in VT / VTI / VOO on 2026-04-30
+      { name: 'NVIDIA',    cap: 4.834e12, w: { vt: 0.0415, vti: 0.0663, voo: 0.0785 } },
+      { name: 'Apple',     cap: 3.986e12, w: { vt: 0.0347, vti: 0.0574, voo: 0.0645 } },
+      { name: 'Microsoft', cap: 3.030e12, w: { vt: 0.0269, vti: 0.0436, voo: 0.0490 } },
+    ];
+    function medianIndexCap(fundKey) {
+      const vals = ANCHORS.map(a => a.cap / a.w[fundKey]).sort((x, y) => x - y);
+      return vals[Math.floor(vals.length / 2)];
+    }
+    const W = { vt: medianIndexCap('vt'), vti: medianIndexCap('vti'), voo: medianIndexCap('voo') };
+    // → W.vt ≈ $114.9T, W.vti ≈ $69.5T, W.voo ≈ $61.8T
+
+    // EUSA / MSCI USA Equal Weighted constituent count (MSCI factsheet, 29 May 2026).
+    const EUSA_N = 536;
+
+    const FUNDS = [
+      { id: 'vt',  label: 'VT',  sub: 'world · cap-wt',
+        help: 'Vanguard Total World Stock — tracks the FTSE Global All Cap Index, float-adjusted market-cap weighted (~10,100 holdings, ~38% non-US). Your slice = invested × floated cap ÷ ~$115T — the aggregate free-float cap of the whole index. Biggest, most diluted index → smallest slice.' },
+      { id: 'vti', label: 'VTI', sub: 'US · cap-wt',
+        help: 'Vanguard Total Stock Market — tracks the CRSP US Total Market Index, float-adjusted market-cap weighted (~3,500 US holdings). Slice = invested × floated cap ÷ ~$69.5T.' },
+      { id: 'voo', label: 'VOO', sub: 'S&P 500 · cap-wt',
+        help: 'Vanguard S&P 500 — float-adjusted market-cap weighted (503 large-cap US holdings). Slice = invested × floated cap ÷ ~$62T. Smallest index → biggest cap-weighted slice. Caveat: the S&P 500 also demands GAAP profitability + ≥10% float to admit a stock.' },
+      { id: 'eusa', label: 'EUSA', sub: 'US · equal-wt', equal: true,
+        help: 'iShares MSCI USA Equal Weighted — every constituent gets the same weight, 1/N. Slice = invested ÷ 536 ≈ $373 no matter the valuation or float. That is why this column never moves when you drag a slider.' },
+    ];
+
+    // ---- Slider scale (log, $50B → $3T) -------------------------------------
+    const MIN_B = 500, MAX_B = 3000, RATIO = MAX_B / MIN_B, POS_MAX = 1000;
+    function roundNiceB(v) {
+      let r;
+      if (v < 200) r = Math.round(v / 10) * 10;
+      else if (v < 1000) r = Math.round(v / 25) * 25;
+      else if (v < 2000) r = Math.round(v / 50) * 50;
+      else r = Math.round(v / 100) * 100;
+      return Math.min(MAX_B, Math.max(MIN_B, r));
+    }
+    const bFromPos = (p) => roundNiceB(MIN_B * Math.pow(RATIO, p / POS_MAX));
+    const posFromB = (b) => Math.round(POS_MAX * Math.log(b / MIN_B) / Math.log(RATIO));
+    const VAL_TICKS = [500, 1000, 1500, 2000, 3000].map(b => ({ b, ratio: posFromB(b) / POS_MAX }));
+
+    // ---- Formatting ---------------------------------------------------------
+    function fmtMoney(n) {
+      if (n >= 100) return '$' + Math.round(n).toLocaleString('en-US');
+      if (n >= 10) return '$' + n.toFixed(1);
+      return '$' + n.toFixed(2);
+    }
+    function fmtValuation(b) {
+      if (b >= 1000) return '$' + (b / 1000).toFixed(2).replace(/\.?0+$/, '') + 'T';
+      return '$' + b + 'B';
+    }
+    function fmtInvested(n) {
+      if (n >= 1e6) return '$' + (n / 1e6) + 'M';
+      return '$' + (n / 1e3) + 'k';
+    }
+    function fmtWeightPct(w) {
+      const p = w * 100;
+      if (p >= 1) return p.toFixed(1) + '%';
+      if (p >= 0.1) return p.toFixed(2) + '%';
+      if (p >= 0.01) return p.toFixed(3) + '%';
+      return p.toFixed(4) + '%';
+    }
+
+    // ---- Model --------------------------------------------------------------
+    // Floated cap = float × valuation. Cap-weighted slice = invested × floated/W_F.
+    // Equal-weighted slice = invested / N (independent of valuation and float).
+    function cellValue(fund, company, valB, invested, floatMode) {
+      if (fund.equal) return invested / EUSA_N;
+      const f = floatMode === 'full' ? 1 : company.floatPct;
+      return invested * (f * valB * 1e9) / W[fund.id];
+    }
+    function cellWeight(fund, company, valB, floatMode) {
+      if (fund.equal) return 1 / EUSA_N;
+      const f = floatMode === 'full' ? 1 : company.floatPct;
+      return (f * valB * 1e9) / W[fund.id];
+    }
+
+    // ---- Storage ------------------------------------------------------------
+    const STATE_KEY = 'ipo-index-exposure:state';
+    const DEFAULT_STATE = {
+      pos: { spacex: posFromB(800), openai: posFromB(850), anthropic: posFromB(950) },
+      floatMode: 'realistic', // 'realistic' | 'full'
+      investedIdx: 2,         // $200k
+    };
+    function loadState() {
+      try {
+        const s = JSON.parse(localStorage.getItem(STATE_KEY)) || {};
+        return {
+          ...DEFAULT_STATE,
+          ...s,
+          pos: { ...DEFAULT_STATE.pos, ...(s.pos || {}) },
+        };
+      } catch { return DEFAULT_STATE; }
+    }
+    function saveState(s) {
+      try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch {}
+    }
+
+    // ---- HelpLabel ----------------------------------------------------------
+    // Tooltip is position:fixed (anchored to the trigger's rect) so it escapes the
+    // table card's overflow clipping, with text-transform/letter-spacing reset so it
+    // isn't uppercased by the table-header styles, and edge-aware left/right anchoring
+    // so it never runs off-screen for the rightmost columns.
+    function HelpLabel({ label, text, baseStyle }) {
+      const [open, setOpen] = useState(false);
+      const [touchMode, setTouchMode] = useState(false);
+      const [coords, setCoords] = useState(null);
+      const triggerRef = useRef(null);
+
+      useEffect(() => {
+        setTouchMode(!window.matchMedia('(hover: hover)').matches);
+      }, []);
+
+      const place = () => {
+        const el = triggerRef.current;
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const anchorRight = r.left > vw / 2;
+        setCoords({
+          top: Math.round(r.bottom + 6),
+          left: anchorRight ? null : Math.round(r.left),
+          right: anchorRight ? Math.round(vw - r.right) : null,
+        });
+      };
+      const show = () => { place(); setOpen(true); };
+      const hide = () => setOpen(false);
+
+      useEffect(() => {
+        if (!open) return;
+        const reposition = () => place();
+        window.addEventListener('scroll', reposition, true);
+        window.addEventListener('resize', reposition);
+        let onDocClick, t;
+        if (touchMode) {
+          onDocClick = (e) => { if (!e.target.closest('.help-label-wrap')) setOpen(false); };
+          t = setTimeout(() => document.addEventListener('click', onDocClick), 0);
+        }
+        return () => {
+          window.removeEventListener('scroll', reposition, true);
+          window.removeEventListener('resize', reposition);
+          if (onDocClick) { clearTimeout(t); document.removeEventListener('click', onDocClick); }
+        };
+      }, [open, touchMode]);
+
+      const triggerHandlers = touchMode
+        ? {
+            onClick: () => (open ? hide() : show()),
+            onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open ? hide() : show(); } },
+          }
+        : {
+            onMouseEnter: show,
+            onMouseLeave: hide,
+            onFocus: show,
+            onBlur: hide,
+          };
+
+      return html`
+        <span class="help-label-wrap" style=${{ position: 'relative', display: 'inline-block' }}>
+          <span
+            ref=${triggerRef}
+            role="button"
+            tabIndex=${0}
+            ...${triggerHandlers}
+            style=${{ ...(baseStyle || {}), cursor: 'help', borderBottom: '1px dotted ' + T.textTertiary, userSelect: 'none' }}
+          >${label}</span>
+          ${open && coords ? html`
+            <div style=${{
+              position: 'fixed', top: coords.top + 'px',
+              left: coords.left != null ? coords.left + 'px' : 'auto',
+              right: coords.right != null ? coords.right + 'px' : 'auto',
+              padding: '10px 12px', background: T.tooltipBg, color: T.tooltipText,
+              fontSize: 12, lineHeight: 1.45, borderRadius: 8, width: 'max-content',
+              maxWidth: 'min(320px, calc(100vw - 24px))', zIndex: 1000,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.18)', fontWeight: 400, pointerEvents: 'none',
+              textTransform: 'none', letterSpacing: 'normal', textAlign: 'left', whiteSpace: 'normal',
+            }}>${text}</div>
+          ` : null}
+        </span>
+      `;
+    }
+
+    // ---- Slider -------------------------------------------------------------
+    function ValuationSlider({ company, pos, onPos }) {
+      const valB = bFromPos(pos);
+      const ratio = pos / POS_MAX;
+      return html`
+        <div style=${{ padding: '14px 0' }}>
+          <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+            <span style=${{ fontSize: 15, fontWeight: 600, color: T.textPrimary }}>${company.name}</span>
+            <span style=${{ fontSize: 13, color: T.textTertiary }}>
+              IPO valuation
+              <span style=${{ color: T.accent, fontWeight: 700, fontSize: 16, marginLeft: 8, fontVariantNumeric: 'tabular-nums' }}>${fmtValuation(valB)}</span>
+            </span>
+          </div>
+          <div style=${{ position: 'relative', width: '100%', height: 22 }}>
+            <div style=${{ position: 'absolute', left: 0, top: 7, height: 8, width: '100%', background: T.borderLight, borderRadius: 4 }}></div>
+            <div style=${{ position: 'absolute', left: 0, top: 7, height: 8, borderRadius: 4, width: (ratio * 100) + '%', background: T.accent, opacity: 0.5 }}></div>
+            <input
+              type="range"
+              class="x-slider"
+              min=${0} max=${POS_MAX} step=${1}
+              value=${pos}
+              aria-label=${company.name + ' IPO valuation'}
+              onChange=${e => onPos(Number(e.target.value))}
+              style=${{ position: 'absolute', left: 0, top: 1, width: '100%', height: 20 }}
+            />
+          </div>
+          <div style=${{ position: 'relative', height: 18, marginTop: 2 }}>
+            ${VAL_TICKS.map(({ b, ratio: r }) => html`
+              <div key=${b} style=${{ position: 'absolute', left: `calc(${r} * (100% - 20px) + 10px)`, top: 0, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style=${{ width: 1, height: 5, background: T.border, marginBottom: 2 }}></div>
+                <span style=${{ fontSize: 11, color: T.textTertiary, whiteSpace: 'nowrap' }}>${fmtValuation(b)}</span>
+              </div>
+            `)}
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- App ----------------------------------------------------------------
+    function App() {
+      const [state, setState] = useState(loadState);
+      useEffect(() => { saveState(state); }, [state]);
+
+      const invested = INVESTED_OPTIONS[state.investedIdx];
+      const fullFloat = state.floatMode === 'full';
+
+      const setPos = (id, p) => setState(s => ({ ...s, pos: { ...s.pos, [id]: p } }));
+
+      const renderRow = (company) => {
+        const valB = bFromPos(state.pos[company.id]);
+        const floatLabel = fullFloat ? '100% float' : Math.round(company.floatPct * 100) + '% float';
+        return html`
+          <tr key=${company.id}>
+            <td style=${tdL}>
+              <div style=${{ fontWeight: 600 }}>${company.name}</div>
+              <div class="cell-sub" style=${subCell}>${fmtValuation(valB)} · ${floatLabel}</div>
+            </td>
+            ${FUNDS.map(fund => {
+              const v = cellValue(fund, company, valB, invested, state.floatMode);
+              const w = cellWeight(fund, company, valB, state.floatMode);
+              const sub = fund.equal ? `1/${EUSA_N} · flat` : fmtWeightPct(w);
+              return html`
+                <td key=${fund.id} class=${fund.equal ? 'eusa-col' : ''} style=${tdR}>
+                  <div style=${{ fontWeight: 600 }}>${fmtMoney(v)}</div>
+                  <div class="cell-sub" style=${{ ...subCell, color: fund.equal ? T.accent : T.textTertiary }}>${sub}</div>
+                </td>
+              `;
+            })}
+          </tr>
+        `;
+      };
+
+      return html`
+        <div style=${{ maxWidth: 920, margin: '0 auto' }}>
+          <h1 style=${{ fontSize: 28, fontWeight: 700, marginBottom: 6 }}>What your index fund would hold of the next big IPO</h1>
+          <p style=${{ color: T.textSecondary, marginBottom: 24, fontSize: 15, lineHeight: 1.55 }}>
+            You hold <strong>${fmtInvested(invested)}</strong> in a broad index fund. When SpaceX, OpenAI, or Anthropic finally IPOs, how many of those dollars actually end up invested in <em>it</em>? Set each IPO valuation and compare four funds — three cap-weighted (<strong>VT</strong>, <strong>VTI</strong>, <strong>VOO</strong>) and one equal-weighted (<strong>EUSA</strong>).
+          </p>
+
+          <div style=${{ background: T.cardBg, border: '1px solid ' + T.border, borderRadius: 12, boxShadow: T.cardShadow, padding: '18px 20px', marginBottom: 18 }}>
+            <div class="controls-row" style=${{ display: 'flex', alignItems: 'center', gap: 28, flexWrap: 'wrap', marginBottom: 6 }}>
+              <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <${HelpLabel}
+                  label="Float assumption"
+                  baseStyle=${{ fontSize: 14, color: T.textLabel }}
+                  text="Cap-weighted funds (VT/VTI/VOO) weight by float-adjusted market cap, so only publicly floated shares count. 'Realistic' uses each company's assumed public float (SpaceX 4%, OpenAI 12%, Anthropic 12%). 'Full float' sets every float to 100% — the naive view that ignores insider lockups. EUSA is equal-weighted, so float never affects it."
+                />
+                <div class="seg">
+                  <button class=${!fullFloat ? 'active' : ''} onClick=${() => setState(s => ({ ...s, floatMode: 'realistic' }))}>Realistic</button>
+                  <button class=${fullFloat ? 'active' : ''} onClick=${() => setState(s => ({ ...s, floatMode: 'full' }))}>Full float</button>
+                </div>
+              </div>
+              <div style=${{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <${HelpLabel}
+                  label="Invested"
+                  baseStyle=${{ fontSize: 14, color: T.textLabel }}
+                  text="How much you hold in the fund. Every dollar figure scales linearly with this, so it's just a multiplier on the whole table."
+                />
+                <div class="seg">
+                  ${INVESTED_OPTIONS.map((amt, i) => html`
+                    <button key=${i} class=${state.investedIdx === i ? 'active' : ''} onClick=${() => setState(s => ({ ...s, investedIdx: i }))}>${fmtInvested(amt)}</button>
+                  `)}
+                </div>
+              </div>
+            </div>
+            <div style=${{ borderTop: '1px solid ' + T.borderLight, marginTop: 12, paddingTop: 4 }}>
+              ${COMPANIES.map(c => html`<${ValuationSlider} key=${c.id} company=${c} pos=${state.pos[c.id]} onPos=${p => setPos(c.id, p)} />`)}
+            </div>
+          </div>
+
+          <div style=${{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 14, padding: '12px 16px', background: 'rgba(224,122,95,0.08)', border: '1px solid rgba(224,122,95,0.25)', borderRadius: 10, fontSize: 13.5, lineHeight: 1.5, color: T.textLabel }}>
+            <span style=${{ fontSize: 16 }}>↔</span>
+            <span>Drag any valuation slider and watch the columns: <strong>VT, VTI and VOO move; EUSA doesn't.</strong> Equal-weighting holds 1/N of every constituent regardless of size, so a company's valuation changes its cap-weighted slice but <em>never</em> its equal-weight slice.</span>
+          </div>
+
+          <div class="table-card" style=${{ background: T.cardBg, borderRadius: 12, border: '1px solid ' + T.border, boxShadow: T.cardShadow, overflow: 'hidden' }}>
+            <div class="table-wrap">
+              <table style=${{ width: '100%', borderCollapse: 'collapse', minWidth: 520 }}>
+                <thead>
+                  <tr>
+                    <th style=${thL}>Company</th>
+                    ${FUNDS.map(fund => html`
+                      <th key=${fund.id} class=${fund.equal ? 'eusa-col' : ''} style=${thR}>
+                        <${HelpLabel} label=${fund.label} baseStyle=${{ fontSize: 12, fontWeight: 700, color: T.textLabel, letterSpacing: 0.3 }} text=${fund.help} />
+                        <div class="fund-sub" style=${{ fontSize: 10.5, fontWeight: 500, color: T.textTertiary, textTransform: 'none', letterSpacing: 0, marginTop: 3 }}>${fund.sub}</div>
+                      </th>
+                    `)}
+                  </tr>
+                </thead>
+                <tbody>${COMPANIES.map(renderRow)}</tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style=${{ marginTop: 24, fontSize: 13, color: T.textSecondary, lineHeight: 1.6 }}>
+            <p style=${{ marginBottom: 8 }}><strong>What this shows.</strong> Hold ${fmtInvested(invested)} in a fund and a holding's value attributable to one stock is <code>invested × that stock's weight in the fund</code>. Each cell is that dollar figure for the company if it IPO'd at the slider valuation. The small line under each is the implied portfolio weight.</p>
+            <p style=${{ marginBottom: 8 }}><strong>Cap-weighted funds (VT, VTI, VOO).</strong> Weight = a stock's <em>float-adjusted</em> market cap ÷ the index's aggregate free-float cap. So <code>slice = invested × (float × valuation) ÷ W</code>, where W ≈ <strong>$115T</strong> for VT's FTSE Global All Cap, <strong>$69.5T</strong> for VTI's CRSP US Total Market, and <strong>$62T</strong> for VOO's S&P 500 (float-adjusted). W is the index's aggregate free-float cap — <em>not</em> the ETF's fund assets. Smaller, more concentrated index → bigger slice, so <strong>VOO > VTI > VT</strong> for the same company.</p>
+            <p style=${{ marginBottom: 8 }}><strong>Equal-weighted fund (EUSA).</strong> MSCI USA Equal Weighted holds the same fraction of every constituent: <code>slice = invested ÷ 536 ≈ ${fmtMoney(invested / EUSA_N)}</code>, independent of valuation and float. Weights reset to 1/N at each quarterly rebalance. Because float is irrelevant here, a low-float giant like SpaceX can actually give you <em>more</em> exposure in EUSA than in any cap-weighted fund.</p>
+            <p style=${{ marginBottom: 8 }}><strong>Free float.</strong> Cap-weighted indexes only count publicly floated shares, so insider-heavy IPOs are weighted far below their headline valuation. Assumed public floats: SpaceX ~4% (Musk control + lockups), OpenAI ~12%, Anthropic ~12% — these are assumptions; the <em>Full float</em> toggle sets them to 100% to show the naive view (which inflates the cap-weighted slices ~8–25×).</p>
+            <p style=${{ marginBottom: 8 }}><strong>These are steady-state "if/once included" figures, not day-one.</strong> FTSE phases large IPOs in over its quarterly reviews (≥5% free float to qualify); MSCI adds names at its semi-annual review if they pass size/liquidity/float screens; the <strong>S&P 500 additionally requires positive GAAP earnings</strong> (most recent quarter and trailing four) plus ≥10% float — so currently-unprofitable OpenAI and Anthropic likely would not enter VOO for years, and SpaceX's tiny float could delay inclusion everywhere.</p>
+            <p style=${{ color: T.textTertiary, fontSize: 12, marginTop: 12 }}>
+              Default valuations ≈ latest reported private rounds (mid-2026): SpaceX ~$800B, OpenAI ~$850B, Anthropic ~$950B — private valuations are approximate, adjust freely. Index totals from <a href="https://research.ftserussell.com/Analytics/FactSheets/Home/AnalyticsForFactSheet" target="_blank" rel="noopener" style=${linkStyle}>FTSE Russell</a>, <a href="https://www.spglobal.com/spdji/en/indices/equity/sp-500/" target="_blank" rel="noopener" style=${linkStyle}>S&P Dow Jones</a> and <a href="https://www.msci.com/indexes/index/129858" target="_blank" rel="noopener" style=${linkStyle}>MSCI</a> factsheets; fund weights from <a href="https://investor.vanguard.com/investment-products/etfs/profile/vt" target="_blank" rel="noopener" style=${linkStyle}>Vanguard</a> holdings, all ~Apr–May 2026. Verify before relying on these numbers.
+            </p>
+          </div>
+
+          <div style=${{ marginTop: 28, fontSize: 12, color: T.textTertiary }}>
+            <a href="../" style=${linkStyle}>← back to playground</a>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Styles -------------------------------------------------------------
+    const thBase = {
+      padding: '12px 14px', fontSize: 12, fontWeight: 700,
+      color: T.textLabel, textTransform: 'uppercase', letterSpacing: 0.4,
+      borderBottom: '1px solid ' + T.border, background: T.cardBg, verticalAlign: 'bottom',
+    };
+    const thL = { ...thBase, textAlign: 'left' };
+    const thR = { ...thBase, textAlign: 'right', whiteSpace: 'nowrap' };
+    const tdBase = {
+      padding: '14px 14px', fontSize: 15, color: T.textPrimary,
+      borderBottom: '1px solid ' + T.borderLight, verticalAlign: 'top',
+    };
+    const tdL = { ...tdBase, textAlign: 'left', whiteSpace: 'nowrap', fontWeight: 500 };
+    const tdR = { ...tdBase, textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' };
+    const subCell = { fontSize: 11, color: T.textTertiary, marginTop: 3, whiteSpace: 'nowrap' };
+    const linkStyle = { color: T.accent, textDecoration: 'none', borderBottom: '1px solid ' + T.accent + '40' };
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

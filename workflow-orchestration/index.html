@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workflow Orchestration: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #ea580c;
+      --accent-2: #c2410c;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #fff7ed;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      /* per-tool brand colors */
+      --temporal: #7c3aed;
+      --airflow: #017cee;
+      --sfn: #cd2264;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(234,88,12,0.28);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #0e7490; }
+    .str { color: #15803d; }
+    .fn { color: #2563eb; }
+    .out { color: var(--muted); }
+    .bad { color: #b91c1c; }
+
+    /* code sample heading band, tinted per tool */
+    .code-head {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; font-weight: 700;
+      margin: 22px 0 -6px;
+    }
+    .code-head .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+    .code-head .lang { color: var(--dim); font-weight: 500; font-family: var(--font-mono); font-size: 0.72rem; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(234,88,12,0.06), rgba(234,88,12,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 32px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* tool name spans */
+    .t-temporal { color: var(--temporal); font-weight: 600; }
+    .t-airflow  { color: var(--airflow);  font-weight: 600; }
+    .t-sfn      { color: var(--sfn);       font-weight: 600; }
+
+    /* tool chips legend */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.8rem; font-weight: 600; color: var(--fg);
+      padding: 4px 12px 4px 10px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg);
+    }
+    .chip .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Interactive matrix ---------- */
+    .matrix-controls {
+      display: flex; flex-wrap: wrap; gap: 16px 30px;
+      align-items: flex-start; margin: 4px 0 16px;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 7px; }
+    .ctrl-group .ctrl-label {
+      font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--muted); font-weight: 700;
+    }
+    .seg { display: inline-flex; flex-wrap: wrap; gap: 5px; max-width: 540px; }
+    .seg button {
+      font: inherit; font-size: 0.78rem;
+      padding: 5px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--muted); cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .seg button:hover { color: var(--fg); border-color: var(--dim); }
+    .seg button.active { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .seg.hl button[data-hl="temporal"].active { background: var(--temporal); border-color: var(--temporal); }
+    .seg.hl button[data-hl="airflow"].active  { background: var(--airflow);  border-color: var(--airflow); }
+    .seg.hl button[data-hl="sfn"].active       { background: var(--sfn);       border-color: var(--sfn); }
+
+    #matrix-table tr.hidden { display: none; }
+    #matrix-table th.th-temporal { color: var(--temporal); border-bottom: 2px solid var(--temporal); }
+    #matrix-table th.th-airflow  { color: var(--airflow);  border-bottom: 2px solid var(--airflow); }
+    #matrix-table th.th-sfn       { color: var(--sfn);       border-bottom: 2px solid var(--sfn); }
+    #matrix-table td:first-child { white-space: nowrap; }
+    #matrix-table.hl-temporal td:nth-child(2), #matrix-table.hl-temporal th:nth-child(2) { background: rgba(124,58,237,0.08); }
+    #matrix-table.hl-airflow  td:nth-child(3), #matrix-table.hl-airflow  th:nth-child(3) { background: rgba(1,124,238,0.08); }
+    #matrix-table.hl-sfn       td:nth-child(4), #matrix-table.hl-sfn       th:nth-child(4) { background: rgba(205,34,100,0.08); }
+
+    /* ---------- Matrix expand / fullscreen (desktop) ---------- */
+    .fs-btn { display: inline-flex; align-items: center; gap: 6px; }
+    #matrix-panel.expanded {
+      position: fixed; inset: 0; z-index: 3000;
+      background: var(--bg);
+      padding: 22px clamp(24px, 4vw, 64px) 40px;
+      overflow: auto;
+    }
+    #matrix-panel.expanded .matrix-controls {
+      position: sticky; top: 0; z-index: 2;
+      background: var(--bg);
+      margin: 0 0 16px; padding: 6px 0 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    #matrix-panel.expanded .table-wrap { max-width: 1500px; margin: 0 auto; }
+    #matrix-panel.expanded #matrix-table { font-size: 0.95rem; }
+    #matrix-panel.expanded #matrix-table th,
+    #matrix-panel.expanded #matrix-table td { padding: 13px 18px; }
+    #matrix-panel.expanded #matrix-table td { white-space: normal; }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+    svg text.mono { font-family: var(--font-mono); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(234,88,12,0.55);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 4000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+      .fs-ctrl { display: none; }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#philosophies">Three philosophies</a>
+      <a href="#matrix">The comparison matrix</a>
+      <a href="#execution-models">Execution &amp; durability</a>
+      <a href="#authoring">Same workflow, three ways</a>
+      <a href="#scheduling">Scheduling &amp; triggering</a>
+      <a href="#state-data">State, data &amp; retries</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#deployment">Deployment &amp; managed offerings</a>
+      <a href="#scale">Scale &amp; limits</a>
+      <a href="#observability">Observability &amp; versioning</a>
+      <a href="#pricing">Cost models</a>
+      <a href="#decision">When to use which</a>
+      <a href="#traps">Common misconceptions</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">🔀</span>Workflow Orchestration</h1>
+    <p class="doc-subtitle">Three tools answer to the word <em>"workflow,"</em> and they are not the same machine. <span class="t-temporal">Temporal</span> is a durable-execution engine you write as ordinary code; <span class="t-airflow">Apache Airflow</span> is a Python DAG scheduler for data pipelines; <span class="t-sfn">AWS Step Functions</span> is a managed JSON state machine wired into AWS. An exhaustive, primary-source comparison of how each one models work, survives failure, scales, deploys, and bills.</p>
+
+    <div class="chips">
+      <span class="chip"><span class="dot" style="background:var(--temporal)"></span>Temporal</span>
+      <span class="chip"><span class="dot" style="background:var(--airflow)"></span>Apache Airflow</span>
+      <span class="chip"><span class="dot" style="background:var(--sfn)"></span>AWS Step Functions</span>
+    </div>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong><span class="t-temporal">Temporal</span> is a <span class="x" data-term="Durable execution" data-def="The ability of a program to keep its state and progress across process, host, and network failures and resume exactly where it left off. The engine — not your code — owns the durability.">durable-execution</span> engine.</strong> You write the workflow as a normal procedural function in your own language, and the engine makes that function itself crash-proof: it runs to completion exactly once, whether that takes a second or a year. Depth lives in the companion page on <a href="../durable-execution/">durable execution</a>; this page places it next to the others.</li>
+        <li><strong><span class="t-airflow">Apache Airflow</span> is a <span class="x" data-term="DAG" data-def="Directed Acyclic Graph. In Airflow, a pipeline is a DAG of tasks with dependency edges; the scheduler walks the graph and runs each task once its upstreams succeed.">DAG</span> scheduler.</strong> You author pipelines as Python that builds a graph of <span class="x" data-term="Operator / Task" data-def="An Operator is a template for one unit of work (run a query, move a file, call an API); an instance of it in a DAG is a Task. Airflow ships hundreds of provider operators.">tasks</span>, and a scheduler runs them — classically on a time cadence — with a vast operator ecosystem and a pipeline-ops UI. It re-runs tasks; it does not resume a function mid-line.</li>
+        <li><strong><span class="t-sfn">AWS Step Functions</span> is a managed state machine.</strong> You describe the workflow as a JSON state machine in <span class="x" data-term="Amazon States Language (ASL)" data-def="The JSON-based DSL for Step Functions. You declare named states (Task, Choice, Map, Parallel, Wait, Pass, Succeed, Fail) and the transitions between them. ASL orchestrates; it is not a general-purpose programming language.">Amazon States Language</span>, and AWS runs it for you — no servers, wired directly into 200+ AWS services.</li>
+        <li><strong>Same word, three machines.</strong> The deepest split is <em>who owns durability</em> and <em>what the unit of work is</em>: a durable function (Temporal), a scheduled task in a graph (Airflow), or a state in a managed state machine (Step Functions). Almost every other difference follows from that.</li>
+      </ul>
+    </div>
+
+    <section id="philosophies">
+      <h2>Three philosophies</h2>
+      <p>Pick the right axis and the whole comparison snaps into focus. That axis is: <strong>what is the unit of work, who guarantees it survives failure, and how do you author it?</strong> Each tool answers differently, and almost everything else — languages, scaling, pricing, lock-in — is downstream of the answer.</p>
+      <ul>
+        <li><strong><span class="t-temporal">Temporal — the durable-execution engine.</span></strong> The unit is a <strong>workflow function</strong> that calls <span class="x" data-term="Activity" data-def="A plain function that does one real-world action — a network call, a DB write, an email. Activities may be non-deterministic and are retried automatically; their results are recorded so a replay can skip them.">activities</span>. Durability is owned by the <em>engine</em>: it records an event history and rebuilds in-memory state by <span class="x" data-term="Deterministic replay" data-def="Reconstructing a workflow's state by re-running its code against the recorded event history instead of restoring a snapshot. Demands deterministic workflow code.">replaying</span> the log after any crash. You author in code (Go, Java, Python, TypeScript, .NET, PHP). The pitch: <em>"write code as if failure doesn't exist."</em></li>
+        <li><strong><span class="t-airflow">Airflow — the DAG scheduler.</span></strong> The unit is a <strong>task</strong> inside a directed acyclic graph. There is no replay and no resumed call stack: durability is the <strong>scheduler re-running tasks</strong> whose state lives in a metadata database, on the assumption that tasks are <span class="x" data-term="Idempotent" data-def="An operation that can run more than once with the same effect as running it once. Airflow leans on idempotent tasks because a retried or backfilled task simply runs again.">idempotent</span>. You author in Python that <em>declares</em> the graph; the bodies do the work. It is built for <strong>batch pipelines on a schedule</strong>.</li>
+        <li><strong><span class="t-sfn">Step Functions — the managed state machine.</span></strong> The unit is a <strong>state</strong> in a finite-state machine. Durability is owned by the <strong>managed AWS service</strong>, which persists every state transition for you. You author declaratively in <span class="x" data-term="Workflow Studio" data-def="The low-code visual editor for Step Functions in the AWS console: drag states onto a canvas, configure them, and it generates the underlying ASL JSON.">Workflow Studio</span> or raw ASL JSON; the real logic lives in the AWS services each state invokes.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 300" role="img" aria-label="Three machines that share the word workflow: Temporal is a durable-execution engine written as code over an event log; Apache Airflow is a DAG scheduler that runs Python tasks on a clock; AWS Step Functions is a managed JSON state machine">
+  <!-- Panel A: Temporal -->
+  <rect x="10" y="42" width="222" height="244" rx="12" fill="#faf5ff" stroke="#7c3aed"/>
+  <text x="121" y="30" fill="#7c3aed" font-size="13" font-weight="700" text-anchor="middle">Temporal</text>
+  <text x="121" y="64" fill="#6d28d9" font-size="11" font-weight="700" text-anchor="middle">durable-execution engine</text>
+  <text x="121" y="80" fill="#475569" font-size="9.5" text-anchor="middle">unit: a workflow function</text>
+  <rect x="34" y="98" width="84" height="74" rx="6" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="44" y="116" fill="#7c3aed" font-size="9.5" class="mono">def run():</text>
+  <line x1="46" y1="128" x2="108" y2="128" stroke="#ede9fe" stroke-width="6"/>
+  <line x1="46" y1="142" x2="98" y2="142" stroke="#ede9fe" stroke-width="6"/>
+  <line x1="46" y1="156" x2="104" y2="156" stroke="#ede9fe" stroke-width="6"/>
+  <path d="M122 135 h18" stroke="#7c3aed" stroke-width="1.5" fill="none"/>
+  <polygon points="148 135, 139 130.5, 139 139.5" fill="#7c3aed"/>
+  <path d="M152 116 v40 a28 7 0 0 0 56 0 v-40" fill="#ffffff" stroke="#7c3aed"/>
+  <ellipse cx="180" cy="116" rx="28" ry="7" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="180" y="142" fill="#475569" font-size="8.5" text-anchor="middle">event</text>
+  <text x="180" y="153" fill="#475569" font-size="8.5" text-anchor="middle">log</text>
+  <text x="121" y="206" fill="#0f172a" font-size="9.5" text-anchor="middle">engine owns durability</text>
+  <text x="121" y="222" fill="#475569" font-size="9" text-anchor="middle">via history + replay</text>
+  <text x="121" y="258" fill="#6d28d9" font-size="9.5" font-style="italic" text-anchor="middle">"write code as if</text>
+  <text x="121" y="271" fill="#6d28d9" font-size="9.5" font-style="italic" text-anchor="middle">failure can't happen"</text>
+
+  <!-- Panel B: Airflow -->
+  <rect x="249" y="42" width="222" height="244" rx="12" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="360" y="30" fill="#017cee" font-size="13" font-weight="700" text-anchor="middle">Apache Airflow</text>
+  <text x="360" y="64" fill="#0369a1" font-size="11" font-weight="700" text-anchor="middle">DAG scheduler</text>
+  <text x="360" y="80" fill="#475569" font-size="9.5" text-anchor="middle">unit: a task in a graph</text>
+  <!-- DAG -->
+  <circle cx="300" cy="120" r="13" fill="#ffffff" stroke="#017cee"/>
+  <text x="300" y="123.5" fill="#0369a1" font-size="9" text-anchor="middle">A</text>
+  <circle cx="360" cy="120" r="13" fill="#ffffff" stroke="#017cee"/>
+  <text x="360" y="123.5" fill="#0369a1" font-size="9" text-anchor="middle">B</text>
+  <circle cx="360" cy="166" r="13" fill="#ffffff" stroke="#017cee"/>
+  <text x="360" y="169.5" fill="#0369a1" font-size="9" text-anchor="middle">C</text>
+  <circle cx="420" cy="143" r="13" fill="#ffffff" stroke="#017cee"/>
+  <text x="420" y="146.5" fill="#0369a1" font-size="9" text-anchor="middle">D</text>
+  <line x1="313" y1="120" x2="347" y2="120" stroke="#7dd3fc" stroke-width="1.6"/>
+  <polygon points="347 120, 339 116, 339 124" fill="#7dd3fc"/>
+  <line x1="372" y1="125" x2="401" y2="135" stroke="#7dd3fc" stroke-width="1.6"/>
+  <polygon points="408 138, 399 139, 402 131" fill="#7dd3fc"/>
+  <line x1="372" y1="161" x2="400" y2="151" stroke="#7dd3fc" stroke-width="1.6"/>
+  <polygon points="408 148, 402 155, 399 147" fill="#7dd3fc"/>
+  <text x="360" y="206" fill="#0f172a" font-size="9.5" text-anchor="middle">scheduler re-runs tasks</text>
+  <text x="360" y="222" fill="#475569" font-size="9" text-anchor="middle">state in a metadata DB</text>
+  <text x="360" y="258" fill="#0369a1" font-size="9.5" font-style="italic" text-anchor="middle">⏱ runs on a schedule</text>
+  <text x="360" y="271" fill="#0369a1" font-size="9.5" font-style="italic" text-anchor="middle">pipelines as Python</text>
+
+  <!-- Panel C: Step Functions -->
+  <rect x="488" y="42" width="222" height="244" rx="12" fill="#fff0f6" stroke="#cd2264"/>
+  <text x="599" y="30" fill="#cd2264" font-size="13" font-weight="700" text-anchor="middle">Step Functions</text>
+  <text x="599" y="64" fill="#a21458" font-size="11" font-weight="700" text-anchor="middle">managed state machine</text>
+  <text x="599" y="80" fill="#475569" font-size="9.5" text-anchor="middle">unit: a state in ASL</text>
+  <rect x="546" y="96" width="106" height="80" rx="7" fill="#ffffff" stroke="#cd2264" stroke-dasharray="4 3"/>
+  <text x="599" y="111" fill="#a21458" font-size="8" text-anchor="middle">AWS-managed</text>
+  <rect x="560" y="118" width="78" height="16" rx="4" fill="#fce7f0" stroke="#f9a8c8"/>
+  <text x="599" y="129.5" fill="#a21458" font-size="8" text-anchor="middle" class="mono">Task</text>
+  <rect x="560" y="138" width="78" height="16" rx="4" fill="#fce7f0" stroke="#f9a8c8"/>
+  <text x="599" y="149.5" fill="#a21458" font-size="8" text-anchor="middle" class="mono">Choice</text>
+  <rect x="560" y="158" width="78" height="16" rx="4" fill="#fce7f0" stroke="#f9a8c8"/>
+  <text x="599" y="169.5" fill="#a21458" font-size="8" text-anchor="middle" class="mono">Map</text>
+  <text x="599" y="206" fill="#0f172a" font-size="9.5" text-anchor="middle">service owns durability</text>
+  <text x="599" y="222" fill="#475569" font-size="9" text-anchor="middle">persists each transition</text>
+  <text x="599" y="258" fill="#a21458" font-size="9.5" font-style="italic" text-anchor="middle">JSON states · zero infra</text>
+  <text x="599" y="271" fill="#a21458" font-size="9.5" font-style="italic" text-anchor="middle">wired into AWS</text>
+</svg>
+        <div class="caption">The same word, three machines. The unit of work and the owner of durability differ in each — and that one difference predicts most of the rest of the table.</div>
+      </div>
+    </section>
+
+    <section id="matrix">
+      <h2>The comparison matrix</h2>
+      <p>The exhaustive side-by-side. Use the controls to <strong>filter</strong> rows down to one dimension or <strong>highlight</strong> a single tool's column. (Both persist across reloads; <em>Copy as Markdown</em> always exports the full matrix.)</p>
+
+      <div id="matrix-panel">
+      <div class="matrix-controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Filter rows</span>
+          <div class="seg filter" id="filterSeg">
+            <button data-filter="all" class="active">All</button>
+            <button data-filter="model">Model &amp; authoring</button>
+            <button data-filter="durability">Durability</button>
+            <button data-filter="scheduling">Scheduling &amp; data</button>
+            <button data-filter="scale">Scale &amp; arch</button>
+            <button data-filter="ops">Deploy &amp; ops</button>
+            <button data-filter="cost">Cost &amp; lock-in</button>
+            <button data-filter="usecases">Use cases</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Highlight column</span>
+          <div class="seg hl" id="hlSeg">
+            <button data-hl="none" class="active">None</button>
+            <button data-hl="temporal">Temporal</button>
+            <button data-hl="airflow">Airflow</button>
+            <button data-hl="sfn">Step Functions</button>
+          </div>
+        </div>
+        <div class="ctrl-group fs-ctrl">
+          <span class="ctrl-label">View</span>
+          <div class="seg"><button type="button" id="fsBtn" class="fs-btn">⛶ Fullscreen</button></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="matrix-table">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="th-temporal">Temporal</th>
+              <th class="th-airflow">Apache Airflow</th>
+              <th class="th-sfn">Step Functions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-cat="model"><td>Category</td><td>Durable-execution engine</td><td>DAG-based batch scheduler</td><td>Managed serverless state machine</td></tr>
+            <tr data-cat="model"><td>Core philosophy</td><td>Write failure-proof code</td><td>Pipelines as code, run on time</td><td>Orchestrate AWS with a JSON state machine</td></tr>
+            <tr data-cat="model"><td>Authoring model</td><td>Imperative code (workflows + activities)</td><td>Python DAGs (operators / sensors / <span class="x" data-term="TaskFlow API" data-def="Airflow's decorator style: write a plain Python function and wrap it with @task. Return values are passed to downstream tasks automatically (via XCom), so the DAG reads like ordinary code.">TaskFlow</span>)</td><td>Declarative ASL JSON or Workflow Studio</td></tr>
+            <tr data-cat="model"><td>Unit of work</td><td>Workflow + Activity</td><td>Task (an operator instance)</td><td>State (Task / Choice / Map / Parallel / …)</td></tr>
+            <tr data-cat="model"><td>Language support</td><td>Go, Java, Python, TypeScript, .NET, PHP</td><td>Python (task bodies can shell out to anything)</td><td>None — JSON DSL; logic lives in Lambda/services</td></tr>
+            <tr data-cat="durability"><td>Durability mechanism</td><td>Event-sourced history + deterministic replay</td><td>Scheduler re-runs tasks; state in metadata DB</td><td>Managed service persists each state transition</td></tr>
+            <tr data-cat="durability"><td>Execution guarantee</td><td>Exactly-once <em>effect</em> via replay + idempotent activities</td><td>At-least-once task runs; relies on idempotency</td><td><strong>Standard: exactly-once · Express: at-least-once</strong></td></tr>
+            <tr data-cat="durability"><td>Max run duration</td><td>Effectively unbounded (years); bounded by history size</td><td>No hard per-run cap; tasks bounded by timeouts</td><td><strong>Standard: 1 year · Express: 5 minutes</strong></td></tr>
+            <tr data-cat="durability"><td>Long waits / human-in-loop</td><td>Durable timers, <span class="x" data-term="Signal" data-def="An asynchronous message delivered into a running Temporal workflow that can change its state — e.g. an approval or a cancellation. The workflow can await one for months at zero runtime cost.">signals</span>, updates (months, $0 idle)</td><td><span class="x" data-term="Sensor / deferrable" data-def="A Sensor is an operator that waits for a condition (a file, a partition, a time). Deferrable operators hand the wait to the Triggerer's async loop so they do not occupy a worker slot.">Sensors</span> / deferrable operators; awkward for live input</td><td>Wait state; <span class="x" data-term="Wait-for-Callback (.waitForTaskToken)" data-def="A Step Functions integration pattern: the state pauses and emits a task token; the workflow resumes only when something calls SendTaskSuccess/Failure with that token. Enables human approval and long async callbacks (Standard, up to 1 year).">.waitForTaskToken</span></td></tr>
+            <tr data-cat="scheduling"><td>Triggering</td><td>Code / API-driven (start a workflow); cron via Schedules</td><td>Time-driven (cron / timetables) + data-driven <span class="x" data-term="Asset (data-aware scheduling)" data-def="In Airflow 3, an Asset represents a piece of data a task produces or consumes. A DAG can be scheduled to run when its upstream Assets are updated, giving event/data-driven scheduling alongside cron.">Assets</span></td><td>Event / API-driven (StartExecution, EventBridge, API Gateway)</td></tr>
+            <tr data-cat="scheduling"><td>State &amp; data passing</td><td>Plain in-memory variables; activity return values</td><td><span class="x" data-term="XCom" data-def="Cross-communication: Airflow's mechanism for passing small values between tasks, stored in the metadata DB by default. Meant for small payloads, not large data — move bulk data through external storage.">XCom</span> (small payloads via metadata DB)</td><td>JSON in/out via <span class="x" data-term="JSONPath / JSONata" data-def="The two expression languages ASL uses to filter and reshape the JSON passed between states. JSONPath is the classic option; JSONata is the newer, more expressive mode selectable per state machine.">JSONPath/JSONata</span>; variables</td></tr>
+            <tr data-cat="scheduling"><td>Error handling / retries</td><td>Per-activity retry policies; sagas/compensation in code</td><td>Task <code>retries</code> / <code>retry_delay</code>; trigger rules; callbacks</td><td><code>Retry</code> / <code>Catch</code> in ASL; per-state backoff</td></tr>
+            <tr data-cat="scale"><td>Concurrency &amp; scale</td><td>Stateless workers; sharded history; namespaces</td><td>Scheduler + Celery/K8s workers; pools/parallelism</td><td>Fully managed autoscale; high per-account quotas</td></tr>
+            <tr data-cat="scale"><td>Architecture</td><td>Temporal Service (Frontend/History/Matching) + your workers + DB</td><td>Scheduler + webserver + DAG processor + workers + triggerer + DB</td><td>Opaque managed service; you see only the API/console</td></tr>
+            <tr data-cat="ops"><td>Deployment</td><td>Self-host OSS <em>or</em> Temporal Cloud</td><td>Self-host <em>or</em> managed</td><td>Managed-only (AWS)</td></tr>
+            <tr data-cat="ops"><td>First-party managed</td><td>Temporal Cloud</td><td><span class="x" data-term="MWAA" data-def="Amazon Managed Workflows for Apache Airflow — AWS's managed, real Apache Airflow (not a fork), with AWS provisioning the scheduler, workers, and webserver.">AWS MWAA</span>, <span class="x" data-term="Cloud Composer" data-def="Google Cloud's fully managed Apache Airflow service, built on the open-source project and integrated with GCP.">Google Cloud Composer</span></td><td>Native AWS service</td></tr>
+            <tr data-cat="ops"><td>Observability / UI</td><td>Temporal Web UI (per-execution event history)</td><td>React UI: Grid / Graph / logs</td><td>Console graph + Workflow Studio; Express logs → CloudWatch</td></tr>
+            <tr data-cat="ops"><td>Versioning</td><td>Workflow versioning APIs / Worker Versioning</td><td>DAG versioning (a run finishes on its start version)</td><td>State-machine versions + aliases</td></tr>
+            <tr data-cat="ops"><td>Testing / local dev</td><td>Time-skipping test framework; local dev server</td><td><code>airflow dags test</code>; unit-test operators; local Docker</td><td>TestState API / Step Functions Local; mostly cloud</td></tr>
+            <tr data-cat="cost"><td>Pricing model</td><td>OSS + infra, <em>or</em> Temporal Cloud per-action</td><td>OSS + infra; MWAA/Composer per-environment</td><td><strong>Standard $0.000025/transition · Express $1.00/M req + $0.00001667/GB-s</strong></td></tr>
+            <tr data-cat="cost"><td>Vendor lock-in</td><td>Low (OSS, portable, multi-cloud)</td><td>Low (OSS, portable); managed variants add some</td><td><strong>High (AWS-only; ASL is AWS-specific)</strong></td></tr>
+            <tr data-cat="usecases"><td>Ecosystem</td><td>SDKs + your own activities</td><td>Huge provider/operator catalog</td><td>200+ AWS SDK integrations + optimized integrations</td></tr>
+            <tr data-cat="usecases"><td>Best-fit use cases</td><td>Long-running stateful logic, sagas, microservice orchestration</td><td>ETL/ELT &amp; ML batch pipelines, scheduled jobs</td><td>Serverless app orchestration, AWS-native ETL, event glue</td></tr>
+            <tr data-cat="usecases"><td>Sharpest footgun</td><td>Determinism constraints on workflow code</td><td>It is <em>not</em> durable execution; scheduler semantics</td><td>ASL verbosity + deep AWS coupling</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </section>
+
+    <section id="execution-models">
+      <h2>Execution &amp; durability</h2>
+      <p>"What survives a crash?" is the question that separates these three most sharply. They give three genuinely different answers, and confusing them is the most common mistake in this space.</p>
+      <ul>
+        <li><strong><span class="t-temporal">Temporal replays a log.</span></strong> Every step a workflow takes is appended to a durable <strong>event history</strong>. When a worker dies mid-execution, a fresh worker re-runs the function from the top, but each already-recorded step returns its stored result instantly instead of re-executing. When replay catches up to the last event, the in-memory state — locals, call stack, pending <code>await</code>s — is exactly as it was, and execution continues. The function literally resumes mid-line. (This is the subject of the <a href="../durable-execution/#replay">companion page</a>.)</li>
+        <li><strong><span class="t-airflow">Airflow re-runs tasks.</span></strong> There is no replayed call stack. The scheduler tracks each task's state (<code>queued</code>, <code>running</code>, <code>success</code>, <code>failed</code>) in the metadata database. If a task or worker dies, the scheduler simply <strong>re-queues that task</strong> from the start, up to its <code>retries</code> count. Durability is therefore an emergent property of <em>idempotent tasks plus the metadata DB</em>, at task granularity — not a resumed program.</li>
+        <li><strong><span class="t-sfn">Step Functions persists transitions.</span></strong> The managed service records the result of <strong>every state transition</strong>. If a downstream service fails, the state machine retries or catches per its ASL rules; the execution itself is never "lost" because AWS holds its state. <strong>Standard</strong> workflows give <span class="x" data-term="Exactly-once" data-def="Each state in a Standard workflow executes exactly once (barring your own non-idempotent side effects). Express workflows trade this for throughput: they are at-least-once, so a state may run more than once.">exactly-once</span> execution of each state; <strong>Express</strong> trades that for throughput and is <strong>at-least-once</strong>.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 300" role="img" aria-label="What survives a crash in each tool. Temporal replays its event history into a fresh worker. Airflow's scheduler re-queues the failed idempotent task using state in the metadata database. Step Functions resumes from the last persisted state transition inside the managed service.">
+  <text x="360" y="20" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">A worker / service dies mid-run — what happens next?</text>
+
+  <!-- Lane 1: Temporal -->
+  <rect x="10" y="36" width="700" height="78" rx="9" fill="#faf5ff" stroke="#7c3aed"/>
+  <text x="26" y="60" fill="#7c3aed" font-size="11" font-weight="700">Temporal</text>
+  <text x="26" y="76" fill="#475569" font-size="9">replays the log</text>
+  <text x="26" y="90" fill="#475569" font-size="9">into a fresh worker</text>
+  <path d="M150 88 v-30 a30 7 0 0 1 60 0 v30" fill="#ffffff" stroke="#7c3aed"/>
+  <ellipse cx="180" cy="58" rx="30" ry="7" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="180" y="84" fill="#475569" font-size="8" text-anchor="middle">history</text>
+  <line x1="214" y1="74" x2="262" y2="74" stroke="#7c3aed" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <polygon points="270 74, 261 69.5, 261 78.5" fill="#7c3aed"/>
+  <text x="240" y="66" fill="#6d28d9" font-size="8" text-anchor="middle">replay</text>
+  <rect x="272" y="52" width="120" height="44" rx="6" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="332" y="70" fill="#0f172a" font-size="9" text-anchor="middle">new worker re-runs</text>
+  <text x="332" y="84" fill="#0f172a" font-size="9" text-anchor="middle">recorded steps skipped</text>
+  <line x1="392" y1="74" x2="430" y2="74" stroke="#16a34a" stroke-width="1.6"/>
+  <polygon points="438 74, 429 69.5, 429 78.5" fill="#16a34a"/>
+  <rect x="440" y="56" width="256" height="36" rx="6" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="568" y="79" fill="#15803d" font-size="9.5" font-weight="600" text-anchor="middle">resumes mid-function, no progress lost</text>
+
+  <!-- Lane 2: Airflow -->
+  <rect x="10" y="122" width="700" height="78" rx="9" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="26" y="146" fill="#017cee" font-size="11" font-weight="700">Airflow</text>
+  <text x="26" y="162" fill="#475569" font-size="9">scheduler re-queues</text>
+  <text x="26" y="176" fill="#475569" font-size="9">the failed task</text>
+  <rect x="150" y="146" width="58" height="30" rx="5" fill="#ffffff" stroke="#7dd3fc"/>
+  <text x="179" y="165" fill="#0369a1" font-size="9" text-anchor="middle">task ✓</text>
+  <rect x="216" y="146" width="58" height="30" rx="5" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="245" y="161" fill="#b91c1c" font-size="9" text-anchor="middle">task 💥</text>
+  <text x="245" y="172" fill="#b91c1c" font-size="7.5" text-anchor="middle">died</text>
+  <path d="M245 178 v8 h66 v-8" fill="none" stroke="#017cee" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <text x="278" y="196" fill="#0369a1" font-size="8" text-anchor="middle">retry</text>
+  <rect x="282" y="146" width="58" height="30" rx="5" fill="#ffffff" stroke="#017cee"/>
+  <text x="311" y="165" fill="#0369a1" font-size="9" text-anchor="middle">re-run</text>
+  <path d="M460 138 v40 a26 6 0 0 0 52 0 v-40" fill="#ffffff" stroke="#017cee"/>
+  <ellipse cx="486" cy="138" rx="26" ry="6" fill="#e0f2fe" stroke="#017cee"/>
+  <text x="486" y="162" fill="#475569" font-size="8" text-anchor="middle">metadata</text>
+  <text x="486" y="172" fill="#475569" font-size="8" text-anchor="middle">DB</text>
+  <text x="612" y="160" fill="#0369a1" font-size="9.5" font-weight="600" text-anchor="middle">task granularity —</text>
+  <text x="612" y="174" fill="#0369a1" font-size="9.5" font-weight="600" text-anchor="middle">tasks must be idempotent</text>
+
+  <!-- Lane 3: Step Functions -->
+  <rect x="10" y="208" width="700" height="78" rx="9" fill="#fff0f6" stroke="#cd2264"/>
+  <text x="26" y="232" fill="#cd2264" font-size="11" font-weight="700">Step Functions</text>
+  <text x="26" y="248" fill="#475569" font-size="9">service resumes from</text>
+  <text x="26" y="262" fill="#475569" font-size="9">last saved transition</text>
+  <rect x="150" y="226" width="300" height="44" rx="7" fill="#ffffff" stroke="#cd2264" stroke-dasharray="4 3"/>
+  <text x="300" y="240" fill="#a21458" font-size="8" text-anchor="middle">AWS-managed — state persisted for you</text>
+  <rect x="164" y="246" width="58" height="16" rx="4" fill="#fce7f0" stroke="#f9a8c8"/>
+  <text x="193" y="257" fill="#a21458" font-size="8" text-anchor="middle" class="mono">state ✓</text>
+  <rect x="228" y="246" width="58" height="16" rx="4" fill="#fce7f0" stroke="#f9a8c8"/>
+  <text x="257" y="257" fill="#a21458" font-size="8" text-anchor="middle" class="mono">state ✓</text>
+  <rect x="292" y="246" width="74" height="16" rx="4" fill="#fde8ef" stroke="#cd2264"/>
+  <text x="329" y="257" fill="#a21458" font-size="8" text-anchor="middle" class="mono">resume here</text>
+  <text x="582" y="245" fill="#a21458" font-size="9.5" font-weight="600" text-anchor="middle">Standard: exactly-once</text>
+  <text x="582" y="260" fill="#a21458" font-size="9.5" font-weight="600" text-anchor="middle">Express: at-least-once</text>
+</svg>
+        <div class="caption">Three answers to "what survives a crash?": a replayed event log, a re-queued idempotent task, or a managed service holding the state machine's position.</div>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">The distinction that trips everyone up</span>
+        <p>Airflow is a <strong>scheduler, not a durable-execution engine</strong>. It does not replay a function or resume a call stack — it re-runs <em>tasks</em>, and its durability is only as good as your tasks' idempotency plus what is recorded in the metadata DB. If you need a months-long process that resumes exactly where a function blocked, that is Temporal's model (or, within AWS, a Step Functions Standard workflow), not Airflow's.</p>
+      </div>
+    </section>
+
+    <section id="authoring">
+      <h2>Same workflow, three ways</h2>
+      <p>One toy use case, written in each tool: <em>fetch an order, total it, then branch — notify a manager for big orders, otherwise send a receipt.</em> The shape of each program is the philosophy made concrete.</p>
+
+      <div class="code-head"><span class="dot" style="background:var(--temporal)"></span>Temporal<span class="lang">— Python, the logic <em>is</em> the program</span></div>
+<pre><code>NO_RETRY = RetryPolicy(maximum_attempts=<span class="str">1</span>)   <span class="com"># Temporal retries ∞ by default; opt out</span>
+
+<span class="fn">@workflow.defn</span>
+<span class="kw">class</span> OrderWorkflow:
+    <span class="fn">@workflow.run</span>
+    <span class="kw">async def</span> <span class="fn">run</span>(self, order_id: str) -> str:
+        order = <span class="kw">await</span> workflow.execute_activity(
+            fetch_order, order_id,
+            start_to_close_timeout=timedelta(seconds=<span class="str">30</span>),
+            retry_policy=RetryPolicy(maximum_attempts=<span class="str">5</span>),   <span class="com"># opt in: retry the fetch</span>
+        )
+        total = <span class="kw">await</span> workflow.execute_activity(
+            compute_total, order, retry_policy=NO_RETRY)
+        <span class="kw">if</span> total > <span class="str">1000</span>:                          <span class="com"># ordinary branching, in code</span>
+            <span class="kw">await</span> workflow.execute_activity(
+                notify_manager, order_id, retry_policy=NO_RETRY)
+        <span class="kw">else</span>:
+            <span class="kw">await</span> workflow.execute_activity(
+                send_receipt, order_id, retry_policy=NO_RETRY)
+        <span class="kw">return</span> <span class="str">"done"</span></code></pre>
+
+      <div class="code-head"><span class="dot" style="background:var(--airflow)"></span>Apache Airflow<span class="lang">— Python that <em>declares a DAG</em>; the bodies do the work</span></div>
+<pre><code><span class="fn">@dag</span>(schedule=<span class="str">"@daily"</span>, start_date=datetime(<span class="str">2026</span>, <span class="str">1</span>, <span class="str">1</span>), catchup=<span class="kw">False</span>)
+<span class="kw">def</span> <span class="fn">order_pipeline</span>(order_id: str = <span class="str">"A-42"</span>):     <span class="com"># run input, via DAG params</span>
+    <span class="fn">@task</span>(retries=<span class="str">5</span>)                            <span class="com"># auto-retried</span>
+    <span class="kw">def</span> <span class="fn">fetch_order</span>(order_id: str) -> dict:
+        <span class="kw">return</span> api.get_order(order_id)
+
+    <span class="fn">@task</span>
+    <span class="kw">def</span> <span class="fn">compute_total</span>(order: dict) -> float:
+        <span class="kw">return</span> sum(i[<span class="str">"price"</span>] <span class="kw">for</span> i <span class="kw">in</span> order[<span class="str">"items"</span>])
+
+    <span class="fn">@task.branch</span>                            <span class="com"># pick the next task by id</span>
+    <span class="kw">def</span> <span class="fn">route</span>(total: float) -> str:
+        <span class="kw">return</span> <span class="str">"notify_manager"</span> <span class="kw">if</span> total > <span class="str">1000</span> <span class="kw">else</span> <span class="str">"send_receipt"</span>
+
+    <span class="fn">@task</span>
+    <span class="kw">def</span> <span class="fn">notify_manager</span>(order_id: str): ...
+    <span class="fn">@task</span>
+    <span class="kw">def</span> <span class="fn">send_receipt</span>(order_id: str): ...
+
+    total = compute_total(fetch_order(order_id))
+    route(total) >> [notify_manager(order_id), send_receipt(order_id)]
+
+order_pipeline()</code></pre>
+
+      <div class="code-head"><span class="dot" style="background:var(--sfn)"></span>Step Functions<span class="lang">— ASL JSON; logic lives in the services it calls</span></div>
+<pre><code>{
+  <span class="fn">"StartAt"</span>: <span class="str">"FetchOrder"</span>,
+  <span class="fn">"States"</span>: {
+    <span class="fn">"FetchOrder"</span>: {
+      <span class="fn">"Type"</span>: <span class="str">"Task"</span>,
+      <span class="fn">"Resource"</span>: <span class="str">"arn:aws:states:::lambda:invoke"</span>,
+      <span class="fn">"Parameters"</span>: { <span class="fn">"FunctionName"</span>: <span class="str">"fetchOrder"</span>,
+                       <span class="fn">"Payload"</span>: { <span class="fn">"order_id.$"</span>: <span class="str">"$.order_id"</span> } },
+      <span class="fn">"Retry"</span>: [ { <span class="fn">"ErrorEquals"</span>: [<span class="str">"States.TaskFailed"</span>],
+                  <span class="fn">"MaxAttempts"</span>: <span class="kw">5</span>, <span class="fn">"BackoffRate"</span>: <span class="kw">2.0</span> } ],
+      <span class="fn">"Next"</span>: <span class="str">"ComputeTotal"</span>
+    },
+    <span class="fn">"ComputeTotal"</span>: {
+      <span class="fn">"Type"</span>: <span class="str">"Task"</span>, <span class="fn">"Resource"</span>: <span class="str">"arn:aws:states:::lambda:invoke"</span>,
+      <span class="fn">"Next"</span>: <span class="str">"Route"</span>
+    },
+    <span class="fn">"Route"</span>: {
+      <span class="fn">"Type"</span>: <span class="str">"Choice"</span>,
+      <span class="fn">"Choices"</span>: [ { <span class="fn">"Variable"</span>: <span class="str">"$.total"</span>,
+                    <span class="fn">"NumericGreaterThan"</span>: <span class="kw">1000</span>, <span class="fn">"Next"</span>: <span class="str">"NotifyManager"</span> } ],
+      <span class="fn">"Default"</span>: <span class="str">"SendReceipt"</span>
+    },
+    <span class="fn">"NotifyManager"</span>: { <span class="fn">"Type"</span>: <span class="str">"Task"</span>, <span class="fn">"Resource"</span>: <span class="str">"arn:aws:states:::sns:publish"</span>, <span class="fn">"End"</span>: <span class="kw">true</span> },
+    <span class="fn">"SendReceipt"</span>:   { <span class="fn">"Type"</span>: <span class="str">"Task"</span>, <span class="fn">"Resource"</span>: <span class="str">"arn:aws:states:::lambda:invoke"</span>, <span class="fn">"End"</span>: <span class="kw">true</span> }
+  }
+}</code></pre>
+      <p>Read top to bottom: Temporal's branch is a Python <code>if</code>; Airflow's is a <code>@task.branch</code> that returns the id of the next task in the graph; Step Functions' is a declarative <code>Choice</code> state. None of the real work happens in the Step Functions document — it happens in the Lambda functions and SNS topics it points at.</p>
+    </section>
+
+    <section id="scheduling">
+      <h2>Scheduling &amp; triggering</h2>
+      <p>How does a run <em>begin</em>? This is one of the most practical differences, and it reflects each tool's heritage.</p>
+      <ul>
+        <li><strong><span class="t-airflow">Airflow is time-first.</span></strong> Its native instinct is the cadence: a DAG declares a <code>schedule</code> (a cron string or a <span class="x" data-term="Timetable" data-def="Airflow's pluggable scheduling abstraction. Built-ins cover cron and fixed intervals; custom timetables express irregular calendars (business days, trading sessions) that cron cannot.">timetable</span>) and the scheduler creates a run per interval. Modern Airflow adds <strong>data-aware scheduling</strong> — a DAG can run when its upstream <span class="x" data-term="Asset" data-def="A named pointer to data a task produces or consumes. Scheduling a DAG on Assets makes it run when upstream data updates, rather than on a clock.">Assets</span> update — and external event triggers, but the batch-interval model is its center of gravity.</li>
+        <li><strong><span class="t-sfn">Step Functions is event/API-first.</span></strong> An execution starts on an explicit <code>StartExecution</code> call — directly, from API Gateway, or, most commonly, from <span class="x" data-term="EventBridge" data-def="AWS's event bus and scheduler. EventBridge rules start a Step Functions execution in response to AWS events or a cron-like schedule, making the state machine event-driven.">EventBridge</span> rules and schedules. It is built to react to events flowing through AWS, with cron available via an EventBridge schedule.</li>
+        <li><strong><span class="t-temporal">Temporal is code/API-first.</span></strong> A workflow starts when a client calls <code>start_workflow()</code> from anywhere in your system — typically in response to a user action or an event. For recurring runs, Temporal <strong>Schedules</strong> provide cron-like and calendar triggering as a first-class server feature.</li>
+      </ul>
+      <p>Rule of thumb: if you think in <em>"every night at 2am, process yesterday's data,"</em> that is Airflow's home turf. If you think in <em>"when this event happens, run this process,"</em> Step Functions and Temporal start a run per event rather than per interval.</p>
+    </section>
+
+    <section id="state-data">
+      <h2>State, data &amp; retries</h2>
+      <h3>Passing data between steps</h3>
+      <p>Because Temporal workflows are ordinary functions, intermediate state is just <strong>local variables and activity return values</strong> held in memory (and reconstructed on replay). Airflow tasks are separate processes, so values move through <strong>XCom</strong>, persisted in the metadata DB and meant for <em>small</em> payloads — bulk data should travel through external storage (S3, a warehouse) with only references in XCom. Step Functions threads a <strong>JSON document</strong> through the states, reshaped per state with JSONPath or JSONata, with a hard <strong>256 KB</strong> payload limit between states (again: keep large data in S3 and pass pointers).</p>
+      <div class="callout note">
+        <span class="label">Payloads are not a place to put your data</span>
+        <p>Both Airflow's XCom and Step Functions' state payload are deliberately small. The pattern in both is identical: keep large objects in object storage and pass <em>handles</em>. Temporal activity results can be larger, but the same discipline pays off — the event history (and thus replay cost) grows with what you record.</p>
+      </div>
+      <h3>Retries &amp; failure</h3>
+      <p>All three express retries declaratively, per step — but their <strong>defaults are opposite</strong>, which is easy to miss. Temporal retries <em>every</em> activity automatically by default (unlimited attempts, exponential backoff), so you attach a <strong>retry policy</strong> to <em>cap</em> it — or, as in the code above, a <code>maximum_attempts=1</code> policy to switch it <em>off</em>; it also models all-or-nothing flows as <strong>sagas</strong> with explicit compensation in code. Airflow and Step Functions are the reverse — a step <strong>does not retry unless you opt in</strong>: Airflow via <code>retries</code>/<code>retry_delay</code> (default <code>0</code>) plus <strong>trigger rules</strong> and <code>on_failure_callback</code> hooks; Step Functions via <strong><code>Retry</code></strong> and <strong><code>Catch</code></strong> blocks per state, routing caught errors to a fallback. So matching them up takes <em>extra</em> code on the Temporal side (the <code>NO_RETRY</code> policy) and zero on the others — the opt-out-vs-opt-in difference made literal.</p>
+    </section>
+
+    <section id="architecture">
+      <h2>Architecture</h2>
+      <p>What you actually operate is wildly different across the three — from "a database plus a few stateless services" to "literally nothing."</p>
+
+      <h3><span class="t-airflow">Airflow: several cooperating components</span></h3>
+      <p>Airflow self-hosted is a small distributed system around a central <strong>metadata database</strong>. The <strong>scheduler</strong> decides what to run and hands tasks to an <span class="x" data-term="Executor" data-def="A configuration of the scheduler that decides where tasks run: LocalExecutor (same machine), CeleryExecutor (a pool of long-running workers), or KubernetesExecutor (one pod per task). Not a separate process — it runs inside the scheduler.">executor</span> (Local, Celery, or Kubernetes); the <strong>DAG processor</strong> parses your Python DAG files; <strong>workers</strong> execute tasks; the <strong>triggerer</strong> runs deferred/async waits; and a <strong>webserver / API server</strong> serves the UI and REST API. Everyone coordinates through the metadata DB.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 290" role="img" aria-label="Airflow's components around a central metadata database: a DAG processor parses DAG files, the scheduler assigns work via an executor, workers run tasks, a triggerer handles async waits, and a webserver/API server serves the UI — all coordinating through the metadata database.">
+  <!-- metadata DB center -->
+  <path d="M300 170 v40 a60 12 0 0 0 120 0 v-40" fill="#ffffff" stroke="#017cee" stroke-width="1.6"/>
+  <ellipse cx="360" cy="170" rx="60" ry="12" fill="#e0f2fe" stroke="#017cee" stroke-width="1.6"/>
+  <text x="360" y="196" fill="#0369a1" font-size="11" font-weight="700" text-anchor="middle">Metadata DB</text>
+  <text x="360" y="212" fill="#475569" font-size="8.5" text-anchor="middle">Postgres / MySQL</text>
+  <text x="360" y="248" fill="#475569" font-size="8.5" font-style="italic" text-anchor="middle">the single source of coordination</text>
+
+  <!-- DAG files -->
+  <rect x="20" y="36" width="120" height="44" rx="7" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="80" y="55" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">DAG files</text>
+  <text x="80" y="70" fill="#475569" font-size="8.5" text-anchor="middle" class="mono">*.py</text>
+  <!-- DAG processor -->
+  <rect x="20" y="104" width="120" height="48" rx="7" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="80" y="124" fill="#0369a1" font-size="10" font-weight="700" text-anchor="middle">DAG Processor</text>
+  <text x="80" y="139" fill="#475569" font-size="8.5" text-anchor="middle">parses + serializes</text>
+  <line x1="80" y1="80" x2="80" y2="100" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="80 104, 75.5 96, 84.5 96" fill="#94a3b8"/>
+  <line x1="140" y1="140" x2="298" y2="172" stroke="#7dd3fc" stroke-width="1.4"/>
+  <polygon points="304 173, 295 171, 297 163" fill="#7dd3fc"/>
+
+  <!-- Scheduler + executor -->
+  <rect x="290" y="36" width="140" height="64" rx="7" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="360" y="57" fill="#0369a1" font-size="10.5" font-weight="700" text-anchor="middle">Scheduler</text>
+  <rect x="300" y="66" width="120" height="24" rx="5" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="360" y="82" fill="#0369a1" font-size="8" text-anchor="middle">Executor (Local/Celery/K8s)</text>
+  <line x1="360" y1="100" x2="360" y2="154" stroke="#7dd3fc" stroke-width="1.4"/>
+  <polygon points="360 158, 355.5 150, 364.5 150" fill="#7dd3fc"/>
+
+  <!-- Webserver -->
+  <rect x="580" y="36" width="120" height="48" rx="7" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="640" y="56" fill="#0369a1" font-size="10" font-weight="700" text-anchor="middle">Webserver</text>
+  <text x="640" y="71" fill="#475569" font-size="8.5" text-anchor="middle">UI + REST API</text>
+  <line x1="580" y1="80" x2="422" y2="168" stroke="#7dd3fc" stroke-width="1.4"/>
+  <polygon points="416 172, 425 167, 426 175" fill="#7dd3fc"/>
+
+  <!-- Workers -->
+  <rect x="500" y="134" width="200" height="48" rx="7" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="600" y="154" fill="#0f172a" font-size="10" font-weight="700" text-anchor="middle">Workers</text>
+  <text x="600" y="169" fill="#475569" font-size="8.5" text-anchor="middle">run the task code</text>
+  <line x1="500" y1="168" x2="422" y2="178" stroke="#7dd3fc" stroke-width="1.4"/>
+  <polygon points="416 180, 425 176, 427 184" fill="#7dd3fc"/>
+
+  <!-- Triggerer -->
+  <rect x="20" y="178" width="160" height="48" rx="7" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="100" y="198" fill="#0f172a" font-size="10" font-weight="700" text-anchor="middle">Triggerer</text>
+  <text x="100" y="213" fill="#475569" font-size="8.5" text-anchor="middle">async deferred waits</text>
+  <line x1="180" y1="200" x2="300" y2="188" stroke="#7dd3fc" stroke-width="1.4"/>
+  <polygon points="306 187, 297 184, 296 192" fill="#7dd3fc"/>
+</svg>
+        <div class="caption">Airflow self-hosted: a handful of stateless components orbiting one metadata database. Managed Airflow (MWAA, Cloud Composer) provisions exactly this for you.</div>
+      </div>
+
+      <h3><span class="t-sfn">Step Functions: a black box</span></h3>
+      <p>There is no architecture to run. Step Functions is a fully managed AWS service: you register a state machine and call <code>StartExecution</code>. AWS owns the scheduler, the durable store, the retries, and the scaling. Your "components" are the AWS services each <code>Task</code> state invokes — Lambda, SQS, SNS, DynamoDB, ECS, and, via SDK integrations, 200+ services and thousands of API actions.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 240" role="img" aria-label="Step Functions is an opaque managed service: you call StartExecution and AWS runs the state machine, fanning out to Lambda, SQS, SNS, DynamoDB, ECS and over 200 AWS services through three integration patterns.">
+  <!-- caller -->
+  <rect x="20" y="98" width="110" height="44" rx="7" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="75" y="116" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">your app /</text>
+  <text x="75" y="130" fill="#0f172a" font-size="10" font-weight="600" text-anchor="middle">EventBridge</text>
+  <line x1="130" y1="120" x2="184" y2="120" stroke="#cd2264" stroke-width="1.6"/>
+  <polygon points="192 120, 183 115.5, 183 124.5" fill="#cd2264"/>
+  <text x="160" y="112" fill="#a21458" font-size="8" text-anchor="middle">StartExecution</text>
+
+  <!-- managed box -->
+  <rect x="196" y="44" width="214" height="152" rx="10" fill="#fff0f6" stroke="#cd2264" stroke-dasharray="5 3"/>
+  <text x="303" y="64" fill="#cd2264" font-size="11" font-weight="700" text-anchor="middle">Step Functions</text>
+  <text x="303" y="79" fill="#a21458" font-size="8.5" text-anchor="middle">fully AWS-managed — no infra for you</text>
+  <rect x="244" y="92" width="118" height="22" rx="5" fill="#ffffff" stroke="#f9a8c8"/>
+  <text x="303" y="107" fill="#a21458" font-size="9" text-anchor="middle" class="mono">Task → Choice</text>
+  <rect x="244" y="120" width="118" height="22" rx="5" fill="#ffffff" stroke="#f9a8c8"/>
+  <text x="303" y="135" fill="#a21458" font-size="9" text-anchor="middle" class="mono">Map → Parallel</text>
+  <rect x="244" y="148" width="118" height="22" rx="5" fill="#ffffff" stroke="#f9a8c8"/>
+  <text x="303" y="163" fill="#a21458" font-size="9" text-anchor="middle" class="mono">retries persisted</text>
+
+  <!-- integrations -->
+  <line x1="410" y1="120" x2="462" y2="120" stroke="#cd2264" stroke-width="1.6"/>
+  <polygon points="470 120, 461 115.5, 461 124.5" fill="#cd2264"/>
+  <rect x="474" y="50" width="226" height="140" rx="9" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="587" y="70" fill="#0f172a" font-size="9.5" font-weight="700" text-anchor="middle">200+ AWS services</text>
+  <rect x="488" y="82" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="536" y="97" fill="#475569" font-size="9" text-anchor="middle">Lambda</text>
+  <rect x="590" y="82" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="638" y="97" fill="#475569" font-size="9" text-anchor="middle">SQS</text>
+  <rect x="488" y="110" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="536" y="125" fill="#475569" font-size="9" text-anchor="middle">SNS</text>
+  <rect x="590" y="110" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="638" y="125" fill="#475569" font-size="9" text-anchor="middle">DynamoDB</text>
+  <rect x="488" y="138" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="536" y="153" fill="#475569" font-size="9" text-anchor="middle">ECS</text>
+  <rect x="590" y="138" width="96" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/><text x="638" y="153" fill="#475569" font-size="9" text-anchor="middle">…SDK</text>
+  <text x="587" y="180" fill="#94a3b8" font-size="7.5" text-anchor="middle">request-response · run-a-job (.sync) · wait-for-callback</text>
+</svg>
+        <div class="caption">Step Functions has no operable architecture: AWS runs the state machine and you wire it to other AWS services through three integration patterns.</div>
+      </div>
+
+      <h3><span class="t-temporal">Temporal: a service plus your workers</span></h3>
+      <p>Temporal sits in between: a <strong>Temporal Service</strong> (its Frontend, History, and Matching roles, backed by a database such as Cassandra, MySQL, or PostgreSQL) plus your own <strong>stateless workers</strong> that host the workflow and activity code and long-poll for tasks. You run the cluster (or buy Temporal Cloud) and you run the workers; the durable state lives in the service. The internals get a full treatment on the <a href="../durable-execution/#architecture">durable-execution page</a>.</p>
+    </section>
+
+    <section id="deployment">
+      <h2>Deployment &amp; managed offerings</h2>
+      <p>This is where lock-in is decided. Two of the three are open source and portable; one is a single cloud.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>&nbsp;</th><th>Self-host</th><th>First-party managed</th><th>Portability</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="t-temporal">Temporal</span></td><td>Yes — OSS server (MIT)</td><td>Temporal Cloud</td><td>High — same OSS anywhere; multi-cloud</td></tr>
+            <tr><td><span class="t-airflow">Airflow</span></td><td>Yes — OSS (Apache 2.0)</td><td>AWS MWAA · Google Cloud Composer · (Astronomer, 3rd-party)</td><td>High — real Apache Airflow across vendors</td></tr>
+            <tr><td><span class="t-sfn">Step Functions</span></td><td>No</td><td>AWS only (the service itself)</td><td>Low — ASL and integrations are AWS-specific</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>For Airflow, note the distinction the marketing pages blur: <strong>MWAA</strong> and <strong>Cloud Composer</strong> are managed deployments of the <em>real</em> Apache Airflow — not forks — so a DAG can in principle move between them and a self-hosted cluster. <span class="x" data-term="Astronomer" data-def="The principal commercial company behind Apache Airflow, offering the managed Astro platform and employing many core committers. A third-party vendor, not a hyperscaler service.">Astronomer</span> is the main commercial vendor (and steward of much of the project), but it is third-party rather than a hyperscaler offering. Step Functions has no self-hosted form at all: choosing it is choosing AWS.</p>
+    </section>
+
+    <section id="scale">
+      <h2>Scale &amp; limits</h2>
+      <p>All three scale to serious production load, but they hit different ceilings.</p>
+      <ul>
+        <li><strong><span class="t-temporal">Temporal</span></strong> scales by adding <strong>stateless workers</strong> and by <strong>sharding</strong> workflow histories across the cluster; high-scale users run millions of concurrent executions. The practical limit per workflow is <strong>event-history size</strong> — long-running loops use <span class="x" data-term="Continue-As-New" data-def="Atomically ends the current workflow execution and starts a fresh one with the same id and an empty history, so a long-running loop does not accumulate unbounded history.">Continue-As-New</span> to start a fresh history and avoid unbounded growth.</li>
+        <li><strong><span class="t-airflow">Airflow</span></strong> scales workers horizontally (Celery or Kubernetes) and throttles with <strong>pools</strong> and parallelism settings. Its historical bottleneck is the <strong>scheduler and metadata DB</strong> under very high task volume — a constraint teams operating Airflow at scale have written about candidly (Shopify's account of running thousands of DAGs is a good primary read). It is tuned for throughput of <em>batch</em> work, not low-latency per-event execution.</li>
+        <li><strong><span class="t-sfn">Step Functions</span></strong> autoscales transparently. The numbers are AWS account <strong>quotas</strong> (some soft/adjustable): <strong>Standard</strong> supports thousands of state transitions per second; <strong>Express</strong> is built for very high event rates (on the order of 100,000 executions/second). The hard caps that bite are the <strong>duration limits</strong> — Standard 1 year, Express 5 minutes — and the 256 KB payload between states.</li>
+      </ul>
+    </section>
+
+    <section id="observability">
+      <h2>Observability &amp; versioning</h2>
+      <h3>Watching a run</h3>
+      <p>Each ships a first-party UI tuned to its model. <strong>Airflow's</strong> React UI is pipeline-ops centric: the <em>Grid</em> and <em>Graph</em> views show task status across runs, with logs per task instance. <strong>Step Functions'</strong> console renders the state machine graph and animates each execution's path, with Standard executions keeping full history in-console and Express sending logs to <strong>CloudWatch</strong>. <strong>Temporal's</strong> Web UI is execution-centric: it shows the complete <strong>event history</strong> of any single workflow, which is the natural debugging unit for durable execution.</p>
+      <h3>Changing a running workflow</h3>
+      <p>Long-lived workflows must survive their own code changing underneath them. <strong>Temporal</strong> takes this most seriously because replay makes it hard: workflow versioning (patching) and Worker Versioning let new code coexist with in-flight executions (detailed on the <a href="../durable-execution/#versioning">durable-execution page</a>). <strong>Airflow</strong> provides <strong>DAG versioning</strong> so a run completes on the DAG version it started with. <strong>Step Functions</strong> supports <strong>versions and aliases</strong> of a state machine, so you can publish an immutable version and shift traffic deliberately.</p>
+    </section>
+
+    <section id="pricing">
+      <h2>Cost models</h2>
+      <p>Three different shapes of bill, which matter as much as features at scale.</p>
+      <ul>
+        <li><strong><span class="t-temporal">Temporal</span></strong> — the OSS server is free; you pay for the <strong>infrastructure</strong> you run it on (and the operational effort). <strong>Temporal Cloud</strong> instead bills per <strong>action</strong> (workflow and activity operations) plus storage, so cost tracks usage rather than fixed servers.</li>
+        <li><strong><span class="t-airflow">Airflow</span></strong> — OSS is free plus infrastructure. Managed Airflow is priced <strong>per environment</strong>: MWAA and Cloud Composer charge for the running environment (size/uptime) regardless of how busy your DAGs are, so an idle Airflow still costs money.</li>
+        <li><strong><span class="t-sfn">Step Functions</span></strong> — pure pay-per-use, and the two workflow types bill on different axes:
+          <ul>
+            <li><strong>Standard:</strong> <code>$0.000025</code> per <span class="x" data-term="State transition" data-def="One move from one state to the next within a Standard execution. Step Functions bills Standard workflows by counting these transitions — so a chatty state machine costs more than a terse one.">state transition</span>, with <strong>4,000 free transitions/month</strong>. Predictable, audit-grade, can run a year.</li>
+            <li><strong>Express:</strong> <code>$1.00</code> per million requests <em>plus</em> <code>$0.00001667</code> per GB-second of duration. Cheap at very high volume and short durations.</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="callout note">
+        <span class="label">The cost intuition</span>
+        <p>Temporal and self-hosted Airflow are a <em>fixed-ish infrastructure</em> bill that amortizes well under heavy, steady load. Managed Airflow is a <em>per-environment</em> bill that suits always-on pipelines. Step Functions is <em>per-execution</em>, which is unbeatable for spiky, low-volume serverless work and can get expensive for very chatty, high-frequency Standard state machines (watch the transition count).</p>
+      </div>
+    </section>
+
+    <section id="decision">
+      <h2>When to use which</h2>
+      <p>The honest one-liners, then a flow.</p>
+      <ul>
+        <li><strong>Reach for <span class="t-temporal">Temporal</span></strong> when the work is <strong>long-lived, stateful application logic</strong> that must survive crashes and deploys — sagas with compensation, multi-day human-in-the-loop, microservice orchestration — expressed as ordinary code in your language and portable across clouds.</li>
+        <li><strong>Reach for <span class="t-airflow">Airflow</span></strong> when the work is <strong>scheduled batch data pipelines</strong> (ETL/ELT/ML) and you want a rich operator ecosystem plus a pipeline-ops UI, and your team thinks in Python and dependency graphs. Not for per-request or durable-app logic.</li>
+        <li><strong>Reach for <span class="t-sfn">Step Functions</span></strong> when you are <strong>all-in on AWS</strong> and want to orchestrate AWS services with minimal ops and pay-per-use. Choose <strong>Standard</strong> for long-running, auditable, exactly-once flows (up to a year); <strong>Express</strong> for high-volume, short (&lt;5 min), at-least-once event processing.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 250" role="img" aria-label="A decision flow: if the work must run for days or months and resume mid-function, choose Temporal. Otherwise, if it is scheduled batch data pipelines, choose Airflow. Otherwise, if you are all-in on AWS and want serverless orchestration, choose Step Functions.">
+  <!-- Q1 -->
+  <rect x="20" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="95" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">Long-lived, stateful,</text>
+  <text x="95" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">resume mid-function?</text>
+  <line x1="95" y1="96" x2="95" y2="40" stroke="#7c3aed" stroke-width="1.4"/>
+  <polygon points="95 34, 90.5 42, 99.5 42" fill="#7c3aed"/>
+  <text x="108" y="62" fill="#7c3aed" font-size="8.5">yes</text>
+  <rect x="40" y="14" width="110" height="22" rx="11" fill="#faf5ff" stroke="#7c3aed"/>
+  <text x="95" y="29" fill="#7c3aed" font-size="9.5" font-weight="700" text-anchor="middle">Temporal</text>
+  <line x1="170" y1="125" x2="214" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="222 125, 213 120.5, 213 129.5" fill="#94a3b8"/>
+  <text x="196" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- Q2 -->
+  <rect x="224" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="299" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">Scheduled batch</text>
+  <text x="299" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">data pipelines?</text>
+  <line x1="299" y1="96" x2="299" y2="40" stroke="#017cee" stroke-width="1.4"/>
+  <polygon points="299 34, 294.5 42, 303.5 42" fill="#017cee"/>
+  <text x="312" y="62" fill="#0369a1" font-size="8.5">yes</text>
+  <rect x="244" y="14" width="110" height="22" rx="11" fill="#f0f8ff" stroke="#017cee"/>
+  <text x="299" y="29" fill="#0369a1" font-size="9.5" font-weight="700" text-anchor="middle">Airflow</text>
+  <line x1="374" y1="125" x2="418" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="426 125, 417 120.5, 417 129.5" fill="#94a3b8"/>
+  <text x="400" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- Q3 -->
+  <rect x="428" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="503" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">All-in on AWS,</text>
+  <text x="503" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">serverless glue?</text>
+  <line x1="503" y1="96" x2="503" y2="40" stroke="#cd2264" stroke-width="1.4"/>
+  <polygon points="503 34, 498.5 42, 507.5 42" fill="#cd2264"/>
+  <text x="516" y="62" fill="#a21458" font-size="8.5">yes</text>
+  <rect x="448" y="14" width="110" height="22" rx="11" fill="#fff0f6" stroke="#cd2264"/>
+  <text x="503" y="29" fill="#a21458" font-size="9.5" font-weight="700" text-anchor="middle">Step Functions</text>
+  <line x1="578" y1="125" x2="622" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="630 125, 621 120.5, 621 129.5" fill="#94a3b8"/>
+  <text x="604" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- fallthrough -->
+  <rect x="634" y="100" width="74" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="671" y="121" fill="#475569" font-size="8.5" text-anchor="middle">reconsider</text>
+  <text x="671" y="133" fill="#475569" font-size="8.5" text-anchor="middle">the need</text>
+
+  <!-- footnote row -->
+  <text x="95" y="184" fill="#475569" font-size="8.5" text-anchor="middle">sagas, human-in-loop,</text>
+  <text x="95" y="196" fill="#475569" font-size="8.5" text-anchor="middle">microservice orchestration</text>
+  <text x="299" y="184" fill="#475569" font-size="8.5" text-anchor="middle">ETL/ELT/ML on a</text>
+  <text x="299" y="196" fill="#475569" font-size="8.5" text-anchor="middle">cron cadence</text>
+  <text x="503" y="184" fill="#475569" font-size="8.5" text-anchor="middle">Standard = long/exactly-once</text>
+  <text x="503" y="196" fill="#475569" font-size="8.5" text-anchor="middle">Express = short/high-volume</text>
+
+  <text x="360" y="232" fill="#94a3b8" font-size="8.5" font-style="italic" text-anchor="middle">Tie-breaker: worried about lock-in or multi-cloud? Temporal or self-hosted Airflow, never Step Functions.</text>
+</svg>
+        <div class="caption">A rough triage. Real choices weigh team skills, existing stack, and operational appetite — but the first question (does it need to resume mid-function?) does most of the work.</div>
+      </div>
+    </section>
+
+    <section id="traps">
+      <h2>Common misconceptions</h2>
+      <div class="callout warn">
+        <span class="label">"Airflow gives you durable execution"</span>
+        <p>No. Airflow is a scheduler that re-runs <em>tasks</em>; it has no replay and no resumed call stack. Durability is your tasks being idempotent plus the metadata DB. For resume-mid-function semantics, use Temporal (or a Step Functions Standard workflow).</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"Step Functions Standard and Express are the same but priced differently"</span>
+        <p>They have different <em>guarantees</em>: <strong>Standard is exactly-once and runs up to a year</strong>; <strong>Express is at-least-once and capped at five minutes</strong>. That difference, not just price, dictates which you can use.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"ASL is just another programming language"</span>
+        <p>ASL is a declarative JSON DSL that <em>orchestrates</em>; it has no general-purpose computation. The actual logic lives in the Lambda functions and AWS services each <code>Task</code> state invokes.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"Temporal can run forever, with no limits"</span>
+        <p>Effectively unbounded, not literally unlimited: a single execution is bounded by its event-history size, which is why long loops call <code>Continue-As-New</code> to reset history.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"MWAA / Cloud Composer are AWS's and Google's own forks of Airflow"</span>
+        <p>They are managed deployments of the <em>real</em> Apache Airflow, so DAGs stay portable. The chief commercial vendor, Astronomer, is a third party — not a hyperscaler service.</p>
+      </div>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <h3>Temporal</h3>
+      <ul>
+        <li><strong><a href="../durable-execution/">Durable Execution — the companion design doc</a></strong> on this site: the full Temporal/Cadence deep-dive — event history, deterministic replay, the durable toolkit, server internals, and versioning.</li>
+        <li><strong><a href="https://temporal.io/">temporal.io</a></strong> and <strong><a href="https://docs.temporal.io/">docs.temporal.io</a></strong> — the primary source for the concepts and SDK examples summarized here.</li>
+      </ul>
+      <h3>Apache Airflow</h3>
+      <ul>
+        <li><strong><a href="https://airflow.apache.org/">airflow.apache.org</a></strong> — the official site and docs (architecture overview, core concepts, executors); current stable is the 3.x line.</li>
+        <li><strong><a href="https://github.com/apache/airflow">apache/airflow on GitHub</a></strong> — the source and release notes.</li>
+        <li><strong><a href="https://en.wikipedia.org/wiki/Apache_Airflow">Apache Airflow — Wikipedia</a></strong> — project history and high-level overview.</li>
+        <li><strong><a href="https://aws.amazon.com/managed-workflows-for-apache-airflow/">Amazon MWAA</a></strong> and <strong><a href="https://cloud.google.com/products/managed-service-for-apache-airflow">Google Cloud Composer</a></strong> — the first-party managed Airflow services.</li>
+        <li><strong><a href="https://shopify.engineering/lessons-learned-apache-airflow-scale">Shopify Engineering — lessons learned running Airflow at scale</a></strong> and <strong><a href="https://stkbailey.substack.com/p/airflows-problem">"Airflow's problem"</a></strong> — practitioner perspectives on Airflow's scaling and design edges. <strong><a href="https://bhavaniravi.com/blog/apache-airflow/apache-airflow-introduction/">An introduction to Airflow</a></strong> for the core model.</li>
+      </ul>
+      <h3>AWS Step Functions</h3>
+      <ul>
+        <li><strong><a href="https://aws.amazon.com/step-functions/">aws.amazon.com/step-functions</a></strong> and the <strong><a href="https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html">Developer Guide</a></strong> — workflow types, ASL, integration patterns, and quotas.</li>
+        <li><strong><a href="https://aws.amazon.com/step-functions/pricing/">Step Functions pricing</a></strong> — the exact Standard and Express figures used above.</li>
+        <li><strong><a href="https://www.datadoghq.com/knowledge-center/aws-step-functions/">Datadog — AWS Step Functions knowledge center</a></strong> — a concise external overview.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026 against the current releases — Apache Airflow 3.x, AWS Step Functions (Standard &amp; Express), and Temporal — using each project's own primary sources. Where anything here drifts from the official docs, treat those as ground truth; managed-cloud feature sets and quotas in particular move quickly. Temporal's internals are covered in depth on the companion <a href="../durable-execution/">Durable Execution</a> page.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('wf-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('wf-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('wf-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Comparison matrix: filter + highlight ----------
+  var matrixTable = document.getElementById('matrix-table');
+  if (matrixTable) {
+    var matrixRows = matrixTable.querySelectorAll('tbody tr');
+    var filterBtns = document.querySelectorAll('#filterSeg button');
+    var hlBtns = document.querySelectorAll('#hlSeg button');
+
+    function applyFilter(cat) {
+      matrixRows.forEach(function (r) {
+        var c = r.getAttribute('data-cat');
+        r.classList.toggle('hidden', cat !== 'all' && c !== cat);
+      });
+      filterBtns.forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-filter') === cat);
+      });
+      try { localStorage.setItem('wf-matrix-filter', cat); } catch (e) {}
+    }
+    function applyHl(tool) {
+      matrixTable.classList.remove('hl-temporal', 'hl-airflow', 'hl-sfn');
+      if (tool !== 'none') matrixTable.classList.add('hl-' + tool);
+      hlBtns.forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-hl') === tool);
+      });
+      try { localStorage.setItem('wf-matrix-highlight', tool); } catch (e) {}
+    }
+
+    filterBtns.forEach(function (b) {
+      b.addEventListener('click', function () { applyFilter(b.getAttribute('data-filter')); });
+    });
+    hlBtns.forEach(function (b) {
+      b.addEventListener('click', function () { applyHl(b.getAttribute('data-hl')); });
+    });
+
+    var savedFilter = 'all', savedHl = 'none';
+    try { savedFilter = localStorage.getItem('wf-matrix-filter') || 'all'; } catch (e) {}
+    try { savedHl = localStorage.getItem('wf-matrix-highlight') || 'none'; } catch (e) {}
+    // guard against stale values
+    if (!document.querySelector('#filterSeg button[data-filter="' + savedFilter + '"]')) savedFilter = 'all';
+    if (!document.querySelector('#hlSeg button[data-hl="' + savedHl + '"]')) savedHl = 'none';
+    applyFilter(savedFilter);
+    applyHl(savedHl);
+  }
+
+  // ---------- Matrix expand / fullscreen (desktop) ----------
+  var fsBtn = document.getElementById('fsBtn');
+  var matrixPanel = document.getElementById('matrix-panel');
+  var fsPop = document.getElementById('pop');
+  if (fsBtn && matrixPanel) {
+    var ENTER_LABEL = '⛶ Fullscreen';
+    var EXIT_LABEL = '✕ Exit';
+    var isExpanded = function () {
+      return !!document.fullscreenElement || matrixPanel.classList.contains('expanded');
+    };
+    var syncFsBtn = function () { fsBtn.textContent = isExpanded() ? EXIT_LABEL : ENTER_LABEL; };
+    var restorePop = function () {
+      if (fsPop && fsPop.parentNode !== document.body) document.body.appendChild(fsPop);
+    };
+    var openExpand = function () {
+      matrixPanel.classList.add('expanded');
+      document.body.style.overflow = 'hidden';
+      // keep tooltips inside the top layer / above the overlay
+      if (fsPop) matrixPanel.appendChild(fsPop);
+      var req = matrixPanel.requestFullscreen || matrixPanel.webkitRequestFullscreen;
+      if (req) { try { Promise.resolve(req.call(matrixPanel)).catch(function () {}); } catch (e) {} }
+      syncFsBtn();
+    };
+    var closeExpand = function () {
+      if (document.fullscreenElement) {
+        var ex = document.exitFullscreen || document.webkitExitFullscreen;
+        if (ex) { try { ex.call(document); } catch (e) {} }
+      }
+      matrixPanel.classList.remove('expanded');
+      document.body.style.overflow = '';
+      restorePop();
+      syncFsBtn();
+    };
+    fsBtn.addEventListener('click', function () {
+      if (isExpanded()) closeExpand(); else openExpand();
+    });
+    document.addEventListener('fullscreenchange', function () {
+      if (!document.fullscreenElement) {
+        matrixPanel.classList.remove('expanded');
+        document.body.style.overflow = '';
+        restorePop();
+      }
+      syncFsBtn();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && matrixPanel.classList.contains('expanded') && !document.fullscreenElement) {
+        closeExpand();
+      }
+    });
+  }
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (cls.indexOf('matrix-controls') !== -1) return '';
+      if (cls.indexOf('chips') !== -1) return '';
+      if (cls.indexOf('code-head') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline, then the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+      if (tag === 'table') return tableToMd(node);
+
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+      if (tag === 'code') return '`' + node.textContent + '`';
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

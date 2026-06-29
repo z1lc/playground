@@ -300,8 +300,10 @@ This is a tool that compares statistical information between the states Californ
 - **Levels**: State, City, Neighborhood
 
 #### Airports
-- **Source**: Wikipedia (passenger counts, international percentages from airport annual reports and BTS)
-- **Data**: Per-airport code, full name, total passengers (millions), international percent (2024)
+- **Source**: Wikipedia "List of the busiest airports in the United States" — 2025 total-passenger ranking table (passenger counts + `us_rank`). International counts from the article's international-traffic table (latest published is 2024).
+- **Data**: Per-airport `code`, full `name`, `passengers_millions` (total passengers, 2025), `international_percent`, `us_rank` (rank among US airports by total passengers, 2025).
+- **us_rank**: Rank by total passengers in CY2025 per the Wikipedia table (ATL #1, JFK #6, SFO #10, SEA #12, EWR #14, LGA #19, SJC #44). OAK is not in the source's top-52 table — its rank (#48) is derived by inserting OAK's 2025 total (9.21M) into the national ordering (between Pittsburgh #47 and Columbus). Displayed as a gray `(#N)` badge next to each code, matching the ParkScore rank style.
+- **international_percent**: Computed as 2024 international passenger count ÷ 2025 total passengers × 100 (2025 international splits not yet published). E.g. JFK 34.77M intl ÷ 62.6M = 55.5%.
 - **Levels**: City only
 
 #### Crime (City)
@@ -359,6 +361,15 @@ This is a tool that compares statistical information between the states Californ
 - **SDWA Violations / System**: America's Health Rankings (americashealthrankings.org), sourced from EPA SDWIS/ECHO (2024). Average health-based violations per community water system. National average: 2.5. CA: 2.3, NY: 1.9, GA: 2.3, WA: 1.8.
 - **Water Sources** (displayed as tooltip on topic header): SF — Hetch Hetchy Reservoir (Sierra Nevada snowmelt, unfiltered). NYC — Catskill/Delaware & Croton Watersheds (unfiltered for Catskill/Delaware). ATL — Chattahoochee River. SEA — Cedar River (~70%) & South Fork Tolt River (~30%), Cascade Range.
 - **Levels**: State (SDWA violations only), City (all other metrics)
+
+#### Electricity
+- **Script**: `fetch_electricity.py` (requires `EIA_API_KEY` env var; downloads & caches the EIA-861 zip in `raw_eia861/`). Prints JSON snippets for manual paste into the inline DATA in index.html.
+- **Avg Monthly Bill**: Average monthly residential electricity bill (full service = generation + delivery). State: EIA API v2 (`electricity/retail-sales`), residential revenue ÷ customers ÷ 12, latest annual (2025). City: EIA-861 2024 "Sales to Ultimate Customers" detailed file, bundled residential for the dominant utility — PG&E (SF), Consolidated Edison (NYC), Georgia Power (ATL), Seattle City Light (SEA). Note: utility service territories extend beyond city limits — most significantly PG&E, which spans much of northern/central California including hot inland areas, raising its bundled average ($198) well above what coastal SF alone would show; CCA (community choice aggregation) customers' total bills also differ.
+- **Generation Mix**: Per-source % of electricity supplied. Renewable sources (hydro, wind, solar, geothermal & biomass) are marked with 🌱 in the UI; nuclear is carbon-free but not marked renewable.
+  - **State**: EIA API v2 (`electricity/electric-power-operational-data`), net generation by fuel type, all sectors (sectorid 99), latest annual (2025), as % of total. Buckets: natural_gas=NG, coal=COW, nuclear=NUC, hydro=HYC+HPS, wind=WND, solar=SUN (utility-scale only; excludes small-scale rooftop PV, consistent with the net-generation total), geo_biomass=GEO+BIO, other=PET+OOG+OTH. Sources rounding to <0.1% are omitted.
+  - **City**: each dominant utility's published power-content label / fuel-mix disclosure (not available via API). SF — PG&E 2024 Power Content Label (nuclear share is high because CCA load migration shrank PG&E's bundled portfolio; large hydro + eligible small hydro combined into hydro). NYC — Con Edison's delivered mix is allocated by the NYISO from EIA data, i.e. the NY statewide system mix (so NYC mirrors NY state). ATL — Georgia Power 2024 actual energy supplied (2025 Integrated Resource Plan / Facts & Figures); renewables (solar-dominant) → solar, "null"/unspecified → other. SEA — Seattle City Light 2024 fuel mix (no coal/gas in portfolio; "unspecified" market purchases → other).
+- **Data vintage**: State 2025 (EIA); city bill 2024 (EIA-861); city mix latest published label (2024).
+- **Levels**: State, City
 
 #### Noise Level
 - **Source**: DOT Bureau of Transportation Statistics (BTS) National Transportation Noise Map, with census-tract population exposure data from Seto & Huang 2023 (University of Washington).

@@ -16,9 +16,40 @@
   "areas": {
     "states": {
       "California": {
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 31.996,
+          "graduate_degree_percent": 11.896,
+          "high_school_or_higher_percent": 82.105,
+          "no_hs_diploma_percent": 17.895,
+          "bachelors_or_higher_count": 8176487,
+          "total_population_25_plus": 25554412
+        },
+        "age_and_sex": {
+          "senior_percent": 12.876,
+          "older_adult_percent": 31.833,
+          "younger_adult_percent": 25.828,
+          "college_percent": 5.817,
+          "children_percent": 23.646,
+          "senior_count": 4976982,
+          "older_adult_count": 12304883,
+          "younger_adult_count": 9983487,
+          "college_count": 2248571,
+          "children_count": 9140283
+        },
+        "household_income": {
+          "median_household_income": 63783,
+          "mean_household_income": null
+        },
         "population": {
           "total_population": 38654206,
           "population_density_per_sq_mi": 248.113162
+        },
+        "employment_status": {
+          "employed_percent": 57.506013,
+          "unemployed_percent": 5.508539,
+          "not_in_labor_force_percent": 36.558656,
+          "employed_count": 17577142,
+          "total_population_16_plus": 30565746
         },
         "race_and_ethnicity": {
           "white_percent": 38.384547,
@@ -33,44 +64,6 @@
           "asian_count": 5354608,
           "mixed_count": 1107850,
           "other_count": 365951
-        },
-        "household_income": {
-          "median_household_income": 63783,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 31.996,
-          "graduate_degree_percent": 11.896,
-          "high_school_or_higher_percent": 82.105,
-          "no_hs_diploma_percent": 17.895,
-          "bachelors_or_higher_count": 8176487,
-          "total_population_25_plus": 25554412
-        },
-        "employment_status": {
-          "employed_percent": 57.506013,
-          "unemployed_percent": 5.508539,
-          "not_in_labor_force_percent": 36.558656,
-          "employed_count": 17577142,
-          "total_population_16_plus": 30565746
-        },
-        "age_and_sex": {
-          "senior_percent": 12.876,
-          "older_adult_percent": 31.833,
-          "younger_adult_percent": 25.828,
-          "college_percent": 5.817,
-          "children_percent": 23.646,
-          "senior_count": 4976982,
-          "older_adult_count": 12304883,
-          "younger_adult_count": 9983487,
-          "college_count": 2248571,
-          "children_count": 9140283
-        },
-        "marital_status": {
-          "never_married_percent": 31.6,
-          "married_percent": 46.6,
-          "separated_percent": 1.8,
-          "divorced_percent": 9.6,
-          "widowed_percent": 2.6
         },
         "national_origin": {
           "foreign_born_percent": 27.002244,
@@ -102,6 +95,13 @@
               "count": 436290
             }
           ]
+        },
+        "marital_status": {
+          "never_married_percent": 31.6,
+          "married_percent": 46.6,
+          "separated_percent": 1.8,
+          "divorced_percent": 9.6,
+          "widowed_percent": 2.6
         }
       },
       "New York": {
@@ -123,25 +123,6 @@
           "mixed_count": 350995,
           "other_count": 156908
         },
-        "household_income": {
-          "median_household_income": 60741,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 34.74,
-          "graduate_degree_percent": 15.09,
-          "high_school_or_higher_percent": 85.92,
-          "no_hs_diploma_percent": 14.08,
-          "bachelors_or_higher_count": 4691446,
-          "total_population_25_plus": 13504083
-        },
-        "employment_status": {
-          "employed_percent": 58.508658,
-          "unemployed_percent": 4.755568,
-          "not_in_labor_force_percent": 36.591859,
-          "employed_count": 9340878,
-          "total_population_16_plus": 15964950
-        },
         "age_and_sex": {
           "senior_percent": 14.691,
           "older_adult_percent": 33.195,
@@ -154,12 +135,13 @@
           "college_count": 1121684,
           "children_count": 4226409
         },
-        "marital_status": {
-          "never_married_percent": 32.9,
-          "married_percent": 44.5,
-          "separated_percent": 1.9,
-          "divorced_percent": 8.0,
-          "widowed_percent": 4.9
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 34.74,
+          "graduate_degree_percent": 15.09,
+          "high_school_or_higher_percent": 85.92,
+          "no_hs_diploma_percent": 14.08,
+          "bachelors_or_higher_count": 4691446,
+          "total_population_25_plus": 13504083
         },
         "national_origin": {
           "foreign_born_percent": 22.552206,
@@ -191,13 +173,27 @@
               "count": 177753
             }
           ]
+        },
+        "household_income": {
+          "median_household_income": 60741,
+          "mean_household_income": null
+        },
+        "marital_status": {
+          "never_married_percent": 32.9,
+          "married_percent": 44.5,
+          "separated_percent": 1.9,
+          "divorced_percent": 8.0,
+          "widowed_percent": 4.9
+        },
+        "employment_status": {
+          "employed_percent": 58.508658,
+          "unemployed_percent": 4.755568,
+          "not_in_labor_force_percent": 36.591859,
+          "employed_count": 9340878,
+          "total_population_16_plus": 15964950
         }
       },
       "Georgia": {
-        "population": {
-          "total_population": 10099320,
-          "population_density_per_sq_mi": 175.351246
-        },
         "race_and_ethnicity": {
           "white_percent": 54.124822,
           "hispanic_percent": 8.733241,
@@ -212,9 +208,16 @@
           "mixed_count": 180061,
           "other_count": 48905
         },
-        "household_income": {
-          "median_household_income": 51037,
-          "mean_household_income": null
+        "population": {
+          "total_population": 10099320,
+          "population_density_per_sq_mi": 175.351246
+        },
+        "employment_status": {
+          "employed_percent": 56.946999,
+          "unemployed_percent": 5.316692,
+          "not_in_labor_force_percent": 37.116466,
+          "employed_count": 4489112,
+          "total_population_16_plus": null
         },
         "educational_attainment": {
           "bachelors_or_higher_percent": 36.768677,
@@ -223,13 +226,6 @@
           "no_hs_diploma_percent": 14.156087,
           "bachelors_or_higher_count": 2422858,
           "total_population_25_plus": 6589462
-        },
-        "employment_status": {
-          "employed_percent": 56.946999,
-          "unemployed_percent": 5.316692,
-          "not_in_labor_force_percent": 37.116466,
-          "employed_count": 4489112,
-          "total_population_16_plus": null
         },
         "age_and_sex": {
           "senior_percent": 12.34,
@@ -242,13 +238,6 @@
           "younger_adult_count": 2474611,
           "college_count": 591308,
           "children_count": 2495175
-        },
-        "marital_status": {
-          "never_married_percent": 30.0,
-          "married_percent": 46.9,
-          "separated_percent": 1.8,
-          "divorced_percent": 9.6,
-          "widowed_percent": 2.6
         },
         "national_origin": {
           "foreign_born_percent": 9.848386,
@@ -280,13 +269,20 @@
               "count": 36723
             }
           ]
+        },
+        "household_income": {
+          "median_household_income": 51037,
+          "mean_household_income": null
+        },
+        "marital_status": {
+          "never_married_percent": 30.0,
+          "married_percent": 46.9,
+          "separated_percent": 1.8,
+          "divorced_percent": 9.6,
+          "widowed_percent": 2.6
         }
       },
       "Washington": {
-        "population": {
-          "total_population": 7073146,
-          "population_density_per_sq_mi": 106.437746
-        },
         "race_and_ethnicity": {
           "white_percent": 70.384169,
           "hispanic_percent": 11.86571,
@@ -301,24 +297,9 @@
           "mixed_count": 312945,
           "other_count": 133525
         },
-        "household_income": {
-          "median_household_income": 62848,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 43.33,
-          "graduate_degree_percent": 12.28,
-          "high_school_or_higher_percent": 90.58,
-          "no_hs_diploma_percent": 9.42,
-          "bachelors_or_higher_count": 2081859,
-          "total_population_25_plus": 4804224
-        },
-        "employment_status": {
-          "employed_percent": 58.985477,
-          "unemployed_percent": 4.332598,
-          "not_in_labor_force_percent": 35.844575,
-          "employed_count": 3331321,
-          "total_population_16_plus": null
+        "population": {
+          "total_population": 7073146,
+          "population_density_per_sq_mi": 106.437746
         },
         "age_and_sex": {
           "senior_percent": 14.037,
@@ -332,12 +313,24 @@
           "college_count": 371674,
           "children_count": 1604595
         },
+        "household_income": {
+          "median_household_income": 62848,
+          "mean_household_income": null
+        },
         "marital_status": {
           "never_married_percent": 34.496413,
           "married_percent": 51.491897,
           "separated_percent": 1.410824,
           "divorced_percent": 10.423936,
           "widowed_percent": 2.176931
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 43.33,
+          "graduate_degree_percent": 12.28,
+          "high_school_or_higher_percent": 90.58,
+          "no_hs_diploma_percent": 9.42,
+          "bachelors_or_higher_count": 2081859,
+          "total_population_25_plus": 4804224
         },
         "national_origin": {
           "foreign_born_percent": 13.5,
@@ -369,11 +362,22 @@
               "count": 54222
             }
           ]
+        },
+        "employment_status": {
+          "employed_percent": 58.985477,
+          "unemployed_percent": 4.332598,
+          "not_in_labor_force_percent": 35.844575,
+          "employed_count": 3331321,
+          "total_population_16_plus": null
         }
       }
     },
     "cities": {
       "San Francisco": {
+        "household_income": {
+          "median_household_income": 87701,
+          "mean_household_income": null
+        },
         "population": {
           "total_population": 850282,
           "population_density_per_sq_mi": 18131.882704
@@ -391,18 +395,6 @@
           "asian_count": 287847,
           "mixed_count": 32932,
           "other_count": 8566
-        },
-        "household_income": {
-          "median_household_income": 87701,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 54.793235,
-          "graduate_degree_percent": 21.858,
-          "high_school_or_higher_percent": 87.440265,
-          "no_hs_diploma_percent": 12.559735,
-          "bachelors_or_higher_count": 366564,
-          "total_population_25_plus": 668995
         },
         "employment_status": {
           "employed_percent": 65.417482,
@@ -422,6 +414,14 @@
           "younger_adult_count": 301699,
           "college_count": 30016,
           "children_count": 114628
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 54.793235,
+          "graduate_degree_percent": 21.858,
+          "high_school_or_higher_percent": 87.440265,
+          "no_hs_diploma_percent": 12.559735,
+          "bachelors_or_higher_count": 366564,
+          "total_population_25_plus": 668995
         },
         "marital_status": {
           "never_married_percent": 50.318049,
@@ -467,6 +467,13 @@
           "total_population": 8461961,
           "population_density_per_sq_mi": 28069.664457
         },
+        "employment_status": {
+          "employed_percent": 58.188576,
+          "unemployed_percent": 5.473516,
+          "not_in_labor_force_percent": 36.305575,
+          "employed_count": 3991617,
+          "total_population_16_plus": 6859795
+        },
         "race_and_ethnicity": {
           "white_percent": 32.261706,
           "hispanic_percent": 26.743352,
@@ -481,9 +488,12 @@
           "mixed_count": 151177,
           "other_count": 92989
         },
-        "household_income": {
-          "median_household_income": 55191,
-          "mean_household_income": null
+        "marital_status": {
+          "never_married_percent": 46.4,
+          "married_percent": 39.4,
+          "separated_percent": 3.9,
+          "divorced_percent": 9.4,
+          "widowed_percent": 8.4
         },
         "educational_attainment": {
           "bachelors_or_higher_percent": 42.643083,
@@ -493,12 +503,9 @@
           "bachelors_or_higher_count": 2495376,
           "total_population_25_plus": 5851772
         },
-        "employment_status": {
-          "employed_percent": 58.188576,
-          "unemployed_percent": 5.473516,
-          "not_in_labor_force_percent": 36.305575,
-          "employed_count": 3991617,
-          "total_population_16_plus": 6859795
+        "household_income": {
+          "median_household_income": 55191,
+          "mean_household_income": null
         },
         "age_and_sex": {
           "senior_percent": 12.991,
@@ -511,13 +518,6 @@
           "younger_adult_count": 2493573,
           "college_count": 429097,
           "children_count": 1793861
-        },
-        "marital_status": {
-          "never_married_percent": 46.4,
-          "married_percent": 39.4,
-          "separated_percent": 3.9,
-          "divorced_percent": 9.4,
-          "widowed_percent": 8.4
         },
         "national_origin": {
           "foreign_born_percent": 37.2,
@@ -552,9 +552,9 @@
         }
       },
       "Atlanta": {
-        "population": {
-          "total_population": 456378,
-          "population_density_per_sq_mi": 3419.337458
+        "household_income": {
+          "median_household_income": 59183,
+          "mean_household_income": null
         },
         "race_and_ethnicity": {
           "white_percent": 37.164806,
@@ -570,24 +570,12 @@
           "mixed_count": null,
           "other_count": null
         },
-        "household_income": {
-          "median_household_income": 59183,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 36.485337,
-          "graduate_degree_percent": 3.736247,
-          "high_school_or_higher_percent": 88.51684,
-          "no_hs_diploma_percent": 11.48316,
-          "bachelors_or_higher_count": 1336324,
-          "total_population_25_plus": 3662633
-        },
-        "employment_status": {
-          "employed_percent": 61.4,
-          "unemployed_percent": 5.5,
-          "not_in_labor_force_percent": 33.0,
-          "employed_count": 2670488,
-          "total_population_16_plus": 4345464
+        "marital_status": {
+          "never_married_percent": 37.2,
+          "married_percent": 47.1,
+          "separated_percent": 2.5,
+          "divorced_percent": 13.0,
+          "widowed_percent": 7.2
         },
         "age_and_sex": {
           "senior_percent": 10.754,
@@ -601,12 +589,9 @@
           "college_count": 301185,
           "children_count": 1427451
         },
-        "marital_status": {
-          "never_married_percent": 37.2,
-          "married_percent": 47.1,
-          "separated_percent": 2.5,
-          "divorced_percent": 13.0,
-          "widowed_percent": 7.2
+        "population": {
+          "total_population": 456378,
+          "population_density_per_sq_mi": 3419.337458
         },
         "national_origin": {
           "foreign_born_percent": 13.424852,
@@ -638,13 +623,24 @@
               "count": 29995
             }
           ]
+        },
+        "employment_status": {
+          "employed_percent": 61.4,
+          "unemployed_percent": 5.5,
+          "not_in_labor_force_percent": 33.0,
+          "employed_count": 2670488,
+          "total_population_16_plus": 4345464
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 36.485337,
+          "graduate_degree_percent": 3.736247,
+          "high_school_or_higher_percent": 88.51684,
+          "no_hs_diploma_percent": 11.48316,
+          "bachelors_or_higher_count": 1336324,
+          "total_population_25_plus": 3662633
         }
       },
       "Seattle": {
-        "population": {
-          "total_population": 668849,
-          "population_density_per_sq_mi": 7977.893622
-        },
         "race_and_ethnicity": {
           "white_percent": 65.689392,
           "hispanic_percent": 9.302865,
@@ -659,24 +655,9 @@
           "mixed_count": 196132,
           "other_count": 62418
         },
-        "household_income": {
-          "median_household_income": 73044,
-          "mean_household_income": null
-        },
-        "educational_attainment": {
-          "bachelors_or_higher_percent": 49.326127,
-          "graduate_degree_percent": 14.30653,
-          "high_school_or_higher_percent": 92.0,
-          "no_hs_diploma_percent": 8.000039,
-          "bachelors_or_higher_count": 1250331,
-          "total_population_25_plus": 2534825
-        },
-        "employment_status": {
-          "employed_percent": 63.084734,
-          "unemployed_percent": 4.121943,
-          "not_in_labor_force_percent": 32.044352,
-          "employed_count": 1861117,
-          "total_population_16_plus": null
+        "population": {
+          "total_population": 668849,
+          "population_density_per_sq_mi": 7977.893622
         },
         "age_and_sex": {
           "senior_percent": 12.259,
@@ -690,12 +671,24 @@
           "college_count": 174315,
           "children_count": 810422
         },
-        "marital_status": {
-          "never_married_percent": 27.2,
-          "married_percent": 50.2,
-          "separated_percent": 1.4,
-          "divorced_percent": 10.4,
-          "widowed_percent": 2.2
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 49.326127,
+          "graduate_degree_percent": 14.30653,
+          "high_school_or_higher_percent": 92.0,
+          "no_hs_diploma_percent": 8.000039,
+          "bachelors_or_higher_count": 1250331,
+          "total_population_25_plus": 2534825
+        },
+        "household_income": {
+          "median_household_income": 73044,
+          "mean_household_income": null
+        },
+        "employment_status": {
+          "employed_percent": 63.084734,
+          "unemployed_percent": 4.121943,
+          "not_in_labor_force_percent": 32.044352,
+          "employed_count": 1861117,
+          "total_population_16_plus": null
         },
         "national_origin": {
           "foreign_born_percent": 17.464844,
@@ -727,14 +720,24 @@
               "count": 44463
             }
           ]
+        },
+        "marital_status": {
+          "never_married_percent": 27.2,
+          "married_percent": 50.2,
+          "separated_percent": 1.4,
+          "divorced_percent": 10.4,
+          "widowed_percent": 2.2
         }
       }
     },
     "neighborhoods": {
       "Greenwich Village": {
-        "population": {
-          "total_population": 23138,
-          "population_density_per_sq_mi": 99743.078027
+        "employment_status": {
+          "employed_percent": 65.358324,
+          "unemployed_percent": 2.700552,
+          "not_in_labor_force_percent": 31.935899,
+          "employed_count": 27987,
+          "total_population_16_plus": null
         },
         "race_and_ethnicity": {
           "white_percent": 78.922964,
@@ -754,6 +757,10 @@
           "median_household_income": 120666,
           "mean_household_income": null
         },
+        "population": {
+          "total_population": 23138,
+          "population_density_per_sq_mi": 99743.078027
+        },
         "educational_attainment": {
           "bachelors_or_higher_percent": 86.503568,
           "graduate_degree_percent": 41.625,
@@ -761,25 +768,6 @@
           "no_hs_diploma_percent": 2.001767,
           "bachelors_or_higher_count": 29663,
           "total_population_25_plus": 34290
-        },
-        "employment_status": {
-          "employed_percent": 65.358324,
-          "unemployed_percent": 2.700552,
-          "not_in_labor_force_percent": 31.935899,
-          "employed_count": 27987,
-          "total_population_16_plus": null
-        },
-        "age_and_sex": {
-          "senior_percent": 14.6,
-          "older_adult_percent": 26.2,
-          "younger_adult_percent": 37.8,
-          "college_percent": 13.4,
-          "children_percent": 8.0,
-          "senior_count": 6732,
-          "older_adult_count": 12054,
-          "younger_adult_count": 17418,
-          "college_count": 6160,
-          "children_count": 3677
         },
         "marital_status": {
           "never_married_percent": 59.3,
@@ -818,6 +806,374 @@
               "count": 548
             }
           ]
+        },
+        "age_and_sex": {
+          "senior_percent": 14.6,
+          "older_adult_percent": 26.2,
+          "younger_adult_percent": 37.8,
+          "college_percent": 13.4,
+          "children_percent": 8.0,
+          "senior_count": 6732,
+          "older_adult_count": 12054,
+          "younger_adult_count": 17418,
+          "college_count": 6160,
+          "children_count": 3677
+        }
+      },
+      "Sweet Auburn": {
+        "race_and_ethnicity": {
+          "white_percent": 29.566494,
+          "hispanic_percent": 4.979886,
+          "black_percent": 61.438163,
+          "asian_percent": 2.784608,
+          "mixed_percent": 1.077708,
+          "other_percent": 0.153139,
+          "white_count": 540,
+          "hispanic_count": 90,
+          "black_count": 1122,
+          "asian_count": 50,
+          "mixed_count": 19,
+          "other_count": 2
+        },
+        "population": {
+          "total_population": null,
+          "population_density_per_sq_mi": null
+        },
+        "household_income": {
+          "median_household_income": 26966,
+          "mean_household_income": null
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 46.331702,
+          "graduate_degree_percent": 23.762,
+          "high_school_or_higher_percent": 88.220898,
+          "no_hs_diploma_percent": 11.779102,
+          "bachelors_or_higher_count": 475,
+          "total_population_25_plus": 1025
+        },
+        "marital_status": {
+          "never_married_percent": 73.308467,
+          "married_percent": 7.764898,
+          "separated_percent": 3.702268,
+          "divorced_percent": 11.117363,
+          "widowed_percent": 4.107005
+        },
+        "age_and_sex": {
+          "senior_percent": 12.71,
+          "older_adult_percent": 32.099,
+          "younger_adult_percent": 45.431,
+          "college_percent": 24.612,
+          "children_percent": 9.761,
+          "senior_count": 232,
+          "older_adult_count": 586,
+          "younger_adult_count": 829,
+          "college_count": 449,
+          "children_count": 178
+        },
+        "national_origin": {
+          "foreign_born_percent": 6.874703,
+          "foreign_born_count": 125,
+          "top_origins": [
+            {
+              "name": "Ethiopia",
+              "percent": 10.583715,
+              "count": 13
+            },
+            {
+              "name": "China",
+              "percent": 10.197924,
+              "count": 12
+            },
+            {
+              "name": "Spain",
+              "percent": 9.535471,
+              "count": 11
+            },
+            {
+              "name": "Korea",
+              "percent": 8.339111,
+              "count": 10
+            },
+            {
+              "name": "Canada",
+              "percent": 7.182314,
+              "count": 9
+            }
+          ]
+        },
+        "employment_status": {
+          "employed_percent": 50.640164,
+          "unemployed_percent": 5.949067,
+          "not_in_labor_force_percent": 43.410769,
+          "employed_count": 873,
+          "total_population_16_plus": null
+        }
+      },
+      "Cabbagetown": {
+        "household_income": {
+          "median_household_income": 70000,
+          "mean_household_income": null
+        },
+        "race_and_ethnicity": {
+          "white_percent": 74.347015,
+          "hispanic_percent": 3.731343,
+          "black_percent": 15.811567,
+          "asian_percent": 2.098881,
+          "mixed_percent": 4.011194,
+          "other_percent": 0.0,
+          "white_count": 966,
+          "hispanic_count": 48,
+          "black_count": 205,
+          "asian_count": 27,
+          "mixed_count": 52,
+          "other_count": 0
+        },
+        "population": {
+          "total_population": 3468,
+          "population_density_per_sq_mi": 7643.603801
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 64.596273,
+          "graduate_degree_percent": 28.726708,
+          "high_school_or_higher_percent": 94.461697,
+          "no_hs_diploma_percent": 5.538302,
+          "bachelors_or_higher_count": 755,
+          "total_population_25_plus": 1170
+        },
+        "national_origin": {
+          "foreign_born_percent": 4.710821,
+          "foreign_born_count": 61,
+          "top_origins": [
+            {
+              "name": "Canada",
+              "percent": 17.821782,
+              "count": 10
+            },
+            {
+              "name": "France",
+              "percent": 14.851485,
+              "count": 9
+            },
+            {
+              "name": "Korea",
+              "percent": 12.871287,
+              "count": 7
+            },
+            {
+              "name": "Bosnia and Herzegovina",
+              "percent": 11.881188,
+              "count": 7
+            },
+            {
+              "name": "Ecuador",
+              "percent": 7.920792,
+              "count": 4
+            }
+          ]
+        },
+        "age_and_sex": {
+          "senior_percent": 8.022,
+          "older_adult_percent": 40.997,
+          "younger_adult_percent": 46.781,
+          "college_percent": 5.69,
+          "children_percent": 4.197,
+          "senior_count": 103,
+          "older_adult_count": 529,
+          "younger_adult_count": 607,
+          "college_count": 73,
+          "children_count": 54
+        },
+        "marital_status": {
+          "never_married_percent": 55.503293,
+          "married_percent": 31.138288,
+          "separated_percent": 1.505174,
+          "divorced_percent": 5.738476,
+          "widowed_percent": 6.11477
+        },
+        "employment_status": {
+          "employed_percent": 91.300165,
+          "unemployed_percent": 0.049606,
+          "not_in_labor_force_percent": 7.622308,
+          "employed_count": 972,
+          "total_population_16_plus": 1065
+        }
+      },
+      "Reynoldstown": {
+        "race_and_ethnicity": {
+          "white_percent": 62.536931,
+          "hispanic_percent": 3.304763,
+          "black_percent": 30.078455,
+          "asian_percent": 2.122994,
+          "mixed_percent": 1.951051,
+          "other_percent": 0.005805,
+          "white_count": 1532,
+          "hispanic_count": 80,
+          "black_count": 736,
+          "asian_count": 52,
+          "mixed_count": 47,
+          "other_count": 0
+        },
+        "household_income": {
+          "median_household_income": 52358,
+          "mean_household_income": null
+        },
+        "population": {
+          "total_population": null,
+          "population_density_per_sq_mi": null
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 55.972637,
+          "graduate_degree_percent": 24.455426,
+          "high_school_or_higher_percent": 89.425642,
+          "no_hs_diploma_percent": 10.574358,
+          "bachelors_or_higher_count": 1069,
+          "total_population_25_plus": 1911
+        },
+        "marital_status": {
+          "never_married_percent": 64.686164,
+          "married_percent": 24.215957,
+          "separated_percent": 1.856665,
+          "divorced_percent": 5.47322,
+          "widowed_percent": 3.767994
+        },
+        "employment_status": {
+          "employed_percent": 74.850581,
+          "unemployed_percent": 4.622151,
+          "not_in_labor_force_percent": 20.224656,
+          "employed_count": 1696,
+          "total_population_16_plus": null
+        },
+        "age_and_sex": {
+          "senior_percent": 6.73,
+          "older_adult_percent": 25.704,
+          "younger_adult_percent": 54.297,
+          "college_percent": 4.25,
+          "children_percent": 9.019,
+          "senior_count": 329,
+          "older_adult_count": 1259,
+          "younger_adult_count": 2659,
+          "college_count": 208,
+          "children_count": 441
+        },
+        "national_origin": {
+          "foreign_born_percent": 4.432876,
+          "foreign_born_count": 107,
+          "top_origins": [
+            {
+              "name": "Philippines",
+              "percent": 12.913885,
+              "count": 14
+            },
+            {
+              "name": "United Kingdom",
+              "percent": 11.875855,
+              "count": 12
+            },
+            {
+              "name": "Canada",
+              "percent": 10.885699,
+              "count": 11
+            },
+            {
+              "name": "Korea",
+              "percent": 7.648823,
+              "count": 8
+            },
+            {
+              "name": "Germany",
+              "percent": 4.813996,
+              "count": 5
+            }
+          ]
+        }
+      },
+      "Inman Park": {
+        "household_income": {
+          "median_household_income": 84260,
+          "mean_household_income": null
+        },
+        "race_and_ethnicity": {
+          "white_percent": 78.233775,
+          "hispanic_percent": 2.669357,
+          "black_percent": 11.594039,
+          "asian_percent": 4.564692,
+          "mixed_percent": 2.65465,
+          "other_percent": 0.283488,
+          "white_count": 3301,
+          "hispanic_count": 112,
+          "black_count": 489,
+          "asian_count": 192,
+          "mixed_count": 112,
+          "other_count": 11
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 75.124053,
+          "graduate_degree_percent": 30.308,
+          "high_school_or_higher_percent": 98.661549,
+          "no_hs_diploma_percent": 1.338451,
+          "bachelors_or_higher_count": 2582,
+          "total_population_25_plus": 3437
+        },
+        "population": {
+          "total_population": 4220,
+          "population_density_per_sq_mi": 7105.041852
+        },
+        "national_origin": {
+          "foreign_born_percent": 8.868889,
+          "foreign_born_count": 373,
+          "top_origins": [
+            {
+              "name": "United Kingdom",
+              "percent": 17.121102,
+              "count": 48
+            },
+            {
+              "name": "Germany",
+              "percent": 14.594296,
+              "count": 40
+            },
+            {
+              "name": "Hong Kong",
+              "percent": 10.76578,
+              "count": 30
+            },
+            {
+              "name": "Philippines",
+              "percent": 9.953232,
+              "count": 27
+            },
+            {
+              "name": "Canada",
+              "percent": 5.219772,
+              "count": 14
+            }
+          ]
+        },
+        "employment_status": {
+          "employed_percent": 80.377394,
+          "unemployed_percent": 2.837739,
+          "not_in_labor_force_percent": 16.784867,
+          "employed_count": 3077,
+          "total_population_16_plus": null
+        },
+        "marital_status": {
+          "never_married_percent": 56.70543,
+          "married_percent": 29.916027,
+          "separated_percent": 1.587367,
+          "divorced_percent": 8.918328,
+          "widowed_percent": 1.934402
+        },
+        "age_and_sex": {
+          "senior_percent": 5.083,
+          "older_adult_percent": 39.464,
+          "younger_adult_percent": 44.345,
+          "college_percent": 7.451,
+          "children_percent": 11.108,
+          "senior_count": 212,
+          "older_adult_count": 1660,
+          "younger_adult_count": 1868,
+          "college_count": 312,
+          "children_count": 467
         }
       },
       "Mercer Island": {
@@ -911,62 +1267,63 @@
       },
       "North Panhandle + Anza Vista": {
         "population": {
-          "total_population": 10003,
-          "population_density_per_sq_mi": 28983.74
+          "population_density_per_sq_mi": 28983.74,
+          "total_population": 10003
         },
         "race_and_ethnicity": {
-          "asian_count": 1722,
-          "white_percent": 61.22,
-          "hispanic_percent": 9.2,
-          "mixed_percent": 4.1,
-          "hispanic_count": 1132,
-          "other_percent": 1.09,
+          "black_count": 1211,
           "mixed_count": 493,
           "asian_percent": 14.34,
-          "white_count": 7755,
+          "asian_count": 1722,
+          "other_percent": 1.09,
           "black_percent": 10.05,
-          "black_count": 1211,
-          "other_count": 125
+          "white_count": 7755,
+          "hispanic_percent": 9.2,
+          "other_count": 125,
+          "mixed_percent": 4.1,
+          "white_percent": 61.22,
+          "hispanic_count": 1132
         },
         "household_income": {
           "mean_household_income": null,
           "median_household_income": 105456
         },
         "educational_attainment": {
-          "high_school_or_higher_percent": 94.76,
           "total_population_25_plus": 9643,
+          "high_school_or_higher_percent": 94.76,
           "bachelors_or_higher_count": 7170,
-          "no_hs_diploma_percent": 5.24,
           "bachelors_or_higher_percent": 74.05,
+          "no_hs_diploma_percent": 5.24,
           "graduate_degree_percent": 26.35
         },
         "employment_status": {
-          "not_in_labor_force_percent": 27.13,
           "total_population_16_plus": null,
           "unemployed_percent": 5.18,
-          "employed_percent": 67.69,
-          "employed_count": 7736
+          "not_in_labor_force_percent": 27.13,
+          "employed_count": 7736,
+          "employed_percent": 67.69
         },
         "age_and_sex": {
-          "older_adult_count": 3510,
-          "senior_percent": 10.77,
-          "college_percent": 1.39,
           "children_percent": 10.82,
-          "younger_adult_percent": 48.48,
+          "older_adult_count": 3510,
           "senior_count": 1307,
           "younger_adult_count": 6119,
-          "college_count": 171,
+          "college_percent": 1.39,
+          "senior_percent": 10.77,
           "children_count": 1332,
-          "older_adult_percent": 28.55
+          "older_adult_percent": 28.55,
+          "younger_adult_percent": 48.48,
+          "college_count": 171
         },
         "marital_status": {
-          "married_percent": 30.12,
-          "never_married_percent": 57.37,
           "separated_percent": 0.76,
+          "never_married_percent": 57.37,
+          "widowed_percent": 1.86,
           "divorced_percent": 7.32,
-          "widowed_percent": 1.86
+          "married_percent": 30.12
         },
         "national_origin": {
+          "foreign_born_percent": 18.29,
           "top_origins": [
             {
               "name": "China",
@@ -994,7 +1351,6 @@
               "count": 106
             }
           ],
-          "foreign_born_percent": 18.29,
           "foreign_born_count": 2277
         },
         "_components": [
@@ -1004,62 +1360,63 @@
       },
       "Virginia Highland + Morningside-Lenox Park": {
         "population": {
-          "total_population": 16090,
-          "population_density_per_sq_mi": 5711.27
+          "population_density_per_sq_mi": 5711.27,
+          "total_population": 16090
         },
         "race_and_ethnicity": {
-          "asian_count": 403,
-          "white_percent": 85.35,
-          "hispanic_percent": 4.65,
-          "mixed_percent": 2.76,
-          "hispanic_count": 748,
-          "other_percent": 0.26,
+          "black_count": 720,
           "mixed_count": 442,
           "asian_percent": 2.51,
-          "white_count": 13731,
+          "asian_count": 403,
+          "other_percent": 0.26,
           "black_percent": 4.48,
-          "black_count": 720,
-          "other_count": 41
+          "white_count": 13731,
+          "hispanic_percent": 4.65,
+          "other_count": 41,
+          "mixed_percent": 2.76,
+          "white_percent": 85.35,
+          "hispanic_count": 748
         },
         "household_income": {
           "mean_household_income": null,
           "median_household_income": 110507
         },
         "educational_attainment": {
-          "high_school_or_higher_percent": 97.92,
           "total_population_25_plus": 12326,
+          "high_school_or_higher_percent": 97.92,
           "bachelors_or_higher_count": 9796,
-          "no_hs_diploma_percent": 2.08,
           "bachelors_or_higher_percent": 79.67,
+          "no_hs_diploma_percent": 2.08,
           "graduate_degree_percent": 36.53
         },
         "employment_status": {
-          "not_in_labor_force_percent": 21.72,
           "total_population_16_plus": null,
           "unemployed_percent": 2.93,
-          "employed_percent": 75.35,
-          "employed_count": 10143
+          "not_in_labor_force_percent": 21.72,
+          "employed_count": 10143,
+          "employed_percent": 75.35
         },
         "age_and_sex": {
-          "older_adult_count": 6441,
-          "senior_percent": 8.31,
-          "college_percent": 1.73,
           "children_percent": 18.47,
-          "younger_adult_percent": 31.45,
+          "older_adult_count": 6441,
           "senior_count": 1336,
           "younger_adult_count": 5060,
-          "college_count": 278,
+          "college_percent": 1.73,
+          "senior_percent": 8.31,
           "children_count": 2971,
-          "older_adult_percent": 40.04
+          "older_adult_percent": 40.04,
+          "younger_adult_percent": 31.45,
+          "college_count": 278
         },
         "marital_status": {
-          "married_percent": 43.43,
-          "never_married_percent": 44.31,
           "separated_percent": 0.66,
+          "never_married_percent": 44.31,
+          "widowed_percent": 2.4,
           "divorced_percent": 8.73,
-          "widowed_percent": 2.4
+          "married_percent": 43.43
         },
         "national_origin": {
+          "foreign_born_percent": 7.09,
           "top_origins": [
             {
               "name": "Mexico",
@@ -1087,7 +1444,6 @@
               "count": 28
             }
           ],
-          "foreign_born_percent": 7.09,
           "foreign_born_count": 1140
         },
         "_components": [

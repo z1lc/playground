@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# /// script
+# dependencies = [
+#   "httpx",
+# ]
+# ///
 """Fetch restaurant density data from Yelp Fusion API for neighborhood comparison."""
 
 import json
@@ -11,18 +16,15 @@ YELP_API_KEY = os.environ["YELP_API_KEY"]
 YELP_SEARCH_URL = "https://api.yelp.com/v3/businesses/search"
 
 NEIGHBORHOODS = {
-    "North Panhandle + Anza Vista": {
-        "lat": 37.7760, "lng": -122.4375, "radius_m": 800, "population": 10003
-    },
-    "Greenwich Village": {
-        "lat": 40.7335, "lng": -73.9985, "radius_m": 600, "population": 23138
-    },
-    "Virginia Highland + Morningside": {
-        "lat": 33.7870, "lng": -84.3530, "radius_m": 1200, "population": 16090
-    },
-    "Mercer Island": {
-        "lat": 47.5707, "lng": -122.2221, "radius_m": 2000, "population": 24467
-    },
+    "North Panhandle + Anza Vista": {"lat": 37.7760, "lng": -122.4375, "radius_m": 800, "population": 10003},
+    "Greenwich Village": {"lat": 40.7335, "lng": -73.9985, "radius_m": 600, "population": 23138},
+    "Virginia Highland + Morningside": {"lat": 33.7870, "lng": -84.3530, "radius_m": 1200, "population": 16090},
+    "Mercer Island": {"lat": 47.5707, "lng": -122.2221, "radius_m": 2000, "population": 24467},
+    # Extra Atlanta neighborhoods (radii area-matched to each footprint).
+    "Sweet Auburn": {"lat": 33.7550, "lng": -84.3725, "radius_m": 500, "population": 1827},
+    "Cabbagetown": {"lat": 33.7490, "lng": -84.3620, "radius_m": 400, "population": 1300},
+    "Reynoldstown": {"lat": 33.7480, "lng": -84.3520, "radius_m": 550, "population": 2450},
+    "Inman Park": {"lat": 33.7620, "lng": -84.3530, "radius_m": 700, "population": 4220},
 }
 
 HEADERS = {"Authorization": f"Bearer {YELP_API_KEY}"}
@@ -67,7 +69,6 @@ def fetch_restaurants(name, config):
 
 def compute_metrics(businesses, total_from_api, population):
     """Compute density, rating, and price metrics."""
-    count = len(businesses)
     restaurants_per_1k = round(total_from_api / (population / 1000), 1)
 
     ratings = [b["rating"] for b in businesses if b.get("rating") is not None]

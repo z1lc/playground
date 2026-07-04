@@ -8,10 +8,11 @@ This is a tool that compares statistical information between the states Californ
 
 #### Population, Age, Race & Ethnicity, National Origin, Marital Status
 - **Source**: Statistical Atlas (statisticalatlas.com)
-- **Method**: HTML pages scraped via `fetch_data.py`, data extracted via Claude Sonnet API calls
+- **Method**: HTML pages scraped via `fetch_data.py`, data extracted via LLM API calls (DeepSeek V4 Pro via OpenRouter, `deepseek/deepseek-v4-pro:floor`; key in gitignored `KEYS_openrouter`, read as `OPENROUTER_API_KEY`). Extractions run concurrently (`MAX_WORKERS`).
 - **Levels**: State, City (metro for Atlanta), Neighborhood
 - **URLs**: See list at bottom of this file
-- **Notes**: City populations use metro area figures from Wikipedia for comparability (SF-Oakland-Berkeley MSA, NYC-Newark-Jersey City MSA, Atlanta-Sandy Springs-Alpharetta MSA). Neighborhood data combines paired neighborhoods (NP+AV, VH+ML) via population-weighted averaging. Mixed+Other race is the sum of mixed and other categories. Separated/Divorced/Widowed is combined. National origin top_origins percentages are expressed as % of total population (not % of foreign born).
+- **Notes**: City populations use metro area figures from Wikipedia for comparability (SF-Oakland-Berkeley MSA, NYC-Newark-Jersey City MSA, Atlanta-Sandy Springs-Alpharetta MSA). Neighborhood data combines paired neighborhoods (NP+AV, VH+ML) via population-weighted averaging. Mixed+Other race is the sum of mixed and other categories. Separated/Divorced/Widowed is combined. National origin top_origins percentages are expressed as % of total population (not % of foreign born) — the raw Statistical Atlas per-country figures are % of foreign-born, converted via `pct_total = raw_pct × foreign_born_pct / 100`.
+- **Extra Atlanta neighborhoods (demographics-only)**: Sweet Auburn, Cabbagetown, Reynoldstown, and Inman Park are included as opt-in neighborhood columns (hidden by default; enable via the ⚙️ settings menu). They carry only the Statistical-Atlas-sourced fields — population total, age, race, national origin, marital status, household income, educational attainment, employment status — so all other sections render blank (`—`) for them. Total population is taken from each neighborhood's Statistical Atlas Overview page (Sweet Auburn 1,827 · Cabbagetown 1,300 · Reynoldstown 2,450 · Inman Park 4,220). `population_density_per_sq_mi` is `null` for these four: Statistical Atlas encodes the neighborhood density only in SVG chart geometry (not readable text), so no reliable boundary-matched value was available.
 
 #### Population Growth
 - **Source**: FRED (Federal Reserve Economic Data)
@@ -34,7 +35,7 @@ This is a tool that compares statistical information between the states Californ
 #### Living Wage
 - **Source**: MIT Living Wage Calculator (livingwage.mit.edu)
 - **Family configuration**: 2 Adults, 3 Children — shown for both single-earner and dual-earner households
-- **Data**: single_income (annual living wage for 1 working adult), dual_income (annual living wage per working adult when both work). Hourly rate × 2,080 hours/year.
+- **Data**: single_income (annual household living wage when only 1 adult works = MIT "2 Adults (1 Working), 3 Children" hourly × 2,080). dual_income (annual household living wage when both adults work = MIT "2 Adults (Both Working), 3 Children" per-earner hourly × 2,080 × **2 earners**). Both are whole-household totals so they compare directly to each other and to Median Household Income. dual_income exceeds single_income because dual-earner households incur childcare costs for the 3 children. (To recover MIT's published per-earner figure, divide dual_income by 2.)
 - **State data**: FIPS codes — CA=06, NY=36, GA=13, WA=53. URLs: livingwage.mit.edu/states/{FIPS}
 - **City data**: Metro (CBSA) codes — SF=41860, NYC=35620, ATL=12060, SEA=42660. URLs: livingwage.mit.edu/metros/{CBSA}
 - **Data vintage**: February 2026
@@ -118,7 +119,7 @@ This is a tool that compares statistical information between the states Californ
 - **Source**: WalkScore (walkscore.com)
 - **Method**: WebFetch of individual neighborhood/city pages
 - **Data**: Walk Score, Transit Score, Bike Score (0-100 each)
-- **Neighborhood notes**: NP+AV averaged from individual neighborhood scores. GV uses West Village as proxy (WalkScore doesn't have a Greenwich Village page). VH+ML averaged from individual scores.
+- **Neighborhood notes**: NP+AV averaged from individual neighborhood scores. GV uses West Village as proxy (WalkScore doesn't have a Greenwich Village page). VH+ML averaged from individual scores. Extra Atlanta neighborhoods (Sweet Auburn, Cabbagetown, Reynoldstown, Inman Park) each have a direct WalkScore page (walkscore.com/GA/Atlanta/<Neighborhood>) — used as-is, no proxy or averaging.
 - **Levels**: City, Neighborhood
 - **Bike Network Score**: PeopleForBikes Bicycle Network Analysis 2025 (cityratings.peopleforbikes.org). BNA score (0-100) + percentile among 2,901 cities. City only.
 - **Cyclist Fatality Rate**: Annualized cyclist fatalities per 10K bike commuters. Fatalities from NHTSA FARS 2014-2023 (10-year sum). Commuter denominator from Census ACS. City only. Atlanta data includes FARS bulk CSV data for years not in the 500K+ city fact sheet table.
@@ -132,6 +133,7 @@ This is a tool that compares statistical information between the states Californ
   - GV: Tracts 63, 65, 71, 73 in New York County (36061). Area-weighted: 25.6%.
   - VH+MS: Tracts 1, 2.02, 15.02 in Fulton County (13121) + Tracts 201, 202, 224.01 in DeKalb County (13089). Area-weighted: 59.3%.
   - MI: Tracts 243.01, 243.02, 244, 245, 246.01, 246.02 in King County (53033). Area-weighted: 25.5%.
+  - Extra Atlanta neighborhoods (via `fetch_tree_canopy.py`): area-weighted (by `Land_Ac`) mean of `To_TC_Pct` across the census **block groups** intersecting each neighborhood's bounding box — finer than the tract-based method above, appropriate for these small neighborhoods. Inman Park 44.5%, Reynoldstown 44.7%, Cabbagetown 30.5%, Sweet Auburn 16.5%.
 - **Levels**: City, Neighborhood
 
 #### Outdoor Recreation
@@ -254,7 +256,7 @@ This is a tool that compares statistical information between the states Californ
 - **Source**: Yelp Fusion API (api.yelp.com/v3/businesses/search), category=restaurants
 - **Script**: `fetch_restaurants.py` — reads `YELP_API_KEY` from env, paginates through results (50/page, offset+limit capped at 240), deduplicates by business ID
 - **Data**: restaurants_per_1k (total / pop × 1000), total_restaurants (from API `total` field), avg_rating (simple mean of Yelp 1–5 star ratings), avg_price_level (mean of $=1, $$=2, $$$=3, $$$$=4), pct_dollar_2_plus (% of priced restaurants at $$ or above)
-- **Search areas**: Circular radius centered on neighborhood centroids. NP+AV: (37.776, -122.438) r=800m. GV: (40.734, -73.999) r=600m. VH+MS: (33.787, -84.353) r=1200m. MI: (47.571, -122.222) r=2000m. Radii chosen to approximate each neighborhood's geographic footprint.
+- **Search areas**: Circular radius centered on neighborhood centroids. NP+AV: (37.776, -122.438) r=800m. GV: (40.734, -73.999) r=600m. VH+MS: (33.787, -84.353) r=1200m. MI: (47.571, -122.222) r=2000m. Extra Atlanta neighborhoods: Sweet Auburn (33.755, -84.3725) r=500m. Cabbagetown (33.749, -84.362) r=400m. Reynoldstown (33.748, -84.352) r=550m. Inman Park (33.762, -84.353) r=700m. Radii chosen to approximate each neighborhood's geographic footprint. Each is an independent circular search, so restaurant-dense borders (e.g. Krog Street Market on the Inman Park / Cabbagetown / Reynoldstown edges) are counted for multiple adjacent neighborhoods.
 - **Population denominators**: From existing DATA.areas.neighborhoods[name].population.total_population
 - **Price metrics**: Computed only from restaurants with a Yelp `price` attribute; restaurants without price excluded from price calculations
 - **Data vintage**: April 2026
@@ -279,10 +281,10 @@ This is a tool that compares statistical information between the states Californ
 
 #### Housing
 - **Home Price Index (cities)**: FRED FHFA All-Transactions House Price Index. Series: SFXRSA, NYXRSA, ATXRSA. Normalized to 100 at year 2000, annual values 2000-2024.
-- **Home Price Index (neighborhoods)**: Zillow ZHVI (all homes, middle tier). Downloaded CSV: Neighborhood_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv. RegionIDs: NP 417522, AV 417521, GV 195133, VH 275890, ML 274592. Normalized to 100 at 2000, annual Jan values 2000-2025. NP+AV and VH+ML averaged.
+- **Home Price Index (neighborhoods)**: Zillow ZHVI (all homes, middle tier). Downloaded CSV: Neighborhood_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv. RegionIDs: NP 417522, AV 417521, GV 195133, VH 275890, ML 274592. Extra Atlanta neighborhoods: Inman Park 272817, Reynoldstown 269422, Cabbagetown 127516 (Sweet Auburn 276600 omitted — its ZHVI starts 2014, no 2000 baseline, and it has no bedroom-specific data). Normalized to 100 at 2000, annual Jan values 2000-2025. NP+AV and VH+ML averaged. The extra Atlanta neighborhoods are single-region (not paired) and are regenerated by `fetch_zillow.py` (keyed by RegionID; caches CSVs in gitignored `raw_zillow/`).
 - **Rent Index (cities)**: FRED CPI Rent of Primary Residence (SA). Series: CUUSA422SEHA (SF), CUUSA101SEHA (NYC), CUUSA319SEHA (ATL). Normalized to 100 at 2000.
 - **CAGR**: Computed from index start/end values over 24-25 years.
-- **Typical Home Values (neighborhoods)**: Zillow ZHVI bedroom-specific CSVs, average of last 12 months. 2BR: Neighborhood_zhvi_bdrmcnt_2_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv. 3BR: bdrmcnt_3. 4BR: bdrmcnt_4. NP+AV and VH+ML averaged where both available. AV missing from 3BR (uses NP only). NP+AV both missing from 4BR.
+- **Typical Home Values (neighborhoods)**: Zillow ZHVI bedroom-specific CSVs, average of last 12 months. 2BR: Neighborhood_zhvi_bdrmcnt_2_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv. 3BR: bdrmcnt_3. 4BR: bdrmcnt_4. NP+AV and VH+ML averaged where both available. AV missing from 3BR (uses NP only). NP+AV both missing from 4BR. Extra Atlanta neighborhoods (Inman Park, Reynoldstown, Cabbagetown) use the trailing-12-month window ending 2026-05 (fresher than the other entries' vintage); Cabbagetown has no 4BR (absent from that CSV).
 - **Levels**: City (price+rent index, CAGR), Neighborhood (price index, CAGR, 2BR/3BR/4BR values)
 - **Units Permitted / Permits per 1K**: Census Building Permits Survey (BPS), 2024 annual data. File: census.gov/construction/bps/ → CBSA annual data (cbsa2024a.txt). Total new privately-owned housing units authorized by building permits (all structure types: 1-unit, 2-unit, 3-4 unit, 5+ unit). CBSA codes: SF-Oakland-Berkeley=41860, NYC-Newark-Jersey City=35620, Atlanta-Sandy Springs-Roswell=12060, Seattle-Tacoma-Bellevue=42660. Permits per 1K = total units permitted / existing housing units × 1000. Existing housing unit counts from Census ACS 2023 1-Year Estimates, table B25001 (total housing units by MSA).
 - **Levels**: City only (BPS provides MSA-level data; state and neighborhood not applicable)
@@ -325,12 +327,15 @@ This is a tool that compares statistical information between the states Californ
   - Note on methodology: Initial query filtered to felonies only, which excluded Petit Larceny (misdemeanor, <$1K). Added back to match UCR larceny-theft which counts all values.
   - Population denominator: 23,138
   - Note: 6th Precinct covers Greenwich Village + West Village; high daytime/visitor population inflates per-resident rates.
-- **ATL (Virginia Highland + Morningside)**:
-  - Source: Fulton County / City of Atlanta Crime Incidents (Socrata dataset 9w3w-ynjw on sharefulton.fultoncountyga.gov), filtered by NPU F + NPU N
+- **ATL (Virginia Highland + Morningside, and 4 extra neighborhoods)**:
+  - Source: Fulton County / City of Atlanta Crime Incidents (Socrata dataset 9w3w-ynjw on sharefulton.fultoncountyga.gov), filtered by the dataset's exact `neighborhood` field — precise per-neighborhood, superseding the earlier NPU-based filter. Script: `fetch_crime.py` (queries the Socrata API, sums UCR categories, divides by population).
   - Year: 2021 (latest available; APD open data has a gap between 2021 Socrata dataset and new Axon RMS system).
-  - Violent: 130 (Aggravated Assault 85, Robbery 40, Homicide 5). Property: 1,814 (Larceny from Vehicle 1,135, Larceny Non-Vehicle 327, Motor Vehicle Theft 223, Burglary 129).
-  - Population denominator: 16,090
-  - Note: Arson not available in this dataset. NPU-F (Virginia Highland) + NPU-N (Morningside-Lenox Park) boundaries are approximate match.
+  - UCR mapping: violent = AGG ASSAULT + ROBBERY + HOMICIDE; property = LARCENY-FROM VEHICLE + LARCENY-NON VEHICLE + AUTO THEFT + BURGLARY (Arson/Rape absent from these rows). per-1k = counts / total_population × 1000.
+  - Virginia Highland + Morningside (neighborhood fields "Virginia Highland" + "Morningside/Lenox Park", pop 16,090): Violent 30, Property 486 → **1.9 / 30.2**. Refreshed from the earlier NPU-F+NPU-N figure (130 / 1,814 → 8.1 / 112.7), which overstated crime because NPU-N also contains Inman Park, Cabbagetown, Reynoldstown, etc. — the old numerator was NPU-wide while the denominator was neighborhood-level.
+  - Inman Park (pop 4,220): Violent 12, Property 357 → 2.8 / 84.6.
+  - Cabbagetown (pop 1,300): Violent 4, Property 52 → 3.1 / 40.0.
+  - Reynoldstown (pop 2,450): Violent 15, Property 185 → 6.1 / 75.5.
+  - Sweet Auburn (pop 1,827): Violent 56, Property 288 → 30.7 / 157.6. Note: small residential population (1,827) next to downtown inflates per-resident rates (same effect as GV's 6th-precinct daytime population).
 - **Mercer Island**:
   - Source: FBI UCR data (2024), confirmed via PlainCrime and AreaVibes aggregators
   - Year: 2024. Violent: 9 (Robbery 4, Aggravated Assault 4, Rape 1, Murder 0). Property: 303 (Larceny-Theft 226, Burglary 56, Motor Vehicle Theft 21, Arson 0).
@@ -378,7 +383,7 @@ This is a tool that compares statistical information between the states Californ
 - **Data**: avg_db (population-weighted average LAeq in dB across census tracts), pct_above_50db (% of population above WHO 50 dB outdoor residential guideline), pct_above_65db (% of population above FHWA 65 dB noise abatement threshold), dominant_source (primary noise contributor: road/aviation/rail/mixed).
 - **State data**: Population-weighted average of all census-tract LAeq values within the state. FIPS: CA=06, NY=36, GA=13, WA=53. Tract-level values estimated from binned population exposure data using band midpoints (45-50→47.5, 50-60→55, 60-70→65, 70-80→75, 80-90→85, 90+→95 dB); population below 45 dB assigned 35 dB.
 - **City data**: County-level aggregation. SF County (06075), 5-borough average for NYC (36061+36047+36081+36005+36085), Fulton County (13121), King County (53033).
-- **Neighborhood data**: Census tracts selected by centroid coordinates within approximate neighborhood boundaries. NP+AV: 10 tracts in the Divisadero/Masonic/Geary area. GV: 7 Manhattan tracts in the 14th-to-Houston, Broadway-to-Hudson area. VH+ML: 6 Fulton County tracts. Mercer Island: 5 King County tracts.
+- **Neighborhood data**: Census tracts selected by centroid coordinates within approximate neighborhood boundaries. NP+AV: 10 tracts in the Divisadero/Masonic/Geary area. GV: 7 Manhattan tracts in the 14th-to-Houston, Broadway-to-Hudson area. VH+ML: 6 Fulton County tracts. Mercer Island: 5 King County tracts. Extra Atlanta neighborhoods (via `fetch_noise.py`, each its containing Fulton County 13121 tract): Sweet Auburn 002802, Cabbagetown 003200, Reynoldstown 003100, Inman Park 003000. These are small single neighborhoods, so the value reflects the containing tract (tract resolution). Sweet Auburn is the loudest (55.2 dB) — its tract abuts the I-75/I-85 Downtown Connector.
 - **Threshold percentages**: pct_above_50db = population in 50-60 + 60-70 + 70-80 + 80-90 + 90+ dB bands, divided by total tract population. pct_above_65db approximated as 50% of 60-70 band + all higher bands (assumes uniform distribution within the 60-70 band).
 - **Reference thresholds**: 35 dB = quiet rural, 45 dB = quiet suburban, 50 dB = moderate (WHO outdoor residential guideline), 60 dB = busy road, 65 dB = FHWA noise abatement criterion, 70+ dB = near highway or under flight path.
 - **Notes**: Transportation noise only — excludes construction, industrial, and social noise. Census-tract resolution may mask block-level variation (e.g., one side of a block facing a highway vs. the other). All areas show road traffic as dominant source; aviation noise is significant only in tracts near major airport flight paths. Data vintage: BTS noise modeling ~2020, ACS population 2016-2020.
@@ -474,6 +479,10 @@ This is a tool that compares statistical information between the states Californ
 
 https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Morningside---Lenox-Park/Overview
 https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Virginia-Highland/Overview
+https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Sweet-Auburn/Overview
+https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Cabbagetown/Overview
+https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Reynoldstown/Overview
+https://statisticalatlas.com/neighborhood/Georgia/Atlanta/Inman-Park/Overview
 https://statisticalatlas.com/neighborhood/California/San-Francisco/North-Panhandle/Overview
 https://statisticalatlas.com/neighborhood/California/San-Francisco/Anza-Vista/Overview
 https://statisticalatlas.com/neighborhood/New-York/New-York/Greenwich-Village/Overview

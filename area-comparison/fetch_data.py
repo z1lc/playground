@@ -1,18 +1,20 @@
 # /// script
 # dependencies = [
 #   "httpx",
-#   "anthropic",
+#   "openai",
 #   "beautifulsoup4",
 # ]
 # ///
 
 import json
+import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-import anthropic
 import httpx
 from bs4 import BeautifulSoup
+from openai import OpenAI
 
 BASE_URL = "https://statisticalatlas.com"
 
@@ -34,6 +36,10 @@ AREAS: dict[str, str] = {
     "Greenwich Village": "neighborhood/New-York/New-York/Greenwich-Village",
     "Virginia Highland": "neighborhood/Georgia/Atlanta/Virginia-Highland",
     "Morningside-Lenox Park": "neighborhood/Georgia/Atlanta/Morningside---Lenox-Park",
+    "Sweet Auburn": "neighborhood/Georgia/Atlanta/Sweet-Auburn",
+    "Cabbagetown": "neighborhood/Georgia/Atlanta/Cabbagetown",
+    "Reynoldstown": "neighborhood/Georgia/Atlanta/Reynoldstown",
+    "Inman Park": "neighborhood/Georgia/Atlanta/Inman-Park",
     "Mercer Island": "place/Washington/Mercer-Island",
 }
 
@@ -162,6 +168,9 @@ SCRIPT_DIR = Path(__file__).parent
 RAW_HTML_DIR = SCRIPT_DIR / "raw_html"
 EXTRACTED_DIR = SCRIPT_DIR / "extracted_json"
 
+# Concurrent LLM extractions (I/O-bound; OpenRouter :floor tolerates modest concurrency).
+MAX_WORKERS = 8
+
 
 def fetch_page(url: str, cache_key: str) -> str:
     """Fetch HTML from URL, cache locally, return cleaned text."""
@@ -181,20 +190,25 @@ def fetch_page(url: str, cache_key: str) -> str:
     return soup.get_text(separator="\n", strip=True)
 
 
-def extract_data(area_name: str, topic: str, page_text: str, client: anthropic.Anthropic) -> dict:
-    """Use Claude to extract structured data from page text."""
+def extract_data(area_name: str, topic: str, page_text: str, client: OpenAI) -> dict:
+    """Use an LLM (DeepSeek V4 Pro via OpenRouter) to extract structured data from page text."""
     prompt = EXTRACTION_PROMPTS[topic].format(area_name=area_name)
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1024,
-        messages=[
-            {
-                "role": "user",
-                "content": f"{prompt}\n\n--- PAGE CONTENT ---\n{page_text[:50000]}",
-            }
-        ],
-    )
-    response_text = message.content[0].text.strip()
+    user_content = f"{prompt}\n\n--- PAGE CONTENT ---\n{page_text[:50000]}"
+    # DeepSeek V4 Pro is a reasoning model; don't cap max_tokens (let the provider use its full
+    # completion budget so reasoning tokens don't crowd out the JSON answer). Retry to absorb
+    # :floor provider variance (some cheap providers occasionally return null content).
+    response_text = ""
+    for attempt in range(3):
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-v4-pro:floor",
+            messages=[{"role": "user", "content": user_content}],
+        )
+        response_text = (response.choices[0].message.content or "").strip()
+        if response_text:
+            break
+        time.sleep(2)
+    if not response_text:
+        raise ValueError("empty response content after retries")
     # Extract JSON object from response (handle markdown code blocks, preamble text, etc.)
     start = response_text.index("{")
     end = response_text.rindex("}") + 1
@@ -279,46 +293,43 @@ def categorize_area(area_name: str) -> str:
     return "neighborhoods"
 
 
+def process_topic(area_name: str, url_path: str, topic: str, client: OpenAI) -> tuple[str, str, dict | None, str]:
+    """Fetch + extract one (area, topic). Returns (area_name, topic_key, data_or_None, status)."""
+    topic_key = topic.lower().replace("-", "_")
+    cached = load_extracted(area_name, topic)
+    if cached is not None:
+        return area_name, topic_key, cached, "cached"
+    url = f"{BASE_URL}/{url_path}/{topic}"
+    cache_key = f"{url_path.replace('/', '_')}_{topic}"
+    try:
+        page_text = fetch_page(url, cache_key)
+        data = extract_data(area_name, topic, page_text, client)
+        save_extracted(area_name, topic, data)
+        return area_name, topic_key, data, "OK"
+    except Exception as e:
+        return area_name, topic_key, None, f"ERROR: {e}"
+
+
 def main() -> None:
     RAW_HTML_DIR.mkdir(exist_ok=True)
     EXTRACTED_DIR.mkdir(exist_ok=True)
 
-    client: anthropic.Anthropic | None = None  # lazy init, only if needed
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.environ["OPENROUTER_API_KEY"],
+    )
 
-    all_data: dict[str, dict] = {}
+    all_data: dict[str, dict] = {area_name: {} for area_name in AREAS}
+    tasks = [(area_name, url_path, topic) for area_name, url_path in AREAS.items() for topic in TOPICS]
+    total = len(tasks)
+    print(f"Processing {total} (area, topic) pairs with {MAX_WORKERS} workers...\n")
 
-    for area_name, url_path in AREAS.items():
-        print(f"\n=== {area_name} ===")
-        area_result: dict = {}
-
-        for topic in TOPICS:
-            topic_key = topic.lower().replace("-", "_")
-
-            # Check extracted JSON cache first
-            cached = load_extracted(area_name, topic)
-            if cached is not None:
-                area_result[topic_key] = cached
-                print(f"  {topic}: cached")
-                continue
-
-            # Need to fetch and extract
-            url = f"{BASE_URL}/{url_path}/{topic}"
-            cache_key = f"{url_path.replace('/', '_')}_{topic}"
-            print(f"  {topic}: fetching...", end=" ", flush=True)
-
-            try:
-                page_text = fetch_page(url, cache_key)
-                if client is None:
-                    client = anthropic.Anthropic()
-                data = extract_data(area_name, topic, page_text, client)
-                area_result[topic_key] = data
-                save_extracted(area_name, topic, data)
-                print("OK")
-            except Exception as e:
-                print(f"ERROR: {e}")
-                area_result[topic_key] = None
-
-        all_data[area_name] = area_result
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(process_topic, *task, client) for task in tasks]
+        for done, future in enumerate(as_completed(futures), start=1):
+            area_name, topic_key, data, status = future.result()
+            all_data[area_name][topic_key] = data
+            print(f"[{done}/{total}] {area_name} / {topic_key}: {status}", flush=True)
 
     # Build output structure
     output: dict = {

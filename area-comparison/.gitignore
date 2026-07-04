@@ -3,4 +3,6 @@ raw_html_levels/
 extracted_json/
 extracted_json_levels/
 raw_eia861/
-KEYS
+raw_zillow/
+raw_noise/
+KEYS*

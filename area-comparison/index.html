@@ -67,7 +67,7 @@
     function useTheme() { return React.useContext(ThemeContext); }
     const THEMES = {
       light: {
-        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32'],
+        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32', '#8E44AD', '#0E9AA7', '#CC3399', '#D9622B'],
         pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
         textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
         border: '#E8E0D5', borderLight: '#f0ebe3', borderDropdown: '#e0d9cf',
@@ -80,7 +80,7 @@
         hoverLine: '#888', dotStroke: '#fff', linkColor: '#8a8a8a',
       },
       dark: {
-        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50'],
+        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50', '#B07CC6', '#3FC1C9', '#E85BB5', '#F0844C'],
         pageBg: '#1a1a1a', cardBg: '#242424', textPrimary: '#e0e0e0',
         textSecondary: '#a0a0a0', textLabel: '#c0c0c0', textTertiary: '#777',
         border: '#3a3530', borderLight: '#333', borderDropdown: '#444',
@@ -118,7 +118,7 @@
         },
         "commute": {"avg_commute_minutes":29.7,"drive_alone_percent":67.3,"carpool_percent":10.2,"public_transit_percent":3.3,"walk_percent":2.5,"bike_percent":0.8,"work_from_home_percent":14.1},
         "minimum_wage": {"hourly":16.50},
-        "living_wage": {"single_income":127670,"dual_income":95742},
+        "living_wage": {"single_income":127670,"dual_income":191484},
         "cost_of_living": {"rpp_index":110.7},
         "inequality": {"gini":0.489},
         "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,119.2,150.0,170.2,186.9,197.9]},
@@ -160,7 +160,7 @@
         },
         "commute": {"avg_commute_minutes":33.2,"drive_alone_percent":48.7,"carpool_percent":6.7,"public_transit_percent":24.2,"walk_percent":5.8,"bike_percent":0.9,"work_from_home_percent":11.8},
         "minimum_wage": {"hourly":15.50},
-        "living_wage": {"single_income":117104,"dual_income":90626},
+        "living_wage": {"single_income":117104,"dual_income":181252},
         "cost_of_living": {"rpp_index":107.9},
         "inequality": {"gini":0.513},
         "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,96.3,98.7,104.2,106.4,110.3]},
@@ -202,7 +202,7 @@
         },
         "commute": {"avg_commute_minutes":29.4,"drive_alone_percent":71.5,"carpool_percent":9.3,"public_transit_percent":1.2,"walk_percent":1.3,"bike_percent":0.1,"work_from_home_percent":14.9},
         "minimum_wage": {"hourly":7.25},
-        "living_wage": {"single_income":94910,"dual_income":61838},
+        "living_wage": {"single_income":94910,"dual_income":123676},
         "cost_of_living": {"rpp_index":96.3},
         "inequality": {"gini":0.479},
         "population_growth": {"years":[1970,1980,1990,2000,2010,2020],"index":[100,119.6,141.8,179.3,211.7,233.9]},
@@ -250,7 +250,7 @@
         "electricity":{"avg_monthly_bill":124,"natural_gas":15.8,"coal":3.1,"nuclear":7.5,"hydro":63.2,"wind":8.3,"solar":0.6,"geo_biomass":1.1,"other":0.4},
         "noise":{"avg_db":40.1,"pct_above_50db":15.3,"pct_above_65db":2.0,"dominant_source":"road","dominant_source_desc":"Road traffic is the dominant noise source, concentrated along I-5 and I-90 corridors in the Puget Sound region."},
         "minimum_wage": {"hourly":16.66},
-        "living_wage": {"single_income":113526,"dual_income":88067},
+        "living_wage": {"single_income":113526,"dual_income":176134},
         "cost_of_living": {"rpp_index":107.0},
         "inequality": {"gini":0.470},
         "housing_tenure":{"homeownership_rate":63.1},
@@ -291,7 +291,7 @@
         "commute": {"avg_commute_minutes":32.2,"drive_alone_percent":30.4,"carpool_percent":6.0,"public_transit_percent":25.0,"walk_percent":10.0,"bike_percent":3.8,"work_from_home_percent":21.4},
         "tax": {"income_tax":13.3,"sales_tax":8.625,"property_tax":0.65,"capital_gains_tax":13.3},
         "minimum_wage": {"hourly":18.07},
-        "living_wage": {"single_income":143229,"dual_income":126984},
+        "living_wage": {"single_income":143229,"dual_income":253968},
         "tech_economy": {"vc_funding_billions":90,"unicorns":277,"swe_median_tc":272500,"swe_p90_tc":495000,"swe_senior_tc":429868,"swe_senior_tc_desc":"n=169 total. Google $438k (n=32), Meta $464k (n=31), Microsoft $261k (n=21), Uber $465k (n=17), Airbnb $440k (n=17), Netflix $600k (n=16), Amazon $400k (n=12), Stripe $440k (n=12), Apple $335k (n=11)","pm_senior_tc":371241,"pm_senior_tc_desc":"n=145 total. Google $370k (n=36), Microsoft $243k (n=21), Stripe $440k (n=21), Apple $310k (n=16), Meta $407k (n=11), Amazon $340k (n=11), Uber $385k (n=11), Netflix $550k (n=9), Airbnb $420k (n=9)","patents":46454,"fortune_500":[{"name":"Nvidia"},{"name":"Apple"},{"name":"Alphabet"},{"name":"Meta"},{"name":"Salesforce"},{"name":"Wells Fargo"}]},
         "cost_of_living": {"rpp_index":115.6},
         "crime": {"violent_per_100k":597,"property_per_100k":3929},
@@ -340,7 +340,7 @@
         "commute": {"avg_commute_minutes":40.6,"drive_alone_percent":20.6,"carpool_percent":4.4,"public_transit_percent":48.7,"walk_percent":9.6,"bike_percent":1.7,"work_from_home_percent":12.5},
         "tax": {"income_tax":14.8,"sales_tax":8.875,"property_tax":0.98,"capital_gains_tax":14.8},
         "minimum_wage": {"hourly":16.50},
-        "living_wage": {"single_income":123510,"dual_income":95202},
+        "living_wage": {"single_income":123510,"dual_income":190404},
         "tech_economy": {"vc_funding_billions":20,"unicorns":161,"swe_median_tc":191000,"swe_p90_tc":368000,"swe_senior_tc":416409,"swe_senior_tc_desc":"n=136 total. Apple $375k (n=21), Meta $505k (n=20), Amazon $380k (n=19), Netflix $540k (n=17), Microsoft $255k (n=16), Uber $445k (n=14), Stripe $393k (n=10), Airbnb $416k (n=10), Google $427k (n=9)","pm_senior_tc":318999,"pm_senior_tc_desc":"n=102 total. Uber $310k (n=20), Meta $390k (n=18), Google $364k (n=17), Amazon $285k (n=14), Microsoft $245k (n=14), Stripe $344k (n=10), Apple $250k (n=9)","patents":7605,"fortune_500":[{"name":"JPMorgan Chase"},{"name":"Citigroup"},{"name":"Goldman Sachs"},{"name":"Morgan Stanley"},{"name":"Pfizer"},{"name":"Verizon"},{"name":"MetLife"},{"name":"American Express"},{"name":"New York Life"},{"name":"TIAA"},{"name":"Bristol-Myers Squibb"}]},
         "cost_of_living": {"rpp_index":112.6},
         "crime": {"violent_per_100k":671,"property_per_100k":2368},
@@ -389,7 +389,7 @@
         "commute": {"avg_commute_minutes":26.5,"drive_alone_percent":56.1,"carpool_percent":4.7,"public_transit_percent":5.8,"walk_percent":4.8,"bike_percent":1.0,"work_from_home_percent":25.6},
         "tax": {"income_tax":5.2,"sales_tax":8.9,"property_tax":1.09,"capital_gains_tax":5.2},
         "minimum_wage": {"hourly":7.25},
-        "living_wage": {"single_income":99986,"dual_income":66394},
+        "living_wage": {"single_income":99986,"dual_income":132788},
         "tech_economy": {"vc_funding_billions":2.5,"unicorns":7,"swe_median_tc":145000,"swe_p90_tc":225800,"swe_senior_tc":327288,"swe_senior_tc_desc":"n=68 total. Google $326k (n=20), Microsoft $215k (n=15), Meta $365k (n=9), Amazon $331k (n=9), Netflix $450k (n=7), Airbnb $365k (n=4), Stripe $438k (n=2), Uber $372k (n=2)","pm_senior_tc":250073,"pm_senior_tc_desc":"n=22 total. Amazon $275k (n=10), Microsoft $207k (n=10), Meta $340k (n=2)","patents":3000,"fortune_500":[{"name":"Home Depot"},{"name":"Delta Air Lines"},{"name":"Coca-Cola"},{"name":"UPS"}]},
         "cost_of_living": {"rpp_index":100.1},
         "crime": {"violent_per_100k":702,"property_per_100k":3902},
@@ -438,7 +438,7 @@
         "commute": {"avg_commute_minutes":30.0,"drive_alone_percent":60.3,"carpool_percent":9.0,"public_transit_percent":6.3,"walk_percent":4.0,"bike_percent":1.0,"work_from_home_percent":18.5},
         "tax": {"income_tax":0,"sales_tax":10.25,"property_tax":0.95,"capital_gains_tax":7.0},
         "minimum_wage": {"hourly":20.76},
-        "living_wage": {"single_income":121014,"dual_income":97656},
+        "living_wage": {"single_income":121014,"dual_income":195312},
         "tech_economy": {"vc_funding_billions":3,"unicorns":14,"swe_median_tc":249000,"swe_p90_tc":430000,"swe_senior_tc":401787,"swe_senior_tc_desc":"n=183 total. Amazon $360k (n=48), Google $400k (n=30), Meta $514k (n=23), Stripe $408k (n=17), Microsoft $223k (n=14), Netflix $500k (n=14), Airbnb $453k (n=14), Apple $335k (n=12), Uber $455k (n=11)","pm_senior_tc":316121,"pm_senior_tc_desc":"n=73 total. Microsoft $227k (n=27), Meta $390k (n=12), Amazon $320k (n=12), Google $373k (n=9), Uber $400k (n=7), Apple $362k (n=3), Stripe $391k (n=3)","patents":6560,"fortune_500":[{"name":"Amazon"},{"name":"Microsoft"},{"name":"Costco"},{"name":"Starbucks"},{"name":"Paccar"},{"name":"Nordstrom"},{"name":"Expeditors"},{"name":"Weyerhaeuser"},{"name":"Alaska Air"}]},
         "cost_of_living": {"rpp_index":111.1},
         "crime": {"violent_per_100k":775,"property_per_100k":5008},
@@ -527,7 +527,7 @@
         "parks":{"tree_canopy_pct":59.3},
         "noise":{"avg_db":37.6,"pct_above_50db":9.0,"pct_above_65db":0.7,"dominant_source":"road","dominant_source_desc":"Quiet residential neighborhoods. Ponce de Leon Ave and Highland Ave carry moderate traffic. Well-buffered from I-85 and I-75 by distance and topography."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 52.6, "carpool_percent": 3.7, "public_transit_percent": 2.0, "walk_percent": 3.5, "bike_percent": 2.6, "work_from_home_percent": 35.4 },
-        "crime":{"violent_per_1k":8.1,"property_per_1k":112.7},
+        "crime":{"violent_per_1k":1.9,"property_per_1k":30.2},
         "air_quality":{"avg_pm25":8.7,"neighborhood_good_air_days_pct":59.0,"nearest_monitor_distance_mi":4.9,"monitor_name":"Fire Station #8","monitor_id":"13-121-0039"},
         "restaurant_density":{"restaurants_per_1k":9.6,"total_restaurants":155,"avg_rating":3.3,"avg_price_level":1.9,"pct_dollar_2_plus":77.0}
       },
@@ -551,6 +551,69 @@
         "crime":{"violent_per_1k":0.4,"property_per_1k":12.4},
         "air_quality":{"avg_pm25":4.2,"neighborhood_good_air_days_pct":94.2,"nearest_monitor_distance_mi":4.1,"monitor_name":"Seattle - Beacon Hill","monitor_id":"53-033-0080"},
         "restaurant_density":{"restaurants_per_1k":3.3,"total_restaurants":80,"avg_rating":3.7,"avg_price_level":1.6,"pct_dollar_2_plus":57.5}
+      },
+      "Sweet Auburn": {
+        "population": { "total_population": 1827, "population_density_per_sq_mi": null },
+        "age_and_sex": { "senior_percent": 12.7, "older_adult_percent": 32.1, "younger_adult_percent": 45.4, "college_percent": 24.6, "children_percent": 9.8 },
+        "race_and_ethnicity": { "white_percent": 29.57, "hispanic_percent": 4.98, "black_percent": 61.44, "asian_percent": 2.78, "mixed_other_percent": 1.23 },
+        "national_origin": { "native_born_percent": 93.1, "foreign_born_percent": 6.9, "top_origins": [{"name":"Ethiopia","percent":0.7},{"name":"China","percent":0.7},{"name":"Spain","percent":0.7}] },
+        "marital_status": { "never_married_percent": 73.3, "married_percent": 7.8, "separated_divorced_widowed_percent": 18.9 },
+        "household_income": { "median_household_income": 26966 },
+        "educational_attainment": { "graduate_degree_percent": 23.8, "bachelors_or_higher_percent": 46.3, "high_school_or_higher_percent": 88.2, "no_hs_diploma_percent": 11.8 },
+        "employment_status": { "employed_percent": 50.6, "unemployed_percent": 5.9, "not_in_labor_force_percent": 43.4 },
+        "walkability": { "walk_score": 91, "transit_score": 70, "bike_score": 81 },
+        "crime":{"violent_per_1k":30.7,"property_per_1k":157.6},
+        "parks":{"tree_canopy_pct":16.5},
+        "restaurant_density":{"restaurants_per_1k":50.4,"total_restaurants":92,"avg_rating":3.1,"avg_price_level":1.7,"pct_dollar_2_plus":64.7},
+        "noise":{"avg_db":55.2,"pct_above_50db":66.8,"pct_above_65db":12.1,"dominant_source":"road","dominant_source_desc":"Bordered on the west by the Downtown Connector (I-75/I-85); Auburn Ave, Edgewood Ave, and the downtown street grid add steady traffic noise — the noisiest of the four."}
+      },
+      "Cabbagetown": {
+        "population": { "total_population": 1300, "population_density_per_sq_mi": null },
+        "age_and_sex": { "senior_percent": 8.0, "older_adult_percent": 41.0, "younger_adult_percent": 46.8, "college_percent": 5.7, "children_percent": 4.2 },
+        "race_and_ethnicity": { "white_percent": 74.35, "hispanic_percent": 3.73, "black_percent": 15.81, "asian_percent": 2.1, "mixed_other_percent": 4.01 },
+        "national_origin": { "native_born_percent": 95.3, "foreign_born_percent": 4.7, "top_origins": [{"name":"Canada","percent":0.8},{"name":"France","percent":0.7},{"name":"Korea","percent":0.6}] },
+        "marital_status": { "never_married_percent": 55.5, "married_percent": 31.1, "separated_divorced_widowed_percent": 13.4 },
+        "household_income": { "median_household_income": 70000 },
+        "educational_attainment": { "graduate_degree_percent": 28.7, "bachelors_or_higher_percent": 64.6, "high_school_or_higher_percent": 94.5, "no_hs_diploma_percent": 5.5 },
+        "employment_status": { "employed_percent": 91.3, "unemployed_percent": 0.0, "not_in_labor_force_percent": 7.6 },
+        "walkability": { "walk_score": 83, "transit_score": 61, "bike_score": 87 },
+        "housing": {"median_home_value_2br":529761,"median_home_value_3br":659620,"home_price_index":[100.0,108.7,139.0,153.4,157.4,167.8,178.5,199.6,199.4,170.9,154.5,147.7,136.7,138.6,165.0,189.0,227.0,262.2,293.0,325.6,324.6,339.6,377.2,390.1,393.2,383.4],"home_price_cagr":5.5},
+        "crime":{"violent_per_1k":3.1,"property_per_1k":40.0},
+        "parks":{"tree_canopy_pct":30.5},
+        "restaurant_density":{"restaurants_per_1k":26.9,"total_restaurants":35,"avg_rating":3.7,"avg_price_level":1.9,"pct_dollar_2_plus":85.0},
+        "noise":{"avg_db":46.4,"pct_above_50db":28.0,"pct_above_65db":4.5,"dominant_source":"road","dominant_source_desc":"Wedged against the CSX Hulsey rail yard and Memorial Dr, with I-20 just to the south adding highway noise; narrow interior streets are calmer."}
+      },
+      "Reynoldstown": {
+        "population": { "total_population": 2450, "population_density_per_sq_mi": null },
+        "age_and_sex": { "senior_percent": 6.7, "older_adult_percent": 25.7, "younger_adult_percent": 54.3, "college_percent": 4.2, "children_percent": 9.0 },
+        "race_and_ethnicity": { "white_percent": 62.54, "hispanic_percent": 3.3, "black_percent": 30.08, "asian_percent": 2.12, "mixed_other_percent": 1.96 },
+        "national_origin": { "native_born_percent": 95.6, "foreign_born_percent": 4.4, "top_origins": [{"name":"Philippines","percent":0.6},{"name":"United Kingdom","percent":0.5},{"name":"Canada","percent":0.5}] },
+        "marital_status": { "never_married_percent": 64.7, "married_percent": 24.2, "separated_divorced_widowed_percent": 11.1 },
+        "household_income": { "median_household_income": 52358 },
+        "educational_attainment": { "graduate_degree_percent": 24.5, "bachelors_or_higher_percent": 56.0, "high_school_or_higher_percent": 89.4, "no_hs_diploma_percent": 10.6 },
+        "employment_status": { "employed_percent": 74.9, "unemployed_percent": 4.6, "not_in_labor_force_percent": 20.2 },
+        "walkability": { "walk_score": 77, "transit_score": 56, "bike_score": 80 },
+        "housing": {"median_home_value_2br":487537,"median_home_value_3br":671834,"median_home_value_4br":865819,"home_price_index":[100.0,135.2,157.2,171.6,171.5,186.9,195.2,219.2,211.8,181.2,171.9,152.3,131.8,146.5,180.2,213.0,262.2,307.2,356.0,391.4,393.5,422.6,482.0,504.9,522.9,514.0],"home_price_cagr":6.8},
+        "crime":{"violent_per_1k":6.1,"property_per_1k":75.5},
+        "parks":{"tree_canopy_pct":44.7},
+        "restaurant_density":{"restaurants_per_1k":26.1,"total_restaurants":64,"avg_rating":3.3,"avg_price_level":1.6,"pct_dollar_2_plus":58.8},
+        "noise":{"avg_db":41.4,"pct_above_50db":15.2,"pct_above_65db":1.5,"dominant_source":"road","dominant_source_desc":"I-20 runs along the south edge and the CSX / BeltLine rail corridor along the west; Moreland Ave and Wylie St carry traffic."}
+      },
+      "Inman Park": {
+        "population": { "total_population": 4220, "population_density_per_sq_mi": null },
+        "age_and_sex": { "senior_percent": 5.1, "older_adult_percent": 39.5, "younger_adult_percent": 44.3, "college_percent": 7.5, "children_percent": 11.1 },
+        "race_and_ethnicity": { "white_percent": 78.23, "hispanic_percent": 2.67, "black_percent": 11.59, "asian_percent": 4.56, "mixed_other_percent": 2.94 },
+        "national_origin": { "native_born_percent": 91.1, "foreign_born_percent": 8.9, "top_origins": [{"name":"United Kingdom","percent":1.5},{"name":"Germany","percent":1.3},{"name":"Hong Kong","percent":1.0}] },
+        "marital_status": { "never_married_percent": 56.7, "married_percent": 29.9, "separated_divorced_widowed_percent": 12.4 },
+        "household_income": { "median_household_income": 84260 },
+        "educational_attainment": { "graduate_degree_percent": 30.3, "bachelors_or_higher_percent": 75.1, "high_school_or_higher_percent": 98.7, "no_hs_diploma_percent": 1.3 },
+        "employment_status": { "employed_percent": 80.4, "unemployed_percent": 2.8, "not_in_labor_force_percent": 16.8 },
+        "walkability": { "walk_score": 87, "transit_score": 56, "bike_score": 82 },
+        "housing": {"median_home_value_2br":608810,"median_home_value_3br":958108,"median_home_value_4br":1327660,"home_price_index":[100.0,122.4,129.5,139.1,138.5,143.7,155.6,164.8,166.8,154.3,138.5,133.8,126.9,130.6,155.5,174.5,194.5,207.5,224.3,239.0,241.9,252.8,286.3,295.3,305.5,306.5],"home_price_cagr":4.6},
+        "crime":{"violent_per_1k":2.8,"property_per_1k":84.6},
+        "parks":{"tree_canopy_pct":44.5},
+        "restaurant_density":{"restaurants_per_1k":24.2,"total_restaurants":102,"avg_rating":3.6,"avg_price_level":2.0,"pct_dollar_2_plus":80.0},
+        "noise":{"avg_db":42.4,"pct_above_50db":20.3,"pct_above_65db":3.5,"dominant_source":"road","dominant_source_desc":"DeKalb Ave and the parallel CSX / MARTA rail corridor run along the south edge; Moreland Ave, Freedom Pkwy, and N. Highland Ave carry traffic, while interior Victorian blocks are quieter."}
       }
     }
   }
@@ -562,12 +625,12 @@
     const AREA_NAMES = {
       states: ['California', 'New York', 'Georgia'],
       cities: ['San Francisco', 'New York City', 'Atlanta'],
-      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island'],
+      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island', 'Sweet Auburn', 'Cabbagetown', 'Reynoldstown', 'Inman Park'],
     };
     const AREA_NAMES_SHORT = {
       states: ['CA', 'NY', 'GA'],
       cities: ['SF', 'NYC', 'ATL'],
-      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI'],
+      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI', 'SwtAub', 'Cbgtwn', 'Reyn', 'Inman'],
     };
 
 
@@ -578,6 +641,10 @@
       { neighborhood: 'Greenwich Village', city: 'New York City', state: 'New York', shortNeighborhood: 'GV', shortCity: 'NYC', shortState: 'NY' },
       { neighborhood: 'Virginia Highland + Morningside', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'ViHi + MS', shortCity: 'ATL', shortState: 'GA' },
       { neighborhood: 'Mercer Island', city: 'Seattle', state: 'Washington', shortNeighborhood: 'MI', shortCity: 'SEA', shortState: 'WA' },
+      { neighborhood: 'Sweet Auburn', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'SwtAub', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Cabbagetown', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Cbgtwn', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Reynoldstown', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Reyn', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Inman Park', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Inman', shortCity: 'ATL', shortState: 'GA' },
     ];
 
     const SECTION_CONFIG = [
@@ -619,7 +686,7 @@
           { key: 'household_income', label: '\uD83D\uDCB0 Income & Cost of Living', metrics: [
             { key: 'median_household_income', label: 'Median Household Income', format: 'currency', showBar: true },
             { key: 'single_income', label: 'Living Wage (1 earner)', format: 'currency', showBar: true, dataKey: 'living_wage', granularities: ['states', 'cities'], tooltip: 'Annual living wage for the sole earner in a 2-adult, 3-child household (1 working). Based on 2,080 hours/year. Source: MIT Living Wage Calculator (livingwage.mit.edu), Feb 2026.' },
-            { key: 'dual_income', label: 'Living Wage (2 earners)', format: 'currency', showBar: true, dataKey: 'living_wage', granularities: ['states', 'cities'], tooltip: 'Annual living wage per earner in a 2-adult, 3-child household (both working). Based on 2,080 hours/year. Source: MIT Living Wage Calculator (livingwage.mit.edu), Feb 2026.' },
+            { key: 'dual_income', label: 'Living Wage (2 earners)', format: 'currency', showBar: true, dataKey: 'living_wage', granularities: ['states', 'cities'], tooltip: 'Total annual living wage for a 2-adult, 3-child household with both adults working — the sum of both earners (MIT per-earner rate × 2,080 hours/year × 2). Exceeds the 1-earner figure because dual-earner households must pay for childcare. Source: MIT Living Wage Calculator (livingwage.mit.edu), Feb 2026.' },
             { key: 'hourly', label: 'Minimum Wage', format: 'currency', showBar: true, dataKey: 'minimum_wage', tooltip: 'Highest applicable minimum wage (city, state, or federal)' },
             { key: 'rpp_index', label: 'Price Level', format: 'number', showBar: true, barMax: 120, dataKey: 'cost_of_living', tooltip: 'Regional Price Parity \u2014 100 = US average. Higher means more expensive for goods, services, and housing.' },
             { key: 'gini', label: 'Gini Coefficient', format: 'number', showBar: true, barMax: 0.6, dataKey: 'inequality', tooltip: 'Measures income inequality from 0 (perfect equality) to 1 (all income held by one person). The US average is ~0.49.' },
@@ -996,7 +1063,7 @@
       const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
       const [selectedIndices, setSelectedIndices] = useState(() => {
         try { const s = JSON.parse(localStorage.getItem('area_comparison_selected')); if (Array.isArray(s) && s.length > 0) return s; } catch {}
-        return AREA_GROUPS.map((_, i) => i);
+        return [0, 1, 2, 3]; // default: original 4 metros; the 4 extra Atlanta neighborhoods are opt-in via ⚙️
       });
       const [showSettings, setShowSettings] = useState(false);
       const [isDark, setIsDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);

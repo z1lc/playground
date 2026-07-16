@@ -36,7 +36,7 @@ NEIGHBORHOODS = {
     "Sweet Auburn": (
         ["13121002802"],
         "Bordered on the west by the Downtown Connector (I-75/I-85); Auburn Ave, Edgewood Ave, and the "
-        "downtown street grid add steady traffic noise — the noisiest of the four.",
+        "downtown street grid add steady traffic noise — the noisiest of the extra Atlanta neighborhoods.",
     ),
     "Cabbagetown": (
         ["13121003200"],
@@ -52,6 +52,17 @@ NEIGHBORHOODS = {
         ["13121003000"],
         "DeKalb Ave and the parallel CSX / MARTA rail corridor run along the south edge; Moreland Ave, "
         "Freedom Pkwy, and N. Highland Ave carry traffic, while interior Victorian blocks are quieter.",
+    ),
+    "Old Fourth Ward": (
+        ["13121001701", "13121001702", "13121001801", "13121001802", "13121002900"],
+        "Ponce de Leon Ave and North Ave carry east-west traffic; Boulevard and Piedmont Ave carry "
+        "north-south traffic, with the Downtown Connector west of the neighborhood and the BeltLine "
+        "Eastside Trail on its eastern edge.",
+    ),
+    "Piedmont Heights": (
+        ["13121009202"],
+        "I-85 borders the north, Piedmont Road carries traffic through the neighborhood, and the "
+        "western BeltLine / Monroe corridor adds road and rail noise along the western edge.",
     ),
 }
 

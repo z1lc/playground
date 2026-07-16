@@ -34,6 +34,9 @@ REGION_IDS = {
     "Inman Park": "272817",
     "Reynoldstown": "269422",
     "Cabbagetown": "127516",
+    "Old Fourth Ward": "269397",
+    # Atlanta, GA (not same-named Piedmont Heights in Duluth, MN, RegionID 763862).
+    "Piedmont Heights": "403427",
 }
 
 INDEX_YEARS = list(range(2000, 2026))  # 2000..2025 -> 26 annual-January index values

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Estimate how long an Atlanta home purchase, using cash plus a margin loan above $1 million, must be held before buying and selling beats renting." />
+  <title>Atlanta Buy vs. Rent Break-even</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0b1120;
+      --surface: #111a2d;
+      --surface-raised: #172238;
+      --border: #293650;
+      --foreground: #edf2f7;
+      --muted: #9aa8bd;
+      --subtle: #66758d;
+      --blue: #60a5fa;
+      --blue-bright: #93c5fd;
+      --blue-soft: rgba(96, 165, 250, 0.11);
+      --green: #4ade80;
+      --green-soft: rgba(74, 222, 128, 0.06);
+      --amber: #fbbf24;
+      --purple-soft: rgba(167, 139, 250, 0.05);
+      --focus: #bfdbfe;
+      --shadow: 0 24px 70px rgba(2, 6, 23, 0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { overflow-x: clip; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% -8%, rgba(37, 99, 235, 0.18), transparent 34rem),
+        var(--background);
+      color: var(--foreground);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    a { color: var(--blue-bright); text-underline-offset: 3px; }
+    a:hover { color: #dbeafe; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+    .page {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 64px 0 72px;
+    }
+
+    header { max-width: 760px; margin-bottom: 30px; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue-bright);
+      font-size: 0.77rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+    .intro {
+      margin: 18px 0 0;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      padding: 28px;
+      background: rgba(17, 26, 45, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .control-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 15px;
+    }
+    .control-head label { color: #cbd5e1; font-weight: 500; }
+    .control-head output {
+      color: var(--foreground);
+      font-size: 1.15rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .range {
+      --fill: 50%;
+      appearance: none;
+      width: 100%;
+      height: 7px;
+      margin: 0;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--blue) 0 var(--fill), #334155 var(--fill) 100%);
+      cursor: pointer;
+    }
+    .range::-webkit-slider-thumb {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 4px solid var(--surface);
+      border-radius: 50%;
+      background: var(--blue-bright);
+      box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.55), 0 3px 9px rgba(0, 0, 0, 0.35);
+    }
+    .range::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border: 4px solid var(--surface);
+      border-radius: 50%;
+      background: var(--blue-bright);
+      box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.55), 0 3px 9px rgba(0, 0, 0, 0.35);
+    }
+    .range-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      color: var(--subtle);
+      font-size: 0.76rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .margin-note {
+      margin: 10px 0 0;
+      color: var(--blue-bright);
+      font-size: 0.8rem;
+    }
+
+    .result {
+      position: relative;
+      overflow: hidden;
+      margin-top: 22px;
+      padding: 32px 34px 34px;
+      background:
+        linear-gradient(120deg, rgba(37, 99, 235, 0.17), rgba(17, 26, 45, 0.82) 56%),
+        var(--surface);
+      border: 1px solid rgba(96, 165, 250, 0.34);
+      border-radius: 18px;
+    }
+    .result::after {
+      content: "";
+      position: absolute;
+      top: -110px;
+      right: -90px;
+      width: 270px;
+      height: 270px;
+      border: 48px solid rgba(96, 165, 250, 0.055);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .result-label {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 7px;
+      color: var(--blue-bright);
+      font-size: 0.76rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .result-value {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(2.15rem, 7vw, 4.5rem);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      font-variant-numeric: tabular-nums;
+    }
+    .result-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 690px;
+      margin: 14px 0 0;
+      color: #b7c4d6;
+    }
+    .result-copy strong { color: var(--foreground); }
+
+    .chart-section { margin-top: 46px; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 10px;
+    }
+    h2 { margin: 0; font-size: 1.22rem; letter-spacing: -0.015em; }
+    .chart-key { margin: 0; color: var(--subtle); font-size: 0.8rem; }
+    .chart-wrap { position: relative; width: 100%; }
+    #advantage-chart { display: block; width: 100%; height: 310px; overflow: visible; }
+    .chart-region-positive { fill: var(--green-soft); }
+    .chart-region-negative { fill: var(--purple-soft); }
+    .chart-grid { stroke: rgba(148, 163, 184, 0.16); stroke-width: 1; }
+    .chart-zero { stroke: rgba(226, 232, 240, 0.56); stroke-width: 1.5; }
+    .chart-line {
+      fill: none;
+      stroke: var(--blue);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: d 180ms ease-out;
+    }
+    .chart-axis-label, .chart-tick, .chart-zone-label, .chart-marker-label {
+      font-family: inherit;
+    }
+    .chart-tick { fill: var(--subtle); font-size: 12px; }
+    .chart-axis-label { fill: var(--muted); font-size: 12px; }
+    .chart-zone-label { fill: rgba(203, 213, 225, 0.55); font-size: 11px; letter-spacing: 0.08em; }
+    .chart-marker { fill: var(--amber); stroke: var(--background); stroke-width: 3; }
+    .chart-marker-guide { stroke: rgba(251, 191, 36, 0.48); stroke-width: 1; stroke-dasharray: 3 4; }
+    .chart-marker-label { fill: #fde68a; font-size: 12px; font-weight: 500; }
+    .chart-detail { margin: 6px 0 0; color: var(--muted); font-size: 0.88rem; }
+    .chart-detail strong { color: var(--foreground); }
+
+    .assumptions { margin-top: 36px; border-top: 1px solid var(--border); }
+    .assumptions summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 0;
+      color: #cbd5e1;
+      cursor: pointer;
+      font-weight: 500;
+      list-style: none;
+    }
+    .assumptions summary::-webkit-details-marker { display: none; }
+    .assumptions summary::after {
+      content: "+";
+      color: var(--blue-bright);
+      font-size: 1.35rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .assumptions[open] summary::after { content: "−"; }
+    .assumption-body { padding: 0 0 10px; }
+    .method { max-width: 790px; margin: 0 0 23px; color: var(--muted); }
+    .assumption-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .assumption-group h3 {
+      margin: 0 0 10px;
+      color: var(--foreground);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    dl { margin: 0; }
+    .assumption-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 5px 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    dt, dd { margin: 0; }
+    dd { color: #dbe4f0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .exclusions, .sources {
+      margin: 22px 0 0;
+      color: var(--subtle);
+      font-size: 0.8rem;
+    }
+    .sources { margin-top: 9px; }
+    .reset {
+      margin-top: 20px;
+      padding: 9px 13px;
+      color: #cbd5e1;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .reset:hover { color: var(--foreground); border-color: #4b5d78; background: rgba(255, 255, 255, 0.025); }
+    footer { margin-top: 40px; color: var(--subtle); font-size: 0.78rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chart-line { transition: none; }
+    }
+
+    @media (max-width: 700px) {
+      .page { width: min(100% - 28px, 960px); padding: 38px 0 52px; }
+      .controls { grid-template-columns: 1fr; gap: 26px; padding: 22px 20px; }
+      .result { padding: 27px 22px 29px; }
+      .section-head { align-items: start; flex-direction: column; gap: 5px; }
+      .assumption-grid { grid-template-columns: 1fr; gap: 24px; }
+      #advantage-chart { height: 280px; }
+    }
+
+    @media (max-width: 420px) {
+      .control-head { align-items: start; flex-direction: column; gap: 3px; }
+      .result-value { font-size: 2.35rem; }
+      .chart-section { margin-top: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="eyebrow">Atlanta, Georgia · cash + margin above $1M</p>
+      <h1>When does buying beat renting?</h1>
+      <p class="intro">Set the home price and comparable monthly rent. The model finds the minimum holding period before buying, then selling, leaves you with more wealth.</p>
+    </header>
+
+    <section class="controls" aria-label="Scenario inputs">
+      <div class="control">
+        <div class="control-head">
+          <label for="house-value">House value</label>
+          <output id="house-value-output" for="house-value">$700,000</output>
+        </div>
+        <input class="range" id="house-value" type="range" min="200000" max="1500000" step="25000" value="700000" />
+        <div class="range-scale" aria-hidden="true"><span>$200k</span><span>$1.5M</span></div>
+        <p class="margin-note" id="margin-note" hidden></p>
+      </div>
+
+      <div class="control">
+        <div class="control-head">
+          <label for="monthly-rent">Monthly rent</label>
+          <output id="monthly-rent-output" for="monthly-rent">$3,000</output>
+        </div>
+        <input class="range" id="monthly-rent" type="range" min="1000" max="8000" step="100" value="3000" />
+        <div class="range-scale" aria-hidden="true"><span>$1,000</span><span>$8,000</span></div>
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="result-label">
+      <p class="result-label" id="result-label">Break-even holding period</p>
+      <p class="result-value" id="result-value" aria-live="polite">2 years, 5 months</p>
+      <p class="result-copy" id="result-copy">Renting leads before then; at break-even, buying has caught up after transaction and ownership costs.</p>
+    </section>
+
+    <section class="chart-section" aria-labelledby="chart-heading">
+      <div class="section-head">
+        <h2 id="chart-heading">Buyer advantage over time</h2>
+        <p class="chart-key">Above $0: buying leads · Below $0: renting leads</p>
+      </div>
+      <div class="chart-wrap">
+        <svg id="advantage-chart" role="img" aria-labelledby="chart-title chart-description">
+          <title id="chart-title">Buyer net-worth advantage over 10 years</title>
+          <desc id="chart-description">The line shows the first 10 years and begins below zero because of transaction costs, then changes as the home, rent, and invested cash grow.</desc>
+          <g id="chart-regions"></g>
+          <g id="chart-grid"></g>
+          <path id="chart-line" class="chart-line"></path>
+          <g id="chart-marker"></g>
+          <g id="chart-labels"></g>
+        </svg>
+      </div>
+      <p class="chart-detail" id="chart-detail">At year 10, buying is ahead.</p>
+    </section>
+
+    <details class="assumptions">
+      <summary>Assumptions and methodology</summary>
+      <div class="assumption-body">
+        <p class="method">Both households begin with the same cash. The buyer contributes up to $1 million toward the home, pays closing costs in cash, and borrows any remaining purchase price with an interest-only margin loan. The renter invests the buyer’s cash outlay, earning 3% annually. Each month, whichever option has lower housing costs invests the difference. At every point on the chart, the buyer hypothetically sells the home, pays selling costs, and repays the margin principal.</p>
+
+        <div class="assumption-grid">
+          <section class="assumption-group">
+            <h3>Growth</h3>
+            <dl>
+              <div class="assumption-row"><dt>Home appreciation</dt><dd>3.7% / yr</dd></div>
+              <div class="assumption-row"><dt>Rent growth</dt><dd>3.2% / yr</dd></div>
+              <div class="assumption-row"><dt>Cash return</dt><dd>3.0% / yr</dd></div>
+            </dl>
+          </section>
+
+          <section class="assumption-group">
+            <h3>Buying and selling</h3>
+            <dl>
+              <div class="assumption-row"><dt>Buyer closing costs</dt><dd>2.0%</dd></div>
+              <div class="assumption-row"><dt>Selling costs</dt><dd>6.0%</dd></div>
+              <div class="assumption-row"><dt>Mortgage</dt><dd>None</dd></div>
+            </dl>
+          </section>
+
+          <section class="assumption-group">
+            <h3>Annual ownership</h3>
+            <dl>
+              <div class="assumption-row"><dt>Property tax</dt><dd>1.0%</dd></div>
+              <div class="assumption-row"><dt>Home insurance</dt><dd>0.4%</dd></div>
+              <div class="assumption-row"><dt>Maintenance</dt><dd>1.0%</dd></div>
+              <div class="assumption-row"><dt>Renters insurance</dt><dd>$20 / mo</dd></div>
+            </dl>
+          </section>
+
+          <section class="assumption-group">
+            <h3>Margin loan above $1M</h3>
+            <dl>
+              <div class="assumption-row"><dt>Up to $50k</dt><dd>5.00%</dd></div>
+              <div class="assumption-row"><dt>$50k–$100k</dt><dd>4.80%</dd></div>
+              <div class="assumption-row"><dt>$100k–$1M</dt><dd>4.50%</dd></div>
+              <div class="assumption-row"><dt>$1M–$10M</dt><dd>4.25%</dd></div>
+              <div class="assumption-row"><dt>$10M–$50M</dt><dd>4.20%</dd></div>
+              <div class="assumption-row"><dt>Over $50M</dt><dd>3.95%</dd></div>
+              <div class="assumption-row"><dt>Structure</dt><dd>Interest-only</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <p class="exclusions">Margin rates apply to the full borrowed balance, not progressively by tier, and remain fixed in the model. Not modeled: HOA fees, utilities shared by both choices, moving or renovation costs, tax deductions, income tax on savings interest, or capital-gains tax. Results are illustrative, not financial advice.</p>
+        <p class="sources">Growth rates use Atlanta’s 2000–2024 series in <a href="../area-comparison/">Area Comparison</a>. Closing-cost range: <a href="https://www.consumerfinance.gov/owning-a-home/prepare/determine-your-down-payment/" target="_blank" rel="noopener">CFPB</a>. Georgia’s mortgage-note tax is excluded because no loan is secured by the property: <a href="https://dor.georgia.gov/intangible-recording-tax" target="_blank" rel="noopener">Georgia DOR</a>.</p>
+        <button class="reset" id="reset" type="button">Reset to $700k and $3,000</button>
+      </div>
+    </details>
+
+    <footer><a href="../">← All playground tools</a></footer>
+  </main>
+
+  <script id="calculator-core">
+    globalThis.BuyVsRent = (() => {
+      const DEFAULT_ASSUMPTIONS = Object.freeze({
+        homeGrowthAnnual: 0.037,
+        rentGrowthAnnual: 0.032,
+        cashReturnAnnual: 0.03,
+        buyerClosingPct: 0.02,
+        sellerClosingPct: 0.06,
+        propertyTaxPct: 0.01,
+        insurancePct: 0.004,
+        maintenancePct: 0.01,
+        rentersInsuranceMonthly: 20,
+        cashPurchaseLimit: 1_000_000,
+        horizonMonths: 30 * 12,
+      });
+      const CHART_YEARS = 10;
+
+      const MARGIN_RATE_TIERS = Object.freeze([
+        Object.freeze({ maxBalance: 50_000, annualRate: 0.05 }),
+        Object.freeze({ maxBalance: 100_000, annualRate: 0.048 }),
+        Object.freeze({ maxBalance: 1_000_000, annualRate: 0.045 }),
+        Object.freeze({ maxBalance: 10_000_000, annualRate: 0.0425 }),
+        Object.freeze({ maxBalance: 50_000_000, annualRate: 0.042 }),
+        Object.freeze({ maxBalance: Infinity, annualRate: 0.0395 }),
+      ]);
+
+      function getMarginInterestRate(balance) {
+        if (!Number.isFinite(balance) || balance < 0) {
+          throw new RangeError('margin balance must be a non-negative number');
+        }
+        if (balance === 0) return 0;
+        return MARGIN_RATE_TIERS.find(tier => balance <= tier.maxBalance).annualRate;
+      }
+
+      function monthlyRate(annualRate) {
+        return Math.pow(1 + annualRate, 1 / 12) - 1;
+      }
+
+      function validateInputs(houseValue, monthlyRent, assumptions) {
+        if (!Number.isFinite(houseValue) || houseValue <= 0) {
+          throw new RangeError('houseValue must be a positive number');
+        }
+        if (!Number.isFinite(monthlyRent) || monthlyRent < 0) {
+          throw new RangeError('monthlyRent must be a non-negative number');
+        }
+
+        const rateKeys = [
+          'homeGrowthAnnual',
+          'rentGrowthAnnual',
+          'cashReturnAnnual',
+          'buyerClosingPct',
+          'sellerClosingPct',
+          'propertyTaxPct',
+          'insurancePct',
+          'maintenancePct',
+        ];
+        for (const key of rateKeys) {
+          if (!Number.isFinite(assumptions[key]) || assumptions[key] < 0) {
+            throw new RangeError(`${key} must be a non-negative number`);
+          }
+        }
+        if (!Number.isFinite(assumptions.rentersInsuranceMonthly)
+            || assumptions.rentersInsuranceMonthly < 0) {
+          throw new RangeError('rentersInsuranceMonthly must be a non-negative number');
+        }
+        if (!Number.isFinite(assumptions.cashPurchaseLimit)
+            || assumptions.cashPurchaseLimit < 0) {
+          throw new RangeError('cashPurchaseLimit must be a non-negative number');
+        }
+        if (!Number.isInteger(assumptions.horizonMonths) || assumptions.horizonMonths < 0) {
+          throw new RangeError('horizonMonths must be a non-negative integer');
+        }
+      }
+
+      function calculateBreakEven(houseValue, monthlyRent, overrides = {}) {
+        const assumptions = { ...DEFAULT_ASSUMPTIONS, ...overrides };
+        validateInputs(houseValue, monthlyRent, assumptions);
+
+        const homeMonthlyRate = monthlyRate(assumptions.homeGrowthAnnual);
+        const rentMonthlyRate = monthlyRate(assumptions.rentGrowthAnnual);
+        const cashMonthlyRate = monthlyRate(assumptions.cashReturnAnnual);
+        const carryingRate = assumptions.propertyTaxPct
+          + assumptions.insurancePct
+          + assumptions.maintenancePct;
+        const marginLoanBalance = Math.max(0, houseValue - assumptions.cashPurchaseLimit);
+        const marginInterestRate = getMarginInterestRate(marginLoanBalance);
+        const marginInterestMonthly = marginLoanBalance * marginInterestRate / 12;
+        const buyerCashOutlay = houseValue - marginLoanBalance
+          + houseValue * assumptions.buyerClosingPct;
+
+        let currentHomeValue = houseValue;
+        let currentMonthlyRent = monthlyRent;
+        let renterLiquidLead = buyerCashOutlay;
+        let breakEvenMonth = null;
+        let advantageAtBreakEven = null;
+        const chartYears = CHART_YEARS;
+        const chartEndMonth = chartYears * 12;
+        const simulationEndMonth = Math.max(assumptions.horizonMonths, chartEndMonth);
+        const timeline = [];
+
+        for (let month = 0; month <= simulationEndMonth; month += 1) {
+          const netSaleProceeds = currentHomeValue * (1 - assumptions.sellerClosingPct)
+            - marginLoanBalance;
+          const buyerAdvantage = netSaleProceeds - renterLiquidLead;
+          const ownerMonthlyCost = currentHomeValue * carryingRate / 12
+            + marginInterestMonthly;
+          const renterMonthlyCost = currentMonthlyRent + assumptions.rentersInsuranceMonthly;
+
+          if (month <= chartEndMonth) {
+            timeline.push({
+              month,
+              homeValue: currentHomeValue,
+              monthlyRent: currentMonthlyRent,
+              ownerMonthlyCost,
+              marginInterestMonthly,
+              renterMonthlyCost,
+              netSaleProceeds,
+              renterLiquidLead,
+              buyerAdvantage,
+            });
+          }
+
+          if (month <= assumptions.horizonMonths
+              && breakEvenMonth === null
+              && buyerAdvantage >= 0) {
+            breakEvenMonth = month;
+            advantageAtBreakEven = buyerAdvantage;
+          }
+
+          if (month === simulationEndMonth) break;
+
+          renterLiquidLead = renterLiquidLead * (1 + cashMonthlyRate)
+            + ownerMonthlyCost
+            - renterMonthlyCost;
+          currentHomeValue *= 1 + homeMonthlyRate;
+          currentMonthlyRent *= 1 + rentMonthlyRate;
+        }
+
+        return {
+          assumptions,
+          breakEvenMonth,
+          advantageAtBreakEven,
+          initialBuyerAdvantage: timeline[0].buyerAdvantage,
+          buyerCashOutlay,
+          marginLoanBalance,
+          marginInterestRate,
+          marginInterestMonthly,
+          chartYears,
+          timeline,
+        };
+      }
+
+      function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          maximumFractionDigits: 0,
+        }).format(value);
+      }
+
+      function formatCompactCurrency(value) {
+        const abs = Math.abs(value);
+        const sign = value < 0 ? '-' : '';
+        if (abs >= 1_000_000) {
+          const millions = abs / 1_000_000;
+          return `${sign}$${millions.toFixed(millions >= 10 ? 0 : 1)}M`;
+        }
+        if (abs >= 1_000) {
+          const thousands = abs / 1_000;
+          return `${sign}$${thousands.toFixed(thousands >= 100 ? 0 : 1)}k`;
+        }
+        return `${sign}$${Math.round(abs)}`;
+      }
+
+      function formatDuration(months) {
+        if (months === null || !Number.isFinite(months)) return null;
+        if (months === 0) return 'immediately';
+        const years = Math.floor(months / 12);
+        const remainingMonths = months % 12;
+        const parts = [];
+        if (years) parts.push(`${years} ${years === 1 ? 'year' : 'years'}`);
+        if (remainingMonths) {
+          parts.push(`${remainingMonths} ${remainingMonths === 1 ? 'month' : 'months'}`);
+        }
+        return parts.join(', ');
+      }
+
+      return {
+        DEFAULT_ASSUMPTIONS,
+        MARGIN_RATE_TIERS,
+        calculateBreakEven,
+        formatCompactCurrency,
+        formatCurrency,
+        formatDuration,
+        getMarginInterestRate,
+      };
+    })();
+  </script>
+
+  <script>
+    const {
+      calculateBreakEven,
+      formatCompactCurrency,
+      formatCurrency,
+      formatDuration,
+    } = globalThis.BuyVsRent;
+
+    const STORAGE_KEY = 'buy-vs-rent:state:v1';
+    const DEFAULT_STATE = Object.freeze({ houseValue: 700000, monthlyRent: 3000 });
+    const houseInput = document.getElementById('house-value');
+    const rentInput = document.getElementById('monthly-rent');
+    const houseOutput = document.getElementById('house-value-output');
+    const rentOutput = document.getElementById('monthly-rent-output');
+    const marginNote = document.getElementById('margin-note');
+    const resultValue = document.getElementById('result-value');
+    const resultCopy = document.getElementById('result-copy');
+    const chartDetail = document.getElementById('chart-detail');
+    const chart = document.getElementById('advantage-chart');
+    const chartTitle = document.getElementById('chart-title');
+    const chartDescription = document.getElementById('chart-description');
+    const chartRegions = document.getElementById('chart-regions');
+    const chartGrid = document.getElementById('chart-grid');
+    const chartLine = document.getElementById('chart-line');
+    const chartMarker = document.getElementById('chart-marker');
+    const chartLabels = document.getElementById('chart-labels');
+    let currentResult;
+
+    function snapToInput(value, input) {
+      const min = Number(input.min);
+      const max = Number(input.max);
+      const step = Number(input.step);
+      if (!Number.isFinite(value)) return Number(input.value);
+      const clamped = Math.max(min, Math.min(max, value));
+      return Math.round((clamped - min) / step) * step + min;
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!saved || !Number.isFinite(saved.houseValue) || !Number.isFinite(saved.monthlyRent)) {
+          return { ...DEFAULT_STATE };
+        }
+        return {
+          houseValue: snapToInput(saved.houseValue, houseInput),
+          monthlyRent: snapToInput(saved.monthlyRent, rentInput),
+        };
+      } catch {
+        return { ...DEFAULT_STATE };
+      }
+    }
+
+    function saveState(state) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* Storage is optional. */ }
+    }
+
+    function updateRangeFill(input) {
+      const min = Number(input.min);
+      const max = Number(input.max);
+      const pct = (Number(input.value) - min) / (max - min) * 100;
+      input.style.setProperty('--fill', `${pct}%`);
+    }
+
+    function niceStep(value) {
+      if (!Number.isFinite(value) || value <= 0) return 1;
+      const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+      const fraction = value / magnitude;
+      const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
+      return niceFraction * magnitude;
+    }
+
+    function compactDuration(months) {
+      const years = Math.floor(months / 12);
+      const remainder = months % 12;
+      if (!years) return `${remainder} mo`;
+      if (!remainder) return `${years} yr`;
+      return `${years} yr ${remainder} mo`;
+    }
+
+    function renderChart(result) {
+      const width = Math.max(320, Math.round(chart.getBoundingClientRect().width || 720));
+      const height = chart.getBoundingClientRect().height || 310;
+      const margin = { top: 23, right: 18, bottom: 42, left: width < 520 ? 55 : 72 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const chartMonths = result.chartYears * 12;
+      const values = result.timeline.map(point => point.buyerAdvantage);
+      const rawMin = Math.min(0, ...values);
+      const rawMax = Math.max(0, ...values);
+      const rawSpan = Math.max(1, rawMax - rawMin);
+      const step = niceStep(rawSpan / 5);
+      let yMin = Math.floor((rawMin - rawSpan * 0.06) / step) * step;
+      let yMax = Math.ceil((rawMax + rawSpan * 0.06) / step) * step;
+      if (yMin === yMax) yMax = yMin + step;
+
+      const x = month => margin.left + month / chartMonths * plotWidth;
+      const y = value => margin.top + (yMax - value) / (yMax - yMin) * plotHeight;
+      const zeroY = y(0);
+      const bottom = margin.top + plotHeight;
+      const right = margin.left + plotWidth;
+      const path = result.timeline
+        .map((point, index) => `${index === 0 ? 'M' : 'L'}${x(point.month).toFixed(2)},${y(point.buyerAdvantage).toFixed(2)}`)
+        .join(' ');
+
+      chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      chartLine.setAttribute('d', path);
+      chartRegions.innerHTML = `
+        <rect class="chart-region-positive" x="${margin.left}" y="${margin.top}" width="${plotWidth}" height="${Math.max(0, zeroY - margin.top)}"></rect>
+        <rect class="chart-region-negative" x="${margin.left}" y="${zeroY}" width="${plotWidth}" height="${Math.max(0, bottom - zeroY)}"></rect>`;
+
+      const yTicks = [];
+      for (let value = Math.ceil(yMin / step) * step; value <= yMax + step * 0.01; value += step) {
+        yTicks.push(Math.abs(value) < step * 0.001 ? 0 : value);
+      }
+      const gridMarkup = yTicks.map(value => {
+        const tickY = y(value);
+        return `<line class="${value === 0 ? 'chart-zero' : 'chart-grid'}" x1="${margin.left}" y1="${tickY}" x2="${right}" y2="${tickY}"></line>
+          <text class="chart-tick" x="${margin.left - 10}" y="${tickY + 4}" text-anchor="end">${formatCompactCurrency(value)}</text>`;
+      }).join('');
+      const targetIntervals = width < 520 ? 4 : 6;
+      const rawYearStep = result.chartYears / targetIntervals;
+      const yearStep = rawYearStep <= 1 ? 1
+        : rawYearStep <= 2 ? 2
+        : rawYearStep <= 5 ? 5
+        : rawYearStep <= 10 ? 10
+        : Math.ceil(rawYearStep / 10) * 10;
+      const yearTicks = [];
+      for (let year = 0; year <= result.chartYears; year += yearStep) yearTicks.push(year);
+      if (yearTicks.at(-1) !== result.chartYears) yearTicks.push(result.chartYears);
+      const xTicks = yearTicks.map(year => {
+        const tickX = x(year * 12);
+        return `<line class="chart-grid" x1="${tickX}" y1="${margin.top}" x2="${tickX}" y2="${bottom}"></line>
+          <text class="chart-tick" x="${tickX}" y="${bottom + 23}" text-anchor="middle">${year}</text>`;
+      }).join('');
+      chartGrid.innerHTML = gridMarkup + xTicks;
+
+      chartLabels.innerHTML = `
+        <text class="chart-axis-label" x="${margin.left + plotWidth / 2}" y="${height - 7}" text-anchor="middle">Years owned</text>
+        <text class="chart-axis-label" transform="translate(14 ${margin.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Buyer net-worth advantage</text>
+        <text class="chart-zone-label" x="${margin.left + 9}" y="${margin.top + 15}">BUYING AHEAD</text>
+        <text class="chart-zone-label" x="${margin.left + 9}" y="${Math.min(bottom - 9, zeroY + 17)}">RENTING AHEAD</text>`;
+
+      if (result.breakEvenMonth !== null && result.breakEvenMonth <= chartMonths) {
+        const point = result.timeline[result.breakEvenMonth];
+        const markerX = x(point.month);
+        const markerY = y(point.buyerAdvantage);
+        const placeLeft = markerX > right - 160;
+        const labelX = markerX + (placeLeft ? -10 : 10);
+        const labelAnchor = placeLeft ? 'end' : 'start';
+        const labelY = Math.max(margin.top + 14, markerY - 10);
+        chartMarker.innerHTML = `
+          <line class="chart-marker-guide" x1="${markerX}" y1="${markerY}" x2="${markerX}" y2="${bottom}"></line>
+          <circle class="chart-marker" cx="${markerX}" cy="${markerY}" r="5"></circle>
+          <text class="chart-marker-label" x="${labelX}" y="${labelY}" text-anchor="${labelAnchor}">Break-even · ${compactDuration(result.breakEvenMonth)}</text>`;
+      } else {
+        chartMarker.innerHTML = '';
+      }
+
+      const endingAdvantage = result.timeline.at(-1).buyerAdvantage;
+      const accessibilityResult = result.breakEvenMonth === null
+        ? 'Buying does not break even during the 30-year model.'
+        : result.breakEvenMonth > chartMonths
+          ? `Buying breaks even after ${formatDuration(result.breakEvenMonth)}, beyond this 10-year chart.`
+          : `Buying breaks even after ${formatDuration(result.breakEvenMonth)}.`;
+      chartTitle.textContent = `Buyer net-worth advantage over ${result.chartYears} ${result.chartYears === 1 ? 'year' : 'years'}`;
+      chartDescription.textContent = `${accessibilityResult} At year ${result.chartYears}, ${endingAdvantage >= 0 ? 'buying' : 'renting'} is ahead by ${formatCurrency(Math.abs(endingAdvantage))}.`;
+    }
+
+    function update() {
+      const state = {
+        houseValue: Number(houseInput.value),
+        monthlyRent: Number(rentInput.value),
+      };
+      saveState(state);
+      houseOutput.textContent = formatCurrency(state.houseValue);
+      rentOutput.textContent = formatCurrency(state.monthlyRent);
+      updateRangeFill(houseInput);
+      updateRangeFill(rentInput);
+
+      currentResult = calculateBreakEven(state.houseValue, state.monthlyRent);
+      marginNote.hidden = currentResult.marginLoanBalance === 0;
+      marginNote.textContent = currentResult.marginLoanBalance === 0
+        ? ''
+        : `Includes a ${formatCurrency(currentResult.marginLoanBalance)} interest-only margin loan at ${currentResult.marginInterestRate * 100}%.`;
+      if (currentResult.breakEvenMonth === null) {
+        resultValue.textContent = 'More than 30 years';
+        resultCopy.innerHTML = `At this price-to-rent ratio, <strong>renting remains ahead</strong> throughout the 30-year model.`;
+      } else {
+        const duration = formatDuration(currentResult.breakEvenMonth);
+        resultValue.textContent = duration[0].toUpperCase() + duration.slice(1);
+        resultCopy.innerHTML = `Renting leads before then. At month ${currentResult.breakEvenMonth}, selling leaves buying about <strong>${formatCurrency(currentResult.advantageAtBreakEven)} ahead</strong> after all modeled costs.`;
+      }
+
+      const endingAdvantage = currentResult.timeline.at(-1).buyerAdvantage;
+      chartDetail.innerHTML = `At year ${currentResult.chartYears}, <strong>${endingAdvantage >= 0 ? 'buying' : 'renting'} is ahead by ${formatCurrency(Math.abs(endingAdvantage))}</strong>. The line includes the cost of selling at every point.`;
+      renderChart(currentResult);
+    }
+
+    const initialState = loadState();
+    houseInput.value = initialState.houseValue;
+    rentInput.value = initialState.monthlyRent;
+    houseInput.addEventListener('input', update);
+    rentInput.addEventListener('input', update);
+    document.getElementById('reset').addEventListener('click', () => {
+      houseInput.value = DEFAULT_STATE.houseValue;
+      rentInput.value = DEFAULT_STATE.monthlyRent;
+      update();
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (currentResult) renderChart(currentResult);
+    });
+    resizeObserver.observe(chart);
+    update();
+  </script>
+</body>
+</html>

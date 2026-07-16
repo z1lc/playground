@@ -18,13 +18,27 @@ YELP_SEARCH_URL = "https://api.yelp.com/v3/businesses/search"
 NEIGHBORHOODS = {
     "North Panhandle + Anza Vista": {"lat": 37.7760, "lng": -122.4375, "radius_m": 800, "population": 10003},
     "Greenwich Village": {"lat": 40.7335, "lng": -73.9985, "radius_m": 600, "population": 23138},
-    "Virginia Highland + Morningside": {"lat": 33.7870, "lng": -84.3530, "radius_m": 1200, "population": 16090},
+    "Virginia Highland + Morningside": {"lat": 33.7870, "lng": -84.3530, "radius_m": 1200, "population": 19339},
     "Mercer Island": {"lat": 47.5707, "lng": -122.2221, "radius_m": 2000, "population": 24467},
     # Extra Atlanta neighborhoods (radii area-matched to each footprint).
-    "Sweet Auburn": {"lat": 33.7550, "lng": -84.3725, "radius_m": 500, "population": 1827},
-    "Cabbagetown": {"lat": 33.7490, "lng": -84.3620, "radius_m": 400, "population": 1300},
-    "Reynoldstown": {"lat": 33.7480, "lng": -84.3520, "radius_m": 550, "population": 2450},
-    "Inman Park": {"lat": 33.7620, "lng": -84.3530, "radius_m": 700, "population": 4220},
+    "Sweet Auburn": {"lat": 33.7550, "lng": -84.3725, "radius_m": 500, "population": 3291},
+    "Cabbagetown": {"lat": 33.7490, "lng": -84.3620, "radius_m": 400, "population": 1851},
+    "Reynoldstown": {"lat": 33.7480, "lng": -84.3520, "radius_m": 550, "population": 4558},
+    "Inman Park": {"lat": 33.7620, "lng": -84.3530, "radius_m": 700, "population": 5412},
+    # City of Atlanta Neighborhood layer centroid; radius is the equal-area circle for its 1.22 sq-mi polygon.
+    "Old Fourth Ward": {
+        "lat": 33.7645643,
+        "lng": -84.3708836,
+        "radius_m": 1003,
+        "population": 14153,
+    },
+    # City of Atlanta Neighborhood layer centroid; equal-area radius for its 310.55-acre polygon.
+    "Piedmont Heights": {
+        "lat": 33.8052355,
+        "lng": -84.3711682,
+        "radius_m": 632,
+        "population": 2436,
+    },
 }
 
 HEADERS = {"Authorization": f"Bearer {YELP_API_KEY}"}

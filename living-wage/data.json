@@ -1,0 +1,859 @@
+{
+  "meta": {
+    "source": "MIT Living Wage Calculator",
+    "sourceUrl": "https://livingwage.mit.edu/",
+    "dataUpdated": "2026-02-15"
+  },
+  "categories": [
+    "Food",
+    "Child Care",
+    "Medical",
+    "Housing",
+    "Transportation",
+    "Civic",
+    "Internet & Mobile",
+    "Other"
+  ],
+  "locations": {
+    "Atlanta": {
+      "mitName": "Fulton County, GA",
+      "url": "https://livingwage.mit.edu/counties/13121",
+      "households": {
+        "1 Adult": {
+          "0": {
+            "Food": 5176,
+            "Child Care": 0,
+            "Medical": 3098,
+            "Housing": 19875,
+            "Transportation": 8253,
+            "Civic": 2583,
+            "Internet & Mobile": 1854,
+            "Other": 4067,
+            "afterTax": 44906,
+            "taxes": 10693,
+            "beforeTax": 55599
+          },
+          "1": {
+            "Food": 7593,
+            "Child Care": 11221,
+            "Medical": 8373,
+            "Housing": 22822,
+            "Transportation": 9551,
+            "Civic": 4360,
+            "Internet & Mobile": 1854,
+            "Other": 7395,
+            "afterTax": 73169,
+            "taxes": 13777,
+            "beforeTax": 86946
+          },
+          "2": {
+            "Food": 11377,
+            "Child Care": 21916,
+            "Medical": 8521,
+            "Housing": 22822,
+            "Transportation": 12031,
+            "Civic": 5749,
+            "Internet & Mobile": 1854,
+            "Other": 8083,
+            "afterTax": 92353,
+            "taxes": 19153,
+            "beforeTax": 111506
+          },
+          "3": {
+            "Food": 15141,
+            "Child Care": 25738,
+            "Medical": 8682,
+            "Housing": 27361,
+            "Transportation": 13843,
+            "Civic": 6547,
+            "Internet & Mobile": 1854,
+            "Other": 8801,
+            "afterTax": 107969,
+            "taxes": 23829,
+            "beforeTax": 131798
+          }
+        },
+        "2 Adults (1 Working)": {
+          "0": {
+            "Food": 9489,
+            "Child Care": 0,
+            "Medical": 6488,
+            "Housing": 20815,
+            "Transportation": 9551,
+            "Civic": 4360,
+            "Internet & Mobile": 2428,
+            "Other": 7395,
+            "afterTax": 60526,
+            "taxes": 11347,
+            "beforeTax": 71873
+          },
+          "1": {
+            "Food": 11777,
+            "Child Care": 0,
+            "Medical": 9300,
+            "Housing": 22822,
+            "Transportation": 12031,
+            "Civic": 5749,
+            "Internet & Mobile": 2428,
+            "Other": 8279,
+            "afterTax": 72386,
+            "taxes": 11244,
+            "beforeTax": 83629
+          },
+          "2": {
+            "Food": 15148,
+            "Child Care": 0,
+            "Medical": 9600,
+            "Housing": 22822,
+            "Transportation": 13843,
+            "Civic": 6547,
+            "Internet & Mobile": 2428,
+            "Other": 8801,
+            "afterTax": 79190,
+            "taxes": 10314,
+            "beforeTax": 89504
+          },
+          "3": {
+            "Food": 18482,
+            "Child Care": 0,
+            "Medical": 9936,
+            "Housing": 27361,
+            "Transportation": 15499,
+            "Civic": 7330,
+            "Internet & Mobile": 2428,
+            "Other": 9854,
+            "afterTax": 90890,
+            "taxes": 11007,
+            "beforeTax": 101897
+          }
+        },
+        "2 Adults (Both Working)": {
+          "0": {
+            "Food": 9489,
+            "Child Care": 0,
+            "Medical": 6488,
+            "Housing": 20815,
+            "Transportation": 9551,
+            "Civic": 4360,
+            "Internet & Mobile": 2428,
+            "Other": 7395,
+            "afterTax": 60526,
+            "taxes": 11347,
+            "beforeTax": 71873
+          },
+          "1": {
+            "Food": 11777,
+            "Child Care": 11221,
+            "Medical": 9300,
+            "Housing": 22822,
+            "Transportation": 12031,
+            "Civic": 5749,
+            "Internet & Mobile": 2428,
+            "Other": 8279,
+            "afterTax": 83607,
+            "taxes": 14965,
+            "beforeTax": 98571
+          },
+          "2": {
+            "Food": 15148,
+            "Child Care": 21916,
+            "Medical": 9600,
+            "Housing": 22822,
+            "Transportation": 13843,
+            "Civic": 6547,
+            "Internet & Mobile": 2428,
+            "Other": 8801,
+            "afterTax": 101106,
+            "taxes": 17575,
+            "beforeTax": 118681
+          },
+          "3": {
+            "Food": 18482,
+            "Child Care": 25738,
+            "Medical": 9936,
+            "Housing": 27361,
+            "Transportation": 15499,
+            "Civic": 7330,
+            "Internet & Mobile": 2428,
+            "Other": 9854,
+            "afterTax": 116627,
+            "taxes": 19828,
+            "beforeTax": 136456
+          }
+        }
+      }
+    },
+    "Asheville": {
+      "mitName": "Asheville, NC (metro)",
+      "url": "https://livingwage.mit.edu/metros/11700",
+      "households": {
+        "1 Adult": {
+          "0": {
+            "Food": 4732,
+            "Child Care": 0,
+            "Medical": 3394,
+            "Housing": 14800,
+            "Transportation": 8782,
+            "Civic": 2583,
+            "Internet & Mobile": 1473,
+            "Other": 4067,
+            "afterTax": 39830,
+            "taxes": 8392,
+            "beforeTax": 48222
+          },
+          "1": {
+            "Food": 6941,
+            "Child Care": 9481,
+            "Medical": 10167,
+            "Housing": 18901,
+            "Transportation": 10164,
+            "Civic": 4360,
+            "Internet & Mobile": 1473,
+            "Other": 7395,
+            "afterTax": 68881,
+            "taxes": 10737,
+            "beforeTax": 79618
+          },
+          "2": {
+            "Food": 10400,
+            "Child Care": 18940,
+            "Medical": 10314,
+            "Housing": 18901,
+            "Transportation": 12803,
+            "Civic": 5749,
+            "Internet & Mobile": 1473,
+            "Other": 8083,
+            "afterTax": 86663,
+            "taxes": 14161,
+            "beforeTax": 100823
+          },
+          "3": {
+            "Food": 13842,
+            "Child Care": 25001,
+            "Medical": 10475,
+            "Housing": 22977,
+            "Transportation": 14731,
+            "Civic": 6547,
+            "Internet & Mobile": 1473,
+            "Other": 8801,
+            "afterTax": 103848,
+            "taxes": 19550,
+            "beforeTax": 123398
+          }
+        },
+        "2 Adults (1 Working)": {
+          "0": {
+            "Food": 8675,
+            "Child Care": 0,
+            "Medical": 8157,
+            "Housing": 17236,
+            "Transportation": 10164,
+            "Civic": 4360,
+            "Internet & Mobile": 2046,
+            "Other": 7395,
+            "afterTax": 58032,
+            "taxes": 9363,
+            "beforeTax": 67395
+          },
+          "1": {
+            "Food": 10766,
+            "Child Care": 0,
+            "Medical": 11094,
+            "Housing": 18901,
+            "Transportation": 12803,
+            "Civic": 5749,
+            "Internet & Mobile": 2046,
+            "Other": 8279,
+            "afterTax": 69637,
+            "taxes": 9181,
+            "beforeTax": 78818
+          },
+          "2": {
+            "Food": 13848,
+            "Child Care": 0,
+            "Medical": 11394,
+            "Housing": 18901,
+            "Transportation": 14731,
+            "Civic": 6547,
+            "Internet & Mobile": 2046,
+            "Other": 8801,
+            "afterTax": 76269,
+            "taxes": 8284,
+            "beforeTax": 84553
+          },
+          "3": {
+            "Food": 16896,
+            "Child Care": 0,
+            "Medical": 11730,
+            "Housing": 22977,
+            "Transportation": 16492,
+            "Civic": 7330,
+            "Internet & Mobile": 2046,
+            "Other": 9854,
+            "afterTax": 87326,
+            "taxes": 8852,
+            "beforeTax": 96178
+          }
+        },
+        "2 Adults (Both Working)": {
+          "0": {
+            "Food": 8675,
+            "Child Care": 0,
+            "Medical": 8157,
+            "Housing": 17236,
+            "Transportation": 10164,
+            "Civic": 4360,
+            "Internet & Mobile": 2046,
+            "Other": 7395,
+            "afterTax": 58032,
+            "taxes": 9363,
+            "beforeTax": 67395
+          },
+          "1": {
+            "Food": 10766,
+            "Child Care": 9481,
+            "Medical": 11094,
+            "Housing": 18901,
+            "Transportation": 12803,
+            "Civic": 5749,
+            "Internet & Mobile": 2046,
+            "Other": 8279,
+            "afterTax": 79118,
+            "taxes": 12172,
+            "beforeTax": 91290
+          },
+          "2": {
+            "Food": 13848,
+            "Child Care": 18940,
+            "Medical": 11394,
+            "Housing": 18901,
+            "Transportation": 14731,
+            "Civic": 6547,
+            "Internet & Mobile": 2046,
+            "Other": 8801,
+            "afterTax": 95208,
+            "taxes": 14304,
+            "beforeTax": 109512
+          },
+          "3": {
+            "Food": 16896,
+            "Child Care": 25001,
+            "Medical": 11730,
+            "Housing": 22977,
+            "Transportation": 16492,
+            "Civic": 7330,
+            "Internet & Mobile": 2046,
+            "Other": 9854,
+            "afterTax": 112326,
+            "taxes": 16832,
+            "beforeTax": 129158
+          }
+        }
+      }
+    },
+    "San Francisco": {
+      "mitName": "San Francisco County, CA",
+      "url": "https://livingwage.mit.edu/counties/06075",
+      "households": {
+        "1 Adult": {
+          "0": {
+            "Food": 5807,
+            "Child Care": 0,
+            "Medical": 3828,
+            "Housing": 27517,
+            "Transportation": 6691,
+            "Civic": 3876,
+            "Internet & Mobile": 1971,
+            "Other": 4992,
+            "afterTax": 54682,
+            "taxes": 12787,
+            "beforeTax": 67469
+          },
+          "1": {
+            "Food": 8518,
+            "Child Care": 25898,
+            "Medical": 12604,
+            "Housing": 39908,
+            "Transportation": 7743,
+            "Civic": 6543,
+            "Internet & Mobile": 1971,
+            "Other": 9077,
+            "afterTax": 112264,
+            "taxes": 29573,
+            "beforeTax": 141837
+          },
+          "2": {
+            "Food": 12763,
+            "Child Care": 54401,
+            "Medical": 12756,
+            "Housing": 39908,
+            "Transportation": 9754,
+            "Civic": 8629,
+            "Internet & Mobile": 1971,
+            "Other": 9923,
+            "afterTax": 150105,
+            "taxes": 49897,
+            "beforeTax": 200002
+          },
+          "3": {
+            "Food": 16987,
+            "Child Care": 74797,
+            "Medical": 12923,
+            "Housing": 50981,
+            "Transportation": 11223,
+            "Civic": 9827,
+            "Internet & Mobile": 1971,
+            "Other": 10804,
+            "afterTax": 189513,
+            "taxes": 75771,
+            "beforeTax": 265284
+          }
+        },
+        "2 Adults (1 Working)": {
+          "0": {
+            "Food": 10646,
+            "Child Care": 0,
+            "Medical": 8142,
+            "Housing": 32965,
+            "Transportation": 7743,
+            "Civic": 6543,
+            "Internet & Mobile": 2594,
+            "Other": 9077,
+            "afterTax": 77710,
+            "taxes": 14055,
+            "beforeTax": 91765
+          },
+          "1": {
+            "Food": 13212,
+            "Child Care": 0,
+            "Medical": 13561,
+            "Housing": 39908,
+            "Transportation": 9754,
+            "Civic": 8629,
+            "Internet & Mobile": 2594,
+            "Other": 10163,
+            "afterTax": 97821,
+            "taxes": 15431,
+            "beforeTax": 113251
+          },
+          "2": {
+            "Food": 16995,
+            "Child Care": 0,
+            "Medical": 13871,
+            "Housing": 39908,
+            "Transportation": 11223,
+            "Civic": 9827,
+            "Internet & Mobile": 2594,
+            "Other": 10804,
+            "afterTax": 105222,
+            "taxes": 14412,
+            "beforeTax": 119633
+          },
+          "3": {
+            "Food": 20735,
+            "Child Care": 0,
+            "Medical": 14218,
+            "Housing": 50981,
+            "Transportation": 12565,
+            "Civic": 11002,
+            "Internet & Mobile": 2594,
+            "Other": 12096,
+            "afterTax": 124191,
+            "taxes": 18153,
+            "beforeTax": 142344
+          }
+        },
+        "2 Adults (Both Working)": {
+          "0": {
+            "Food": 10646,
+            "Child Care": 0,
+            "Medical": 8142,
+            "Housing": 32965,
+            "Transportation": 7743,
+            "Civic": 6543,
+            "Internet & Mobile": 2594,
+            "Other": 9077,
+            "afterTax": 77710,
+            "taxes": 14055,
+            "beforeTax": 91765
+          },
+          "1": {
+            "Food": 13212,
+            "Child Care": 25898,
+            "Medical": 13561,
+            "Housing": 39908,
+            "Transportation": 9754,
+            "Civic": 8629,
+            "Internet & Mobile": 2594,
+            "Other": 10163,
+            "afterTax": 123719,
+            "taxes": 26183,
+            "beforeTax": 149902
+          },
+          "2": {
+            "Food": 16995,
+            "Child Care": 54401,
+            "Medical": 13871,
+            "Housing": 39908,
+            "Transportation": 11223,
+            "Civic": 9827,
+            "Internet & Mobile": 2594,
+            "Other": 10804,
+            "afterTax": 159623,
+            "taxes": 44184,
+            "beforeTax": 203808
+          },
+          "3": {
+            "Food": 20735,
+            "Child Care": 74797,
+            "Medical": 14218,
+            "Housing": 50981,
+            "Transportation": 12565,
+            "Civic": 11002,
+            "Internet & Mobile": 2594,
+            "Other": 12096,
+            "afterTax": 198988,
+            "taxes": 65298,
+            "beforeTax": 264285
+          }
+        }
+      }
+    },
+    "New York": {
+      "mitName": "New York County, NY",
+      "url": "https://livingwage.mit.edu/counties/36061",
+      "households": {
+        "1 Adult": {
+          "0": {
+            "Food": 7116,
+            "Child Care": 0,
+            "Medical": 4695,
+            "Housing": 35525,
+            "Transportation": 4710,
+            "Civic": 3456,
+            "Internet & Mobile": 1627,
+            "Other": 4715,
+            "afterTax": 61844,
+            "taxes": 17624,
+            "beforeTax": 79469
+          },
+          "1": {
+            "Food": 10438,
+            "Child Care": 16551,
+            "Medical": 11168,
+            "Housing": 40877,
+            "Transportation": 5451,
+            "Civic": 5834,
+            "Internet & Mobile": 1627,
+            "Other": 8573,
+            "afterTax": 100519,
+            "taxes": 26186,
+            "beforeTax": 126705
+          },
+          "2": {
+            "Food": 15640,
+            "Child Care": 32026,
+            "Medical": 11357,
+            "Housing": 40877,
+            "Transportation": 6866,
+            "Civic": 7694,
+            "Internet & Mobile": 1627,
+            "Other": 9371,
+            "afterTax": 125458,
+            "taxes": 38387,
+            "beforeTax": 163845
+          },
+          "3": {
+            "Food": 20815,
+            "Child Care": 42512,
+            "Medical": 11564,
+            "Housing": 51188,
+            "Transportation": 7901,
+            "Civic": 8762,
+            "Internet & Mobile": 1627,
+            "Other": 10204,
+            "afterTax": 154572,
+            "taxes": 50520,
+            "beforeTax": 205092
+          }
+        },
+        "2 Adults (1 Working)": {
+          "0": {
+            "Food": 13045,
+            "Child Care": 0,
+            "Medical": 10176,
+            "Housing": 37295,
+            "Transportation": 5451,
+            "Civic": 5834,
+            "Internet & Mobile": 2203,
+            "Other": 8573,
+            "afterTax": 82577,
+            "taxes": 17454,
+            "beforeTax": 100031
+          },
+          "1": {
+            "Food": 16190,
+            "Child Care": 0,
+            "Medical": 12357,
+            "Housing": 40877,
+            "Transportation": 6866,
+            "Civic": 7694,
+            "Internet & Mobile": 2203,
+            "Other": 9598,
+            "afterTax": 95784,
+            "taxes": 17832,
+            "beforeTax": 113616
+          },
+          "2": {
+            "Food": 20824,
+            "Child Care": 0,
+            "Medical": 12742,
+            "Housing": 40877,
+            "Transportation": 7901,
+            "Civic": 8762,
+            "Internet & Mobile": 2203,
+            "Other": 10204,
+            "afterTax": 103513,
+            "taxes": 17081,
+            "beforeTax": 120594
+          },
+          "3": {
+            "Food": 25407,
+            "Child Care": 0,
+            "Medical": 13173,
+            "Housing": 51188,
+            "Transportation": 8845,
+            "Civic": 9810,
+            "Internet & Mobile": 2203,
+            "Other": 11424,
+            "afterTax": 122049,
+            "taxes": 21516,
+            "beforeTax": 143566
+          }
+        },
+        "2 Adults (Both Working)": {
+          "0": {
+            "Food": 13045,
+            "Child Care": 0,
+            "Medical": 10176,
+            "Housing": 37295,
+            "Transportation": 5451,
+            "Civic": 5834,
+            "Internet & Mobile": 2203,
+            "Other": 8573,
+            "afterTax": 82577,
+            "taxes": 17454,
+            "beforeTax": 100031
+          },
+          "1": {
+            "Food": 16190,
+            "Child Care": 16551,
+            "Medical": 12357,
+            "Housing": 40877,
+            "Transportation": 6866,
+            "Civic": 7694,
+            "Internet & Mobile": 2203,
+            "Other": 9598,
+            "afterTax": 112335,
+            "taxes": 23972,
+            "beforeTax": 136307
+          },
+          "2": {
+            "Food": 20824,
+            "Child Care": 32026,
+            "Medical": 12742,
+            "Housing": 40877,
+            "Transportation": 7901,
+            "Civic": 8762,
+            "Internet & Mobile": 2203,
+            "Other": 10204,
+            "afterTax": 135538,
+            "taxes": 33389,
+            "beforeTax": 168927
+          },
+          "3": {
+            "Food": 25407,
+            "Child Care": 42512,
+            "Medical": 13173,
+            "Housing": 51188,
+            "Transportation": 8845,
+            "Civic": 9810,
+            "Internet & Mobile": 2203,
+            "Other": 11424,
+            "afterTax": 164561,
+            "taxes": 46758,
+            "beforeTax": 211319
+          }
+        }
+      }
+    },
+    "Huntsville": {
+      "mitName": "Madison County, AL",
+      "url": "https://livingwage.mit.edu/counties/01089",
+      "households": {
+        "1 Adult": {
+          "0": {
+            "Food": 4381,
+            "Child Care": 0,
+            "Medical": 3747,
+            "Housing": 12953,
+            "Transportation": 9547,
+            "Civic": 2583,
+            "Internet & Mobile": 1612,
+            "Other": 4067,
+            "afterTax": 38890,
+            "taxes": 8547,
+            "beforeTax": 47437
+          },
+          "1": {
+            "Food": 6427,
+            "Child Care": 8039,
+            "Medical": 10924,
+            "Housing": 16474,
+            "Transportation": 11049,
+            "Civic": 4360,
+            "Internet & Mobile": 1612,
+            "Other": 7395,
+            "afterTax": 66280,
+            "taxes": 10694,
+            "beforeTax": 76974
+          },
+          "2": {
+            "Food": 9630,
+            "Child Care": 15630,
+            "Medical": 11071,
+            "Housing": 16474,
+            "Transportation": 13918,
+            "Civic": 5749,
+            "Internet & Mobile": 1612,
+            "Other": 8083,
+            "afterTax": 82169,
+            "taxes": 12869,
+            "beforeTax": 95037
+          },
+          "3": {
+            "Food": 12817,
+            "Child Care": 20892,
+            "Medical": 11233,
+            "Housing": 21253,
+            "Transportation": 16014,
+            "Civic": 6547,
+            "Internet & Mobile": 1612,
+            "Other": 8801,
+            "afterTax": 99170,
+            "taxes": 17851,
+            "beforeTax": 117021
+          }
+        },
+        "2 Adults (1 Working)": {
+          "0": {
+            "Food": 8033,
+            "Child Care": 0,
+            "Medical": 7466,
+            "Housing": 14286,
+            "Transportation": 11049,
+            "Civic": 4360,
+            "Internet & Mobile": 2186,
+            "Other": 7395,
+            "afterTax": 54774,
+            "taxes": 9741,
+            "beforeTax": 64515
+          },
+          "1": {
+            "Food": 9969,
+            "Child Care": 0,
+            "Medical": 11851,
+            "Housing": 16474,
+            "Transportation": 13918,
+            "Civic": 5749,
+            "Internet & Mobile": 2186,
+            "Other": 8279,
+            "afterTax": 68425,
+            "taxes": 9967,
+            "beforeTax": 78392
+          },
+          "2": {
+            "Food": 12823,
+            "Child Care": 0,
+            "Medical": 12151,
+            "Housing": 16474,
+            "Transportation": 16014,
+            "Civic": 6547,
+            "Internet & Mobile": 2186,
+            "Other": 8801,
+            "afterTax": 74997,
+            "taxes": 9249,
+            "beforeTax": 84246
+          },
+          "3": {
+            "Food": 15645,
+            "Child Care": 0,
+            "Medical": 12487,
+            "Housing": 21253,
+            "Transportation": 17929,
+            "Civic": 7330,
+            "Internet & Mobile": 2186,
+            "Other": 9854,
+            "afterTax": 86684,
+            "taxes": 10096,
+            "beforeTax": 96779
+          }
+        },
+        "2 Adults (Both Working)": {
+          "0": {
+            "Food": 8033,
+            "Child Care": 0,
+            "Medical": 7466,
+            "Housing": 14286,
+            "Transportation": 11049,
+            "Civic": 4360,
+            "Internet & Mobile": 2186,
+            "Other": 7395,
+            "afterTax": 54774,
+            "taxes": 9741,
+            "beforeTax": 64515
+          },
+          "1": {
+            "Food": 9969,
+            "Child Care": 8039,
+            "Medical": 11851,
+            "Housing": 16474,
+            "Transportation": 13918,
+            "Civic": 5749,
+            "Internet & Mobile": 2186,
+            "Other": 8279,
+            "afterTax": 76465,
+            "taxes": 12455,
+            "beforeTax": 88920
+          },
+          "2": {
+            "Food": 12823,
+            "Child Care": 15630,
+            "Medical": 12151,
+            "Housing": 16474,
+            "Transportation": 16014,
+            "Civic": 6547,
+            "Internet & Mobile": 2186,
+            "Other": 8801,
+            "afterTax": 90627,
+            "taxes": 14084,
+            "beforeTax": 104712
+          },
+          "3": {
+            "Food": 15645,
+            "Child Care": 20892,
+            "Medical": 12487,
+            "Housing": 21253,
+            "Transportation": 17929,
+            "Civic": 7330,
+            "Internet & Mobile": 2186,
+            "Other": 9854,
+            "afterTax": 107575,
+            "taxes": 16614,
+            "beforeTax": 124189
+          }
+        }
+      }
+    }
+  }
+}

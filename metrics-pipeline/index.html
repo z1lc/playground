@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Metrics Pipeline: An Engineering Doc</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #c026d3;
+      --accent-2: #a21caf;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #fdf4ff;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      /* per-engine brand colors */
+      --prom: #e6522c;
+      --influx: #22adf6;
+      --timescale: #336791;
+      --victoria: #cf0a2c;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(192,38,211,0.28);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #0e7490; }
+    .str { color: #15803d; }
+    .fn { color: #2563eb; }
+    .out { color: var(--muted); }
+    .bad { color: #b91c1c; }
+
+    /* code sample heading band */
+    .code-head {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; font-weight: 700;
+      margin: 22px 0 -6px;
+    }
+    .code-head .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+    .code-head .lang { color: var(--dim); font-weight: 500; font-family: var(--font-mono); font-size: 0.72rem; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(192,38,211,0.06), rgba(192,38,211,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 32px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* engine name spans */
+    .t-prom      { color: var(--prom);      font-weight: 600; }
+    .t-influx    { color: var(--influx);    font-weight: 600; }
+    .t-timescale { color: var(--timescale); font-weight: 600; }
+    .t-victoria  { color: var(--victoria);  font-weight: 600; }
+
+    /* engine chips legend */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.8rem; font-weight: 600; color: var(--fg);
+      padding: 4px 12px 4px 10px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg);
+    }
+    .chip .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+
+    /* ---------- Interactive matrix ---------- */
+    .matrix-controls {
+      display: flex; flex-wrap: wrap; gap: 16px 30px;
+      align-items: flex-start; margin: 4px 0 16px;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 7px; }
+    .ctrl-group .ctrl-label {
+      font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--muted); font-weight: 700;
+    }
+    .seg { display: inline-flex; flex-wrap: wrap; gap: 5px; max-width: 560px; }
+    .seg button {
+      font: inherit; font-size: 0.78rem;
+      padding: 5px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--muted); cursor: pointer;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .seg button:hover { color: var(--fg); border-color: var(--dim); }
+    .seg button.active { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .seg.hl button[data-hl="prom"].active      { background: var(--prom);      border-color: var(--prom); }
+    .seg.hl button[data-hl="influx"].active     { background: var(--influx);    border-color: var(--influx); }
+    .seg.hl button[data-hl="timescale"].active  { background: var(--timescale); border-color: var(--timescale); }
+    .seg.hl button[data-hl="victoria"].active   { background: var(--victoria);  border-color: var(--victoria); }
+
+    #matrix-table tr.hidden { display: none; }
+    #matrix-table th.th-prom      { color: var(--prom);      border-bottom: 2px solid var(--prom); }
+    #matrix-table th.th-influx     { color: var(--influx);    border-bottom: 2px solid var(--influx); }
+    #matrix-table th.th-timescale  { color: var(--timescale); border-bottom: 2px solid var(--timescale); }
+    #matrix-table th.th-victoria   { color: var(--victoria);  border-bottom: 2px solid var(--victoria); }
+    #matrix-table td:first-child { white-space: nowrap; }
+    #matrix-table.hl-prom      td:nth-child(2), #matrix-table.hl-prom      th:nth-child(2) { background: rgba(230,82,44,0.09); }
+    #matrix-table.hl-influx     td:nth-child(3), #matrix-table.hl-influx     th:nth-child(3) { background: rgba(34,173,246,0.10); }
+    #matrix-table.hl-timescale  td:nth-child(4), #matrix-table.hl-timescale  th:nth-child(4) { background: rgba(51,103,145,0.10); }
+    #matrix-table.hl-victoria   td:nth-child(5), #matrix-table.hl-victoria   th:nth-child(5) { background: rgba(207,10,44,0.08); }
+
+    /* ---------- Matrix expand / fullscreen (desktop) ---------- */
+    .fs-btn { display: inline-flex; align-items: center; gap: 6px; }
+    #matrix-panel.expanded {
+      position: fixed; inset: 0; z-index: 3000;
+      background: var(--bg);
+      padding: 22px clamp(24px, 4vw, 64px) 40px;
+      overflow: auto;
+    }
+    #matrix-panel.expanded .matrix-controls {
+      position: sticky; top: 0; z-index: 2;
+      background: var(--bg);
+      margin: 0 0 16px; padding: 6px 0 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    #matrix-panel.expanded .table-wrap { max-width: 1500px; margin: 0 auto; }
+    #matrix-panel.expanded #matrix-table { font-size: 0.95rem; }
+    #matrix-panel.expanded #matrix-table th,
+    #matrix-panel.expanded #matrix-table td { padding: 13px 18px; }
+    #matrix-panel.expanded #matrix-table td { white-space: normal; }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+    svg text.mono { font-family: var(--font-mono); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(192,38,211,0.55);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 4000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+      .fs-ctrl { display: none; }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#pipeline">The metrics pipeline</a>
+      <a href="#instrument">Instrumenting code</a>
+      <a href="#pull-push">Pull vs push</a>
+      <a href="#cardinality">The cardinality problem</a>
+      <a href="#matrix">Storage engines compared</a>
+      <a href="#scaling">Scaling Prometheus</a>
+      <a href="#otel">OpenTelemetry &amp; OTLP</a>
+      <a href="#query-viz-alert">Query, visualize, alert</a>
+      <a href="#deploy">Deployment &amp; decision guide</a>
+      <a href="#traps">Common misconceptions</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">📡</span>The Metrics Pipeline</h1>
+    <p class="doc-subtitle">Metrics are how a service watches itself — billions of events crushed into cheap, queryable numbers. This is the pipeline that carries one number from your code to an alert, and the engines that store it along the way: <span class="t-prom">Prometheus</span>, <span class="t-influx">InfluxDB</span>, <span class="t-timescale">TimescaleDB</span>, and the scaling tier (Thanos, Mimir, <span class="t-victoria">VictoriaMetrics</span>) — plus <strong>OpenTelemetry</strong>, the vendor-neutral layer tying it all together. Built from primary sources, written against the current releases.</p>
+
+    <div class="chips">
+      <span class="chip"><span class="dot" style="background:var(--prom)"></span>Prometheus</span>
+      <span class="chip"><span class="dot" style="background:var(--influx)"></span>InfluxDB</span>
+      <span class="chip"><span class="dot" style="background:var(--timescale)"></span>TimescaleDB</span>
+      <span class="chip"><span class="dot" style="background:var(--victoria)"></span>VictoriaMetrics</span>
+    </div>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong>A metric is an <em>aggregation</em>.</strong> It is a numeric value, sampled over time, carrying a name and a set of labels. That makes metrics cheap to store and trivial to sum or average — but <strong>lossy</strong>: you can know that 4% of checkouts failed in the last minute without knowing <em>which</em> ones. That's the opposite trade-off from logs and traces, which keep every event but cost far more.</li>
+        <li><strong>It's a pipeline, not a product.</strong> The journey is <strong>instrument → collect → store → query → visualize → alert</strong>. Most "tools" own several of those stages at once, which is why naïvely comparing them is confusing.</li>
+        <li><strong>The three you've heard of sit at different layers.</strong> <span class="t-prom">Prometheus</span> is a whole <em>vertical</em> — it scrapes, stores, queries (PromQL) and alerts — but is <strong>single-node by design</strong>. <span class="t-influx">InfluxDB</span> is a purpose-built push TSDB (v3 stores columnar <span class="x" data-term="Apache Parquet" data-def="An open columnar file format. InfluxDB 3 writes its data as Parquet files in object storage and queries them with Apache DataFusion, so storage is durable and cheap by construction.">Parquet</span> and answers in SQL). <span class="t-timescale">TimescaleDB</span> is just a <em>storage layer</em> — a PostgreSQL extension, so it speaks full SQL and joins against your business tables.</li>
+        <li><strong>One constraint rules everything: <span class="x" data-term="Cardinality" data-def="The number of distinct time series. Each unique combination of a metric name and its label values is one series. Cardinality is the dominant cost and failure mode of every metrics system.">cardinality</span>.</strong> A series is one unique label-set; put an unbounded label (a user ID, a request ID) on a metric and you multiply your series into the millions. Unbounded identifiers belong on logs and traces, never on a metric.</li>
+        <li><strong>OpenTelemetry is the connective tissue.</strong> <span class="x" data-term="OTLP" data-def="OpenTelemetry Protocol — the vendor-neutral wire format (gRPC or HTTP/protobuf) for metrics, logs, and traces. It decouples how you instrument code from which backend you store it in. Stable as of 2026.">OTLP</span> decouples how you instrument from where you store, so you can swap Prometheus for InfluxDB for a vendor without re-instrumenting. Prometheus 3.x even ingests it natively.</li>
+      </ul>
+    </div>
+
+    <section id="pipeline">
+      <h2>The metrics pipeline</h2>
+      <p>Follow a single number — say, the duration of one checkout request — from the line of code that records it to the page that wakes someone up. It passes through six stages, and almost every tool in this space is really a bundle of two or three of them.</p>
+      <ul>
+        <li><strong>Instrument.</strong> Your code creates a metric (a counter, a gauge, a histogram) using a client library or an OpenTelemetry SDK and updates it as the program runs.</li>
+        <li><strong>Collect.</strong> An agent gathers the numbers — either by <strong>scraping</strong> an HTTP endpoint your app exposes (pull) or by <strong>receiving</strong> what your app sends it (push) — then batches, enriches, and forwards them. This is Prometheus's server, the OpenTelemetry <span class="x" data-term="OpenTelemetry Collector" data-def="A vendor-neutral agent that receives telemetry (via receivers), transforms it (processors), and forwards it (exporters). Runs as a per-host agent or a central gateway.">Collector</span>, or Telegraf.</li>
+        <li><strong>Store.</strong> A <span class="x" data-term="Time-series database (TSDB)" data-def="A database optimized for timestamped numeric data: heavy append-only writes, time-range scans, and aggregation. Stores each series compactly and indexes by labels rather than rows.">time-series database</span> persists the samples on disk, compressing aggressively and indexing by label.</li>
+        <li><strong>Query.</strong> A query engine reads it back and aggregates on demand — <strong>PromQL</strong> for Prometheus-shaped data, <strong>SQL</strong> for InfluxDB 3 and TimescaleDB.</li>
+        <li><strong>Visualize.</strong> A dashboard layer — almost always <strong>Grafana</strong> — turns queries into graphs.</li>
+        <li><strong>Alert.</strong> A rules engine evaluates queries on a schedule and fires when a condition holds, routing the notification to a human.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 222" role="img" aria-label="The metrics pipeline: a service is instrumented, an agent collects by scrape or push, a time-series database stores the data, a query engine reads it, and the results fan out to a Grafana dashboard and an alerting rules engine.">
+  <text x="360" y="20" fill="#0f172a" font-size="11.5" font-weight="700" text-anchor="middle">One number's journey: from your code to an alert</text>
+
+  <!-- protocol labels above arrows -->
+  <text x="146" y="86" fill="#475569" font-size="7.5" text-anchor="middle">expose · push</text>
+  <text x="294" y="80" fill="#475569" font-size="7.5" text-anchor="middle">OTLP · remote-write</text>
+  <text x="294" y="90" fill="#475569" font-size="7.5" text-anchor="middle">· line protocol</text>
+  <text x="442" y="86" fill="#475569" font-size="7.5" text-anchor="middle">read</text>
+
+  <!-- Instrument -->
+  <rect x="16" y="94" width="108" height="74" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="70" y="114" fill="#0f172a" font-size="10" font-weight="700" text-anchor="middle">Instrument</text>
+  <text x="70" y="129" fill="#475569" font-size="8" text-anchor="middle">app + client SDK</text>
+  <text x="70" y="145" fill="#94a3b8" font-size="7.5" text-anchor="middle">counter · gauge</text>
+  <text x="70" y="156" fill="#94a3b8" font-size="7.5" text-anchor="middle">· histogram</text>
+
+  <!-- Collect -->
+  <rect x="164" y="94" width="108" height="74" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="218" y="114" fill="#0f172a" font-size="10" font-weight="700" text-anchor="middle">Collect</text>
+  <text x="218" y="129" fill="#475569" font-size="8" text-anchor="middle">scrape or receive</text>
+  <text x="218" y="145" fill="#94a3b8" font-size="7.5" text-anchor="middle">Collector ·</text>
+  <text x="218" y="156" fill="#94a3b8" font-size="7.5" text-anchor="middle">Telegraf</text>
+
+  <!-- Store -->
+  <rect x="312" y="94" width="108" height="74" rx="8" fill="#fdf4ff" stroke="#c026d3"/>
+  <text x="366" y="114" fill="#a21caf" font-size="10" font-weight="700" text-anchor="middle">Store</text>
+  <text x="366" y="129" fill="#475569" font-size="8" text-anchor="middle">TSDB — series</text>
+  <text x="366" y="145" fill="#94a3b8" font-size="7.5" text-anchor="middle">on disk / object</text>
+  <text x="366" y="156" fill="#94a3b8" font-size="7.5" text-anchor="middle">store</text>
+
+  <!-- Query -->
+  <rect x="460" y="94" width="92" height="74" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="506" y="124" fill="#0f172a" font-size="10" font-weight="700" text-anchor="middle">Query</text>
+  <text x="506" y="137" fill="#475569" font-size="8" text-anchor="middle">PromQL · SQL</text>
+  <text x="506" y="151" fill="#94a3b8" font-size="7.5" text-anchor="middle">aggregate</text>
+
+  <!-- Visualize -->
+  <rect x="588" y="56" width="118" height="46" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="647" y="76" fill="#0f172a" font-size="9.5" font-weight="700" text-anchor="middle">Visualize</text>
+  <text x="647" y="90" fill="#475569" font-size="7.5" text-anchor="middle">Grafana dashboards</text>
+
+  <!-- Alert -->
+  <rect x="588" y="160" width="118" height="46" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="647" y="180" fill="#0f172a" font-size="9.5" font-weight="700" text-anchor="middle">Alert</text>
+  <text x="647" y="194" fill="#475569" font-size="7.5" text-anchor="middle">rules → notify</text>
+
+  <!-- arrows -->
+  <line x1="124" y1="131" x2="160" y2="131" stroke="#cbd5e1" stroke-width="1.6"/>
+  <polygon points="164 131, 155 126.5, 155 135.5" fill="#cbd5e1"/>
+  <line x1="272" y1="131" x2="308" y2="131" stroke="#cbd5e1" stroke-width="1.6"/>
+  <polygon points="312 131, 303 126.5, 303 135.5" fill="#cbd5e1"/>
+  <line x1="420" y1="131" x2="456" y2="131" stroke="#cbd5e1" stroke-width="1.6"/>
+  <polygon points="460 131, 451 126.5, 451 135.5" fill="#cbd5e1"/>
+  <!-- query to visualize (up) -->
+  <line x1="552" y1="118" x2="585" y2="86" stroke="#cbd5e1" stroke-width="1.6"/>
+  <polygon points="588 83, 579 85, 584 92" fill="#cbd5e1"/>
+  <!-- query to alert (down) -->
+  <line x1="552" y1="144" x2="585" y2="176" stroke="#cbd5e1" stroke-width="1.6"/>
+  <polygon points="588 179, 584 170, 579 177" fill="#cbd5e1"/>
+</svg>
+        <div class="caption">The six stages. A bare Prometheus owns four of them at once (collect, store, query, alert); InfluxDB and TimescaleDB own just the store-and-query middle; Grafana owns visualize. Knowing which stage a tool lives in is most of understanding it.</div>
+      </div>
+    </section>
+
+    <section id="instrument">
+      <h2>Instrumenting code</h2>
+      <p>Everything starts with a measurement in your program. There are only four shapes a metric takes, and picking the right one is most of the craft.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>What it does</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td><span class="x" data-term="Counter" data-def="A cumulative value that only goes up (and resets to zero on process restart). You never read it raw — you take its rate() over time.">Counter</span></td><td>Monotonic total; only ever increases</td><td>requests served, errors, bytes sent</td></tr>
+            <tr><td><span class="x" data-term="Gauge" data-def="A value that can go up or down, sampled at read time. Represents a current state rather than an accumulation.">Gauge</span></td><td>A value that goes up <em>and</em> down</td><td>queue depth, in-flight requests, temperature</td></tr>
+            <tr><td><span class="x" data-term="Histogram" data-def="Counts observations into preconfigured buckets plus a sum and count. Buckets are aggregatable across instances, so you compute quantiles (p50, p99) at query time with histogram_quantile().">Histogram</span></td><td>Bucketed distribution of observations</td><td>request latency, response sizes</td></tr>
+            <tr><td><span class="x" data-term="Summary" data-def="Like a histogram but computes streaming quantiles client-side over a sliding window. Cheaper per-instance but NOT aggregatable across instances — you cannot average two services' p99s.">Summary</span></td><td>Client-side quantiles over a window</td><td>latency where you can't pick buckets</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A working example, using the Prometheus Python client. The shape barely changes across languages or with an OpenTelemetry SDK — what matters is the discipline around <em>labels</em>.</p>
+
+      <div class="code-head"><span class="dot" style="background:var(--accent)"></span>Instrumenting a service<span class="lang">— Python · prometheus_client</span></div>
+<pre><code><span class="kw">from</span> prometheus_client <span class="kw">import</span> Counter, Histogram, start_http_server
+
+REQUESTS = <span class="fn">Counter</span>(<span class="str">"http_requests_total"</span>, <span class="str">"Total HTTP requests"</span>,
+                    [<span class="str">"method"</span>, <span class="str">"route"</span>, <span class="str">"status"</span>])   <span class="com"># bounded labels only</span>
+LATENCY  = <span class="fn">Histogram</span>(<span class="str">"http_request_seconds"</span>, <span class="str">"Request latency"</span>, [<span class="str">"route"</span>])
+
+<span class="fn">@LATENCY.labels</span>(route=<span class="str">"/checkout"</span>).time()        <span class="com"># observe the duration</span>
+<span class="kw">def</span> <span class="fn">handle_checkout</span>(req):
+    REQUESTS.labels(<span class="str">"POST"</span>, <span class="str">"/checkout"</span>, <span class="str">"200"</span>).inc()   <span class="com"># count this request</span>
+    ...
+
+start_http_server(<span class="str">9090</span>)   <span class="com"># exposes GET /metrics for a scraper to pull</span></code></pre>
+
+      <h3>How to choose what to measure</h3>
+      <p>Two methodologies dominate, and they're complementary:</p>
+      <ul>
+        <li><strong><span class="x" data-term="RED method" data-def="Rate, Errors, Duration — measured per service/endpoint. Request-oriented; reflects the user's experience, so it's what you alert on.">RED</span></strong> — <strong>R</strong>ate, <strong>E</strong>rrors, <strong>D</strong>uration, measured per request or endpoint. It tells you how happy your <em>users</em> are, so it's the right thing to <strong>alert</strong> on (symptoms, not causes).</li>
+        <li><strong><span class="x" data-term="USE method" data-def="Utilization, Saturation, Errors — measured per resource (CPU, memory, disk, network). Resource-oriented; tells you how happy your machines are. Best for diagnosis.">USE</span></strong> — <strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors, measured per resource (CPU, memory, disk). It tells you how happy your <em>machines</em> are, which is where you look to <em>diagnose</em> a symptom RED surfaced.</li>
+      </ul>
+      <p>One modern refinement worth knowing: classic histograms force you to pick bucket boundaries up front, and each bucket is a series. <strong>Native (exponential) histograms</strong>, a stable Prometheus feature, replace fixed buckets with an automatically-scaled exponential layout — far better resolution at a fraction of the series cost.</p>
+    </section>
+
+    <section id="pull-push">
+      <h2>Pull vs push</h2>
+      <p>The oldest argument in metrics: does the collector <strong>reach out and scrape</strong> your service, or does your service <strong>send</strong> its numbers somewhere? Prometheus is the famous pull system; InfluxDB/Telegraf, OpenTelemetry, and StatsD are push. Each genuinely wins in different places.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 250" role="img" aria-label="Pull versus push. On the left, a Prometheus server reaches out on a timer to scrape a /metrics endpoint on each target, getting an up health signal for free. On the right, applications and agents push their metrics into a sink such as InfluxDB or a collector, which works through firewalls and for short-lived jobs.">
+  <!-- LEFT: PULL -->
+  <rect x="10" y="38" width="340" height="200" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="180" y="32" fill="#0f172a" font-size="10.5" font-weight="700" text-anchor="middle">Pull — the server scrapes</text>
+
+  <rect x="26" y="108" width="96" height="60" rx="7" fill="#fff4f0" stroke="#e6522c"/>
+  <text x="74" y="132" fill="#b3401f" font-size="10" font-weight="700" text-anchor="middle">Prometheus</text>
+  <text x="74" y="147" fill="#475569" font-size="7.5" text-anchor="middle">scrapes on</text>
+  <text x="74" y="157" fill="#475569" font-size="7.5" text-anchor="middle">a timer</text>
+
+  <rect x="238" y="56" width="98" height="34" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="287" y="72" fill="#0f172a" font-size="8.5" text-anchor="middle">service</text>
+  <text x="287" y="83" fill="#94a3b8" font-size="7.5" text-anchor="middle" class="mono">/metrics</text>
+  <rect x="238" y="121" width="98" height="34" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="287" y="137" fill="#0f172a" font-size="8.5" text-anchor="middle">service</text>
+  <text x="287" y="148" fill="#94a3b8" font-size="7.5" text-anchor="middle" class="mono">/metrics</text>
+  <rect x="238" y="186" width="98" height="34" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="287" y="202" fill="#0f172a" font-size="8.5" text-anchor="middle">service</text>
+  <text x="287" y="213" fill="#94a3b8" font-size="7.5" text-anchor="middle" class="mono">/metrics</text>
+
+  <line x1="122" y1="128" x2="234" y2="78" stroke="#e6522c" stroke-width="1.4"/>
+  <polygon points="238 76, 228 76, 232 84" fill="#e6522c"/>
+  <line x1="122" y1="138" x2="234" y2="138" stroke="#e6522c" stroke-width="1.4"/>
+  <polygon points="238 138, 229 133.5, 229 142.5" fill="#e6522c"/>
+  <line x1="122" y1="148" x2="234" y2="200" stroke="#e6522c" stroke-width="1.4"/>
+  <polygon points="238 202, 228 202, 232 194" fill="#e6522c"/>
+  <text x="180" y="126" fill="#b3401f" font-size="7.5" text-anchor="middle">GET /metrics</text>
+
+  <text x="180" y="232" fill="#15803d" font-size="8.5" font-weight="600" text-anchor="middle">every scrape yields up{} — health for free</text>
+
+  <!-- RIGHT: PUSH -->
+  <rect x="370" y="38" width="340" height="200" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="540" y="32" fill="#0f172a" font-size="10.5" font-weight="700" text-anchor="middle">Push — the source sends</text>
+
+  <rect x="384" y="56" width="104" height="34" rx="6" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="436" y="72" fill="#0a6ca8" font-size="8.5" text-anchor="middle">app SDK</text>
+  <text x="436" y="83" fill="#94a3b8" font-size="7.5" text-anchor="middle">short-lived job</text>
+  <rect x="384" y="121" width="104" height="34" rx="6" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="436" y="137" fill="#0a6ca8" font-size="8.5" text-anchor="middle">Telegraf</text>
+  <text x="436" y="148" fill="#94a3b8" font-size="7.5" text-anchor="middle">agent</text>
+  <rect x="384" y="186" width="104" height="34" rx="6" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="436" y="202" fill="#0a6ca8" font-size="8.5" text-anchor="middle">OTel SDK</text>
+  <text x="436" y="213" fill="#94a3b8" font-size="7.5" text-anchor="middle">behind NAT</text>
+
+  <rect x="596" y="108" width="100" height="60" rx="7" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="646" y="132" fill="#0a6ca8" font-size="9.5" font-weight="700" text-anchor="middle">InfluxDB /</text>
+  <text x="646" y="145" fill="#0a6ca8" font-size="9.5" font-weight="700" text-anchor="middle">collector</text>
+  <text x="646" y="158" fill="#475569" font-size="7.5" text-anchor="middle">receives writes</text>
+
+  <line x1="488" y1="73" x2="592" y2="124" stroke="#22adf6" stroke-width="1.4"/>
+  <polygon points="596 126, 586 126, 590 118" fill="#22adf6"/>
+  <line x1="488" y1="138" x2="592" y2="138" stroke="#22adf6" stroke-width="1.4"/>
+  <polygon points="596 138, 587 133.5, 587 142.5" fill="#22adf6"/>
+  <line x1="488" y1="203" x2="592" y2="152" stroke="#22adf6" stroke-width="1.4"/>
+  <polygon points="596 150, 586 150, 590 158" fill="#22adf6"/>
+  <text x="540" y="108" fill="#0a6ca8" font-size="7.5" text-anchor="middle">write · OTLP</text>
+
+  <text x="540" y="232" fill="#0a6ca8" font-size="8.5" font-weight="600" text-anchor="middle">works through firewalls &amp; for ephemeral jobs</text>
+</svg>
+        <div class="caption">Pull gives you a free liveness signal and automatic cleanup when a target disappears; push reaches things a scraper can't — serverless functions, batch jobs, anything behind a firewall.</div>
+      </div>
+
+      <p><strong>Pull</strong> (Prometheus) wins on operability: every scrape produces an <code>up</code> metric, so the server <em>knows</em> whether each target is healthy, and when service discovery says an instance is gone, its series simply stop — no cleanup. <strong>Push</strong> wins on reach: a function that lives for 200&nbsp;ms, a nightly batch job, or anything behind a firewall can't be scraped, so it sends instead.</p>
+      <div class="callout warn">
+        <span class="label">The Pushgateway is not a general "push mode"</span>
+        <p>Prometheus's <span class="x" data-term="Pushgateway" data-def="A component that holds pushed metrics so Prometheus can scrape them. Intended only for service-level batch jobs — not as a way to convert Prometheus into a push system.">Pushgateway</span> exists for one narrow case: <strong>service-level batch jobs</strong> that finish before a scrape can happen. The docs warn it becomes a single point of failure, you <em>lose the <code>up</code> health signal</em>, and it <em>never forgets</em> a pushed series — they linger until you delete them by API. For genuinely push-shaped telemetry, reach for the OpenTelemetry Collector or an InfluxDB-style sink, not the Pushgateway.</p>
+      </div>
+    </section>
+
+    <section id="cardinality">
+      <h2>The cardinality problem</h2>
+      <p>If you remember one thing about operating a metrics system, make it this. A <strong>time series</strong> is one unique combination of a metric name and its label values. Every distinct combination is stored and indexed separately. So the cost of a metric isn't how often you update it — it's <strong>how many label combinations it can produce</strong>.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 214" role="img" aria-label="Cardinality multiplies. A metric with method (2 values), route (3 values), and status (3 values) produces 18 series, which is manageable. Adding a user_id label with 50,000 values multiplies that to 900,000 series, a cardinality blow-up.">
+  <text x="360" y="22" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">A series = one unique label combination</text>
+
+  <!-- row 1: safe -->
+  <rect x="44" y="44" width="86" height="48" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="87" y="64" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle" class="mono">method</text>
+  <text x="87" y="80" fill="#475569" font-size="8.5" text-anchor="middle">2 values</text>
+  <text x="150" y="73" fill="#94a3b8" font-size="13" text-anchor="middle">×</text>
+
+  <rect x="170" y="44" width="86" height="48" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="213" y="64" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle" class="mono">route</text>
+  <text x="213" y="80" fill="#475569" font-size="8.5" text-anchor="middle">3 values</text>
+  <text x="276" y="73" fill="#94a3b8" font-size="13" text-anchor="middle">×</text>
+
+  <rect x="296" y="44" width="86" height="48" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="339" y="64" fill="#0f172a" font-size="9" font-weight="600" text-anchor="middle" class="mono">status</text>
+  <text x="339" y="80" fill="#475569" font-size="8.5" text-anchor="middle">3 values</text>
+  <text x="402" y="73" fill="#94a3b8" font-size="13" text-anchor="middle">=</text>
+
+  <rect x="424" y="44" width="170" height="48" rx="7" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="509" y="64" fill="#15803d" font-size="11" font-weight="700" text-anchor="middle">18 series</text>
+  <text x="509" y="80" fill="#15803d" font-size="8" text-anchor="middle">cheap &amp; manageable</text>
+
+  <!-- row 2: blow-up -->
+  <rect x="44" y="118" width="150" height="52" rx="7" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="119" y="139" fill="#b91c1c" font-size="9" font-weight="600" text-anchor="middle" class="mono">+ user_id</text>
+  <text x="119" y="155" fill="#b91c1c" font-size="8.5" text-anchor="middle">50,000 values</text>
+  <text x="218" y="150" fill="#94a3b8" font-size="13" text-anchor="middle">→</text>
+
+  <rect x="248" y="118" width="346" height="52" rx="7" fill="#fef2f2" stroke="#b91c1c"/>
+  <text x="421" y="139" fill="#b91c1c" font-size="12" font-weight="700" text-anchor="middle">900,000 series 💥</text>
+  <text x="421" y="156" fill="#b91c1c" font-size="8" text-anchor="middle">one unbounded label melts the database</text>
+
+  <text x="360" y="198" fill="#475569" font-size="8.5" font-style="italic" text-anchor="middle">Rule of thumb: sum() or avg() over a metric's labels should still be meaningful. If it isn't, the label doesn't belong.</text>
+</svg>
+        <div class="caption">Cardinality is multiplicative. Bounded labels (a handful of routes and statuses) are fine; a single unbounded label — a user ID, an email, a full URL, a request ID — turns one metric into millions of series and is the number-one cause of a metrics outage.</div>
+      </div>
+
+      <p>This is exactly where the three pillars divide the labor. <strong>Metrics</strong> are aggregations into bounded series, so unbounded identifiers are toxic to them. <strong>Logs</strong> and <strong>traces</strong> are per-event records — high-cardinality IDs are precisely the dimension you <em>want</em> to search them on. The discipline: keep the unbounded ID on the log line, the trace span, or a Prometheus <span class="x" data-term="Exemplar" data-def="A sample on a metric that carries a trace ID, linking an aggregate (e.g. a slow latency bucket) to a specific example trace. The bridge from 'something is slow' to 'here is one slow request.'">exemplar</span> — and let the metric tell you, cheaply, only <em>that</em> something is wrong.</p>
+    </section>
+
+    <section id="matrix">
+      <h2>Storage engines compared</h2>
+      <p>The middle of the pipeline — <strong>store</strong> and <strong>query</strong> — is where the well-known databases actually compete. Four worth knowing: <span class="t-prom">Prometheus</span>'s built-in TSDB, <span class="t-influx">InfluxDB&nbsp;3</span>, <span class="t-timescale">TimescaleDB</span>, and <span class="t-victoria">VictoriaMetrics</span>. Use the controls to <strong>filter</strong> rows to one dimension or <strong>highlight</strong> a single engine's column. (Both persist across reloads; <em>Copy as Markdown</em> always exports the full matrix.)</p>
+
+      <div id="matrix-panel">
+      <div class="matrix-controls">
+        <div class="ctrl-group">
+          <span class="ctrl-label">Filter rows</span>
+          <div class="seg filter" id="filterSeg">
+            <button data-filter="all" class="active">All</button>
+            <button data-filter="model">Model &amp; query</button>
+            <button data-filter="ingest">Ingest &amp; protocols</button>
+            <button data-filter="storage">Storage &amp; durability</button>
+            <button data-filter="scale">Scale &amp; cardinality</button>
+            <button data-filter="ops">Ops &amp; licensing</button>
+            <button data-filter="usecase">Use &amp; ecosystem</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <span class="ctrl-label">Highlight column</span>
+          <div class="seg hl" id="hlSeg">
+            <button data-hl="none" class="active">None</button>
+            <button data-hl="prom">Prometheus</button>
+            <button data-hl="influx">InfluxDB</button>
+            <button data-hl="timescale">TimescaleDB</button>
+            <button data-hl="victoria">VictoriaMetrics</button>
+          </div>
+        </div>
+        <div class="ctrl-group fs-ctrl">
+          <span class="ctrl-label">View</span>
+          <div class="seg"><button type="button" id="fsBtn" class="fs-btn">⛶ Fullscreen</button></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="matrix-table">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="th-prom">Prometheus</th>
+              <th class="th-influx">InfluxDB 3</th>
+              <th class="th-timescale">TimescaleDB</th>
+              <th class="th-victoria">VictoriaMetrics</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-cat="model"><td>What it is</td><td>Monitoring system + local TSDB</td><td>Purpose-built time-series DB</td><td>PostgreSQL <em>extension</em></td><td>TSDB + monitoring system</td></tr>
+            <tr data-cat="model"><td>Core design</td><td>Pull-based, single-node by design</td><td>Columnar engine on object storage</td><td>Time-series on top of Postgres</td><td>From-scratch Go TSDB, efficiency-first</td></tr>
+            <tr data-cat="model"><td>Primary query language</td><td>PromQL</td><td>SQL (+ InfluxQL)</td><td>Full PostgreSQL SQL</td><td><span class="x" data-term="MetricsQL" data-def="VictoriaMetrics' query language: a backward-compatible superset of PromQL with extra functions. PromQL queries run unchanged.">MetricsQL</span> (PromQL superset)</td></tr>
+            <tr data-cat="model"><td>Data model</td><td>metric + labels; float / native-histogram samples</td><td>measurements, tags, fields (line protocol)</td><td>ordinary SQL tables (<span class="x" data-term="Hypertable" data-def="A TimescaleDB table that auto-partitions rows into time-based chunks. It looks and queries like one regular Postgres table.">hypertables</span>)</td><td>metric + labels (Prometheus-compatible)</td></tr>
+            <tr data-cat="ingest"><td>Ingest model</td><td>Pull (scrape); push via remote-write / OTLP</td><td>Push — line protocol, Telegraf</td><td>Push — SQL <code>INSERT</code> / <code>COPY</code></td><td>Both — scrape (vmagent) or remote-write</td></tr>
+            <tr data-cat="ingest"><td>Native scrape (pull)</td><td>Yes — the core model</td><td>No (Telegraf can scrape for it)</td><td>No</td><td>Yes — via vmagent</td></tr>
+            <tr data-cat="ingest"><td>OpenTelemetry / OTLP</td><td>Native OTLP receiver (3.x)</td><td>Via Telegraf / OTLP</td><td>Via collector → SQL</td><td>Native OTLP ingestion</td></tr>
+            <tr data-cat="storage"><td>Storage engine</td><td>Local TSDB — 2-hour blocks + WAL</td><td>Columnar Parquet in object storage</td><td><span class="x" data-term="Hypercore" data-def="TimescaleDB's hybrid storage engine: recent data stays row-oriented for fast writes, then converts to a compressed columnar form as it cools.">Hypercore</span> — row + columnar in Postgres</td><td>Own on-disk columnar format</td></tr>
+            <tr data-cat="storage"><td>Long-term / durability</td><td>Local disk (~15d default); needs Thanos / Mimir for LTS</td><td>Object storage = durable by construction</td><td>Postgres durability + compression + retention</td><td>Native long-term; cluster for HA</td></tr>
+            <tr data-cat="storage"><td>Compression</td><td>Gorilla-style, very compact</td><td>Parquet columnar</td><td>Columnar, often ~90%+</td><td>High — a core design goal</td></tr>
+            <tr data-cat="scale"><td>Horizontal scale</td><td>Single node; federate or add an LTS layer</td><td>Cloud Dedicated / Clustered editions</td><td>Scale-up + read replicas; multi-node via cloud</td><td>Native cluster (vminsert / vmstorage / vmselect)</td></tr>
+            <tr data-cat="scale"><td>Multi-tenancy</td><td>No — run a server per tenant</td><td>Cloud editions</td><td>Postgres roles / databases</td><td>Yes — in cluster mode</td></tr>
+            <tr data-cat="scale"><td>High cardinality</td><td>Strained past millions of series / node</td><td>Improved in v3</td><td>Workable; watch index cost</td><td>Designed for high churn &amp; cardinality</td></tr>
+            <tr data-cat="ops"><td>Relational joins</td><td>No</td><td>Limited</td><td>Yes — full SQL joins</td><td>No</td></tr>
+            <tr data-cat="ops"><td>First-party / managed</td><td>Grafana Cloud, Chronosphere, &amp; others</td><td>InfluxDB Cloud (Serverless / Dedicated)</td><td>Tiger Cloud (formerly Timescale Cloud)</td><td>Managed VictoriaMetrics Cloud</td></tr>
+            <tr data-cat="ops"><td>License</td><td>Apache 2.0 (CNCF graduated)</td><td>MIT/Apache (Core); commercial Enterprise</td><td>Apache 2.0 core; Timescale License for some features</td><td>Apache 2.0</td></tr>
+            <tr data-cat="usecase"><td>Ecosystem</td><td>Huge — exporters, Grafana, Alertmanager, K8s</td><td>Telegraf (300+ plugins)</td><td>The entire Postgres ecosystem</td><td>Drop-in Prometheus-compatible stack</td></tr>
+            <tr data-cat="usecase"><td>Best-fit use case</td><td>Cloud-native / Kubernetes infra &amp; app monitoring</td><td>IoT, sensor &amp; high-volume event metrics</td><td>Metrics alongside relational / business data</td><td>Large-scale, cost-efficient Prometheus storage</td></tr>
+            <tr data-cat="usecase"><td>Sharpest footgun</td><td>The <em>storage</em> is single-node — not the model</td><td>Flux is gone in v3; migrating off v2 is a rewrite</td><td>It is still Postgres — operate &amp; tune it like Postgres</td><td>Smaller community than Prometheus itself</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+
+      <p>Read the columns as <em>philosophies</em>. Prometheus assumes a single node is enough for one team's recent data and pushes everything else to a separate long-term layer. InfluxDB rebuilt itself around columnar files in object storage and SQL. TimescaleDB makes the radical-but-pragmatic bet that you shouldn't need a separate database at all — time-series is just Postgres with good partitioning. VictoriaMetrics keeps Prometheus's interface but rewrites the engine underneath for efficiency at scale.</p>
+    </section>
+
+    <section id="scaling">
+      <h2>Scaling Prometheus</h2>
+      <p>Prometheus is deliberately a <strong>single binary on a single node</strong>: no clustering, no built-in long-term storage (the local disk defaults to roughly 15 days of retention), and no multi-tenancy. Its own scaling features — functional sharding and <span class="x" data-term="Federation" data-def="A Prometheus server scraping selected, usually pre-aggregated, series from other Prometheus servers. It moves summaries upward, not a full-fidelity global view.">federation</span> — only move <em>aggregated</em> series upward, not a complete global view. That gap created an entire ecosystem of long-term, horizontally-scalable backends that speak Prometheus's protocols.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 250" role="img" aria-label="Two ways to scale Prometheus. The sidecar approach: a Thanos sidecar uploads Prometheus TSDB blocks to object storage, and a Thanos Querier serves a global Grafana view from it. The remote-write approach: Prometheus remote-writes into Mimir, Cortex, or VictoriaMetrics, which store to object storage and answer PromQL queries.">
+  <!-- Lane A: sidecar -->
+  <rect x="10" y="40" width="700" height="84" rx="9" fill="#fff4f0" stroke="#e6522c"/>
+  <text x="26" y="60" fill="#b3401f" font-size="10" font-weight="700">A · Sidecar (Thanos)</text>
+
+  <rect x="24" y="68" width="118" height="44" rx="6" fill="#ffffff" stroke="#e6522c"/>
+  <text x="83" y="86" fill="#b3401f" font-size="9" font-weight="700" text-anchor="middle">Prometheus</text>
+  <text x="83" y="99" fill="#475569" font-size="7.5" text-anchor="middle">+ local TSDB</text>
+
+  <rect x="178" y="72" width="92" height="36" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="224" y="88" fill="#0f172a" font-size="8.5" text-anchor="middle">Thanos</text>
+  <text x="224" y="99" fill="#475569" font-size="7.5" text-anchor="middle">sidecar</text>
+
+  <path d="M306 70 v34 a30 6 0 0 0 60 0 v-34" fill="#ffffff" stroke="#e6522c"/>
+  <ellipse cx="336" cy="70" rx="30" ry="6" fill="#fde4da" stroke="#e6522c"/>
+  <text x="336" y="92" fill="#475569" font-size="7.5" text-anchor="middle">object</text>
+  <text x="336" y="102" fill="#475569" font-size="7.5" text-anchor="middle">storage</text>
+
+  <rect x="404" y="72" width="92" height="36" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="450" y="88" fill="#0f172a" font-size="8.5" text-anchor="middle">Thanos</text>
+  <text x="450" y="99" fill="#475569" font-size="7.5" text-anchor="middle">Querier</text>
+
+  <rect x="540" y="72" width="156" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="618" y="88" fill="#0f172a" font-size="8.5" font-weight="600" text-anchor="middle">global Grafana view</text>
+  <text x="618" y="99" fill="#475569" font-size="7.5" text-anchor="middle">HA · years of history</text>
+
+  <line x1="142" y1="90" x2="174" y2="90" stroke="#e6522c" stroke-width="1.4"/><polygon points="178 90, 169 85.5, 169 94.5" fill="#e6522c"/>
+  <line x1="270" y1="90" x2="302" y2="90" stroke="#e6522c" stroke-width="1.4"/><polygon points="306 90, 297 85.5, 297 94.5" fill="#e6522c"/>
+  <line x1="366" y1="90" x2="400" y2="90" stroke="#e6522c" stroke-width="1.4"/><polygon points="404 90, 395 85.5, 395 94.5" fill="#e6522c"/>
+  <line x1="496" y1="90" x2="536" y2="90" stroke="#e6522c" stroke-width="1.4"/><polygon points="540 90, 531 85.5, 531 94.5" fill="#e6522c"/>
+
+  <!-- Lane B: remote-write -->
+  <rect x="10" y="138" width="700" height="84" rx="9" fill="#f0f4f8" stroke="#64748b"/>
+  <text x="26" y="158" fill="#334155" font-size="10" font-weight="700">B · Remote-write (Mimir · Cortex · VictoriaMetrics)</text>
+
+  <rect x="24" y="166" width="118" height="44" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="83" y="184" fill="#0f172a" font-size="9" font-weight="700" text-anchor="middle">Prometheus</text>
+  <text x="83" y="197" fill="#475569" font-size="7.5" text-anchor="middle">(agent mode)</text>
+
+  <rect x="210" y="170" width="150" height="36" rx="6" fill="#ffffff" stroke="#64748b"/>
+  <text x="285" y="186" fill="#334155" font-size="8.5" font-weight="600" text-anchor="middle">Mimir / Cortex / VM</text>
+  <text x="285" y="197" fill="#475569" font-size="7.5" text-anchor="middle">distributor + ingesters</text>
+
+  <path d="M404 168 v34 a30 6 0 0 0 60 0 v-34" fill="#ffffff" stroke="#64748b"/>
+  <ellipse cx="434" cy="168" rx="30" ry="6" fill="#e2e8f0" stroke="#64748b"/>
+  <text x="434" y="190" fill="#475569" font-size="7.5" text-anchor="middle">object</text>
+  <text x="434" y="200" fill="#475569" font-size="7.5" text-anchor="middle">storage</text>
+
+  <rect x="508" y="170" width="188" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="602" y="186" fill="#0f172a" font-size="8.5" font-weight="600" text-anchor="middle">PromQL query + Grafana</text>
+  <text x="602" y="197" fill="#475569" font-size="7.5" text-anchor="middle">multi-tenant · horizontally scaled</text>
+
+  <line x1="142" y1="188" x2="206" y2="188" stroke="#64748b" stroke-width="1.4"/><polygon points="210 188, 201 183.5, 201 192.5" fill="#64748b"/>
+  <text x="174" y="181" fill="#334155" font-size="7" text-anchor="middle">remote_write</text>
+  <line x1="360" y1="188" x2="400" y2="188" stroke="#64748b" stroke-width="1.4"/><polygon points="404 188, 395 183.5, 395 192.5" fill="#64748b"/>
+  <line x1="464" y1="188" x2="504" y2="188" stroke="#64748b" stroke-width="1.4"/><polygon points="508 188, 499 183.5, 499 192.5" fill="#64748b"/>
+</svg>
+        <div class="caption">Two patterns for going beyond one node. The <strong>sidecar</strong> (Thanos) leaves Prometheus untouched and ships its blocks to object storage. <strong>Remote-write</strong> (Mimir, Cortex, VictoriaMetrics) streams samples into a clustered, multi-tenant backend. Both keep PromQL and Grafana unchanged.</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Backend</th><th>Relation to Prometheus</th><th>Storage</th><th>Origin</th></tr></thead>
+          <tbody>
+            <tr><td>Thanos</td><td>Sidecar (reads TSDB blocks) + receive</td><td>Object storage</td><td>Reuses Prometheus's TSDB format (CNCF)</td></tr>
+            <tr><td>Cortex</td><td>Remote-write receiver</td><td>Object storage</td><td>Original multi-tenant scaler (CNCF)</td></tr>
+            <tr><td>Grafana Mimir</td><td>Remote-write (+ OTLP)</td><td>Object storage</td><td>Cortex fork; tested to ~1 billion series</td></tr>
+            <tr><td><span class="t-victoria">VictoriaMetrics</span></td><td>Remote-write <em>and</em> its own scrape</td><td>Own format (object store for backups)</td><td>Written from scratch in Go</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Note the family split: Thanos, Cortex, and Mimir all <em>reuse Prometheus's own code and storage format</em>, while VictoriaMetrics is a clean-room reimplementation that merely speaks the same protocols. Mimir is the Cortex fork that Grafana hardened for extreme scale and runs behind Grafana Cloud.</p>
+    </section>
+
+    <section id="otel">
+      <h2>OpenTelemetry &amp; OTLP</h2>
+      <p>For years, picking a metrics backend meant picking an instrumentation library — switching vendors meant re-instrumenting every service. <strong>OpenTelemetry</strong> (a CNCF project, and now the de-facto standard) breaks that coupling. You instrument once against the OTel SDK, emit <strong>OTLP</strong> over the wire, and decide <em>later and separately</em> where it lands.</p>
+      <p>The workhorse is the <strong>OpenTelemetry Collector</strong>, a small pipeline of its own: <strong>receivers</strong> take telemetry in (by push or by scraping Prometheus targets), <strong>processors</strong> batch / filter / transform it, and <strong>exporters</strong> fan it out to one or more backends. It runs either as a per-host <em>agent</em> or as a central <em>gateway</em>.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 234" role="img" aria-label="The OpenTelemetry Collector. Sources such as an app SDK and a scrape target feed into receivers (OTLP, Prometheus, hostmetrics); processors batch, filter, and transform; exporters send to backends. Exporters can write to Prometheus or Mimir, OTLP, or InfluxDB.">
+  <text x="360" y="20" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">OpenTelemetry Collector: receivers → processors → exporters</text>
+
+  <!-- sources -->
+  <rect x="14" y="74" width="116" height="32" rx="6" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="72" y="94" fill="#0a6ca8" font-size="8.5" text-anchor="middle">app SDK (OTLP)</text>
+  <rect x="14" y="142" width="116" height="32" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="72" y="162" fill="#475569" font-size="8.5" text-anchor="middle">scrape target</text>
+
+  <!-- collector -->
+  <rect x="150" y="44" width="420" height="150" rx="10" fill="#fdf4ff" stroke="#c026d3" stroke-dasharray="5 3"/>
+  <text x="360" y="62" fill="#a21caf" font-size="9.5" font-weight="700" text-anchor="middle">OpenTelemetry Collector</text>
+
+  <text x="222" y="78" fill="#475569" font-size="7.5" font-weight="700" text-anchor="middle">RECEIVERS</text>
+  <rect x="166" y="84" width="112" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="222" y="100" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">OTLP</text>
+  <rect x="166" y="114" width="112" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="222" y="130" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">prometheus</text>
+  <rect x="166" y="144" width="112" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="222" y="160" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">hostmetrics</text>
+
+  <text x="360" y="78" fill="#475569" font-size="7.5" font-weight="700" text-anchor="middle">PROCESSORS</text>
+  <rect x="312" y="98" width="96" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="360" y="114" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">batch</text>
+  <rect x="312" y="128" width="96" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="360" y="144" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">filter / transform</text>
+
+  <text x="496" y="78" fill="#475569" font-size="7.5" font-weight="700" text-anchor="middle">EXPORTERS</text>
+  <rect x="440" y="84" width="116" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="498" y="100" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">prometheus rw</text>
+  <rect x="440" y="114" width="116" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="498" y="130" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">OTLP</text>
+  <rect x="440" y="144" width="116" height="24" rx="5" fill="#ffffff" stroke="#cbd5e1"/><text x="498" y="160" fill="#0f172a" font-size="8" text-anchor="middle" class="mono">influxdb</text>
+
+  <!-- backends -->
+  <rect x="590" y="74" width="116" height="32" rx="6" fill="#fff4f0" stroke="#e6522c"/>
+  <text x="648" y="90" fill="#b3401f" font-size="8" text-anchor="middle">Prometheus /</text>
+  <text x="648" y="100" fill="#b3401f" font-size="8" text-anchor="middle">Mimir</text>
+  <rect x="590" y="142" width="116" height="32" rx="6" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="648" y="162" fill="#0a6ca8" font-size="8.5" text-anchor="middle">InfluxDB</text>
+
+  <!-- arrows in -->
+  <line x1="130" y1="90" x2="162" y2="96" stroke="#94a3b8" stroke-width="1.3"/><polygon points="166 97, 157 94, 158 102" fill="#94a3b8"/>
+  <line x1="130" y1="158" x2="162" y2="128" stroke="#94a3b8" stroke-width="1.3"/><polygon points="166 126, 157 122, 157 131" fill="#94a3b8"/>
+  <!-- arrows receivers->processors -->
+  <line x1="278" y1="120" x2="308" y2="120" stroke="#c4b5cf" stroke-width="1.3"/><polygon points="312 120, 303 115.5, 303 124.5" fill="#c4b5cf"/>
+  <!-- processors->exporters -->
+  <line x1="408" y1="120" x2="436" y2="120" stroke="#c4b5cf" stroke-width="1.3"/><polygon points="440 120, 431 115.5, 431 124.5" fill="#c4b5cf"/>
+  <!-- arrows out -->
+  <line x1="556" y1="96" x2="586" y2="90" stroke="#94a3b8" stroke-width="1.3"/><polygon points="590 89, 581 88, 583 96" fill="#94a3b8"/>
+  <line x1="556" y1="150" x2="586" y2="156" stroke="#94a3b8" stroke-width="1.3"/><polygon points="590 157, 581 153, 580 162" fill="#94a3b8"/>
+</svg>
+        <div class="caption">Instrument once, route anywhere. The Collector's receiver/processor/exporter shape lets one telemetry stream land in several backends at once — and lets you swap a backend without touching application code.</div>
+      </div>
+
+      <p>Interop runs both ways. The Collector's <code>prometheus</code> receiver scrapes existing targets; its exporters write to Prometheus, Mimir, or InfluxDB. And <span class="t-prom">Prometheus 3.x</span> now ingests OTLP <em>natively</em> (enable the OTLP receiver and POST to <code>/api/v1/otlp/v1/metrics</code>).</p>
+      <div class="callout warn">
+        <span class="label">The temporality gotcha</span>
+        <p>OpenTelemetry can emit counters as <strong>delta</strong> (the change since last export); Prometheus expects <strong>cumulative</strong> (the running total). Mixing them silently breaks <code>rate()</code>. When piping OTel into Prometheus, configure <strong>cumulative</strong> temporality (or use the delta-to-cumulative conversion) — it's the single most common OTel-to-Prometheus footgun.</p>
+      </div>
+    </section>
+
+    <section id="query-viz-alert">
+      <h2>Query, visualize, alert</h2>
+      <h3>Querying</h3>
+      <p>Two query philosophies. <strong>PromQL</strong> (Prometheus, and VictoriaMetrics' compatible MetricsQL) is a <em>functional</em> language built around time-series math — <code>rate()</code>, <code>histogram_quantile()</code>, vector matching. <strong>SQL</strong> (InfluxDB&nbsp;3 and TimescaleDB) trades that purpose-built terseness for the familiarity, joins, and tooling of the relational world. A taste of PromQL, the dialect you'll meet most:</p>
+
+      <div class="code-head"><span class="dot" style="background:var(--prom)"></span>PromQL<span class="lang">— rates and quantiles, computed at query time</span></div>
+<pre><code><span class="com"># per-second rate of 5xx responses over the last 5 minutes</span>
+<span class="fn">rate</span>(http_requests_total{status=~<span class="str">"5.."</span>}[<span class="str">5m</span>])
+
+<span class="com"># p99 latency, reconstructed from histogram buckets</span>
+<span class="fn">histogram_quantile</span>(<span class="str">0.99</span>, <span class="fn">rate</span>(http_request_seconds_bucket[<span class="str">5m</span>]))</code></pre>
+
+      <h3>Visualizing</h3>
+      <p><strong>Grafana</strong> is the near-universal dashboard layer, and its superpower is being <strong>multi-datasource</strong>: a single dashboard can pull one panel from Prometheus, another from InfluxDB, another from a SQL database. It's why the storage decision and the visualization decision are largely independent — almost everything graphs in Grafana.</p>
+
+      <h3>Alerting</h3>
+      <p>Two rule types do the work. <strong>Recording rules</strong> pre-compute an expensive query on a schedule and save the result as a new series, so dashboards and alerts read something cheap. <strong>Alerting rules</strong> evaluate a condition and, when it holds, fire to <span class="x" data-term="Alertmanager" data-def="Prometheus's separate alert-routing component. It deduplicates, groups, silences, and routes firing alerts to receivers like PagerDuty, Slack, or email — and suppresses downstream alerts via inhibition.">Alertmanager</span>, which deduplicates, groups, silences, and routes the notification to a human. The best-practice pairing with RED: <strong>alert on symptoms</strong> (a rising error rate users feel), then use your dashboards to find the cause.</p>
+    </section>
+
+    <section id="deploy">
+      <h2>Deployment &amp; decision guide</h2>
+      <p>The honest mapping from situation to stack:</p>
+      <ul>
+        <li><strong>Cloud-native infra &amp; app monitoring (Kubernetes).</strong> Reach for <span class="t-prom">Prometheus + Grafana + Alertmanager</span> — the default, with first-class service discovery and a vast exporter catalog. Add Mimir, Thanos, or <span class="t-victoria">VictoriaMetrics</span> when one node isn't enough.</li>
+        <li><strong>Metrics next to relational / business data, with a SQL team.</strong> Reach for <span class="t-timescale">TimescaleDB</span> — keep metrics and the rest of your data in one Postgres, join freely, and skip operating a second database.</li>
+        <li><strong>High-volume push, IoT, or sensor telemetry.</strong> Reach for <span class="t-influx">InfluxDB</span> — line-protocol ingest, the Telegraf agent ecosystem, and a columnar engine built for write-heavy event streams.</li>
+        <li><strong>Huge scale or tight cost on a Prometheus-shaped stack.</strong> Reach for <span class="t-victoria">VictoriaMetrics</span> or Grafana Mimir — same PromQL and Grafana, far more series per dollar.</li>
+        <li><strong>Future-proof instrumentation, undecided backend.</strong> Instrument with <strong>OpenTelemetry</strong> and route through the Collector — you can change your mind about storage later without touching code.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 250" role="img" aria-label="A decision flow. If you run cloud-native or Kubernetes infrastructure, choose Prometheus and Grafana. Otherwise, if you need metrics joined with relational data in SQL, choose TimescaleDB. Otherwise, if you have high-volume push or IoT telemetry, choose InfluxDB. Otherwise consider VictoriaMetrics or Mimir for scale, or OpenTelemetry to stay vendor-neutral.">
+  <!-- Q1 -->
+  <rect x="20" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="95" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">Cloud-native /</text>
+  <text x="95" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">Kubernetes infra?</text>
+  <line x1="95" y1="96" x2="95" y2="40" stroke="#e6522c" stroke-width="1.4"/>
+  <polygon points="95 34, 90.5 42, 99.5 42" fill="#e6522c"/>
+  <text x="108" y="62" fill="#b3401f" font-size="8.5">yes</text>
+  <rect x="34" y="14" width="122" height="22" rx="11" fill="#fff4f0" stroke="#e6522c"/>
+  <text x="95" y="29" fill="#b3401f" font-size="9" font-weight="700" text-anchor="middle">Prometheus + Grafana</text>
+  <line x1="170" y1="125" x2="214" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="222 125, 213 120.5, 213 129.5" fill="#94a3b8"/>
+  <text x="196" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- Q2 -->
+  <rect x="224" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="299" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">Join metrics with</text>
+  <text x="299" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">relational data?</text>
+  <line x1="299" y1="96" x2="299" y2="40" stroke="#336791" stroke-width="1.4"/>
+  <polygon points="299 34, 294.5 42, 303.5 42" fill="#336791"/>
+  <text x="312" y="62" fill="#274d6b" font-size="8.5">yes</text>
+  <rect x="244" y="14" width="110" height="22" rx="11" fill="#eef3f8" stroke="#336791"/>
+  <text x="299" y="29" fill="#274d6b" font-size="9" font-weight="700" text-anchor="middle">TimescaleDB</text>
+  <line x1="374" y1="125" x2="418" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="426 125, 417 120.5, 417 129.5" fill="#94a3b8"/>
+  <text x="400" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- Q3 -->
+  <rect x="428" y="96" width="150" height="58" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="503" y="118" fill="#0f172a" font-size="9.5" text-anchor="middle">High-volume push /</text>
+  <text x="503" y="132" fill="#0f172a" font-size="9.5" text-anchor="middle">IoT telemetry?</text>
+  <line x1="503" y1="96" x2="503" y2="40" stroke="#22adf6" stroke-width="1.4"/>
+  <polygon points="503 34, 498.5 42, 507.5 42" fill="#22adf6"/>
+  <text x="516" y="62" fill="#0a6ca8" font-size="8.5">yes</text>
+  <rect x="448" y="14" width="110" height="22" rx="11" fill="#eff9ff" stroke="#22adf6"/>
+  <text x="503" y="29" fill="#0a6ca8" font-size="9" font-weight="700" text-anchor="middle">InfluxDB</text>
+  <line x1="578" y1="125" x2="622" y2="125" stroke="#94a3b8" stroke-width="1.4"/>
+  <polygon points="630 125, 621 120.5, 621 129.5" fill="#94a3b8"/>
+  <text x="604" y="118" fill="#475569" font-size="8.5">no</text>
+
+  <!-- fallthrough -->
+  <rect x="634" y="100" width="78" height="50" rx="8" fill="#fff0f2" stroke="#cf0a2c"/>
+  <text x="673" y="120" fill="#a30822" font-size="8" text-anchor="middle">VictoriaMetrics</text>
+  <text x="673" y="132" fill="#a30822" font-size="8" text-anchor="middle">/ Mimir</text>
+
+  <!-- footnote row -->
+  <text x="95" y="184" fill="#475569" font-size="8.5" text-anchor="middle">the cloud-native</text>
+  <text x="95" y="196" fill="#475569" font-size="8.5" text-anchor="middle">default</text>
+  <text x="299" y="184" fill="#475569" font-size="8.5" text-anchor="middle">one Postgres for</text>
+  <text x="299" y="196" fill="#475569" font-size="8.5" text-anchor="middle">everything</text>
+  <text x="503" y="184" fill="#475569" font-size="8.5" text-anchor="middle">line protocol +</text>
+  <text x="503" y="196" fill="#475569" font-size="8.5" text-anchor="middle">Telegraf</text>
+
+  <text x="360" y="232" fill="#94a3b8" font-size="8.5" font-style="italic" text-anchor="middle">Cross-cutting: instrument with OpenTelemetry to keep the backend choice reversible.</text>
+</svg>
+        <div class="caption">A rough triage. The first question — is this cloud-native infrastructure? — sends most teams to Prometheus; the rest sort by whether you need SQL joins, push-heavy ingest, or raw scale.</div>
+      </div>
+    </section>
+
+    <section id="traps">
+      <h2>Common misconceptions</h2>
+      <div class="callout warn">
+        <span class="label">"Prometheus can't scale"</span>
+        <p>Its collection model scales fine — what's single-node is its <strong>local storage</strong>. The fix isn't to abandon Prometheus; it's to add a long-term layer (Thanos, Mimir, Cortex, or VictoriaMetrics) that keeps PromQL and Grafana intact.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"Just write it in Flux"</span>
+        <p>Flux is in maintenance mode and is <strong>not supported in InfluxDB&nbsp;3</strong>. The current path is <strong>SQL</strong> (with InfluxQL for compatibility). Moving a v2 Flux codebase to v3 is a rewrite, not an upgrade.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"TimescaleDB is a separate time-series database"</span>
+        <p>It's a PostgreSQL <em>extension</em>. You operate, back up, secure, and tune it exactly like Postgres — which is the upside (one familiar system) and the catch (its ceilings are Postgres's ceilings).</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"Add a user_id label so we can slice by customer"</span>
+        <p>That's the classic cardinality bomb: an unbounded label multiplies your series into the millions and can take the database down. Slice by customer in <em>logs or traces</em>; keep metric labels bounded.</p>
+      </div>
+      <div class="callout warn">
+        <span class="label">"The Pushgateway turns Prometheus into a push system"</span>
+        <p>It's for service-level batch jobs only. It's a single point of failure, it drops the <code>up</code> health signal, and it never forgets a pushed series. For real push telemetry use the OpenTelemetry Collector or a push-native sink.</p>
+      </div>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <h3>Prometheus &amp; the scaling tier</h3>
+      <ul>
+        <li><strong><a href="https://prometheus.io/docs/introduction/overview/">prometheus.io</a></strong> — the primary source for the data model, local storage, PromQL, pull model, and Alertmanager; see also the <a href="https://prometheus.io/blog/2024/11/14/prometheus-3-0/">Prometheus 3.0 announcement</a> and the <a href="https://prometheus.io/docs/practices/naming/">naming &amp; cardinality guidance</a>.</li>
+        <li><strong><a href="https://thanos.io/">Thanos</a></strong>, <strong><a href="https://cortexmetrics.io/">Cortex</a></strong>, <strong><a href="https://grafana.com/oss/mimir/">Grafana Mimir</a></strong>, and <strong><a href="https://docs.victoriametrics.com/">VictoriaMetrics</a></strong> — the long-term / horizontally-scalable backends.</li>
+      </ul>
+      <h3>InfluxDB &amp; TimescaleDB</h3>
+      <ul>
+        <li><strong><a href="https://docs.influxdata.com/influxdb3/">InfluxDB 3 docs</a></strong> — Core / Enterprise / Cloud editions, line protocol, SQL, and the Arrow/DataFusion/Parquet engine; <a href="https://docs.influxdata.com/telegraf/v1/">Telegraf</a> for collection.</li>
+        <li><strong><a href="https://www.tigerdata.com/timescaledb">TimescaleDB</a></strong> (by Tiger Data) — hypertables, continuous aggregates, and the Hypercore columnar engine; <a href="https://docs.tigerdata.com/">the docs</a>.</li>
+      </ul>
+      <h3>OpenTelemetry &amp; methodology</h3>
+      <ul>
+        <li><strong><a href="https://opentelemetry.io/docs/concepts/signals/metrics/">OpenTelemetry — metrics</a></strong>, the <a href="https://opentelemetry.io/docs/specs/otlp/">OTLP spec</a>, the <a href="https://opentelemetry.io/docs/collector/architecture/">Collector architecture</a>, and the <a href="https://opentelemetry.io/docs/concepts/observability-primer/">observability primer</a> (metrics vs logs vs traces); plus <a href="https://prometheus.io/docs/guides/opentelemetry/">Prometheus's OTLP guide</a>.</li>
+        <li><strong><a href="https://grafana.com/blog/the-red-method-how-to-instrument-your-services/">The RED method</a></strong> (and USE) — what to measure and what to alert on.</li>
+      </ul>
+      <h3>On this site</h3>
+      <ul>
+        <li><strong><a href="../clickhouse/">ClickHouse: An Engineering Doc</a></strong> — the columnar, vectorized OLAP engine that shares this world's DNA (and is itself a popular store for very high-volume metrics and observability data).</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026 against the current releases — Prometheus 3.x, InfluxDB 3, TimescaleDB (Tiger Data), VictoriaMetrics, and OpenTelemetry (OTLP stable) — using each project's own primary documentation. Where anything here drifts from the official docs, treat those as ground truth; managed-cloud feature sets and quotas in particular move quickly.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('mp-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('mp-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('mp-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Comparison matrix: filter + highlight ----------
+  var matrixTable = document.getElementById('matrix-table');
+  if (matrixTable) {
+    var matrixRows = matrixTable.querySelectorAll('tbody tr');
+    var filterBtns = document.querySelectorAll('#filterSeg button');
+    var hlBtns = document.querySelectorAll('#hlSeg button');
+    var HL_CLASSES = ['hl-prom', 'hl-influx', 'hl-timescale', 'hl-victoria'];
+
+    function applyFilter(cat) {
+      matrixRows.forEach(function (r) {
+        var c = r.getAttribute('data-cat');
+        r.classList.toggle('hidden', cat !== 'all' && c !== cat);
+      });
+      filterBtns.forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-filter') === cat);
+      });
+      try { localStorage.setItem('mp-matrix-filter', cat); } catch (e) {}
+    }
+    function applyHl(tool) {
+      HL_CLASSES.forEach(function (c) { matrixTable.classList.remove(c); });
+      if (tool !== 'none') matrixTable.classList.add('hl-' + tool);
+      hlBtns.forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-hl') === tool);
+      });
+      try { localStorage.setItem('mp-matrix-highlight', tool); } catch (e) {}
+    }
+
+    filterBtns.forEach(function (b) {
+      b.addEventListener('click', function () { applyFilter(b.getAttribute('data-filter')); });
+    });
+    hlBtns.forEach(function (b) {
+      b.addEventListener('click', function () { applyHl(b.getAttribute('data-hl')); });
+    });
+
+    var savedFilter = 'all', savedHl = 'none';
+    try { savedFilter = localStorage.getItem('mp-matrix-filter') || 'all'; } catch (e) {}
+    try { savedHl = localStorage.getItem('mp-matrix-highlight') || 'none'; } catch (e) {}
+    // guard against stale values
+    if (!document.querySelector('#filterSeg button[data-filter="' + savedFilter + '"]')) savedFilter = 'all';
+    if (!document.querySelector('#hlSeg button[data-hl="' + savedHl + '"]')) savedHl = 'none';
+    applyFilter(savedFilter);
+    applyHl(savedHl);
+  }
+
+  // ---------- Matrix expand / fullscreen (desktop) ----------
+  var fsBtn = document.getElementById('fsBtn');
+  var matrixPanel = document.getElementById('matrix-panel');
+  var fsPop = document.getElementById('pop');
+  if (fsBtn && matrixPanel) {
+    var ENTER_LABEL = '⛶ Fullscreen';
+    var EXIT_LABEL = '✕ Exit';
+    var isExpanded = function () {
+      return !!document.fullscreenElement || matrixPanel.classList.contains('expanded');
+    };
+    var syncFsBtn = function () { fsBtn.textContent = isExpanded() ? EXIT_LABEL : ENTER_LABEL; };
+    var restorePop = function () {
+      if (fsPop && fsPop.parentNode !== document.body) document.body.appendChild(fsPop);
+    };
+    var openExpand = function () {
+      matrixPanel.classList.add('expanded');
+      document.body.style.overflow = 'hidden';
+      // keep tooltips inside the top layer / above the overlay
+      if (fsPop) matrixPanel.appendChild(fsPop);
+      var req = matrixPanel.requestFullscreen || matrixPanel.webkitRequestFullscreen;
+      if (req) { try { Promise.resolve(req.call(matrixPanel)).catch(function () {}); } catch (e) {} }
+      syncFsBtn();
+    };
+    var closeExpand = function () {
+      if (document.fullscreenElement) {
+        var ex = document.exitFullscreen || document.webkitExitFullscreen;
+        if (ex) { try { ex.call(document); } catch (e) {} }
+      }
+      matrixPanel.classList.remove('expanded');
+      document.body.style.overflow = '';
+      restorePop();
+      syncFsBtn();
+    };
+    fsBtn.addEventListener('click', function () {
+      if (isExpanded()) closeExpand(); else openExpand();
+    });
+    document.addEventListener('fullscreenchange', function () {
+      if (!document.fullscreenElement) {
+        matrixPanel.classList.remove('expanded');
+        document.body.style.overflow = '';
+        restorePop();
+      }
+      syncFsBtn();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && matrixPanel.classList.contains('expanded') && !document.fullscreenElement) {
+        closeExpand();
+      }
+    });
+  }
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (cls.indexOf('matrix-controls') !== -1) return '';
+      if (cls.indexOf('chips') !== -1) return '';
+      if (cls.indexOf('code-head') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline, then the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+      if (tag === 'table') return tableToMd(node);
+
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+      if (tag === 'code') return '`' + node.textContent + '`';
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

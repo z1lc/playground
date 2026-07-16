@@ -1176,6 +1176,184 @@
           "children_count": 467
         }
       },
+      "Old Fourth Ward": {
+        "population": {
+          "total_population": 10499,
+          "population_density_per_sq_mi": 8590.348776
+        },
+        "race_and_ethnicity": {
+          "white_percent": 41.668671,
+          "hispanic_percent": 3.391933,
+          "black_percent": 47.193855,
+          "asian_percent": 6.177315,
+          "mixed_percent": 1.432333,
+          "other_percent": 0.135893,
+          "white_count": 4374,
+          "hispanic_count": 356,
+          "black_count": 4954,
+          "asian_count": 648,
+          "mixed_count": 150,
+          "other_count": 14
+        },
+        "household_income": {
+          "median_household_income": 38938,
+          "mean_household_income": null
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 54.289309,
+          "graduate_degree_percent": 25.403927,
+          "high_school_or_higher_percent": 93.645253,
+          "no_hs_diploma_percent": 6.354747,
+          "bachelors_or_higher_count": 4339,
+          "total_population_25_plus": 7994
+        },
+        "employment_status": {
+          "employed_percent": 67.91048,
+          "unemployed_percent": 4.281275,
+          "not_in_labor_force_percent": 27.73883,
+          "employed_count": 6403,
+          "total_population_16_plus": null
+        },
+        "age_and_sex": {
+          "senior_percent": 10.175,
+          "older_adult_percent": 34.75,
+          "younger_adult_percent": 42.91,
+          "college_percent": 12.551,
+          "children_percent": 12.166,
+          "senior_count": 1065,
+          "older_adult_count": 3645,
+          "younger_adult_count": 4502,
+          "college_count": 1315,
+          "children_count": 1276
+        },
+        "marital_status": {
+          "never_married_percent": 68.203946,
+          "married_percent": 19.366464,
+          "separated_percent": 0.865082,
+          "divorced_percent": 7.066118,
+          "widowed_percent": 4.498391
+        },
+        "national_origin": {
+          "foreign_born_percent": 8.566758,
+          "foreign_born_count": 898,
+          "top_origins": [
+            {
+              "name": "India",
+              "percent": 12.288239,
+              "count": 110
+            },
+            {
+              "name": "Mexico",
+              "percent": 9.160305,
+              "count": 82
+            },
+            {
+              "name": "China",
+              "percent": 8.759368,
+              "count": 78
+            },
+            {
+              "name": "Korea",
+              "percent": 7.368106,
+              "count": 66
+            },
+            {
+              "name": "Belgium",
+              "percent": 6.537892,
+              "count": 58
+            }
+          ]
+        }
+      },
+      "Piedmont Heights": {
+        "population": {
+          "total_population": 2337,
+          "population_density_per_sq_mi": 4886.71873
+        },
+        "race_and_ethnicity": {
+          "white_percent": 64.430579,
+          "hispanic_percent": 4.801446,
+          "black_percent": 14.487487,
+          "asian_percent": 7.813833,
+          "mixed_percent": 7.96067,
+          "other_percent": 0.505985,
+          "white_count": 1505,
+          "hispanic_count": 112,
+          "black_count": 338,
+          "asian_count": 182,
+          "mixed_count": 186,
+          "other_count": 11
+        },
+        "household_income": {
+          "median_household_income": 72760,
+          "mean_household_income": null
+        },
+        "educational_attainment": {
+          "bachelors_or_higher_percent": 66.557754,
+          "graduate_degree_percent": 26.23254,
+          "high_school_or_higher_percent": 90.666782,
+          "no_hs_diploma_percent": 9.333218,
+          "bachelors_or_higher_count": 1211,
+          "total_population_25_plus": 1819
+        },
+        "employment_status": {
+          "employed_percent": 77.5,
+          "unemployed_percent": 3.2,
+          "not_in_labor_force_percent": 19.3,
+          "employed_count": 1537,
+          "total_population_16_plus": null
+        },
+        "age_and_sex": {
+          "senior_percent": 9.15,
+          "older_adult_percent": 39.26,
+          "younger_adult_percent": 42.31,
+          "college_percent": 8.21,
+          "children_percent": 9.33,
+          "senior_count": 214,
+          "older_adult_count": 918,
+          "younger_adult_count": 989,
+          "college_count": 192,
+          "children_count": 218
+        },
+        "marital_status": {
+          "never_married_percent": 49.327093,
+          "married_percent": 41.370442,
+          "separated_percent": 0.999281,
+          "divorced_percent": 5.233964,
+          "widowed_percent": 3.06922
+        },
+        "national_origin": {
+          "foreign_born_percent": 15.493466,
+          "foreign_born_count": 362,
+          "top_origins": [
+            {
+              "name": "Mexico",
+              "percent": 52.667638,
+              "count": 190
+            },
+            {
+              "name": "Korea",
+              "percent": 12.932098,
+              "count": 46
+            },
+            {
+              "name": "Vietnam",
+              "percent": 8.188313,
+              "count": 29
+            },
+            {
+              "name": "India",
+              "percent": 3.61635,
+              "count": 13
+            },
+            {
+              "name": "Canada",
+              "percent": 2.686584,
+              "count": 9
+            }
+          ]
+        }
+      },
       "Mercer Island": {
         "population": {
           "total_population": 24467,

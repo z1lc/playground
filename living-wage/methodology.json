@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "source": "MIT Living Wage Calculator — methodology page + 2026 Living Wage Benchmark Series Technical Documentation",
+    "note": "Region/city-agnostic descriptions of how each Typical Expenses category is estimated. Displayed in the detail pane when a pie slice is selected.",
+    "sources": [
+      "https://livingwage.mit.edu/pages/methodology",
+      "https://livingwage.mit.edu/resources/living_wage_technical_documentation.pdf"
+    ]
+  },
+  "categories": {
+    "Food": {
+      "bluf": "Food is scaled up to the USDA Liberal Food Plan — the most generous of USDA's four nutritious diets — roughly 1.5× the Low-Cost basis MIT actually uses.",
+      "methodology": "USDA publishes four nutritious food plans at rising cost levels — Thrifty, Low-Cost, Moderate, and Liberal. MIT's own Food figure uses the Low-Cost plan (the second-cheapest): a market basket for a nutritious diet fully prepared at home, summed across household members by age and sex. This tool instead shows the Liberal level, USDA's most generous plan, which affords more variety, more fresh and out-of-season produce, more meat and seafood, and some convenience foods. We derive it by multiplying MIT's Food number by the published Liberal-to-Low-Cost cost ratio (about 1.52-1.55 for a two-adult family; USDA \"Cost of Food at Home at Three Levels\", May 2026). Because both plans pass through the same USDA household-size and inflation adjustments, those cancel in the ratio, so it applies cleanly to MIT's national figure and still scales with the number and ages of children. Like every USDA plan, it assumes all meals are cooked at home and excludes restaurant and takeout meals.",
+      "pros": [
+        "Reflects a fuller, more varied diet.",
+        "Still USDA-grounded and nutritionally adequate.",
+        "Scales by household size and children's ages.",
+        "Uses a recent, sourced USDA ratio."
+      ],
+      "cons": [
+        "Generous Liberal level; most spend less.",
+        "Still assumes zero restaurant meals.",
+        "One national ratio, not regional."
+      ]
+    },
+    "Child Care": {
+      "bluf": "MIT estimates annual child care as county-priced, center-based care set by each child's age, charged only when parents work and zero when an adult stays home.",
+      "methodology": "Child care cost comes primarily from the U.S. Department of Labor Women's Bureau National Database of Childcare Prices (NDCP), which provides county-level prices from state market-rate surveys collected 2008-2022. Gaps are filled with state-level figures from Child Care Aware of America's annual price report, scaled down to counties via a population-weighted gross-median-rent index from ACS 5-year estimates. Because utilization data on center- versus home-based care is limited, estimates assume center-based care only. Cost scales by the number and age of children: the first child is priced at toddler care, the second at preschool, and the third at before/after-school plus two full-time summer months in dual-earner families. This deliberately assumes younger, pricier care to offset known underestimation. Families with no children pay zero; in two-adult households where only one adult works, the non-working adult provides care at no cost. Figures are inflation-adjusted to current dollars using the CPI-U day-care and preschool series.",
+      "pros": [
+        "Uses federal county-level price data.",
+        "Varies by child age and count.",
+        "Corrects for known price underestimation.",
+        "Documented age and care-type assumptions."
+      ],
+      "cons": [
+        "Assumes formal center-based care only.",
+        "Ignores unpaid family and home care.",
+        "Stay-at-home care counted as free.",
+        "Some survey data as old as 2008.",
+        "Understates high-cost urban ZIP codes."
+      ]
+    },
+    "Medical": {
+      "bluf": "Medical is MIT's employer-premium share plus out-of-pocket costs, with an added dental and vision estimate that MIT leaves out.",
+      "methodology": "MIT builds its health-care figure from two parts: the employee/household share of employer-sponsored insurance premiums, and out-of-pocket medical costs. Premium data comes from the AHRQ Medical Expenditure Panel Survey Insurance Component (MEPS-IC), giving state-level premiums and employer contributions by coverage tier; the model assumes the household has employer coverage and pays only the worker's share. Out-of-pocket costs come from the BLS Consumer Expenditure Survey, regionally adjusted, and scale with household composition. MIT excludes dental and vision entirely — so this tool adds a flat estimate of about $700 per adult and $450 per child per year, covering the employee-paid dental and vision premium share plus typical out-of-pocket dental care, eye exams, and glasses. Those figures draw on AHRQ MEPS and ADA/CMS dental data and vision-industry surveys. The add-on scales with the number of adults and children but is held constant nationally, so it doesn't capture the roughly ±25% regional swing in dental and optical prices, and it omits lumpy orthodontia.",
+      "pros": [
+        "Now includes dental and vision, unlike MIT.",
+        "Uses authoritative federal survey data.",
+        "State-level and household-size specific.",
+        "Reflects a fully-covered household's costs."
+      ],
+      "cons": [
+        "Assumes everyone has employer insurance.",
+        "Ignores uninsured and ACA subsidies.",
+        "Dental/vision add-on is flat, not regional.",
+        "Excludes lumpy orthodontia costs.",
+        "Averages hide big individual variance."
+      ]
+    },
+    "Housing": {
+      "bluf": "MIT sets annual housing cost from HUD Fair Market Rent — the 40th-percentile gross rent for the bedrooms a household needs — then annualizes it.",
+      "methodology": "Housing comes from HUD's Fair Market Rents (FMR), derived from American Community Survey recent-mover data. FMR is the 40th-percentile gross rent for standard-quality units, including shelter, contract rent, and all major tenant-paid utilities, but excluding telephone, cable/satellite, and internet (which are a separate category). HUD publishes FMRs by unit size from zero to four bedrooms. MIT matches unit size to each family type's minimum need: a single adult needs 0 bedrooms; two adults need 1 bedroom; families with one or two children need 2 bedrooms; families with three children need 3 bedrooms. FMRs are published for metro areas and nonmetro counties; MIT adds county-level variation by multiplying by a population-weighted county index built from ACS 5-year gross-median-rent data. Costs are annualized and inflation-adjusted using the CPI-U housing series. The model assumes all households rent rather than own.",
+      "pros": [
+        "Uses standardized federal HUD data.",
+        "Covers essentially every U.S. county.",
+        "Includes utilities, not just rent.",
+        "Bedrooms scale with family size.",
+        "Adjusted for inflation and locality."
+      ],
+      "cons": [
+        "40th percentile understates many market rents.",
+        "Assumes renting, ignores homeownership.",
+        "County averages hide neighborhood variance.",
+        "ACS data lags current rent spikes.",
+        "Caps bedrooms for large families."
+      ]
+    },
+    "Transportation": {
+      "bluf": "MIT anchors transportation to modeled county car ownership-and-operating costs, rescaled to a single commuter and to family size using federal spending survey data.",
+      "methodology": "The transportation base comes from the Center for Neighborhood Technology Housing & Transportation (H&T) Index, which models total county-level transportation costs from auto ownership, auto use, and transit use. It uses the cost for a \"regional typical household\" — one earning the area median income — as the base. That figure is attenuated to a single commuter by the ratio of all workers age 16+ to those who do not work from home (from ACS 5-year, state-level data). The rebased cost is then multiplied by a family-size-weighted index built from the BLS Consumer Expenditure Survey annual means for used cars, gasoline, other vehicle expenses (financing, insurance, maintenance), and public transit, by size and composition of the consumer unit. Values are inflation-adjusted to current dollars using the CPI-U transportation series. The model is auto-centric, reflecting average vehicle ownership and operating costs where a car is functionally necessary, plus transit costs where adequate transit exists.",
+      "pros": [
+        "County-level geographic variation.",
+        "Reflects both auto and transit costs.",
+        "Scales by household size and composition.",
+        "Grounded in federal survey data.",
+        "Inflation-adjusted to current dollars."
+      ],
+      "cons": [
+        "Assumes car ownership in most counties.",
+        "Pegged to median-income household spending.",
+        "Family-size index uses national averages.",
+        "Work-from-home ratio only state-level.",
+        "Poorly captures car-free households."
+      ]
+    },
+    "Civic": {
+      "bluf": "MIT sums national-average spending on a fixed basket of recreation and community-participation items, then scales it by household size and region.",
+      "methodology": "MIT's \"Civic Engagement\" category is built from the U.S. Bureau of Labor Statistics Consumer Expenditure Survey (CES), inflated to current dollars via expenditure-specific CPI-U indexes. The cost is constructed by summing CES annual expenditure means (national averages, not medians or percentiles) for seven sub-components: audio-visual equipment and services; education; fees and admissions; other entertainment; pets; reading; and toys, hobbies, and playground equipment. These are totaled by the size and composition of the \"consumer unit,\" a rough proxy for family size, so amounts vary across the family types. National means are then given geographic variation through a regional index. Civic was added around 2020-2021 as MIT judged community participation an increasingly sizable, non-optional expense. It is kept distinct from \"Other necessities\" (clothing, personal care, housekeeping supplies) and from \"Internet & Mobile\" (home internet and cellular service), which MIT split out separately.",
+      "pros": [
+        "Grounded in official BLS survey data.",
+        "Captures real recreation and community costs.",
+        "Scales by household size and region.",
+        "Annually updated and inflation-adjusted."
+      ],
+      "cons": [
+        "\"Civic\" is a vague catch-all label.",
+        "Uses average spending, not minimum need.",
+        "Basket boundaries have shifted over time.",
+        "Excludes restaurants, gifts, and vacations.",
+        "Averages ignore actual household behavior."
+      ]
+    },
+    "Internet & Mobile": {
+      "bluf": "MIT sums a county's cheapest home broadband plan, one per household, with cellular service costs that scale by the number of adults.",
+      "methodology": "MIT added \"Internet & Mobile\" as a standalone category in its 2025/2026 benchmark, reasoning that HUD Fair Market Rents cover major utilities but not internet or telephone, which are now essential. It combines two subcategories. Home internet uses county-level \"lowest-cost monthly plan\" prices from BroadbandNow's county broadband statistics, itself sourced from FCC and Census Bureau data with proprietary gap-fills; MIT assumes every household buys just one plan regardless of size, annualizes it, and inflates to current dollars. Mobile uses the BLS Consumer Expenditure Survey's annual means for \"cellular phone service\" by consumer-unit size and composition, counting only adults as users; national figures get regional variation via a Census-region index, then are inflation-adjusted. Internet is flat per household; mobile scales with the number of adults.",
+      "pros": [
+        "Treats connectivity as an essential need.",
+        "Uses BLS and FCC/Census data.",
+        "Internet priced at county level.",
+        "Mobile scales with adults and region.",
+        "All figures inflation-adjusted."
+      ],
+      "cons": [
+        "Broadband prices date from 2020.",
+        "Assumes single cheapest internet plan.",
+        "Mobile is a regionally-indexed national mean.",
+        "Flat basket ignores bundling.",
+        "Assumes children use no cellular service."
+      ]
+    },
+    "Other": {
+      "bluf": "MIT sums federal survey spending on apparel, furnishings, housekeeping supplies, and personal care, scaled by household size and adjusted for region.",
+      "methodology": "The \"Other necessities\" bucket captures basic goods not covered by the other seven components. Its cost comes from the BLS Consumer Expenditure Survey (CES), a national household interview and diary survey. The estimate is built by summing CES annual expenditure means for five line items: apparel and services; household furnishings and equipment; housekeeping supplies; personal care products and services; and miscellaneous household equipment. These means are taken by the size and composition of the consumer unit, a rough proxy for family size, so the figure scales with household composition rather than being a flat percentage of total spending (a change from the older \"share of expenditures\" approach). National means are geographically adjusted by a Census-region index built from these same categories. Values are inflation-adjusted to current dollars using the CPI-U all-items series. Civic (education, fees and admission, pets, reading, toys/hobbies) and Internet & Mobile were split out as separate buckets.",
+      "pros": [
+        "Based on actual national spending data.",
+        "Scales with household size and composition.",
+        "Regionally and inflation-adjusted.",
+        "Summed line items, not arbitrary percentage.",
+        "Transparent, reproducible public sources."
+      ],
+      "cons": [
+        "Catch-all residual with fuzzy boundaries.",
+        "Reflects average spending, not true need.",
+        "Only coarse region-level adjustment.",
+        "Survey tends to undercount spending.",
+        "Boundary with Civic is arbitrary."
+      ]
+    },
+    "Retirement (401k)": {
+      "bluf": "Maxing out a 401(k) for two adults at the 2026 IRS limit of $24,500 each — $49,000 a year of retirement savings, added as a line MIT's basic-needs budget leaves out entirely.",
+      "methodology": "This slice is not an MIT expense; it is retirement savings, the single biggest thing MIT's subsistence budget omits. It assumes both adults contribute the full employee elective-deferral limit set by the IRS for 2026: $24,500 each, or $49,000 combined. The figure is held flat regardless of the working-adults slider or the city. It counts employee contributions only, so it excludes any employer match (which is additional) and the extra catch-up contributions allowed at age 50 and older. Because 401(k) contributions are pre-tax, maxing out also lowers taxable income, though this tool does not model taxes. Maxing out is an aspirational savings target, not typical behavior: most households save far less, and doing this on top of the eight need-based categories requires income well above a bare living wage.",
+      "pros": [
+        "Fills MIT's biggest gap — zero savings.",
+        "Uses the current 2026 IRS limit.",
+        "Pre-tax; also lowers taxable income.",
+        "Shown apart from need-based expenses."
+      ],
+      "cons": [
+        "Maxing out is aspirational, not typical.",
+        "Excludes employer match and 50+ catch-up.",
+        "Flat $49k ignores the working-adults slider.",
+        "Savings, not a cost of living."
+      ]
+    }
+  }
+}

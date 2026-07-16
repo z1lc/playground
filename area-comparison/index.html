@@ -67,7 +67,7 @@
     function useTheme() { return React.useContext(ThemeContext); }
     const THEMES = {
       light: {
-        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32', '#8E44AD', '#0E9AA7', '#CC3399', '#D9622B'],
+        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32', '#8E44AD', '#0E9AA7', '#CC3399', '#D9622B', '#5D6D7E', '#795548'],
         pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
         textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
         border: '#E8E0D5', borderLight: '#f0ebe3', borderDropdown: '#e0d9cf',
@@ -80,7 +80,7 @@
         hoverLine: '#888', dotStroke: '#fff', linkColor: '#8a8a8a',
       },
       dark: {
-        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50', '#B07CC6', '#3FC1C9', '#E85BB5', '#F0844C'],
+        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50', '#B07CC6', '#3FC1C9', '#E85BB5', '#F0844C', '#8FA4B8', '#BCAAA4'],
         pageBg: '#1a1a1a', cardBg: '#242424', textPrimary: '#e0e0e0',
         textSecondary: '#a0a0a0', textLabel: '#c0c0c0', textTertiary: '#777',
         border: '#3a3530', borderLight: '#333', borderDropdown: '#444',
@@ -511,7 +511,7 @@
         "restaurant_density":{"restaurants_per_1k":73.5,"total_restaurants":1700,"avg_rating":4.2,"avg_price_level":2.3,"pct_dollar_2_plus":92.8}
       },
       "Virginia Highland + Morningside": {
-        "population": { "total_population": 16090, "population_density_per_sq_mi": 5711.25 },
+        "population": { "total_population": 19339, "population_density_per_sq_mi": 5846.66 },
         "age_and_sex": { "senior_percent": 8.3, "older_adult_percent": 40.0, "younger_adult_percent": 31.5, "college_percent": 1.7, "children_percent": 18.5 },
         "race_and_ethnicity": { "white_percent": 85.35, "hispanic_percent": 4.65, "black_percent": 4.48, "asian_percent": 2.51, "mixed_other_percent": 3.02 },
         "national_origin": { "native_born_percent": 92.9, "foreign_born_percent": 7.1, "top_origins": [{"name":"Mexico","percent":1.4},{"name":"India","percent":1.0},{"name":"United Kingdom","percent":0.7}] },
@@ -527,9 +527,9 @@
         "parks":{"tree_canopy_pct":59.3},
         "noise":{"avg_db":37.6,"pct_above_50db":9.0,"pct_above_65db":0.7,"dominant_source":"road","dominant_source_desc":"Quiet residential neighborhoods. Ponce de Leon Ave and Highland Ave carry moderate traffic. Well-buffered from I-85 and I-75 by distance and topography."},
         "commute": { "avg_commute_minutes": 25.2, "drive_alone_percent": 52.6, "carpool_percent": 3.7, "public_transit_percent": 2.0, "walk_percent": 3.5, "bike_percent": 2.6, "work_from_home_percent": 35.4 },
-        "crime":{"violent_per_1k":1.9,"property_per_1k":30.2},
+        "crime":{"violent_per_1k":1.4,"property_per_1k":22.4},
         "air_quality":{"avg_pm25":8.7,"neighborhood_good_air_days_pct":59.0,"nearest_monitor_distance_mi":4.9,"monitor_name":"Fire Station #8","monitor_id":"13-121-0039"},
-        "restaurant_density":{"restaurants_per_1k":9.6,"total_restaurants":155,"avg_rating":3.3,"avg_price_level":1.9,"pct_dollar_2_plus":77.0}
+        "restaurant_density":{"restaurants_per_1k":8.0,"total_restaurants":155,"avg_rating":3.3,"avg_price_level":1.9,"pct_dollar_2_plus":77.0}
       },
       "Mercer Island": {
         "population": { "total_population": 24467, "population_density_per_sq_mi": 3853.42 },
@@ -553,7 +553,7 @@
         "restaurant_density":{"restaurants_per_1k":3.3,"total_restaurants":80,"avg_rating":3.7,"avg_price_level":1.6,"pct_dollar_2_plus":57.5}
       },
       "Sweet Auburn": {
-        "population": { "total_population": 1827, "population_density_per_sq_mi": null },
+        "population": { "total_population": 3291, "population_density_per_sq_mi": 10442.44 },
         "age_and_sex": { "senior_percent": 12.7, "older_adult_percent": 32.1, "younger_adult_percent": 45.4, "college_percent": 24.6, "children_percent": 9.8 },
         "race_and_ethnicity": { "white_percent": 29.57, "hispanic_percent": 4.98, "black_percent": 61.44, "asian_percent": 2.78, "mixed_other_percent": 1.23 },
         "national_origin": { "native_born_percent": 93.1, "foreign_born_percent": 6.9, "top_origins": [{"name":"Ethiopia","percent":0.7},{"name":"China","percent":0.7},{"name":"Spain","percent":0.7}] },
@@ -562,13 +562,13 @@
         "educational_attainment": { "graduate_degree_percent": 23.8, "bachelors_or_higher_percent": 46.3, "high_school_or_higher_percent": 88.2, "no_hs_diploma_percent": 11.8 },
         "employment_status": { "employed_percent": 50.6, "unemployed_percent": 5.9, "not_in_labor_force_percent": 43.4 },
         "walkability": { "walk_score": 91, "transit_score": 70, "bike_score": 81 },
-        "crime":{"violent_per_1k":30.7,"property_per_1k":157.6},
+        "crime":{"violent_per_1k":12.8,"property_per_1k":75.1},
         "parks":{"tree_canopy_pct":16.5},
-        "restaurant_density":{"restaurants_per_1k":50.4,"total_restaurants":92,"avg_rating":3.1,"avg_price_level":1.7,"pct_dollar_2_plus":64.7},
-        "noise":{"avg_db":55.2,"pct_above_50db":66.8,"pct_above_65db":12.1,"dominant_source":"road","dominant_source_desc":"Bordered on the west by the Downtown Connector (I-75/I-85); Auburn Ave, Edgewood Ave, and the downtown street grid add steady traffic noise — the noisiest of the four."}
+        "restaurant_density":{"restaurants_per_1k":28.0,"total_restaurants":92,"avg_rating":3.1,"avg_price_level":1.7,"pct_dollar_2_plus":64.7},
+        "noise":{"avg_db":55.2,"pct_above_50db":66.8,"pct_above_65db":12.1,"dominant_source":"road","dominant_source_desc":"Bordered on the west by the Downtown Connector (I-75/I-85); Auburn Ave, Edgewood Ave, and the downtown street grid add steady traffic noise — the noisiest of the extra Atlanta neighborhoods."}
       },
       "Cabbagetown": {
-        "population": { "total_population": 1300, "population_density_per_sq_mi": null },
+        "population": { "total_population": 1851, "population_density_per_sq_mi": 10561.11 },
         "age_and_sex": { "senior_percent": 8.0, "older_adult_percent": 41.0, "younger_adult_percent": 46.8, "college_percent": 5.7, "children_percent": 4.2 },
         "race_and_ethnicity": { "white_percent": 74.35, "hispanic_percent": 3.73, "black_percent": 15.81, "asian_percent": 2.1, "mixed_other_percent": 4.01 },
         "national_origin": { "native_born_percent": 95.3, "foreign_born_percent": 4.7, "top_origins": [{"name":"Canada","percent":0.8},{"name":"France","percent":0.7},{"name":"Korea","percent":0.6}] },
@@ -578,13 +578,13 @@
         "employment_status": { "employed_percent": 91.3, "unemployed_percent": 0.0, "not_in_labor_force_percent": 7.6 },
         "walkability": { "walk_score": 83, "transit_score": 61, "bike_score": 87 },
         "housing": {"median_home_value_2br":529761,"median_home_value_3br":659620,"home_price_index":[100.0,108.7,139.0,153.4,157.4,167.8,178.5,199.6,199.4,170.9,154.5,147.7,136.7,138.6,165.0,189.0,227.0,262.2,293.0,325.6,324.6,339.6,377.2,390.1,393.2,383.4],"home_price_cagr":5.5},
-        "crime":{"violent_per_1k":3.1,"property_per_1k":40.0},
+        "crime":{"violent_per_1k":1.6,"property_per_1k":18.4},
         "parks":{"tree_canopy_pct":30.5},
-        "restaurant_density":{"restaurants_per_1k":26.9,"total_restaurants":35,"avg_rating":3.7,"avg_price_level":1.9,"pct_dollar_2_plus":85.0},
+        "restaurant_density":{"restaurants_per_1k":18.9,"total_restaurants":35,"avg_rating":3.7,"avg_price_level":1.9,"pct_dollar_2_plus":85.0},
         "noise":{"avg_db":46.4,"pct_above_50db":28.0,"pct_above_65db":4.5,"dominant_source":"road","dominant_source_desc":"Wedged against the CSX Hulsey rail yard and Memorial Dr, with I-20 just to the south adding highway noise; narrow interior streets are calmer."}
       },
       "Reynoldstown": {
-        "population": { "total_population": 2450, "population_density_per_sq_mi": null },
+        "population": { "total_population": 4558, "population_density_per_sq_mi": 7377.46 },
         "age_and_sex": { "senior_percent": 6.7, "older_adult_percent": 25.7, "younger_adult_percent": 54.3, "college_percent": 4.2, "children_percent": 9.0 },
         "race_and_ethnicity": { "white_percent": 62.54, "hispanic_percent": 3.3, "black_percent": 30.08, "asian_percent": 2.12, "mixed_other_percent": 1.96 },
         "national_origin": { "native_born_percent": 95.6, "foreign_born_percent": 4.4, "top_origins": [{"name":"Philippines","percent":0.6},{"name":"United Kingdom","percent":0.5},{"name":"Canada","percent":0.5}] },
@@ -594,13 +594,13 @@
         "employment_status": { "employed_percent": 74.9, "unemployed_percent": 4.6, "not_in_labor_force_percent": 20.2 },
         "walkability": { "walk_score": 77, "transit_score": 56, "bike_score": 80 },
         "housing": {"median_home_value_2br":487537,"median_home_value_3br":671834,"median_home_value_4br":865819,"home_price_index":[100.0,135.2,157.2,171.6,171.5,186.9,195.2,219.2,211.8,181.2,171.9,152.3,131.8,146.5,180.2,213.0,262.2,307.2,356.0,391.4,393.5,422.6,482.0,504.9,522.9,514.0],"home_price_cagr":6.8},
-        "crime":{"violent_per_1k":6.1,"property_per_1k":75.5},
+        "crime":{"violent_per_1k":3.5,"property_per_1k":43.7},
         "parks":{"tree_canopy_pct":44.7},
-        "restaurant_density":{"restaurants_per_1k":26.1,"total_restaurants":64,"avg_rating":3.3,"avg_price_level":1.6,"pct_dollar_2_plus":58.8},
+        "restaurant_density":{"restaurants_per_1k":14.0,"total_restaurants":64,"avg_rating":3.3,"avg_price_level":1.6,"pct_dollar_2_plus":58.8},
         "noise":{"avg_db":41.4,"pct_above_50db":15.2,"pct_above_65db":1.5,"dominant_source":"road","dominant_source_desc":"I-20 runs along the south edge and the CSX / BeltLine rail corridor along the west; Moreland Ave and Wylie St carry traffic."}
       },
       "Inman Park": {
-        "population": { "total_population": 4220, "population_density_per_sq_mi": null },
+        "population": { "total_population": 5412, "population_density_per_sq_mi": 9027.52 },
         "age_and_sex": { "senior_percent": 5.1, "older_adult_percent": 39.5, "younger_adult_percent": 44.3, "college_percent": 7.5, "children_percent": 11.1 },
         "race_and_ethnicity": { "white_percent": 78.23, "hispanic_percent": 2.67, "black_percent": 11.59, "asian_percent": 4.56, "mixed_other_percent": 2.94 },
         "national_origin": { "native_born_percent": 91.1, "foreign_born_percent": 8.9, "top_origins": [{"name":"United Kingdom","percent":1.5},{"name":"Germany","percent":1.3},{"name":"Hong Kong","percent":1.0}] },
@@ -610,10 +610,42 @@
         "employment_status": { "employed_percent": 80.4, "unemployed_percent": 2.8, "not_in_labor_force_percent": 16.8 },
         "walkability": { "walk_score": 87, "transit_score": 56, "bike_score": 82 },
         "housing": {"median_home_value_2br":608810,"median_home_value_3br":958108,"median_home_value_4br":1327660,"home_price_index":[100.0,122.4,129.5,139.1,138.5,143.7,155.6,164.8,166.8,154.3,138.5,133.8,126.9,130.6,155.5,174.5,194.5,207.5,224.3,239.0,241.9,252.8,286.3,295.3,305.5,306.5],"home_price_cagr":4.6},
-        "crime":{"violent_per_1k":2.8,"property_per_1k":84.6},
+        "crime":{"violent_per_1k":2.2,"property_per_1k":55.6},
         "parks":{"tree_canopy_pct":44.5},
-        "restaurant_density":{"restaurants_per_1k":24.2,"total_restaurants":102,"avg_rating":3.6,"avg_price_level":2.0,"pct_dollar_2_plus":80.0},
+        "restaurant_density":{"restaurants_per_1k":18.8,"total_restaurants":102,"avg_rating":3.6,"avg_price_level":2.0,"pct_dollar_2_plus":80.0},
         "noise":{"avg_db":42.4,"pct_above_50db":20.3,"pct_above_65db":3.5,"dominant_source":"road","dominant_source_desc":"DeKalb Ave and the parallel CSX / MARTA rail corridor run along the south edge; Moreland Ave, Freedom Pkwy, and N. Highland Ave carry traffic, while interior Victorian blocks are quieter."}
+      },
+      "Old Fourth Ward": {
+        "population": { "total_population": 14153, "population_density_per_sq_mi": 11566.75 },
+        "age_and_sex": { "senior_percent": 10.2, "older_adult_percent": 34.8, "younger_adult_percent": 42.9, "college_percent": 12.6, "children_percent": 12.2 },
+        "race_and_ethnicity": { "white_percent": 41.67, "hispanic_percent": 3.39, "black_percent": 47.19, "asian_percent": 6.18, "mixed_other_percent": 1.57 },
+        "national_origin": { "native_born_percent": 91.4, "foreign_born_percent": 8.6, "top_origins": [{"name":"India","percent":1.1},{"name":"Mexico","percent":0.8},{"name":"China","percent":0.8}] },
+        "marital_status": { "never_married_percent": 68.2, "married_percent": 19.4, "separated_divorced_widowed_percent": 12.4 },
+        "household_income": { "median_household_income": 38938 },
+        "educational_attainment": { "graduate_degree_percent": 25.4, "bachelors_or_higher_percent": 54.3, "high_school_or_higher_percent": 93.6, "no_hs_diploma_percent": 6.4 },
+        "employment_status": { "employed_percent": 67.9, "unemployed_percent": 4.3, "not_in_labor_force_percent": 27.7 },
+        "walkability": { "walk_score": 82, "transit_score": 55, "bike_score": 85 },
+        "housing": {"median_home_value_2br":355241,"median_home_value_3br":724212,"median_home_value_4br":1032193,"home_price_index":[100.0,117.9,126.6,128.3,127.5,130.9,137.2,142.9,139.8,121.3,112.1,97.9,83.7,92.0,116.9,137.6,163.2,188.5,212.4,238.9,246.2,253.8,279.1,282.2,285.2,278.0],"home_price_cagr":4.2},
+        "crime":{"violent_per_1k":4.3,"property_per_1k":38.8},
+        "parks":{"tree_canopy_pct":31.5},
+        "restaurant_density":{"restaurants_per_1k":27.8,"total_restaurants":393,"avg_rating":4.0,"avg_price_level":2.1,"pct_dollar_2_plus":88.1},
+        "noise":{"avg_db":42.7,"pct_above_50db":21.4,"pct_above_65db":2.7,"dominant_source":"road","dominant_source_desc":"Ponce de Leon Ave and North Ave carry east-west traffic; Boulevard and Piedmont Ave carry north-south traffic, with the Downtown Connector west of the neighborhood and the BeltLine Eastside Trail on its eastern edge."}
+      },
+      "Piedmont Heights": {
+        "population": { "total_population": 2436, "population_density_per_sq_mi": 5020.25 },
+        "age_and_sex": { "senior_percent": 9.2, "older_adult_percent": 39.3, "younger_adult_percent": 42.3, "college_percent": 8.2, "children_percent": 9.3 },
+        "race_and_ethnicity": { "white_percent": 64.43, "hispanic_percent": 4.80, "black_percent": 14.49, "asian_percent": 7.81, "mixed_other_percent": 8.47 },
+        "national_origin": { "native_born_percent": 84.5, "foreign_born_percent": 15.5, "top_origins": [{"name":"Mexico","percent":8.2},{"name":"Korea","percent":2.0},{"name":"Vietnam","percent":1.3}] },
+        "marital_status": { "never_married_percent": 49.3, "married_percent": 41.4, "separated_divorced_widowed_percent": 9.3 },
+        "household_income": { "median_household_income": 72760 },
+        "educational_attainment": { "graduate_degree_percent": 26.2, "bachelors_or_higher_percent": 66.6, "high_school_or_higher_percent": 90.7, "no_hs_diploma_percent": 9.3 },
+        "employment_status": { "employed_percent": 77.5, "unemployed_percent": 3.2, "not_in_labor_force_percent": 19.3 },
+        "walkability": { "walk_score": 65, "transit_score": 31, "bike_score": 38 },
+        "housing": {"median_home_value_2br":564097,"median_home_value_3br":757242,"median_home_value_4br":1020547,"home_price_index":[100.0,108.7,115.1,118.8,123.2,126.6,133.9,140.4,139.1,123.1,122.8,123.3,116.6,122.7,139.5,154.5,169.4,174.8,187.0,184.7,188.1,199.0,219.4,229.8,239.2,240.5],"home_price_cagr":3.6},
+        "crime":{"violent_per_1k":2.1,"property_per_1k":39.8},
+        "parks":{"tree_canopy_pct":42.9},
+        "restaurant_density":{"restaurants_per_1k":16.8,"total_restaurants":41,"avg_rating":3.4,"avg_price_level":1.8,"pct_dollar_2_plus":68.2},
+        "noise":{"avg_db":47.6,"pct_above_50db":37.5,"pct_above_65db":10.6,"dominant_source":"road","dominant_source_desc":"I-85 borders the north, Piedmont Road carries traffic through the neighborhood, and the western BeltLine / Monroe corridor adds road and rail noise along the western edge."}
       }
     }
   }
@@ -625,12 +657,12 @@
     const AREA_NAMES = {
       states: ['California', 'New York', 'Georgia'],
       cities: ['San Francisco', 'New York City', 'Atlanta'],
-      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island', 'Sweet Auburn', 'Cabbagetown', 'Reynoldstown', 'Inman Park'],
+      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island', 'Sweet Auburn', 'Cabbagetown', 'Reynoldstown', 'Inman Park', 'Old Fourth Ward', 'Piedmont Heights'],
     };
     const AREA_NAMES_SHORT = {
       states: ['CA', 'NY', 'GA'],
       cities: ['SF', 'NYC', 'ATL'],
-      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI', 'SwtAub', 'Cbgtwn', 'Reyn', 'Inman'],
+      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI', 'SwtAub', 'Cbgtwn', 'Reyn', 'Inman', 'O4W', 'Pdmt Hts'],
     };
 
 
@@ -645,6 +677,8 @@
       { neighborhood: 'Cabbagetown', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Cbgtwn', shortCity: 'ATL', shortState: 'GA' },
       { neighborhood: 'Reynoldstown', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Reyn', shortCity: 'ATL', shortState: 'GA' },
       { neighborhood: 'Inman Park', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Inman', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Old Fourth Ward', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'O4W', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Piedmont Heights', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Pdmt Hts', shortCity: 'ATL', shortState: 'GA' },
     ];
 
     const SECTION_CONFIG = [
@@ -780,8 +814,8 @@
           { key: 'crime', label: '\uD83D\uDD12 Crime', granularities: ['cities', 'neighborhoods'], metrics: [
             { key: 'violent_per_100k', label: 'Violent Crime / 100K', format: 'number', showBar: true, granularities: ['cities'], tooltip: 'Murder, rape, robbery, and aggravated assault. Source: FBI UCR 2023 (via Wikipedia).' },
             { key: 'property_per_100k', label: 'Property Crime / 100K', format: 'number', showBar: true, granularities: ['cities'], tooltip: 'Burglary, larceny-theft, motor vehicle theft, and arson. Source: FBI UCR 2023 (via Wikipedia).' },
-            { key: 'violent_per_1k', label: 'Violent Crime / 1K', format: 'number', showBar: true, barRelative: true, granularities: ['neighborhoods'], tooltip: 'Violent crime incidents per 1,000 residents. SF: SFPD via DataSF (2024). NYC: NYPD CompStat 6th Pct (2024). ATL: APD via Fulton Co. open data (2021). MI: FBI UCR (2024).' },
-            { key: 'property_per_1k', label: 'Property Crime / 1K', format: 'number', showBar: true, barRelative: true, granularities: ['neighborhoods'], tooltip: 'Property crime incidents per 1,000 residents. SF: SFPD via DataSF (2024). NYC: NYPD CompStat 6th Pct (2024). ATL: APD via Fulton Co. open data (2021). MI: FBI UCR (2024).' },
+            { key: 'violent_per_1k', label: 'Violent Crime / 1K', format: 'number', showBar: true, barRelative: true, granularities: ['neighborhoods'], tooltip: 'Violent crime incidents per 1,000 residents. SF: SFPD via DataSF (2024). NYC: NYPD CompStat 6th Pct (2024). ATL: APD Open Data (2025). MI: FBI UCR (2024).' },
+            { key: 'property_per_1k', label: 'Property Crime / 1K', format: 'number', showBar: true, barRelative: true, granularities: ['neighborhoods'], tooltip: 'Property crime incidents per 1,000 residents. SF: SFPD via DataSF (2024). NYC: NYPD CompStat 6th Pct (2024). ATL: APD Open Data (2025). MI: FBI UCR (2024).' },
           ] },
           { key: 'natural_hazards', label: '\u26A0\uFE0F Natural Hazard Risk', granularities: ['states', 'cities'], metrics: [
             { key: 'ealr_score', label: 'Expected Annual Loss Rate', format: 'number', showBar: true, barMax: 100, tooltip: 'FEMA NRI Expected Annual Loss Rate percentile (0\u2013100 among US counties). Measures average annual property loss as a share of total building value \u2014 higher means more hazard exposure per dollar of property. State values are unweighted county averages.' },
@@ -1063,7 +1097,7 @@
       const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
       const [selectedIndices, setSelectedIndices] = useState(() => {
         try { const s = JSON.parse(localStorage.getItem('area_comparison_selected')); if (Array.isArray(s) && s.length > 0) return s; } catch {}
-        return [0, 1, 2, 3]; // default: original 4 metros; the 4 extra Atlanta neighborhoods are opt-in via ⚙️
+        return [0, 1, 2, 3]; // default: original 4 metros; the 6 extra Atlanta neighborhoods are opt-in via ⚙️
       });
       const [showSettings, setShowSettings] = useState(false);
       const [isDark, setIsDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);

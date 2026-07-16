@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-bike vs. Rental Breakeven</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: clip; }
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 48px 20px;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 6px; }
+    .sub { color: #94a3b8; font-size: 0.95rem; margin-bottom: 28px; }
+    a { color: #a3e635; }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 24px 26px;
+      margin-bottom: 22px;
+    }
+    .card h2 {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: #94a3b8; margin-bottom: 18px;
+    }
+
+    /* ---- Sliders ---- */
+    .slider-row { margin-bottom: 22px; }
+    .slider-row:last-child { margin-bottom: 0; }
+    .slider-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .slider-label { font-size: 0.95rem; color: #cbd5e1; font-weight: 500; }
+    .slider-val { font-size: 1.05rem; font-weight: 700; color: #a3e635; font-variant-numeric: tabular-nums; }
+    .slider-val small { color: #64748b; font-weight: 500; font-size: 0.8rem; }
+
+    .x-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 6px; border-radius: 999px;
+      background: #334155; outline: none; margin: 0; cursor: pointer;
+    }
+    .x-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #84cc16; border: 3px solid #0f172a;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      cursor: grab; transition: transform 0.1s;
+    }
+    .x-slider::-webkit-slider-thumb:hover { transform: scale(1.12); }
+    .x-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.18); }
+    .x-slider::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #84cc16; border: 3px solid #0f172a; cursor: grab;
+    }
+
+    /* ---- Headline ---- */
+    .headline {
+      background: linear-gradient(135deg, #1a2e05 0%, #1e293b 70%);
+      border: 1px solid #3f6212;
+    }
+    .headline .big { font-size: 1.35rem; font-weight: 700; line-height: 1.4; color: #f1f5f9; }
+    .headline .big .hi { color: #a3e635; }
+    .headline .note { color: #94a3b8; font-size: 0.9rem; margin-top: 10px; }
+
+    /* ---- Table ---- */
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { text-align: right; padding: 11px 12px; font-size: 0.95rem; }
+    th { color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; border-bottom: 1px solid #334155; }
+    th:first-child, td:first-child { text-align: left; }
+    tbody tr { border-bottom: 1px solid #1e293b; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr.cheapest td { background: rgba(132, 204, 22, 0.07); }
+    .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 9px; vertical-align: middle; }
+    .opt-name { font-weight: 600; color: #e2e8f0; }
+    .tag { font-size: 0.68rem; font-weight: 700; color: #84cc16; border: 1px solid #3f6212; border-radius: 999px; padding: 1px 7px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .never { color: #64748b; }
+
+    /* ---- Assumptions ---- */
+    .assump-toggle {
+      appearance: none; background: transparent; border: none; color: #94a3b8;
+      font-family: inherit; font-size: 0.9rem; cursor: pointer; padding: 0;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .assump-toggle:hover { color: #cbd5e1; }
+    .assump-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px 22px; margin-top: 18px; }
+    .assump-field label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
+    .assump-field .in { display: flex; align-items: center; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 0 10px; }
+    .assump-field .in:focus-within { border-color: #84cc16; }
+    .assump-field .pre, .assump-field .post { color: #64748b; font-size: 0.85rem; }
+    .assump-field input {
+      appearance: none; background: transparent; border: none; outline: none;
+      color: #e2e8f0; font-family: inherit; font-size: 0.95rem; width: 100%;
+      padding: 8px 6px; font-variant-numeric: tabular-nums;
+    }
+    .assump-note { color: #475569; font-size: 0.78rem; margin-top: 16px; line-height: 1.5; }
+
+    .chart-note { color: #64748b; font-size: 0.82rem; margin-top: 12px; }
+    .footer { color: #475569; font-size: 0.8rem; margin-top: 8px; }
+    .footer a { color: #64748b; }
+
+    @media (max-width: 560px) {
+      body { padding: 28px 14px; }
+      .card { padding: 20px 16px; }
+      th, td { padding: 9px 6px; font-size: 0.88rem; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+        "htm": "https://esm.sh/htm@3.1.1"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import React, { useState, useEffect, useMemo } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceDot } from 'recharts';
+    import htm from 'htm';
+    const html = htm.bind(React.createElement);
+
+    const WPM = 52 / 12; // weeks per month
+    const DAYS_PER_MONTH = 365.25 / 12; // ≈ 30.44
+
+    // ---- Colors ------------------------------------------------------------
+    const COLORS = {
+      citi:  '#38bdf8', // Citi blue
+      prime: '#84cc16', // Lime green
+      pass:  '#f59e0b', // amber
+      owned: '#a78bfa', // violet (the target line)
+    };
+
+    // ---- Persisted state ---------------------------------------------------
+    const STATE_KEY = 'ebike-breakeven:state';
+    const DEFAULTS = {
+      // primary sliders
+      totalMin: 120,   // total minutes / week
+      avgMin: 12,      // average minutes / ride
+      bikeCost: 1500,  // e-bike purchase price
+      // assumptions (mid-2026 NYC)
+      citiAnnual: 239,
+      citiPerMin: 0.27,
+      primeFee: 4.99,
+      primeRide5: 1.25,    // ride <= 5 min
+      primeRide20: 2.50,   // ride <= 20 min
+      primeOverMin: 0.26,  // per-min beyond 20
+      passMinutes: 90,
+      passPrice: 10,
+      passExpiry: 5,       // days a bundle stays valid
+      ownMonthly: 12,      // maintenance + charging
+    };
+    function loadState() {
+      try {
+        const s = JSON.parse(localStorage.getItem(STATE_KEY));
+        return { ...DEFAULTS, ...(s || {}) };
+      } catch { return DEFAULTS; }
+    }
+
+    // ---- Cost model (each returns $/month) ---------------------------------
+    // rides/week = totalMin / avgMin
+    function ridesPerWeek(a) { return a.avgMin > 0 ? a.totalMin / a.avgMin : 0; }
+
+    function primePerRide(a) {
+      if (a.avgMin <= 5) return a.primeRide5;
+      if (a.avgMin <= 20) return a.primeRide20;
+      return a.primeRide20 + (a.avgMin - 20) * a.primeOverMin;
+    }
+    function monthlyPrime(a) {
+      return a.primeFee + ridesPerWeek(a) * primePerRide(a) * WPM;
+    }
+    // A bundle expires after `passExpiry` days OR when its `passMinutes` run out —
+    // whichever comes first. To keep Lime available on demand all month you must renew
+    // every expiry window (time-driven floor); heavy use needs extra passes (usage-driven).
+    function passesPerMonth(a) {
+      if (a.totalMin <= 0) return 0;
+      const monthlyMin = a.totalMin * WPM;
+      const coverage = a.passExpiry > 0 ? DAYS_PER_MONTH / a.passExpiry : 0;
+      const usage = a.passMinutes > 0 ? monthlyMin / a.passMinutes : 0;
+      return Math.max(coverage, usage);
+    }
+    function monthlyPass(a) {
+      return passesPerMonth(a) * a.passPrice;
+    }
+    function monthlyCiti(a) {
+      return a.citiAnnual / 12 + a.totalMin * a.citiPerMin * WPM;
+    }
+
+    // Breakeven in months for a rental option vs. owning.
+    // Rental accrues optionMonthly/mo; owning starts at bikeCost and accrues ownMonthly/mo.
+    function breakevenMonths(optionMonthly, a) {
+      const net = optionMonthly - a.ownMonthly;
+      if (net <= 0) return Infinity;
+      return a.bikeCost / net;
+    }
+
+    // ---- Formatting --------------------------------------------------------
+    function fmtUSD(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+    function fmtUSD2(n) { return '$' + n.toFixed(2); }
+    function fmtMonths(m) {
+      if (!isFinite(m)) return null;
+      if (m < 1) return '<1 mo';
+      return m.toFixed(m < 10 ? 1 : 0) + ' mo';
+    }
+    function fmtYears(m) {
+      if (!isFinite(m)) return null;
+      return (m / 12).toFixed(1) + ' yr';
+    }
+
+    // ---- Small controls ----------------------------------------------------
+    function Slider({ label, value, min, max, step, onChange, fmt }) {
+      return html`
+        <div class="slider-row">
+          <div class="slider-head">
+            <span class="slider-label">${label}</span>
+            <span class="slider-val">${fmt(value)}</span>
+          </div>
+          <input class="x-slider" type="range" min=${min} max=${max} step=${step}
+            value=${value} onInput=${e => onChange(Number(e.target.value))} />
+        </div>`;
+    }
+
+    function NumField({ label, value, onChange, pre, post, step }) {
+      return html`
+        <div class="assump-field">
+          <label>${label}</label>
+          <div class="in">
+            ${pre && html`<span class="pre">${pre}</span>`}
+            <input type="number" step=${step || 'any'} value=${value}
+              onChange=${e => onChange(e.target.value === '' ? 0 : Number(e.target.value))} />
+            ${post && html`<span class="post">${post}</span>`}
+          </div>
+        </div>`;
+    }
+
+    // ---- Chart tooltip -----------------------------------------------------
+    function ChartTooltip({ active, payload, label }) {
+      if (!active || !payload || !payload.length) return null;
+      const rows = [...payload].sort((x, y) => y.value - x.value);
+      return html`
+        <div style=${{ background: '#0f172a', border: '1px solid #334155', borderRadius: 10, padding: '10px 12px', fontSize: 13 }}>
+          <div style=${{ color: '#94a3b8', marginBottom: 6 }}>Month ${label}</div>
+          ${rows.map(r => html`
+            <div key=${r.name} style=${{ display: 'flex', justifyContent: 'space-between', gap: 18, color: r.color }}>
+              <span>${r.name}</span>
+              <span style=${{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>${fmtUSD(r.value)}</span>
+            </div>`)}
+        </div>`;
+    }
+
+    // ---- App ---------------------------------------------------------------
+    function App() {
+      const init = useMemo(loadState, []);
+      const [s, setS] = useState(init);
+      const [showAssump, setShowAssump] = useState(false);
+      useEffect(() => {
+        try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch {}
+      }, [s]);
+      const set = (k) => (v) => setS(prev => ({ ...prev, [k]: v }));
+
+      const R = ridesPerWeek(s);
+
+      const options = useMemo(() => {
+        const list = [
+          { key: 'pass',  name: 'LimePass',  color: COLORS.pass,  monthly: monthlyPass(s),
+            detail: `${passesPerMonth(s).toFixed(1)} pass/mo × ${fmtUSD(s.passPrice)} (renew every ${s.passExpiry}d)` },
+          { key: 'prime', name: 'LimePrime', color: COLORS.prime, monthly: monthlyPrime(s),
+            detail: `${fmtUSD2(primePerRide(s))}/ride + ${fmtUSD2(s.primeFee)}/mo` },
+          { key: 'citi',  name: 'Citi Bike', color: COLORS.citi,  monthly: monthlyCiti(s),
+            detail: `${fmtUSD(s.citiAnnual)}/yr + ${fmtUSD2(s.citiPerMin)}/min` },
+        ];
+        list.forEach(o => { o.be = breakevenMonths(o.monthly, s); });
+        return list.sort((a, b) => a.monthly - b.monthly);
+      }, [s]);
+
+      const cheapest = options[0];
+
+      // Chart horizon: show all finite breakevens with headroom.
+      const maxMonth = useMemo(() => {
+        const bes = options.map(o => o.be).filter(isFinite);
+        const target = bes.length ? Math.max(...bes) : 24;
+        return Math.min(120, Math.max(12, Math.ceil(target * 1.3 / 6) * 6));
+      }, [options]);
+
+      const data = useMemo(() => {
+        const pts = [];
+        const stepM = maxMonth > 72 ? 2 : 1;
+        for (let m = 0; m <= maxMonth; m += stepM) {
+          pts.push({
+            month: m,
+            LimePass: monthlyPass(s) * m,
+            LimePrime: monthlyPrime(s) * m,
+            'Citi Bike': monthlyCiti(s) * m,
+            'Owned e-bike': s.bikeCost + s.ownMonthly * m,
+          });
+        }
+        return pts;
+      }, [s, maxMonth]);
+
+      const num = (v) => (isFinite(v) ? v : 0);
+
+      return html`
+        <div class="wrap">
+          <h1>🚲 E-bike vs. Rental Breakeven</h1>
+          <p class="sub">How long until buying an e-bike beats renting Citi Bike, LimePrime, or LimePass? Set your NYC riding habits and a bike price.</p>
+
+          <div class="card">
+            <h2>Your riding</h2>
+            <${Slider} label="Total minutes / week" value=${s.totalMin} min=${0} max=${240} step=${5}
+              onChange=${set('totalMin')} fmt=${v => html`${v} <small>min/wk</small>`} />
+            <${Slider} label="Average minutes / ride" value=${s.avgMin} min=${1} max=${25} step=${1}
+              onChange=${set('avgMin')} fmt=${v => html`${v} <small>min/ride</small>`} />
+            <${Slider} label="E-bike purchase price" value=${s.bikeCost} min=${1000} max=${3000} step=${100}
+              onChange=${set('bikeCost')} fmt=${v => fmtUSD(v)} />
+            <div style=${{ color: '#64748b', fontSize: '0.88rem', marginTop: '4px' }}>
+              ≈ <strong style=${{ color: '#cbd5e1' }}>${R.toFixed(1)} rides/week</strong> (${(R * WPM).toFixed(0)}/month)
+            </div>
+          </div>
+
+          <div class="card headline">
+            ${cheapest.monthly <= 0 ? html`
+              <div class="big">Add some riding time above to see your breakeven.</div>
+            ` : html`
+              <div class="big">
+                Your cheapest rental is <span class="hi">${cheapest.name}</span> at <span class="hi">${fmtUSD(cheapest.monthly)}/mo</span>.
+                ${isFinite(cheapest.be)
+                  ? html`<br/>A ${fmtUSD(s.bikeCost)} e-bike pays for itself in <span class="hi">~${fmtMonths(cheapest.be)}</span> (${fmtYears(cheapest.be)}).`
+                  : html`<br/>At this usage, owning never beats it — the bike's upkeep alone costs more.`}
+              </div>
+              <div class="note">Breakeven compares each rental's monthly spend against a one-time ${fmtUSD(s.bikeCost)} purchase plus ${fmtUSD(s.ownMonthly)}/mo upkeep.</div>
+            `}
+          </div>
+
+          <div class="card">
+            <h2>Breakeven by option</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Option</th>
+                  <th>Monthly cost</th>
+                  <th>Breaks even in</th>
+                  <th>Years</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${options.map(o => html`
+                  <tr key=${o.key} class=${o === cheapest ? 'cheapest' : ''}>
+                    <td>
+                      <span class="swatch" style=${{ background: o.color }}></span>
+                      <span class="opt-name">${o.name}</span>
+                      ${o === cheapest && html`<span class="tag">cheapest</span>`}
+                      <div style=${{ color: '#64748b', fontSize: '0.78rem', marginTop: '2px', marginLeft: '19px' }}>${o.detail}</div>
+                    </td>
+                    <td>${fmtUSD(o.monthly)}</td>
+                    <td>${isFinite(o.be) ? fmtMonths(o.be) : html`<span class="never">never</span>`}</td>
+                    <td>${isFinite(o.be) ? fmtYears(o.be) : html`<span class="never">—</span>`}</td>
+                  </tr>`)}
+                <tr>
+                  <td>
+                    <span class="swatch" style=${{ background: COLORS.owned }}></span>
+                    <span class="opt-name">Owned e-bike</span>
+                    <div style=${{ color: '#64748b', fontSize: '0.78rem', marginTop: '2px', marginLeft: '19px' }}>${fmtUSD(s.bikeCost)} up front + ${fmtUSD(s.ownMonthly)}/mo upkeep</div>
+                  </td>
+                  <td>${fmtUSD(s.ownMonthly)}<span style=${{ color: '#64748b' }}> +buy</span></td>
+                  <td class="never">—</td>
+                  <td class="never">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>Cumulative cost over time</h2>
+            <${ResponsiveContainer} width="100%" height=${380}>
+              <${LineChart} data=${data} margin=${{ top: 12, right: 16, left: 8, bottom: 4 }}>
+                <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
+                <${XAxis} dataKey="month" type="number" domain=${[0, maxMonth]}
+                  tick=${{ fill: '#64748b', fontSize: 12 }}
+                  tickFormatter=${v => v + 'mo'} />
+                <${YAxis} tickFormatter=${v => fmtUSD(v)} tick=${{ fill: '#64748b', fontSize: 12 }} width=${64} />
+                <${Tooltip} content=${props => html`<${ChartTooltip} ...${props} />`} />
+                <${Legend} wrapperStyle=${{ fontSize: 13 }} />
+                <${Line} type="monotone" dataKey="LimePass" stroke=${COLORS.pass} strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+                <${Line} type="monotone" dataKey="LimePrime" stroke=${COLORS.prime} strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+                <${Line} type="monotone" dataKey="Citi Bike" stroke=${COLORS.citi} strokeWidth=${2.5} dot=${false} activeDot=${{ r: 4 }} />
+                <${Line} type="monotone" dataKey="Owned e-bike" stroke=${COLORS.owned} strokeWidth=${2.5} strokeDasharray="6 4" dot=${false} activeDot=${{ r: 4 }} />
+                ${options.filter(o => isFinite(o.be) && o.be <= maxMonth).map(o => html`
+                  <${ReferenceDot} key=${o.key} x=${num(o.be)} y=${s.bikeCost + s.ownMonthly * num(o.be)}
+                    r=${5} fill=${o.color} stroke="#0f172a" strokeWidth=${2}
+                    label=${{ value: fmtMonths(o.be), position: 'top', fill: o.color, fontSize: 11, fontWeight: 700 }} />`)}
+              </${LineChart}>
+            </${ResponsiveContainer}>
+            <p class="chart-note">Each rental line's crossing of the dashed <span style=${{ color: COLORS.owned }}>Owned e-bike</span> line is its breakeven point. Below the crossing, renting is cheaper; above it, the purchase has paid off.</p>
+          </div>
+
+          <div class="card">
+            <button class="assump-toggle" onClick=${() => setShowAssump(v => !v)}>
+              ${showAssump ? '▾' : '▸'} Assumptions & pricing ${showAssump ? '' : '(tap to edit)'}
+            </button>
+            ${showAssump && html`
+              <div class="assump-grid">
+                <${NumField} label="Citi Bike membership" value=${s.citiAnnual} onChange=${set('citiAnnual')} pre="$" post="/yr" />
+                <${NumField} label="Citi Bike e-bike rate" value=${s.citiPerMin} onChange=${set('citiPerMin')} pre="$" post="/min" step="0.01" />
+                <${NumField} label="LimePrime fee" value=${s.primeFee} onChange=${set('primeFee')} pre="$" post="/mo" step="0.01" />
+                <${NumField} label="LimePrime ride ≤ 5 min" value=${s.primeRide5} onChange=${set('primeRide5')} pre="$" step="0.01" />
+                <${NumField} label="LimePrime ride ≤ 20 min" value=${s.primeRide20} onChange=${set('primeRide20')} pre="$" step="0.01" />
+                <${NumField} label="LimePrime beyond 20 min" value=${s.primeOverMin} onChange=${set('primeOverMin')} pre="$" post="/min" step="0.01" />
+                <${NumField} label="LimePass minutes" value=${s.passMinutes} onChange=${set('passMinutes')} post="min" />
+                <${NumField} label="LimePass price" value=${s.passPrice} onChange=${set('passPrice')} pre="$" />
+                <${NumField} label="LimePass expiry" value=${s.passExpiry} onChange=${set('passExpiry')} post="days" />
+                <${NumField} label="E-bike upkeep" value=${s.ownMonthly} onChange=${set('ownMonthly')} pre="$" post="/mo" />
+              </div>
+              <p class="assump-note">
+                Defaults reflect mid-2026 NYC pricing. A LimePass bundle expires after ${s.passExpiry} days, so keeping Lime available on demand all month means renewing every ${s.passExpiry} days (≈${(DAYS_PER_MONTH / s.passExpiry).toFixed(1)} passes/mo) no matter how little you ride; heavier use adds passes once minutes exceed what those renewals include. Minutes are assumed usable across the bundle window without per-ride waste.
+                Citi Bike assumes full e-bike use; the $5.40 Manhattan per-ride cap and 60 free e-bike min/yr bonus are omitted for simplicity.
+                Charging is folded into e-bike upkeep. Theft, insurance, and resale value are not modeled.
+              </p>
+            `}
+          </div>
+
+          <p class="footer">All calculations run locally and persist in your browser. Part of <a href="../">playground</a>.</p>
+        </div>`;
+    }
+
+    createRoot(document.getElementById('root')).render(html`<${App} />`);
+  </script>
+</body>
+</html>

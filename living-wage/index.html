@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Living Wage — Typical Expenses</title>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+    "htm": "https://esm.sh/htm@3.1.1"
+  }
+}
+</script>
+<style>
+  :root {
+    /* Light theme + validated dataviz categorical palette (see dataviz skill) */
+    --page:           #f9f9f7;
+    --surface-1:      #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --muted:          #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11, 11, 11, 0.10);
+
+    --series-1: #2a78d6; /* Food · blue */
+    --series-2: #1baf7a; /* Child Care · aqua */
+    --series-3: #eda100; /* Medical · yellow */
+    --series-4: #008300; /* Housing · green */
+    --series-5: #4a3aa7; /* Transportation · violet */
+    --series-6: #e34948; /* Civic · red */
+    --series-7: #e87ba4; /* Internet & Mobile · magenta */
+    --series-8: #eb6834; /* Other · orange */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    line-height: 1.5;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; }
+
+  header { margin-bottom: 28px; }
+  header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  header .sub { color: var(--text-secondary); font-size: 15px; margin-top: 6px; }
+  header a { color: var(--series-1); text-decoration: none; }
+  header a:hover { text-decoration: underline; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .left { display: flex; flex-direction: column; gap: 20px; }
+
+  /* Controls — a single full-width row at the top (location, working adults, children). */
+  .controls-bar { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .controls-row { display: grid; grid-template-columns: 1.3fr 1fr 1.4fr; gap: 28px; align-items: start; }
+  @media (max-width: 680px) { .controls-row { grid-template-columns: 1fr; gap: 18px; } }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+  .field select {
+    width: 100%; font: inherit; font-size: 15px; color: var(--text-primary);
+    background: var(--surface-1); border: 1px solid var(--baseline);
+    border-radius: 9px; padding: 10px 12px; cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23898781' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .slider-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .slider-head .lab { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .slider-head .val { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  input[type=range] { width: 100%; accent-color: var(--series-1); cursor: pointer; height: 22px; }
+  .ticks { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .household-note {
+    font-size: 13px; color: var(--text-secondary);
+    background: var(--page); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px;
+  }
+  .household-note b { color: var(--text-primary); }
+
+  /* Donut */
+  .donut-wrap { position: relative; width: 100%; }
+  .donut-center {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; pointer-events: none; text-align: center;
+    z-index: 1;
+  }
+  /* Keep the hover tooltip above the center total overlay. */
+  .recharts-tooltip-wrapper { z-index: 5 !important; }
+  .donut-total { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; }
+  .donut-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .donut-sub { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* Legend */
+  .legend { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+  .legend-row {
+    display: grid; grid-template-columns: 14px 1fr auto auto; align-items: center;
+    gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer;
+    border: 1px solid transparent; background: none; font: inherit; text-align: left; width: 100%;
+  }
+  .legend-row:hover { background: var(--page); }
+  .legend-row.active { background: var(--page); border-color: var(--border); }
+  .legend-row.dim { opacity: 0.5; }
+  /* When a non-Atlanta city is selected, a signed delta-vs-Atlanta sits just left of the value. */
+  .legend-row.has-delta { grid-template-columns: 14px 1fr auto auto auto; }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; }
+  .legend-delta { font-size: 12px; font-weight: 400; font-variant-numeric: tabular-nums; text-align: right; min-width: 52px; }
+  .legend-name { font-size: 14px; color: var(--text-primary); }
+  .legend-val { font-size: 14px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .legend-pct { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 46px; text-align: right; }
+
+  /* Tooltip */
+  .tt { background: var(--surface-1); border: 1px solid var(--baseline); border-radius: 9px; padding: 9px 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.10); }
+  .tt-name { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+  .tt-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .tt-val { font-size: 17px; font-weight: 700; margin-top: 4px; }
+  .tt-val span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .tt-sub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+
+  /* Right / detail panel */
+  .right { min-height: 420px; display: flex; flex-direction: column; }
+  .detail-empty { margin: auto; text-align: center; color: var(--muted); font-size: 15px; max-width: 260px; }
+  .detail-empty span { display: block; font-size: 13px; margin-top: 6px; color: var(--baseline); }
+  .detail-card { display: flex; flex-direction: column; gap: 14px; }
+  .detail-head { display: flex; align-items: center; gap: 10px; }
+  .detail-head .swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; }
+  .detail-head h3 { font-size: 20px; font-weight: 700; }
+  .detail-close {
+    margin-left: auto; font: inherit; font-size: 20px; line-height: 1; color: var(--muted);
+    background: none; border: none; cursor: pointer; padding: 2px 6px; border-radius: 6px;
+  }
+  .detail-close:hover { color: var(--text-primary); background: var(--page); }
+  .detail-figs {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px 0;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .detail-fig { text-align: center; }
+  .detail-fig .n { font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .detail-fig .l { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .detail-bluf { font-size: 16px; font-weight: 600; line-height: 1.45; color: var(--text-primary); }
+  .detail-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 5px; }
+  .detail-method { font-size: 13.5px; line-height: 1.55; color: var(--text-secondary); }
+  .detail-note { font-size: 12.5px; line-height: 1.5; color: var(--text-secondary); background: var(--page); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; }
+  .detail-note b { color: var(--text-primary); }
+  .proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .pc-head { font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-secondary); margin-bottom: 7px; }
+  .proscons ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .proscons li { font-size: 13px; line-height: 1.4; color: var(--text-secondary); padding-left: 18px; position: relative; }
+  .proscons li::before { position: absolute; left: 0; font-weight: 700; }
+  .pc-pros li::before { content: '\2713'; color: #006300; }
+  .pc-cons li::before { content: '\2715'; color: #c0392b; }
+  .detail-src { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .detail-src a { color: var(--muted); }
+  @media (max-width: 480px) { .proscons { grid-template-columns: 1fr; } }
+
+  footer { margin-top: 26px; font-size: 12px; color: var(--muted); }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="application/json" id="lw-data">
+{
+  "meta": { "source": "MIT Living Wage Calculator", "sourceUrl": "https://livingwage.mit.edu/", "dataUpdated": "2026-02-15" },
+  "categories": ["Food","Child Care","Medical","Housing","Transportation","Civic","Internet & Mobile","Other"],
+  "locations": {
+    "Atlanta": { "mitName": "Fulton County, GA", "url": "https://livingwage.mit.edu/counties/13121", "households": {
+      "2 Adults (1 Working)": {
+        "0": {"Food":9489,"Child Care":0,"Medical":6488,"Housing":20815,"Transportation":9551,"Civic":4360,"Internet & Mobile":2428,"Other":7395,"afterTax":60526,"taxes":11347,"beforeTax":71873},
+        "1": {"Food":11777,"Child Care":0,"Medical":9300,"Housing":22822,"Transportation":12031,"Civic":5749,"Internet & Mobile":2428,"Other":8279,"afterTax":72386,"taxes":11244,"beforeTax":83629},
+        "2": {"Food":15148,"Child Care":0,"Medical":9600,"Housing":22822,"Transportation":13843,"Civic":6547,"Internet & Mobile":2428,"Other":8801,"afterTax":79190,"taxes":10314,"beforeTax":89504},
+        "3": {"Food":18482,"Child Care":0,"Medical":9936,"Housing":27361,"Transportation":15499,"Civic":7330,"Internet & Mobile":2428,"Other":9854,"afterTax":90890,"taxes":11007,"beforeTax":101897}
+      },
+      "2 Adults (Both Working)": {
+        "0": {"Food":9489,"Child Care":0,"Medical":6488,"Housing":20815,"Transportation":9551,"Civic":4360,"Internet & Mobile":2428,"Other":7395,"afterTax":60526,"taxes":11347,"beforeTax":71873},
+        "1": {"Food":11777,"Child Care":11221,"Medical":9300,"Housing":22822,"Transportation":12031,"Civic":5749,"Internet & Mobile":2428,"Other":8279,"afterTax":83607,"taxes":14965,"beforeTax":98571},
+        "2": {"Food":15148,"Child Care":21916,"Medical":9600,"Housing":22822,"Transportation":13843,"Civic":6547,"Internet & Mobile":2428,"Other":8801,"afterTax":101106,"taxes":17575,"beforeTax":118681},
+        "3": {"Food":18482,"Child Care":25738,"Medical":9936,"Housing":27361,"Transportation":15499,"Civic":7330,"Internet & Mobile":2428,"Other":9854,"afterTax":116627,"taxes":19828,"beforeTax":136456}
+      }
+    }},
+    "Asheville": { "mitName": "Asheville, NC (metro)", "url": "https://livingwage.mit.edu/metros/11700", "households": {
+      "2 Adults (1 Working)": {
+        "0": {"Food":8675,"Child Care":0,"Medical":8157,"Housing":17236,"Transportation":10164,"Civic":4360,"Internet & Mobile":2046,"Other":7395,"afterTax":58032,"taxes":9363,"beforeTax":67395},
+        "1": {"Food":10766,"Child Care":0,"Medical":11094,"Housing":18901,"Transportation":12803,"Civic":5749,"Internet & Mobile":2046,"Other":8279,"afterTax":69637,"taxes":9181,"beforeTax":78818},
+        "2": {"Food":13848,"Child Care":0,"Medical":11394,"Housing":18901,"Transportation":14731,"Civic":6547,"Internet & Mobile":2046,"Other":8801,"afterTax":76269,"taxes":8284,"beforeTax":84553},
+        "3": {"Food":16896,"Child Care":0,"Medical":11730,"Housing":22977,"Transportation":16492,"Civic":7330,"Internet & Mobile":2046,"Other":9854,"afterTax":87326,"taxes":8852,"beforeTax":96178}
+      },
+      "2 Adults (Both Working)": {
+        "0": {"Food":8675,"Child Care":0,"Medical":8157,"Housing":17236,"Transportation":10164,"Civic":4360,"Internet & Mobile":2046,"Other":7395,"afterTax":58032,"taxes":9363,"beforeTax":67395},
+        "1": {"Food":10766,"Child Care":9481,"Medical":11094,"Housing":18901,"Transportation":12803,"Civic":5749,"Internet & Mobile":2046,"Other":8279,"afterTax":79118,"taxes":12172,"beforeTax":91290},
+        "2": {"Food":13848,"Child Care":18940,"Medical":11394,"Housing":18901,"Transportation":14731,"Civic":6547,"Internet & Mobile":2046,"Other":8801,"afterTax":95208,"taxes":14304,"beforeTax":109512},
+        "3": {"Food":16896,"Child Care":25001,"Medical":11730,"Housing":22977,"Transportation":16492,"Civic":7330,"Internet & Mobile":2046,"Other":9854,"afterTax":112326,"taxes":16832,"beforeTax":129158}
+      }
+    }},
+    "San Francisco": { "mitName": "San Francisco County, CA", "url": "https://livingwage.mit.edu/counties/06075", "households": {
+      "2 Adults (1 Working)": {
+        "0": {"Food":10646,"Child Care":0,"Medical":8142,"Housing":32965,"Transportation":7743,"Civic":6543,"Internet & Mobile":2594,"Other":9077,"afterTax":77710,"taxes":14055,"beforeTax":91765},
+        "1": {"Food":13212,"Child Care":0,"Medical":13561,"Housing":39908,"Transportation":9754,"Civic":8629,"Internet & Mobile":2594,"Other":10163,"afterTax":97821,"taxes":15431,"beforeTax":113251},
+        "2": {"Food":16995,"Child Care":0,"Medical":13871,"Housing":39908,"Transportation":11223,"Civic":9827,"Internet & Mobile":2594,"Other":10804,"afterTax":105222,"taxes":14412,"beforeTax":119633},
+        "3": {"Food":20735,"Child Care":0,"Medical":14218,"Housing":50981,"Transportation":12565,"Civic":11002,"Internet & Mobile":2594,"Other":12096,"afterTax":124191,"taxes":18153,"beforeTax":142344}
+      },
+      "2 Adults (Both Working)": {
+        "0": {"Food":10646,"Child Care":0,"Medical":8142,"Housing":32965,"Transportation":7743,"Civic":6543,"Internet & Mobile":2594,"Other":9077,"afterTax":77710,"taxes":14055,"beforeTax":91765},
+        "1": {"Food":13212,"Child Care":25898,"Medical":13561,"Housing":39908,"Transportation":9754,"Civic":8629,"Internet & Mobile":2594,"Other":10163,"afterTax":123719,"taxes":26183,"beforeTax":149902},
+        "2": {"Food":16995,"Child Care":54401,"Medical":13871,"Housing":39908,"Transportation":11223,"Civic":9827,"Internet & Mobile":2594,"Other":10804,"afterTax":159623,"taxes":44184,"beforeTax":203808},
+        "3": {"Food":20735,"Child Care":74797,"Medical":14218,"Housing":50981,"Transportation":12565,"Civic":11002,"Internet & Mobile":2594,"Other":12096,"afterTax":198988,"taxes":65298,"beforeTax":264285}
+      }
+    }},
+    "New York": { "mitName": "New York County, NY", "url": "https://livingwage.mit.edu/counties/36061", "households": {
+      "2 Adults (1 Working)": {
+        "0": {"Food":13045,"Child Care":0,"Medical":10176,"Housing":37295,"Transportation":5451,"Civic":5834,"Internet & Mobile":2203,"Other":8573,"afterTax":82577,"taxes":17454,"beforeTax":100031},
+        "1": {"Food":16190,"Child Care":0,"Medical":12357,"Housing":40877,"Transportation":6866,"Civic":7694,"Internet & Mobile":2203,"Other":9598,"afterTax":95784,"taxes":17832,"beforeTax":113616},
+        "2": {"Food":20824,"Child Care":0,"Medical":12742,"Housing":40877,"Transportation":7901,"Civic":8762,"Internet & Mobile":2203,"Other":10204,"afterTax":103513,"taxes":17081,"beforeTax":120594},
+        "3": {"Food":25407,"Child Care":0,"Medical":13173,"Housing":51188,"Transportation":8845,"Civic":9810,"Internet & Mobile":2203,"Other":11424,"afterTax":122049,"taxes":21516,"beforeTax":143566}
+      },
+      "2 Adults (Both Working)": {
+        "0": {"Food":13045,"Child Care":0,"Medical":10176,"Housing":37295,"Transportation":5451,"Civic":5834,"Internet & Mobile":2203,"Other":8573,"afterTax":82577,"taxes":17454,"beforeTax":100031},
+        "1": {"Food":16190,"Child Care":16551,"Medical":12357,"Housing":40877,"Transportation":6866,"Civic":7694,"Internet & Mobile":2203,"Other":9598,"afterTax":112335,"taxes":23972,"beforeTax":136307},
+        "2": {"Food":20824,"Child Care":32026,"Medical":12742,"Housing":40877,"Transportation":7901,"Civic":8762,"Internet & Mobile":2203,"Other":10204,"afterTax":135538,"taxes":33389,"beforeTax":168927},
+        "3": {"Food":25407,"Child Care":42512,"Medical":13173,"Housing":51188,"Transportation":8845,"Civic":9810,"Internet & Mobile":2203,"Other":11424,"afterTax":164561,"taxes":46758,"beforeTax":211319}
+      }
+    }},
+    "Huntsville": { "mitName": "Madison County, AL", "url": "https://livingwage.mit.edu/counties/01089", "households": {
+      "2 Adults (1 Working)": {
+        "0": {"Food":8033,"Child Care":0,"Medical":7466,"Housing":14286,"Transportation":11049,"Civic":4360,"Internet & Mobile":2186,"Other":7395,"afterTax":54774,"taxes":9741,"beforeTax":64515},
+        "1": {"Food":9969,"Child Care":0,"Medical":11851,"Housing":16474,"Transportation":13918,"Civic":5749,"Internet & Mobile":2186,"Other":8279,"afterTax":68425,"taxes":9967,"beforeTax":78392},
+        "2": {"Food":12823,"Child Care":0,"Medical":12151,"Housing":16474,"Transportation":16014,"Civic":6547,"Internet & Mobile":2186,"Other":8801,"afterTax":74997,"taxes":9249,"beforeTax":84246},
+        "3": {"Food":15645,"Child Care":0,"Medical":12487,"Housing":21253,"Transportation":17929,"Civic":7330,"Internet & Mobile":2186,"Other":9854,"afterTax":86684,"taxes":10096,"beforeTax":96779}
+      },
+      "2 Adults (Both Working)": {
+        "0": {"Food":8033,"Child Care":0,"Medical":7466,"Housing":14286,"Transportation":11049,"Civic":4360,"Internet & Mobile":2186,"Other":7395,"afterTax":54774,"taxes":9741,"beforeTax":64515},
+        "1": {"Food":9969,"Child Care":8039,"Medical":11851,"Housing":16474,"Transportation":13918,"Civic":5749,"Internet & Mobile":2186,"Other":8279,"afterTax":76465,"taxes":12455,"beforeTax":88920},
+        "2": {"Food":12823,"Child Care":15630,"Medical":12151,"Housing":16474,"Transportation":16014,"Civic":6547,"Internet & Mobile":2186,"Other":8801,"afterTax":90627,"taxes":14084,"beforeTax":104712},
+        "3": {"Food":15645,"Child Care":20892,"Medical":12487,"Housing":21253,"Transportation":17929,"Civic":7330,"Internet & Mobile":2186,"Other":9854,"afterTax":107575,"taxes":16614,"beforeTax":124189}
+      }
+    }}
+  }
+}
+</script>
+
+<script type="application/json" id="lw-method">
+{
+  "Food": {
+    "bluf": "Food is scaled up to the USDA Liberal Food Plan — the most generous of USDA's four nutritious diets — roughly 1.5× the Low-Cost basis MIT actually uses.",
+    "methodology": "USDA publishes four nutritious food plans at rising cost levels — Thrifty, Low-Cost, Moderate, and Liberal. MIT's own Food figure uses the Low-Cost plan (the second-cheapest): a market basket for a nutritious diet fully prepared at home, summed across household members by age and sex. This tool instead shows the Liberal level, USDA's most generous plan, which affords more variety, more fresh and out-of-season produce, more meat and seafood, and some convenience foods. We derive it by multiplying MIT's Food number by the published Liberal-to-Low-Cost cost ratio (about 1.52-1.55 for a two-adult family; USDA \"Cost of Food at Home at Three Levels\", May 2026). Because both plans pass through the same USDA household-size and inflation adjustments, those cancel in the ratio, so it applies cleanly to MIT's national figure and still scales with the number and ages of children. Like every USDA plan, it assumes all meals are cooked at home and excludes restaurant and takeout meals.",
+    "pros": [
+      "Reflects a fuller, more varied diet.",
+      "Still USDA-grounded and nutritionally adequate.",
+      "Scales by household size and children's ages.",
+      "Uses a recent, sourced USDA ratio."
+    ],
+    "cons": [
+      "Generous Liberal level; most spend less.",
+      "Still assumes zero restaurant meals.",
+      "One national ratio, not regional."
+    ]
+  },
+  "Child Care": {
+    "bluf": "MIT estimates annual child care as county-priced, center-based care set by each child's age, charged only when parents work and zero when an adult stays home.",
+    "methodology": "Child care cost comes primarily from the U.S. Department of Labor Women's Bureau National Database of Childcare Prices (NDCP), which provides county-level prices from state market-rate surveys collected 2008-2022. Gaps are filled with state-level figures from Child Care Aware of America's annual price report, scaled down to counties via a population-weighted gross-median-rent index from ACS 5-year estimates. Because utilization data on center- versus home-based care is limited, estimates assume center-based care only. Cost scales by the number and age of children: the first child is priced at toddler care, the second at preschool, and the third at before/after-school plus two full-time summer months in dual-earner families. This deliberately assumes younger, pricier care to offset known underestimation. Families with no children pay zero; in two-adult households where only one adult works, the non-working adult provides care at no cost. Figures are inflation-adjusted to current dollars using the CPI-U day-care and preschool series.",
+    "pros": [
+      "Uses federal county-level price data.",
+      "Varies by child age and count.",
+      "Corrects for known price underestimation.",
+      "Documented age and care-type assumptions."
+    ],
+    "cons": [
+      "Assumes formal center-based care only.",
+      "Ignores unpaid family and home care.",
+      "Stay-at-home care counted as free.",
+      "Some survey data as old as 2008.",
+      "Understates high-cost urban ZIP codes."
+    ]
+  },
+  "Medical": {
+    "bluf": "Medical is MIT's employer-premium share plus out-of-pocket costs, with an added dental and vision estimate that MIT leaves out.",
+    "methodology": "MIT builds its health-care figure from two parts: the employee/household share of employer-sponsored insurance premiums, and out-of-pocket medical costs. Premium data comes from the AHRQ Medical Expenditure Panel Survey Insurance Component (MEPS-IC), giving state-level premiums and employer contributions by coverage tier; the model assumes the household has employer coverage and pays only the worker's share. Out-of-pocket costs come from the BLS Consumer Expenditure Survey, regionally adjusted, and scale with household composition. MIT excludes dental and vision entirely — so this tool adds a flat estimate of about $700 per adult and $450 per child per year, covering the employee-paid dental and vision premium share plus typical out-of-pocket dental care, eye exams, and glasses. Those figures draw on AHRQ MEPS and ADA/CMS dental data and vision-industry surveys. The add-on scales with the number of adults and children but is held constant nationally, so it doesn't capture the roughly ±25% regional swing in dental and optical prices, and it omits lumpy orthodontia.",
+    "pros": [
+      "Now includes dental and vision, unlike MIT.",
+      "Uses authoritative federal survey data.",
+      "State-level and household-size specific.",
+      "Reflects a fully-covered household's costs."
+    ],
+    "cons": [
+      "Assumes everyone has employer insurance.",
+      "Ignores uninsured and ACA subsidies.",
+      "Dental/vision add-on is flat, not regional.",
+      "Excludes lumpy orthodontia costs.",
+      "Averages hide big individual variance."
+    ]
+  },
+  "Housing": {
+    "bluf": "MIT sets annual housing cost from HUD Fair Market Rent — the 40th-percentile gross rent for the bedrooms a household needs — then annualizes it.",
+    "methodology": "Housing comes from HUD's Fair Market Rents (FMR), derived from American Community Survey recent-mover data. FMR is the 40th-percentile gross rent for standard-quality units, including shelter, contract rent, and all major tenant-paid utilities, but excluding telephone, cable/satellite, and internet (which are a separate category). HUD publishes FMRs by unit size from zero to four bedrooms. MIT matches unit size to each family type's minimum need: a single adult needs 0 bedrooms; two adults need 1 bedroom; families with one or two children need 2 bedrooms; families with three children need 3 bedrooms. FMRs are published for metro areas and nonmetro counties; MIT adds county-level variation by multiplying by a population-weighted county index built from ACS 5-year gross-median-rent data. Costs are annualized and inflation-adjusted using the CPI-U housing series. The model assumes all households rent rather than own.",
+    "pros": [
+      "Uses standardized federal HUD data.",
+      "Covers essentially every U.S. county.",
+      "Includes utilities, not just rent.",
+      "Bedrooms scale with family size.",
+      "Adjusted for inflation and locality."
+    ],
+    "cons": [
+      "40th percentile understates many market rents.",
+      "Assumes renting, ignores homeownership.",
+      "County averages hide neighborhood variance.",
+      "ACS data lags current rent spikes.",
+      "Caps bedrooms for large families."
+    ]
+  },
+  "Transportation": {
+    "bluf": "MIT anchors transportation to modeled county car ownership-and-operating costs, rescaled to a single commuter and to family size using federal spending survey data.",
+    "methodology": "The transportation base comes from the Center for Neighborhood Technology Housing & Transportation (H&T) Index, which models total county-level transportation costs from auto ownership, auto use, and transit use. It uses the cost for a \"regional typical household\" — one earning the area median income — as the base. That figure is attenuated to a single commuter by the ratio of all workers age 16+ to those who do not work from home (from ACS 5-year, state-level data). The rebased cost is then multiplied by a family-size-weighted index built from the BLS Consumer Expenditure Survey annual means for used cars, gasoline, other vehicle expenses (financing, insurance, maintenance), and public transit, by size and composition of the consumer unit. Values are inflation-adjusted to current dollars using the CPI-U transportation series. The model is auto-centric, reflecting average vehicle ownership and operating costs where a car is functionally necessary, plus transit costs where adequate transit exists.",
+    "pros": [
+      "County-level geographic variation.",
+      "Reflects both auto and transit costs.",
+      "Scales by household size and composition.",
+      "Grounded in federal survey data.",
+      "Inflation-adjusted to current dollars."
+    ],
+    "cons": [
+      "Assumes car ownership in most counties.",
+      "Pegged to median-income household spending.",
+      "Family-size index uses national averages.",
+      "Work-from-home ratio only state-level.",
+      "Poorly captures car-free households."
+    ]
+  },
+  "Civic": {
+    "bluf": "MIT sums national-average spending on a fixed basket of recreation and community-participation items, then scales it by household size and region.",
+    "methodology": "MIT's \"Civic Engagement\" category is built from the U.S. Bureau of Labor Statistics Consumer Expenditure Survey (CES), inflated to current dollars via expenditure-specific CPI-U indexes. The cost is constructed by summing CES annual expenditure means (national averages, not medians or percentiles) for seven sub-components: audio-visual equipment and services; education; fees and admissions; other entertainment; pets; reading; and toys, hobbies, and playground equipment. These are totaled by the size and composition of the \"consumer unit,\" a rough proxy for family size, so amounts vary across the family types. National means are then given geographic variation through a regional index. Civic was added around 2020-2021 as MIT judged community participation an increasingly sizable, non-optional expense. It is kept distinct from \"Other necessities\" (clothing, personal care, housekeeping supplies) and from \"Internet & Mobile\" (home internet and cellular service), which MIT split out separately.",
+    "pros": [
+      "Grounded in official BLS survey data.",
+      "Captures real recreation and community costs.",
+      "Scales by household size and region.",
+      "Annually updated and inflation-adjusted."
+    ],
+    "cons": [
+      "\"Civic\" is a vague catch-all label.",
+      "Uses average spending, not minimum need.",
+      "Basket boundaries have shifted over time.",
+      "Excludes restaurants, gifts, and vacations.",
+      "Averages ignore actual household behavior."
+    ]
+  },
+  "Internet & Mobile": {
+    "bluf": "MIT sums a county's cheapest home broadband plan, one per household, with cellular service costs that scale by the number of adults.",
+    "methodology": "MIT added \"Internet & Mobile\" as a standalone category in its 2025/2026 benchmark, reasoning that HUD Fair Market Rents cover major utilities but not internet or telephone, which are now essential. It combines two subcategories. Home internet uses county-level \"lowest-cost monthly plan\" prices from BroadbandNow's county broadband statistics, itself sourced from FCC and Census Bureau data with proprietary gap-fills; MIT assumes every household buys just one plan regardless of size, annualizes it, and inflates to current dollars. Mobile uses the BLS Consumer Expenditure Survey's annual means for \"cellular phone service\" by consumer-unit size and composition, counting only adults as users; national figures get regional variation via a Census-region index, then are inflation-adjusted. Internet is flat per household; mobile scales with the number of adults.",
+    "pros": [
+      "Treats connectivity as an essential need.",
+      "Uses BLS and FCC/Census data.",
+      "Internet priced at county level.",
+      "Mobile scales with adults and region.",
+      "All figures inflation-adjusted."
+    ],
+    "cons": [
+      "Broadband prices date from 2020.",
+      "Assumes single cheapest internet plan.",
+      "Mobile is a regionally-indexed national mean.",
+      "Flat basket ignores bundling.",
+      "Assumes children use no cellular service."
+    ]
+  },
+  "Other": {
+    "bluf": "MIT sums federal survey spending on apparel, furnishings, housekeeping supplies, and personal care, scaled by household size and adjusted for region.",
+    "methodology": "The \"Other necessities\" bucket captures basic goods not covered by the other seven components. Its cost comes from the BLS Consumer Expenditure Survey (CES), a national household interview and diary survey. The estimate is built by summing CES annual expenditure means for five line items: apparel and services; household furnishings and equipment; housekeeping supplies; personal care products and services; and miscellaneous household equipment. These means are taken by the size and composition of the consumer unit, a rough proxy for family size, so the figure scales with household composition rather than being a flat percentage of total spending (a change from the older \"share of expenditures\" approach). National means are geographically adjusted by a Census-region index built from these same categories. Values are inflation-adjusted to current dollars using the CPI-U all-items series. Civic (education, fees and admission, pets, reading, toys/hobbies) and Internet & Mobile were split out as separate buckets.",
+    "pros": [
+      "Based on actual national spending data.",
+      "Scales with household size and composition.",
+      "Regionally and inflation-adjusted.",
+      "Summed line items, not arbitrary percentage.",
+      "Transparent, reproducible public sources."
+    ],
+    "cons": [
+      "Catch-all residual with fuzzy boundaries.",
+      "Reflects average spending, not true need.",
+      "Only coarse region-level adjustment.",
+      "Survey tends to undercount spending.",
+      "Boundary with Civic is arbitrary."
+    ]
+  },
+  "Retirement (401k)": {
+    "bluf": "Maxing out a 401(k) for two adults at the 2026 IRS limit of $24,500 each — $49,000 a year of retirement savings, added as a line MIT's basic-needs budget leaves out entirely.",
+    "methodology": "This slice is not an MIT expense; it is retirement savings, the single biggest thing MIT's subsistence budget omits. It assumes both adults contribute the full employee elective-deferral limit set by the IRS for 2026: $24,500 each, or $49,000 combined. The figure is held flat regardless of the working-adults slider or the city. It counts employee contributions only, so it excludes any employer match (which is additional) and the extra catch-up contributions allowed at age 50 and older. Because 401(k) contributions are pre-tax, maxing out also lowers taxable income, though this tool does not model taxes. Maxing out is an aspirational savings target, not typical behavior: most households save far less, and doing this on top of the eight need-based categories requires income well above a bare living wage.",
+    "pros": [
+      "Fills MIT's biggest gap — zero savings.",
+      "Uses the current 2026 IRS limit.",
+      "Pre-tax; also lowers taxable income.",
+      "Shown apart from need-based expenses."
+    ],
+    "cons": [
+      "Maxing out is aspirational, not typical.",
+      "Excludes employer match and 50+ catch-up.",
+      "Flat $49k ignores the working-adults slider.",
+      "Savings, not a cost of living."
+    ]
+  }
+}
+</script>
+
+<script type="module">
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import htm from 'htm';
+
+const html = htm.bind(React.createElement);
+
+const DATA = JSON.parse(document.getElementById('lw-data').textContent);
+const METHODOLOGY = JSON.parse(document.getElementById('lw-method').textContent);
+const CATEGORIES = DATA.categories;
+// A 9th slice: maxing out a 401(k) for two adults — a savings line MIT's budget
+// omits — appended after the eight need-based expense categories.
+const RETIREMENT = 'Retirement (401k)';
+const RETIREMENT_ANNUAL = 49000; // 2 adults × 2026 IRS 401(k) elective-deferral limit ($24,500 each)
+const PIE_CATEGORIES = [...CATEGORIES, RETIREMENT];
+// Categorical hues in fixed order (dataviz palette). Category -> color is stable
+// across every city/household so a slice keeps its hue. Retirement gets a neutral
+// slate to read as "savings", set apart from the colorful expense categories.
+const PALETTE = ['#2a78d6', '#1baf7a', '#eda100', '#008300', '#4a3aa7', '#e34948', '#e87ba4', '#eb6834'];
+const COLOR = { ...Object.fromEntries(CATEGORIES.map((c, i) => [c, PALETTE[i]])), [RETIREMENT]: '#5b6472' };
+
+const LOCATIONS = Object.keys(DATA.locations); // Atlanta, Asheville, San Francisco, New York, Huntsville
+const usd0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+// Display rounding: annual figures to the nearest $100, monthly to the nearest $10.
+const fmtYear = (v) => usd0.format(Math.round(v / 100) * 100);
+const fmtMonth = (v) => usd0.format(Math.round(v / 10) * 10);
+// Signed dollars for the vs-Atlanta delta: "+$2,300", "-$200", "$0".
+const usdDelta = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0, signDisplay: 'exceptZero' });
+
+// Food is shown at the USDA *Liberal* food-plan level, not MIT's Low-Cost basis.
+// These are the Liberal ÷ Low-Cost cost ratios by number of children (2-adult
+// household), from USDA "Cost of Food at Home at Three Levels", U.S. avg, May 2026.
+// Both plans share USDA's household-size and inflation adjustments, so those cancel
+// in the ratio and it applies cleanly to MIT's (national) Food figure.
+const FOOD_LIBERAL_RATIO = { 0: 1.545, 1: 1.533, 2: 1.527, 3: 1.516 };
+
+// MIT's Medical excludes dental & vision; we add a flat annual per-person estimate
+// (employee-paid dental/vision premium share + typical out-of-pocket dental care,
+// eye exams, and glasses). Sources: AHRQ MEPS + ADA/CMS (dental), vision-industry
+// data. Kept national; scales with the number of adults and children.
+const MEDICAL_DENTAL_VISION = { adult: 700, child: 450 };
+
+// Atlanta housing is refined to a ZIP-specific Small Area FMR: the median of ZIPs
+// 30306 and 30307, with bedroom count = children + 1. Monthly SAFMR by bedrooms
+// (0..4), HUD Final FY2026, Atlanta-Sandy Springs-Roswell HUD Metro FMR Area.
+const ATLANTA_SAFMR_2026 = {
+  '30306': { 0: 2060, 1: 2150, 2: 2360, 3: 2830, 4: 3380 },
+  '30307': { 0: 2030, 1: 2130, 2: 2330, 3: 2790, 4: 3340 },
+};
+
+const STORAGE_KEY = 'living-wage-v1';
+const DEFAULTS = { location: 'Atlanta', workingAdults: 2, children: 2, selected: null };
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const s = { ...DEFAULTS, ...JSON.parse(raw) };
+      // guard against stale/invalid persisted values
+      if (!LOCATIONS.includes(s.location)) s.location = DEFAULTS.location;
+      if (s.workingAdults !== 1 && s.workingAdults !== 2) s.workingAdults = DEFAULTS.workingAdults;
+      if (![0, 1, 2, 3].includes(s.children)) s.children = DEFAULTS.children;
+      if (s.selected !== null && !PIE_CATEGORIES.includes(s.selected)) s.selected = null;
+      return s;
+    }
+  } catch (e) { /* private mode etc. */ }
+  return { ...DEFAULTS };
+}
+
+// Pure selector — household is always 2 adults; the slider chooses how many work.
+// Two categories are adjusted from MIT's raw figures: Food is scaled up to the USDA
+// Liberal level, and Medical adds a dental + vision estimate MIT omits. The other six
+// are MIT's as-scraped. Returns a copy so raw DATA is never mutated.
+function getColumn(location, workingAdults, children) {
+  const household = workingAdults === 1 ? '2 Adults (1 Working)' : '2 Adults (Both Working)';
+  const row = DATA.locations[location].households[household][String(children)];
+  const dentalVision = 2 * MEDICAL_DENTAL_VISION.adult + children * MEDICAL_DENTAL_VISION.child;
+  const out = {
+    ...row,
+    Food: Math.round(row.Food * FOOD_LIBERAL_RATIO[children]),
+    Medical: row.Medical + dentalVision,
+    [RETIREMENT]: RETIREMENT_ANNUAL, // flat: two adults maxing out, regardless of the slider
+  };
+  // Atlanta housing: ZIP-specific SAFMR, median of 30306 & 30307, bedrooms = children + 1.
+  if (location === 'Atlanta') {
+    const br = children + 1;
+    const monthly = (ATLANTA_SAFMR_2026['30306'][br] + ATLANTA_SAFMR_2026['30307'][br]) / 2;
+    out.Housing = Math.round(monthly * 12);
+  }
+  return out;
+}
+
+function App() {
+  const init = useMemo(loadState, []);
+  const [location, setLocation] = useState(init.location);
+  const [workingAdults, setWorkingAdults] = useState(init.workingAdults);
+  const [children, setChildren] = useState(init.children);
+  const [selected, setSelected] = useState(init.selected);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ location, workingAdults, children, selected }));
+    } catch (e) { /* swallow */ }
+  }, [location, workingAdults, children, selected]);
+
+  const locInfo = DATA.locations[location];
+  const col = getColumn(location, workingAdults, children);
+  // Atlanta is the baseline: for any other city, show each category's dollar delta
+  // vs. Atlanta at the same household composition (red if pricier, green if cheaper).
+  const showDelta = location !== 'Atlanta';
+  const baseCol = getColumn('Atlanta', workingAdults, children);
+  // Memoized on the data inputs only, so toggling a selection or hovering keeps
+  // the same array reference and doesn't retrigger the slice animation — only a
+  // location / adults / children change morphs the chart.
+  const pieData = useMemo(
+    () => PIE_CATEGORIES.map((name) => ({ name, value: getColumn(location, workingAdults, children)[name] })),
+    [location, workingAdults, children],
+  );
+  const total = pieData.reduce((s, d) => s + d.value, 0);
+  const pct = (v) => (total > 0 ? (v / total) * 100 : 0);
+  // Percentages to two significant digits: 22.6 -> "23", 6.48 -> "6.5", 2.40 -> "2.4".
+  const fmtPct = (v) => pct(v).toPrecision(2);
+
+  // Legend order: value descending, but "Other" always pinned last. The pie arcs
+  // stay in fixed palette order; only this list is re-sorted.
+  const legendData = useMemo(() => {
+    const rest = pieData.filter((d) => d.name !== 'Other').sort((a, b) => b.value - a.value);
+    const other = pieData.filter((d) => d.name === 'Other');
+    return [...rest, ...other];
+  }, [pieData]);
+
+  // Tween the slice values ourselves (instead of Recharts' built-in animation)
+  // so that changing an input mid-flight — e.g. dragging children 1 -> 3 —
+  // continues from the current on-screen angles instead of snapping.
+  const targetValues = useMemo(() => pieData.map((d) => d.value), [pieData]);
+  const [displayValues, setDisplayValues] = useState(targetValues);
+  const curRef = useRef(targetValues);
+  const toRef = useRef(targetValues);
+  const fromRef = useRef(targetValues);
+  const startRef = useRef(0);
+  const rafRef = useRef(0);
+  useEffect(() => {
+    fromRef.current = curRef.current;
+    toRef.current = targetValues;
+    startRef.current = performance.now();
+    cancelAnimationFrame(rafRef.current);
+    const DURATION = 500;
+    const step = (now) => {
+      const t = Math.min(1, (now - startRef.current) / DURATION);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const next = fromRef.current.map((v, i) => v + (toRef.current[i] - v) * eased);
+      curRef.current = next;
+      setDisplayValues(next);
+      if (t < 1) rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [targetValues]);
+  const animData = PIE_CATEGORIES.map((name, i) => ({ name, value: Math.max(0, displayValues[i] || 0) }));
+
+  const toggle = (name) => setSelected((prev) => (prev === name ? null : name));
+  const method = selected ? METHODOLOGY[selected] : null;
+
+  const childLabel = children === 1 ? '1 child' : `${children} children`;
+  const workLabel = workingAdults === 1 ? '1 working' : 'both working';
+
+  const ChartTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+    const name = payload[0].name;
+    const value = col[name]; // always the final figure, never a mid-animation value
+    return html`
+      <div class="tt">
+        <div class="tt-name"><span class="tt-dot" style=${{ background: COLOR[name] }}></span>${name}</div>
+        <div class="tt-val">${fmtYear(value)}<span> /yr</span></div>
+        <div class="tt-sub">${fmtMonth(value / 12)}/mo · ${fmtPct(value)}% of expenses</div>
+      </div>`;
+  };
+
+  return html`
+    <div class="wrap">
+      <header>
+        <h1>Living Wage — Typical Expenses</h1>
+        <p class="sub">Where a household's budget goes to meet basic needs, from the <a href="https://livingwage.mit.edu/" target="_blank" rel="noopener">MIT Living Wage Calculator</a> (data updated ${DATA.meta.dataUpdated}).</p>
+      </header>
+
+      <div class="card controls-bar">
+        <div class="controls-row">
+          <div class="field">
+            <label for="loc">Location</label>
+            <select id="loc" value=${location} onChange=${(e) => setLocation(e.target.value)}>
+              ${LOCATIONS.map((l) => html`<option key=${l} value=${l}>${l}</option>`)}
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="slider-head">
+              <span class="lab">Working adults</span>
+              <span class="val">${workingAdults}</span>
+            </div>
+            <input type="range" min="1" max="2" step="1" value=${workingAdults}
+              onInput=${(e) => setWorkingAdults(Number(e.target.value))} />
+            <div class="ticks"><span>1</span><span>2</span></div>
+          </div>
+
+          <div class="field">
+            <div class="slider-head">
+              <span class="lab">Children</span>
+              <span class="val">${children}</span>
+            </div>
+            <input type="range" min="0" max="3" step="1" value=${children}
+              onInput=${(e) => setChildren(Number(e.target.value))} />
+            <div class="ticks"><span>0</span><span>1</span><span>2</span><span>3</span></div>
+          </div>
+        </div>
+
+        <div class="household-note">Household of <b>2 adults</b> (${workLabel}) with <b>${childLabel}</b> in <b>${locInfo.mitName}</b>.</div>
+      </div>
+
+      <div class="grid">
+        <section class="left">
+          <div class="card">
+            <div class="donut-wrap">
+              <${ResponsiveContainer} width="100%" height=${320}>
+                <${PieChart}>
+                  <${Pie} data=${animData} dataKey="value" nameKey="name" cx="50%" cy="50%"
+                    innerRadius=${78} outerRadius=${128} paddingAngle=${1.5} minAngle=${2}
+                    stroke="var(--surface-1)" strokeWidth=${2} isAnimationActive=${false}
+                    onClick=${(_, idx) => toggle(animData[idx].name)}>
+                    ${pieData.map((d) => html`
+                      <${Cell} key=${d.name} fill=${COLOR[d.name]}
+                        fillOpacity=${selected && selected !== d.name ? 0.3 : 1}
+                        stroke=${selected === d.name ? 'var(--text-primary)' : 'var(--surface-1)'}
+                        strokeWidth=${selected === d.name ? 2.5 : 2}
+                        style=${{ cursor: 'pointer', outline: 'none' }} />`)}
+                  </${Pie}>
+                  <${Tooltip} content=${html`<${ChartTooltip} />`} />
+                </${PieChart}>
+              </${ResponsiveContainer}>
+              <div class="donut-center">
+                <div class="donut-total">${fmtYear(total)}</div>
+                <div class="donut-label">per year</div>
+                <div class="donut-sub">${fmtMonth(total / 12)}/mo</div>
+              </div>
+            </div>
+
+            <div class="legend">
+              ${legendData.map((d) => {
+                const delta = Math.round((d.value - baseCol[d.name]) / 100) * 100;
+                const deltaColor = delta > 0 ? '#c0392b' : delta < 0 ? '#006300' : 'var(--muted)';
+                return html`
+                <button type="button" key=${d.name}
+                  class=${'legend-row' + (showDelta ? ' has-delta' : '') + (selected === d.name ? ' active' : (selected ? ' dim' : ''))}
+                  onClick=${() => toggle(d.name)}>
+                  <span class="swatch" style=${{ background: COLOR[d.name] }}></span>
+                  <span class="legend-name">${d.name}</span>
+                  ${showDelta ? html`<span class="legend-delta" style=${{ color: deltaColor }}>${usdDelta.format(delta)}</span>` : null}
+                  <span class="legend-val">${fmtYear(d.value)}</span>
+                  <span class="legend-pct">${fmtPct(d.value)}%</span>
+                </button>`;
+              })}
+            </div>
+          </div>
+        </section>
+
+        <aside class="card right">
+          ${selected
+            ? html`
+              <div class="detail-card">
+                <div class="detail-head">
+                  <span class="swatch" style=${{ background: COLOR[selected] }}></span>
+                  <h3>${selected}</h3>
+                  <button type="button" class="detail-close" aria-label="Close detail" onClick=${() => setSelected(null)}>×</button>
+                </div>
+                <div class="detail-figs">
+                  <div class="detail-fig">
+                    <div class="n">${fmtYear(col[selected])}</div>
+                    <div class="l">per year</div>
+                  </div>
+                  <div class="detail-fig">
+                    <div class="n">${fmtMonth(col[selected] / 12)}</div>
+                    <div class="l">per month</div>
+                  </div>
+                  <div class="detail-fig">
+                    <div class="n">${fmtPct(col[selected])}%</div>
+                    <div class="l">of expenses</div>
+                  </div>
+                </div>
+                <p class="detail-bluf">${method.bluf}</p>
+                <div>
+                  <div class="detail-eyebrow">Methodology</div>
+                  <p class="detail-method">${method.methodology}</p>
+                </div>
+                ${selected === 'Housing' && location === 'Atlanta'
+                  ? html`<p class="detail-note">For <b>Atlanta</b>, this figure is more specific than MIT's county number: the median of the HUD FY2026 Small Area FMRs for ZIP codes <b>30306</b> and <b>30307</b>, with bedroom count set to <b>children + 1</b> (so a 2-child family uses a 3-bedroom rent).</p>`
+                  : null}
+                <div class="proscons">
+                  <div class="pc-pros">
+                    <div class="pc-head">Pros</div>
+                    <ul>${method.pros.map((p) => html`<li key=${p}>${p}</li>`)}</ul>
+                  </div>
+                  <div class="pc-cons">
+                    <div class="pc-head">Cons</div>
+                    <ul>${method.cons.map((c) => html`<li key=${c}>${c}</li>`)}</ul>
+                  </div>
+                </div>
+                <div class="detail-src">Source: <a href="https://livingwage.mit.edu/pages/methodology" target="_blank" rel="noopener">MIT Living Wage methodology</a> & 2026 Technical Documentation.</div>
+              </div>`
+            : html`<div class="detail-empty">Select a slice to see how MIT calculates it.<span>Methodology, pros & cons for each of the eight expenses.</span></div>`}
+        </aside>
+      </div>
+
+      <footer>
+        Source: <a href=${locInfo.url} target="_blank" rel="noopener">MIT Living Wage Calculator — ${locInfo.mitName}</a>.
+        The chart shows MIT's eight “typical expenses” categories plus a ninth <b>Retirement (401k)</b> savings slice, and excludes taxes and the living/poverty/minimum-wage figures.
+        <br />Some figures are adjusted from MIT's: <b>Food</b> is shown at the USDA Liberal food-plan level (≈1.5× MIT's Low-Cost basis); <b>Medical</b> adds an estimated ≈$700/adult and ≈$450/child for dental & vision that MIT omits; for <b>Atlanta</b>, <b>Housing</b> uses a ZIP-level Small Area FMR (median of 30306 & 30307, bedrooms = children + 1) rather than MIT's county figure; and <b>Retirement</b> adds $49,000/yr for two adults maxing out a 401(k) — savings MIT excludes entirely. Other categories are MIT's — select a slice for details.
+      </footer>
+    </div>`;
+}
+
+createRoot(document.getElementById('root')).render(html`<${App} />`);
+</script>
+</body>
+</html>

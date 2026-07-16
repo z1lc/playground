@@ -25,6 +25,10 @@ NEIGHBORHOODS = {
     "Cabbagetown": (-84.365, 33.747, -84.360, 33.751),
     "Reynoldstown": (-84.357, 33.745, -84.350, 33.751),
     "Sweet Auburn": (-84.380, 33.753, -84.369, 33.758),
+    # City of Atlanta Neighborhood layer (Old Fourth Ward, OBJECTID 201) extent.
+    "Old Fourth Ward": (-84.382106, 33.751321, -84.359621, 33.773862),
+    # City of Atlanta Neighborhood layer (Piedmont Heights, OBJECTID 35) extent.
+    "Piedmont Heights": (-84.3776781, 33.7951677, -84.3658086, 33.8134788),
 }
 
 

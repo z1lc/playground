@@ -42,6 +42,7 @@ AREAS: dict[str, str] = {
     "Inman Park": "neighborhood/Georgia/Atlanta/Inman-Park",
     "Old Fourth Ward": "neighborhood/Georgia/Atlanta/Old-Fourth-Ward",
     "Piedmont Heights": "neighborhood/Georgia/Atlanta/Piedmont-Heights",
+    "Candler Park": "neighborhood/Georgia/Atlanta/Candler-Park",
     "Mercer Island": "place/Washington/Mercer-Island",
 }
 

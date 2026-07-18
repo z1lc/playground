@@ -29,6 +29,8 @@ NEIGHBORHOODS = {
     "Old Fourth Ward": (-84.382106, 33.751321, -84.359621, 33.773862),
     # City of Atlanta Neighborhood layer (Piedmont Heights, OBJECTID 35) extent.
     "Piedmont Heights": (-84.3776781, 33.7951677, -84.3658086, 33.8134788),
+    # City of Atlanta Neighborhood layer (Candler Park, OBJECTID 20) extent; in DeKalb County.
+    "Candler Park": (-84.349228, 33.759942, -84.332985, 33.771812),
 }
 
 

@@ -39,6 +39,13 @@ NEIGHBORHOODS = {
         "radius_m": 632,
         "population": 2436,
     },
+    # City of Atlanta Neighborhood layer centroid (OBJECTID 20, DeKalb County); equal-area radius for its 416.41-acre polygon.
+    "Candler Park": {
+        "lat": 33.7665599,
+        "lng": -84.3414023,
+        "radius_m": 732,
+        "population": 4272,
+    },
 }
 
 HEADERS = {"Authorization": f"Bearer {YELP_API_KEY}"}

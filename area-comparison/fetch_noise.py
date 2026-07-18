@@ -31,7 +31,8 @@ MIDPOINT = {"ns4050n": 47.5, "ns5060n": 55, "ns6070n": 65, "ns7080n": 75, "ns809
 ABOVE_50 = ["ns5060n", "ns6070n", "ns7080n", "ns8090n", "nois90n"]
 BELOW_45_DB = 35
 
-# neighborhood -> (census tract GEOIDs in Fulton County 13121, dominant_source_desc)
+# neighborhood -> (census tract GEOIDs, dominant_source_desc). Fulton County 13121 except Candler
+# Park, which is in DeKalb County 13089 (east of Moreland Ave, the county line).
 NEIGHBORHOODS = {
     "Sweet Auburn": (
         ["13121002802"],
@@ -63,6 +64,12 @@ NEIGHBORHOODS = {
         ["13121009202"],
         "I-85 borders the north, Piedmont Road carries traffic through the neighborhood, and the "
         "western BeltLine / Monroe corridor adds road and rail noise along the western edge.",
+    ),
+    "Candler Park": (
+        ["13089020400"],
+        "Moreland Ave runs along the western edge (the Fulton-DeKalb county line) and DeKalb Ave with "
+        "the parallel CSX / MARTA rail corridor along the south; the Candler Park golf course and "
+        "greenspace keep the interior residential blocks quieter.",
     ),
 }
 

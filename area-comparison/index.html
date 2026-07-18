@@ -67,7 +67,7 @@
     function useTheme() { return React.useContext(ThemeContext); }
     const THEMES = {
       light: {
-        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32', '#8E44AD', '#0E9AA7', '#CC3399', '#D9622B', '#5D6D7E', '#795548'],
+        colors: ['#E8A735', '#1D428A', '#A71930', '#2E7D32', '#8E44AD', '#0E9AA7', '#CC3399', '#D9622B', '#5D6D7E', '#795548', '#5C6BC0'],
         pageBg: '#FAF7F2', cardBg: '#fff', textPrimary: '#1a1a1a',
         textSecondary: '#5a5a5a', textLabel: '#3a3a3a', textTertiary: '#8a8a8a',
         border: '#E8E0D5', borderLight: '#f0ebe3', borderDropdown: '#e0d9cf',
@@ -80,7 +80,7 @@
         hoverLine: '#888', dotStroke: '#fff', linkColor: '#8a8a8a',
       },
       dark: {
-        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50', '#B07CC6', '#3FC1C9', '#E85BB5', '#F0844C', '#8FA4B8', '#BCAAA4'],
+        colors: ['#F0B840', '#5B93D4', '#D44055', '#4CAF50', '#B07CC6', '#3FC1C9', '#E85BB5', '#F0844C', '#8FA4B8', '#BCAAA4', '#7E8CE0'],
         pageBg: '#1a1a1a', cardBg: '#242424', textPrimary: '#e0e0e0',
         textSecondary: '#a0a0a0', textLabel: '#c0c0c0', textTertiary: '#777',
         border: '#3a3530', borderLight: '#333', borderDropdown: '#444',
@@ -646,6 +646,22 @@
         "parks":{"tree_canopy_pct":42.9},
         "restaurant_density":{"restaurants_per_1k":16.8,"total_restaurants":41,"avg_rating":3.4,"avg_price_level":1.8,"pct_dollar_2_plus":68.2},
         "noise":{"avg_db":47.6,"pct_above_50db":37.5,"pct_above_65db":10.6,"dominant_source":"road","dominant_source_desc":"I-85 borders the north, Piedmont Road carries traffic through the neighborhood, and the western BeltLine / Monroe corridor adds road and rail noise along the western edge."}
+      },
+      "Candler Park": {
+        "population": { "total_population": 4272, "population_density_per_sq_mi": 6565.84 },
+        "age_and_sex": { "senior_percent": 6.6, "older_adult_percent": 44.7, "younger_adult_percent": 26.0, "college_percent": 3.2, "children_percent": 22.7 },
+        "race_and_ethnicity": { "white_percent": 86.98, "hispanic_percent": 2.75, "black_percent": 4.05, "asian_percent": 3.72, "mixed_other_percent": 2.50 },
+        "national_origin": { "native_born_percent": 90.6, "foreign_born_percent": 9.4, "top_origins": [{"name":"China","percent":1.4},{"name":"Netherlands","percent":0.9},{"name":"Korea","percent":0.8}] },
+        "marital_status": { "never_married_percent": 33.7, "married_percent": 53.5, "separated_divorced_widowed_percent": 12.8 },
+        "household_income": { "median_household_income": 92370 },
+        "educational_attainment": { "graduate_degree_percent": 41.8, "bachelors_or_higher_percent": 82.9, "high_school_or_higher_percent": 98.9, "no_hs_diploma_percent": 1.1 },
+        "employment_status": { "employed_percent": 78.4, "unemployed_percent": 2.2, "not_in_labor_force_percent": 19.4 },
+        "walkability": { "walk_score": 76, "transit_score": 54, "bike_score": 71 },
+        "housing": {"median_home_value_2br":421784,"median_home_value_3br":814956,"median_home_value_4br":1087318,"home_price_index":[100.0,110.6,118.6,121.3,124.3,125.9,136.8,138.1,137.4,130.5,128.1,120.3,121.7,137.7,160.4,174.3,189.1,204.5,224.0,232.4,233.2,249.4,269.7,282.7,310.0,316.5],"home_price_cagr":4.7},
+        "crime":{"violent_per_1k":0.7,"property_per_1k":18.0},
+        "parks":{"tree_canopy_pct":52.0},
+        "restaurant_density":{"restaurants_per_1k":14.7,"total_restaurants":63,"avg_rating":3.7,"avg_price_level":1.9,"pct_dollar_2_plus":72.1},
+        "noise":{"avg_db":44.0,"pct_above_50db":27.8,"pct_above_65db":4.4,"dominant_source":"road","dominant_source_desc":"Moreland Ave runs along the western edge (the Fulton-DeKalb county line) and DeKalb Ave with the parallel CSX / MARTA rail corridor along the south; the Candler Park golf course and greenspace keep the interior residential blocks quieter."}
       }
     }
   }
@@ -657,12 +673,12 @@
     const AREA_NAMES = {
       states: ['California', 'New York', 'Georgia'],
       cities: ['San Francisco', 'New York City', 'Atlanta'],
-      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island', 'Sweet Auburn', 'Cabbagetown', 'Reynoldstown', 'Inman Park', 'Old Fourth Ward', 'Piedmont Heights'],
+      neighborhoods: ['North Panhandle + Anza Vista', 'Greenwich Village', 'Virginia Highland + Morningside', 'Mercer Island', 'Sweet Auburn', 'Cabbagetown', 'Reynoldstown', 'Inman Park', 'Old Fourth Ward', 'Piedmont Heights', 'Candler Park'],
     };
     const AREA_NAMES_SHORT = {
       states: ['CA', 'NY', 'GA'],
       cities: ['SF', 'NYC', 'ATL'],
-      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI', 'SwtAub', 'Cbgtwn', 'Reyn', 'Inman', 'O4W', 'Pdmt Hts'],
+      neighborhoods: ['NoPa + AV', 'GV', 'ViHi + MS', 'MI', 'SwtAub', 'Cbgtwn', 'Reyn', 'Inman', 'O4W', 'Pdmt Hts', 'Candler'],
     };
 
 
@@ -679,6 +695,7 @@
       { neighborhood: 'Inman Park', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Inman', shortCity: 'ATL', shortState: 'GA' },
       { neighborhood: 'Old Fourth Ward', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'O4W', shortCity: 'ATL', shortState: 'GA' },
       { neighborhood: 'Piedmont Heights', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Pdmt Hts', shortCity: 'ATL', shortState: 'GA' },
+      { neighborhood: 'Candler Park', city: 'Atlanta', state: 'Georgia', shortNeighborhood: 'Candler', shortCity: 'ATL', shortState: 'GA' },
     ];
 
     const SECTION_CONFIG = [

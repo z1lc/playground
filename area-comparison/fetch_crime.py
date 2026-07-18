@@ -36,6 +36,7 @@ NEIGHBORHOODS = {
     "Inman Park": (["Inman Park"], 5412),
     "Old Fourth Ward": (["Old Fourth Ward"], 14153),
     "Piedmont Heights": (["Piedmont Heights"], 2436),
+    "Candler Park": (["Candler Park"], 4272),
 }
 
 

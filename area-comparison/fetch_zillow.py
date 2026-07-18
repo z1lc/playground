@@ -37,6 +37,8 @@ REGION_IDS = {
     "Old Fourth Ward": "269397",
     # Atlanta, GA (not same-named Piedmont Heights in Duluth, MN, RegionID 763862).
     "Piedmont Heights": "403427",
+    # Atlanta, GA (not same-named Murphey Candler Park in Brookhaven, GA, RegionID 763163).
+    "Candler Park": "269285",
 }
 
 INDEX_YEARS = list(range(2000, 2026))  # 2000..2025 -> 26 annual-January index values

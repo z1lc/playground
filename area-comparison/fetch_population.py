@@ -49,6 +49,7 @@ NEIGHBORHOODS = {
     "Inman Park": ("Inman Park",),
     "Old Fourth Ward": ("Old Fourth Ward",),
     "Piedmont Heights": ("Piedmont Heights",),
+    "Candler Park": ("Candler Park",),
 }
 COMPONENT_NAMES = tuple(dict.fromkeys(name for names in NEIGHBORHOODS.values() for name in names))
 

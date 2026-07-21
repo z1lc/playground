@@ -104,9 +104,18 @@
     }
     .segmented button.active { background: #fff; color: var(--fg); box-shadow: 0 1px 3px rgba(15, 25, 50, 0.18); }
 
-    .corridor-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 9px; }
+    .corridor-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; }
     .cl-item { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: #2b3346; }
     .cl-line { width: 18px; height: 4px; border-radius: 2px; flex: none; }
+
+    /* Controls: legend + gear header, collapsible settings body */
+    .controls-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .gear-btn {
+      display: none; flex: none; border: none; cursor: pointer; line-height: 1;
+      width: 30px; height: 30px; border-radius: 8px; font-size: 15px;
+      background: rgba(20, 30, 55, 0.06); color: var(--muted);
+    }
+    .controls-body { margin-top: 12px; }
 
     /* Collapse toggle (mobile) */
     .collapse-btn {
@@ -136,13 +145,16 @@
       .lede, ul.facts li, .cl-item, .pop-desc { color: #cdd4e2; }
       .segmented { background: rgba(255,255,255,0.07); }
       .segmented button.active { background: #333c52; color: #fff; }
-      .collapse-btn { background: rgba(255,255,255,0.08); }
+      .collapse-btn, .gear-btn { background: rgba(255,255,255,0.08); }
       .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #1c2230; color: #e8ecf4; }
       .pop-title { color: #fff; } .pop-desc { color: #cdd4e2; } .pop-source .q { color: #aab3c6; }
     }
     @media (max-width: 620px) {
       .panel-info { width: calc(100vw - 32px); }
       .panel-controls { top: auto; bottom: 16px; right: 16px; left: 16px; width: auto; }
+      .gear-btn { display: flex; align-items: center; justify-content: center; }
+      .controls-body { display: none; }
+      .panel-controls.settings-open .controls-body { display: block; }
     }
   </style>
 </head>
@@ -163,8 +175,10 @@
         April 14, 2026 project Q&amp;A. Construction begins <b>Summer 2026</b> (24–30 months).
       </p>
 
-      <div class="section-title">What each marker means</div>
-      <div id="legend"></div>
+      <div id="legendSection">
+        <div class="section-title">What each marker means</div>
+        <div id="legend"></div>
+      </div>
 
       <div class="section-title">Corridor-wide changes</div>
       <ul class="facts">
@@ -198,21 +212,33 @@
     </div>
   </div>
 
-  <div class="panel panel-controls">
-    <div class="control-group">
-      <div class="control-label">Basemap</div>
-      <div class="segmented" id="basemapToggle">
-        <button data-v="osm" class="active">OSM</button>
-        <button data-v="light">Light</button>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="control-label">Color corridor by</div>
-      <div class="segmented" id="colorToggle">
-        <button data-v="phase" class="active">Phase</button>
-        <button data-v="lanes">Lanes</button>
-      </div>
+  <div class="panel panel-controls" id="controls">
+    <div class="controls-header">
       <div class="corridor-legend" id="corridorLegend"></div>
+      <button class="gear-btn" id="gearBtn" title="Map settings" aria-label="Map settings">⚙</button>
+    </div>
+    <div class="controls-body" id="controlsBody">
+      <div class="control-group">
+        <div class="control-label">Color corridor by</div>
+        <div class="segmented" id="colorToggle">
+          <button data-v="phase" class="active">Phase</button>
+          <button data-v="lanes">Lanes</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">Basemap</div>
+        <div class="segmented" id="basemapToggle">
+          <button data-v="osm">OSM</button>
+          <button data-v="light" class="active">Light</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">Markers</div>
+        <div class="segmented" id="markersToggle">
+          <button data-v="show" class="active">Show</button>
+          <button data-v="hide">Hide</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -268,16 +294,20 @@
       saveState();
     }
 
+    function isMobile() { return window.matchMedia('(max-width: 620px)').matches; }
+
     const state = {
-      basemap: (saved && saved.basemap) || 'osm',
+      basemap: (saved && saved.basemap) || 'light',
       colorMode: (saved && saved.colorMode) || 'phase',
-      collapsed: saved ? !!saved.collapsed : false,
+      collapsed: saved ? !!saved.collapsed : isMobile(),
+      markers: (saved && saved.markers) || 'show',
     };
 
     let DATA = null;
     let corridor = [];
     let bIdx = {};
     const corridorLayer = L.layerGroup().addTo(map);
+    const markersLayer = L.layerGroup();
 
     fetch('./data.json')
       .then(function (r) { return r.json(); })
@@ -341,7 +371,17 @@
         });
         L.marker([f.lat, f.lng], { icon: icon, riseOnHover: true })
           .bindPopup(popupHtml(f, t), { maxWidth: 300 })
-          .addTo(map);
+          .addTo(markersLayer);
+      });
+    }
+
+    function applyMarkers() {
+      if (state.markers === 'hide') { map.removeLayer(markersLayer); }
+      else { markersLayer.addTo(map); }
+      const ls = document.getElementById('legendSection');
+      if (ls) ls.style.display = state.markers === 'hide' ? 'none' : '';
+      document.querySelectorAll('#markersToggle button').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.v === state.markers);
       });
     }
 
@@ -397,6 +437,7 @@
       setBasemap(state.basemap);
       drawCorridor();
       makePins();
+      applyMarkers();
       buildLegend();
       buildCorridorLegend();
 
@@ -429,6 +470,15 @@
     // reflect saved colorMode on load
     document.querySelectorAll('#colorToggle button').forEach(function (b) { b.classList.toggle('active', b.dataset.v === state.colorMode); });
 
+    document.getElementById('markersToggle').addEventListener('click', function (e) {
+      const btn = e.target.closest('button'); if (!btn) return;
+      state.markers = btn.dataset.v;
+      applyMarkers(); saveState();
+    });
+    document.getElementById('gearBtn').addEventListener('click', function () {
+      document.getElementById('controls').classList.toggle('settings-open');
+    });
+
     const infoPanel = document.getElementById('info');
     if (state.collapsed) infoPanel.classList.add('collapsed');
     document.getElementById('collapseBtn').addEventListener('click', function () {
@@ -442,7 +492,7 @@
       try {
         const c = map.getCenter ? map.getCenter() : null;
         localStorage.setItem(STORE_KEY, JSON.stringify({
-          basemap: state.basemap, colorMode: state.colorMode, collapsed: state.collapsed,
+          basemap: state.basemap, colorMode: state.colorMode, collapsed: state.collapsed, markers: state.markers,
           center: c ? [c.lat, c.lng] : null, zoom: map.getZoom ? map.getZoom() : null,
         }));
       } catch (e) { /* ignore */ }

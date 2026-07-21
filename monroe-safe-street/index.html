@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monroe Dr Safe Streets</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --fg: #1a2030;
+      --muted: #5b6478;
+      --line: rgba(20, 30, 55, 0.10);
+      --panel: rgba(255, 255, 255, 0.94);
+      --shadow: 0 8px 30px rgba(15, 25, 50, 0.16);
+      --accent: #0f766e;
+      --radius: 14px;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--fg);
+      background: #e9edf2;
+      overflow: hidden;
+    }
+    #map { position: absolute; inset: 0; z-index: 1; background: #dfe4ea; }
+
+    /* Leaflet popup restyle */
+    .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: var(--shadow); }
+    .leaflet-popup-content { margin: 14px 16px; line-height: 1.5; }
+
+    /* Map pins */
+    .pin {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 13px; line-height: 1;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(10, 20, 40, 0.45);
+      transition: transform 0.12s ease;
+    }
+    .pin:hover { transform: scale(1.18); }
+
+    /* Panels */
+    .panel {
+      position: absolute; z-index: 500;
+      background: var(--panel);
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel-info {
+      top: 16px; left: 16px; width: 340px; max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 32px); overflow-y: auto;
+    }
+    .info-body { padding: 18px 20px 20px; }
+    .panel-controls { top: 16px; right: 16px; padding: 12px 14px; width: 210px; }
+
+    h1 { font-size: 1.32rem; font-weight: 800; letter-spacing: -0.02em; }
+    .subtitle { color: var(--muted); font-size: 0.86rem; margin-top: 3px; font-weight: 500; }
+    .lede { font-size: 0.86rem; line-height: 1.55; margin-top: 12px; color: #2b3346; }
+    .section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--muted); margin: 18px 0 8px;
+    }
+    hr { border: none; border-top: 1px solid var(--line); margin: 16px 0 0; }
+
+    .legend-row { display: flex; align-items: center; gap: 9px; margin: 6px 0; font-size: 0.82rem; }
+    .swatch {
+      width: 18px; height: 18px; border-radius: 50%; flex: none;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 10px; font-weight: 700; border: 1.5px solid #fff;
+      box-shadow: 0 1px 3px rgba(10, 20, 40, 0.35);
+    }
+    .legend-row .count { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; font-size: 0.76rem; }
+
+    ul.facts { list-style: none; margin-top: 4px; }
+    ul.facts li { font-size: 0.81rem; line-height: 1.5; padding-left: 15px; position: relative; margin: 5px 0; color: #2b3346; }
+    ul.facts li::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    .phase-row { display: flex; gap: 9px; align-items: flex-start; margin: 8px 0; font-size: 0.82rem; }
+    .phase-bar { width: 5px; border-radius: 3px; flex: none; align-self: stretch; min-height: 34px; }
+    .phase-row b { font-weight: 700; }
+    .phase-row .meta { color: var(--muted); }
+
+    .source { font-size: 0.76rem; color: var(--muted); line-height: 1.5; margin-top: 6px; }
+    .source a { color: var(--accent); font-weight: 600; }
+
+    /* Segmented toggles */
+    .control-group { margin-bottom: 12px; }
+    .control-group:last-child { margin-bottom: 0; }
+    .control-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .segmented { display: flex; background: rgba(20, 30, 55, 0.06); border-radius: 9px; padding: 3px; }
+    .segmented button {
+      flex: 1; border: none; background: none; cursor: pointer;
+      font-size: 0.78rem; font-weight: 600; color: var(--muted);
+      padding: 6px 4px; border-radius: 6px; font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+    .segmented button.active { background: #fff; color: var(--fg); box-shadow: 0 1px 3px rgba(15, 25, 50, 0.18); }
+
+    .corridor-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 9px; }
+    .cl-item { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: #2b3346; }
+    .cl-line { width: 18px; height: 4px; border-radius: 2px; flex: none; }
+
+    /* Collapse toggle (mobile) */
+    .collapse-btn {
+      position: absolute; top: 10px; right: 12px; z-index: 2;
+      border: none; background: rgba(20,30,55,0.06); color: var(--muted);
+      width: 26px; height: 26px; border-radius: 7px; cursor: pointer; font-size: 15px; line-height: 1;
+    }
+    .panel-info.collapsed .info-body > *:not(.info-head) { display: none; }
+    .panel-info.collapsed { width: 240px; }
+
+    /* Popup content */
+    .pop-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; padding-right: 4px; }
+    .pop-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .chip { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 3px 7px; border-radius: 20px; color: #fff; }
+    .chip.phase { background: #475569; }
+    .pop-desc { font-size: 0.83rem; line-height: 1.5; color: #23293a; }
+    .pop-source { font-size: 0.75rem; color: var(--muted); margin-top: 9px; border-top: 1px solid var(--line); padding-top: 8px; line-height: 1.45; }
+    .pop-source .q { font-style: italic; color: #444c60; }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #e8ecf4; --muted: #97a1b6; --line: rgba(255,255,255,0.12);
+        --panel: rgba(24, 30, 44, 0.92); --shadow: 0 8px 30px rgba(0,0,0,0.5);
+        --accent: #2dd4bf;
+      }
+      body { background: #12151c; }
+      .lede, ul.facts li, .cl-item, .pop-desc { color: #cdd4e2; }
+      .segmented { background: rgba(255,255,255,0.07); }
+      .segmented button.active { background: #333c52; color: #fff; }
+      .collapse-btn { background: rgba(255,255,255,0.08); }
+      .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #1c2230; color: #e8ecf4; }
+      .pop-title { color: #fff; } .pop-desc { color: #cdd4e2; } .pop-source .q { color: #aab3c6; }
+    }
+    @media (max-width: 620px) {
+      .panel-info { width: calc(100vw - 32px); }
+      .panel-controls { top: auto; bottom: 16px; right: 16px; left: 16px; width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="panel panel-info" id="info">
+    <div class="info-body">
+      <div class="info-head">
+        <button class="collapse-btn" id="collapseBtn" title="Collapse / expand">–</button>
+        <h1>Monroe Dr Safe Streets</h1>
+        <div class="subtitle">City of Atlanta's redesign of Monroe Dr NE, mapped</div>
+      </div>
+      <p class="lede">
+        A <b>"road diet"</b> converting Monroe Dr from a 4-lane undivided road to a 3-lane section
+        (one lane each way + a center turn lane / median), plus new pedestrian crossings, beacons,
+        a roundabout, and intersection safety rebuilds. Every marker is drawn from the
+        April 14, 2026 project Q&amp;A. Construction begins <b>Summer 2026</b> (24–30 months).
+      </p>
+
+      <div class="section-title">What each marker means</div>
+      <div id="legend"></div>
+
+      <div class="section-title">Corridor-wide changes</div>
+      <ul class="facts">
+        <li>4→3 lane road diet with 11-ft lanes (4 lanes kept only at Piedmont Ave / Ansley Mall)</li>
+        <li>Center median islands &amp; bulb-outs added at crossings; 29 marked crosswalks (up from 26)</li>
+        <li>Sidewalks &amp; ADA ramps rebuilt on both sides of Monroe Dr</li>
+        <li>No bike lanes on Monroe (design variance denied); bike crossings at BeltLine/10th &amp; Park Dr SE</li>
+        <li>Do-Not-Block-the-Box markings; No-Right-on-Red added as warranted</li>
+        <li>Target speed limit 25 mph (from 30); ~30% fewer crashes expected</li>
+        <li>Tree removal + replacement; right-of-way acquisition at Virginia Ave, Park Dr &amp; Montgomery Ferry</li>
+      </ul>
+
+      <div class="section-title">Phasing &amp; timeline</div>
+      <div class="phase-row">
+        <div class="phase-bar" style="background:#e11d48"></div>
+        <div><b>Phase II</b> — 8th St → Park Dr (incl. the new roundabout) + Montgomery Ferry.
+          <span class="meta">~12–18 months.</span></div>
+      </div>
+      <div class="phase-row">
+        <div class="phase-bar" style="background:#2563eb"></div>
+        <div><b>Phase I</b> — just north of Park Dr → Armour Dr.
+          <span class="meta">~12 months.</span></div>
+      </div>
+      <div class="phase-row" style="margin-top:4px">
+        <div class="phase-bar" style="background:#94a3b8"></div>
+        <div class="meta">Construction starts Summer 2026 · 24–30 months total.</div>
+      </div>
+
+      <hr />
+      <p class="source" id="source"></p>
+    </div>
+  </div>
+
+  <div class="panel panel-controls">
+    <div class="control-group">
+      <div class="control-label">Basemap</div>
+      <div class="segmented" id="basemapToggle">
+        <button data-v="osm" class="active">OSM</button>
+        <button data-v="light">Light</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="control-label">Color corridor by</div>
+      <div class="segmented" id="colorToggle">
+        <button data-v="phase" class="active">Phase</button>
+        <button data-v="lanes">Lanes</button>
+      </div>
+      <div class="corridor-legend" id="corridorLegend"></div>
+    </div>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <script>
+  (function () {
+    const STORE_KEY = 'monroe-safe-street:v1';
+
+    const TYPES = {
+      signal:     { label: 'Full traffic signal (upgraded)',        color: '#d64545', glyph: '◉' },
+      roundabout: { label: 'New roundabout',                        color: '#7c3aed', glyph: '⟳' },
+      phb:        { label: 'Pedestrian Hybrid Beacon (PHB)',        color: '#2563eb', glyph: 'P' },
+      rrfb:       { label: 'Rapid Flashing Beacon (RRFB)',          color: '#e08a00', glyph: 'R' },
+      median:     { label: 'Raised median / alignment fix',         color: '#0d9488', glyph: '≡' },
+      curb:       { label: 'Curb &amp; ADA / crossing upgrade',     color: '#475569', glyph: 'C' },
+      beltline:   { label: 'BeltLine / bike crossing',              color: '#16a34a', glyph: 'B' },
+    };
+    const TYPE_ORDER = ['signal', 'roundabout', 'phb', 'rrfb', 'median', 'curb', 'beltline'];
+
+    const CORRIDOR_COLORS = {
+      phaseI: '#2563eb', phaseII: '#e11d48',
+      threeLane: '#0891b2', fourLane: '#ea580c', outside: '#9aa4b2',
+    };
+
+    const BASEMAPS = {
+      osm: {
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        opts: { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' },
+      },
+      light: {
+        url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        opts: { maxZoom: 20, subdomains: 'abcd', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' },
+      },
+    };
+
+    const saved = loadState();
+    const map = L.map('map', { zoomControl: true, attributionControl: true });
+    L.control.scale({ imperial: true, metric: false }).addTo(map);
+
+    let baseLayer = null;
+    function setBasemap(key) {
+      if (baseLayer) map.removeLayer(baseLayer);
+      const b = BASEMAPS[key] || BASEMAPS.osm;
+      baseLayer = L.tileLayer(b.url, b.opts);
+      baseLayer.addTo(map);
+      state.basemap = key;
+      document.querySelectorAll('#basemapToggle button').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.v === key);
+      });
+      saveState();
+    }
+
+    const state = {
+      basemap: (saved && saved.basemap) || 'osm',
+      colorMode: (saved && saved.colorMode) || 'phase',
+      collapsed: saved ? !!saved.collapsed : false,
+    };
+
+    let DATA = null;
+    let corridor = [];
+    let bIdx = {};
+    const corridorLayer = L.layerGroup().addTo(map);
+
+    fetch('./data.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        DATA = data;
+        corridor = data.corridor;
+        init();
+      })
+      .catch(function (err) {
+        document.getElementById('map').innerHTML =
+          '<div style="padding:40px;font-family:sans-serif">Could not load data.json — serve this folder over http (e.g. <code>python3 -m http.server</code>).<br><br>' + err + '</div>';
+      });
+
+    function nearestIndex(pt) {
+      let best = 0, bd = Infinity;
+      for (let i = 0; i < corridor.length; i++) {
+        const d = Math.pow(corridor[i][0] - pt[0], 2) + Math.pow(corridor[i][1] - pt[1], 2);
+        if (d < bd) { bd = d; best = i; }
+      }
+      return best;
+    }
+    function slice(a, b) { return corridor.slice(Math.min(a, b), Math.max(a, b) + 1); }
+
+    function drawCorridor() {
+      corridorLayer.clearLayers();
+      // faint full-road context (leftover dual-carriageway bits + full through-line)
+      (DATA.corridor_leftovers || []).forEach(function (seg) {
+        L.polyline(seg, { color: CORRIDOR_COLORS.outside, weight: 3, opacity: 0.45 }).addTo(corridorLayer);
+      });
+      const i8 = bIdx['b-8th'], iP = bIdx['b-park'], iPd = bIdx['b-piedmont'], iA = bIdx['b-ansley'], iAr = bIdx['b-armour'];
+
+      // out-of-project extents in gray
+      if (i8 > 0) L.polyline(corridor.slice(0, i8 + 1), { color: CORRIDOR_COLORS.outside, weight: 4, opacity: 0.5 }).addTo(corridorLayer);
+      if (iAr < corridor.length - 1) L.polyline(corridor.slice(iAr), { color: CORRIDOR_COLORS.outside, weight: 4, opacity: 0.5 }).addTo(corridorLayer);
+
+      if (state.colorMode === 'phase') {
+        line(slice(i8, iP), CORRIDOR_COLORS.phaseII, 'Phase II — 8th St to Park Dr');
+        line(slice(iP, iAr), CORRIDOR_COLORS.phaseI, 'Phase I — Park Dr to Armour Dr');
+      } else {
+        line(slice(i8, iPd), CORRIDOR_COLORS.threeLane, '3-lane road diet');
+        line(slice(iPd, iA), CORRIDOR_COLORS.fourLane, '4 lanes retained (Piedmont / Ansley Mall)', true);
+        line(slice(iA, iAr), CORRIDOR_COLORS.threeLane, '3-lane road diet');
+      }
+    }
+    function line(pts, color, label, dashed) {
+      if (pts.length < 2) return;
+      L.polyline(pts, {
+        color: color, weight: 6, opacity: 0.9, lineCap: 'round', lineJoin: 'round',
+        dashArray: dashed ? '2 10' : null,
+      }).bindTooltip(label, { sticky: true }).addTo(corridorLayer);
+    }
+
+    function makePins() {
+      DATA.features.forEach(function (f) {
+        if (f.lat == null) return;
+        const t = TYPES[f.type] || { color: '#555', glyph: '?' };
+        const icon = L.divIcon({
+          className: '',
+          html: '<div class="pin" style="background:' + t.color + '">' + t.glyph + '</div>',
+          iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -14],
+        });
+        L.marker([f.lat, f.lng], { icon: icon, riseOnHover: true })
+          .bindPopup(popupHtml(f, t), { maxWidth: 300 })
+          .addTo(map);
+      });
+    }
+
+    function popupHtml(f, t) {
+      return '' +
+        '<div class="pop-title">' + esc(f.title) + '</div>' +
+        '<div class="pop-chips">' +
+          '<span class="chip" style="background:' + t.color + '">' + typeShort(f.type) + '</span>' +
+          '<span class="chip phase">Phase ' + esc(f.phase) + '</span>' +
+        '</div>' +
+        '<div class="pop-desc">' + esc(f.description) + '</div>' +
+        '<div class="pop-source">Source: PDF &sect;' + f.section +
+          ' &middot; <span class="q">&ldquo;' + esc(f.quote) + '&rdquo;</span></div>';
+    }
+    function typeShort(k) {
+      return { signal: 'Signal', roundabout: 'Roundabout', phb: 'PHB', rrfb: 'RRFB', median: 'Median', curb: 'Curb/ADA', beltline: 'BeltLine' }[k] || k;
+    }
+
+    function buildLegend() {
+      const counts = {};
+      DATA.features.forEach(function (f) { counts[f.type] = (counts[f.type] || 0) + 1; });
+      const el = document.getElementById('legend');
+      el.innerHTML = TYPE_ORDER.filter(function (k) { return counts[k]; }).map(function (k) {
+        const t = TYPES[k];
+        return '<div class="legend-row">' +
+          '<span class="swatch" style="background:' + t.color + '">' + t.glyph + '</span>' +
+          '<span>' + t.label + '</span>' +
+          '<span class="count">' + counts[k] + '</span></div>';
+      }).join('');
+    }
+
+    function buildCorridorLegend() {
+      const el = document.getElementById('corridorLegend');
+      let items;
+      if (state.colorMode === 'phase') {
+        items = [['Phase I', CORRIDOR_COLORS.phaseI, false], ['Phase II', CORRIDOR_COLORS.phaseII, false]];
+      } else {
+        items = [['3-lane', CORRIDOR_COLORS.threeLane, false], ['4-lane kept', CORRIDOR_COLORS.fourLane, true]];
+      }
+      el.innerHTML = items.map(function (it) {
+        const bg = it[2] ? 'repeating-linear-gradient(90deg,' + it[1] + ' 0 3px,transparent 3px 7px)' : it[1];
+        return '<span class="cl-item"><span class="cl-line" style="background:' + bg + '"></span>' + it[0] + '</span>';
+      }).join('');
+    }
+
+    function init() {
+      // boundary indices along the ordered corridor
+      Object.keys(DATA.boundaries).forEach(function (k) {
+        const c = DATA.boundaries[k].coord;
+        if (c) bIdx[k] = nearestIndex(c);
+      });
+
+      setBasemap(state.basemap);
+      drawCorridor();
+      makePins();
+      buildLegend();
+      buildCorridorLegend();
+
+      document.getElementById('source').innerHTML =
+        'Source: <b>' + esc(DATA.source) + '</b>. ' +
+        'Official project page: <a href="' + DATA.project_url + '" target="_blank" rel="noopener">atldot.atlantaga.gov</a>. ' +
+        'Positions from OpenStreetMap; this is a schematic overlay of what the plans build, not engineering geometry.';
+
+      // initial view
+      if (saved && saved.center && typeof saved.zoom === 'number') {
+        map.setView(saved.center, saved.zoom);
+      } else {
+        const pb = corridor.slice(bIdx['b-8th'] || 0, (bIdx['b-armour'] || corridor.length - 1) + 1);
+        map.fitBounds(L.latLngBounds(pb), { padding: [40, 40] });
+      }
+
+      map.on('moveend zoomend', saveState);
+    }
+
+    // controls
+    document.getElementById('basemapToggle').addEventListener('click', function (e) {
+      const btn = e.target.closest('button'); if (!btn) return; setBasemap(btn.dataset.v);
+    });
+    document.getElementById('colorToggle').addEventListener('click', function (e) {
+      const btn = e.target.closest('button'); if (!btn) return;
+      state.colorMode = btn.dataset.v;
+      document.querySelectorAll('#colorToggle button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+      drawCorridor(); buildCorridorLegend(); saveState();
+    });
+    // reflect saved colorMode on load
+    document.querySelectorAll('#colorToggle button').forEach(function (b) { b.classList.toggle('active', b.dataset.v === state.colorMode); });
+
+    const infoPanel = document.getElementById('info');
+    if (state.collapsed) infoPanel.classList.add('collapsed');
+    document.getElementById('collapseBtn').addEventListener('click', function () {
+      state.collapsed = infoPanel.classList.toggle('collapsed');
+      this.textContent = state.collapsed ? '+' : '–';
+      saveState();
+    });
+    document.getElementById('collapseBtn').textContent = state.collapsed ? '+' : '–';
+
+    function saveState() {
+      try {
+        const c = map.getCenter ? map.getCenter() : null;
+        localStorage.setItem(STORE_KEY, JSON.stringify({
+          basemap: state.basemap, colorMode: state.colorMode, collapsed: state.collapsed,
+          center: c ? [c.lat, c.lng] : null, zoom: map.getZoom ? map.getZoom() : null,
+        }));
+      } catch (e) { /* ignore */ }
+    }
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { return null; }
+    }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+  })();
+  </script>
+</body>
+</html>

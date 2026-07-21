@@ -1,0 +1,1276 @@
+{
+  "project": "Monroe Drive Safe Streets Project",
+  "source": "City of Atlanta DOT \u2014 Project Meeting Q&A, April 14, 2026",
+  "project_url": "https://atldot.atlantaga.gov/projects/monroe-dr-safe-street",
+  "corridor": [
+    [
+      33.7736584,
+      -84.370957
+    ],
+    [
+      33.7737563,
+      -84.3709305
+    ],
+    [
+      33.7737838,
+      -84.3709231
+    ],
+    [
+      33.7738398,
+      -84.370908
+    ],
+    [
+      33.773986,
+      -84.370908
+    ],
+    [
+      33.7740333,
+      -84.3709077
+    ],
+    [
+      33.774097,
+      -84.3709074
+    ],
+    [
+      33.7741759,
+      -84.370907
+    ],
+    [
+      33.7743606,
+      -84.3709061
+    ],
+    [
+      33.774449,
+      -84.3709056
+    ],
+    [
+      33.7745938,
+      -84.3709048
+    ],
+    [
+      33.7747367,
+      -84.3709041
+    ],
+    [
+      33.7748132,
+      -84.3709037
+    ],
+    [
+      33.7748774,
+      -84.3709034
+    ],
+    [
+      33.774885,
+      -84.3709034
+    ],
+    [
+      33.774958,
+      -84.370903
+    ],
+    [
+      33.7750721,
+      -84.3708827
+    ],
+    [
+      33.775112,
+      -84.370871
+    ],
+    [
+      33.7754258,
+      -84.3707673
+    ],
+    [
+      33.775484,
+      -84.370748
+    ],
+    [
+      33.7760376,
+      -84.3705681
+    ],
+    [
+      33.7767438,
+      -84.3703386
+    ],
+    [
+      33.776889,
+      -84.370288
+    ],
+    [
+      33.7769673,
+      -84.3702653
+    ],
+    [
+      33.777405,
+      -84.370107
+    ],
+    [
+      33.7779472,
+      -84.3699222
+    ],
+    [
+      33.7780816,
+      -84.3698764
+    ],
+    [
+      33.778124,
+      -84.369862
+    ],
+    [
+      33.7782874,
+      -84.3698084
+    ],
+    [
+      33.7784604,
+      -84.3697517
+    ],
+    [
+      33.7784689,
+      -84.3697489
+    ],
+    [
+      33.779043,
+      -84.369557
+    ],
+    [
+      33.7792756,
+      -84.3694805
+    ],
+    [
+      33.7794287,
+      -84.369429
+    ],
+    [
+      33.779493,
+      -84.369409
+    ],
+    [
+      33.779594,
+      -84.3693745
+    ],
+    [
+      33.7800164,
+      -84.3692363
+    ],
+    [
+      33.78054,
+      -84.369065
+    ],
+    [
+      33.7807044,
+      -84.3690131
+    ],
+    [
+      33.781183,
+      -84.368862
+    ],
+    [
+      33.7814342,
+      -84.3687823
+    ],
+    [
+      33.7816413,
+      -84.3687161
+    ],
+    [
+      33.7817715,
+      -84.3686753
+    ],
+    [
+      33.7818538,
+      -84.3686525
+    ],
+    [
+      33.7819149,
+      -84.3686354
+    ],
+    [
+      33.7819846,
+      -84.3686145
+    ],
+    [
+      33.7820977,
+      -84.3685801
+    ],
+    [
+      33.7823032,
+      -84.3685111
+    ],
+    [
+      33.7823871,
+      -84.3684841
+    ],
+    [
+      33.782624,
+      -84.368407
+    ],
+    [
+      33.7826861,
+      -84.3683874
+    ],
+    [
+      33.7837495,
+      -84.3680522
+    ],
+    [
+      33.783804,
+      -84.368035
+    ],
+    [
+      33.783863,
+      -84.3680164
+    ],
+    [
+      33.784738,
+      -84.367741
+    ],
+    [
+      33.7848015,
+      -84.3677217
+    ],
+    [
+      33.7856215,
+      -84.3674721
+    ],
+    [
+      33.785694,
+      -84.36745
+    ],
+    [
+      33.7857633,
+      -84.3674292
+    ],
+    [
+      33.785954,
+      -84.367372
+    ],
+    [
+      33.786259,
+      -84.367281
+    ],
+    [
+      33.786413,
+      -84.36725
+    ],
+    [
+      33.7869219,
+      -84.3672443
+    ],
+    [
+      33.787124,
+      -84.367242
+    ],
+    [
+      33.7871948,
+      -84.3672417
+    ],
+    [
+      33.7876054,
+      -84.3672402
+    ],
+    [
+      33.7881726,
+      -84.3672382
+    ],
+    [
+      33.788219,
+      -84.367238
+    ],
+    [
+      33.7882873,
+      -84.3672375
+    ],
+    [
+      33.789791,
+      -84.3672255
+    ],
+    [
+      33.789849,
+      -84.367225
+    ],
+    [
+      33.790309,
+      -84.367189
+    ],
+    [
+      33.7908244,
+      -84.3671139
+    ],
+    [
+      33.791181,
+      -84.367062
+    ],
+    [
+      33.791208,
+      -84.367058
+    ],
+    [
+      33.791247,
+      -84.367052
+    ],
+    [
+      33.791808,
+      -84.366967
+    ],
+    [
+      33.7918765,
+      -84.3669627
+    ],
+    [
+      33.791969,
+      -84.366957
+    ],
+    [
+      33.792128,
+      -84.366965
+    ],
+    [
+      33.7921584,
+      -84.3669695
+    ],
+    [
+      33.7930079,
+      -84.3670965
+    ],
+    [
+      33.793098,
+      -84.36711
+    ],
+    [
+      33.79379,
+      -84.367214
+    ],
+    [
+      33.7941433,
+      -84.3672668
+    ],
+    [
+      33.7946583,
+      -84.3673438
+    ],
+    [
+      33.7947915,
+      -84.3673638
+    ],
+    [
+      33.795134,
+      -84.367415
+    ],
+    [
+      33.7952065,
+      -84.3674339
+    ],
+    [
+      33.795249,
+      -84.367445
+    ],
+    [
+      33.795342,
+      -84.367489
+    ],
+    [
+      33.79543,
+      -84.36755
+    ],
+    [
+      33.7958741,
+      -84.367934
+    ],
+    [
+      33.7958765,
+      -84.367936
+    ],
+    [
+      33.7959516,
+      -84.3680093
+    ],
+    [
+      33.7961013,
+      -84.3681334
+    ],
+    [
+      33.796148,
+      -84.368174
+    ],
+    [
+      33.7963116,
+      -84.3683111
+    ],
+    [
+      33.7965636,
+      -84.3685223
+    ],
+    [
+      33.7970126,
+      -84.3689171
+    ],
+    [
+      33.797095,
+      -84.36899
+    ],
+    [
+      33.7971936,
+      -84.3690707
+    ],
+    [
+      33.7972754,
+      -84.3691377
+    ],
+    [
+      33.7974344,
+      -84.3692679
+    ],
+    [
+      33.7975128,
+      -84.3693321
+    ],
+    [
+      33.797647,
+      -84.369442
+    ],
+    [
+      33.797666,
+      -84.369457
+    ],
+    [
+      33.7977833,
+      -84.3695493
+    ],
+    [
+      33.7979549,
+      -84.3696845
+    ],
+    [
+      33.798137,
+      -84.369828
+    ],
+    [
+      33.7983564,
+      -84.3699971
+    ],
+    [
+      33.7989432,
+      -84.3704396
+    ],
+    [
+      33.7990057,
+      -84.3704868
+    ],
+    [
+      33.7993203,
+      -84.3707272
+    ],
+    [
+      33.7997212,
+      -84.3710335
+    ],
+    [
+      33.7998023,
+      -84.3710954
+    ],
+    [
+      33.7999534,
+      -84.371208
+    ],
+    [
+      33.800219,
+      -84.371406
+    ],
+    [
+      33.8003357,
+      -84.37149
+    ],
+    [
+      33.8005321,
+      -84.3716312
+    ],
+    [
+      33.8006886,
+      -84.3717055
+    ],
+    [
+      33.800715,
+      -84.371718
+    ],
+    [
+      33.800763,
+      -84.3717425
+    ],
+    [
+      33.8010474,
+      -84.3718874
+    ],
+    [
+      33.8011288,
+      -84.3719262
+    ],
+    [
+      33.801406,
+      -84.3720584
+    ],
+    [
+      33.801759,
+      -84.37225
+    ],
+    [
+      33.8017934,
+      -84.3722693
+    ],
+    [
+      33.80184,
+      -84.372304
+    ],
+    [
+      33.8019053,
+      -84.3723493
+    ],
+    [
+      33.8021836,
+      -84.3725094
+    ],
+    [
+      33.802216,
+      -84.372528
+    ],
+    [
+      33.802415,
+      -84.372659
+    ],
+    [
+      33.8029999,
+      -84.3730514
+    ],
+    [
+      33.8031086,
+      -84.3731291
+    ],
+    [
+      33.8036436,
+      -84.3735113
+    ],
+    [
+      33.8038041,
+      -84.3736264
+    ],
+    [
+      33.803822,
+      -84.3736392
+    ],
+    [
+      33.80407,
+      -84.373817
+    ],
+    [
+      33.8041679,
+      -84.3738786
+    ],
+    [
+      33.804437,
+      -84.374048
+    ],
+    [
+      33.804704,
+      -84.374201
+    ],
+    [
+      33.8054692,
+      -84.3746151
+    ],
+    [
+      33.80553,
+      -84.37465
+    ],
+    [
+      33.8055898,
+      -84.3746836
+    ],
+    [
+      33.806128,
+      -84.374999
+    ],
+    [
+      33.806178,
+      -84.375029
+    ],
+    [
+      33.8063972,
+      -84.3751386
+    ],
+    [
+      33.80647,
+      -84.375175
+    ],
+    [
+      33.8066601,
+      -84.3752606
+    ],
+    [
+      33.806754,
+      -84.375302
+    ],
+    [
+      33.806828,
+      -84.3753306
+    ],
+    [
+      33.807338,
+      -84.375528
+    ],
+    [
+      33.807501,
+      -84.375552
+    ],
+    [
+      33.8076145,
+      -84.375543
+    ],
+    [
+      33.807665,
+      -84.375539
+    ],
+    [
+      33.80781,
+      -84.375496
+    ],
+    [
+      33.807972,
+      -84.3754292
+    ],
+    [
+      33.8080779,
+      -84.3753869
+    ],
+    [
+      33.808727,
+      -84.375118
+    ],
+    [
+      33.8088104,
+      -84.3750837
+    ],
+    [
+      33.808982,
+      -84.375013
+    ],
+    [
+      33.809061,
+      -84.374968
+    ],
+    [
+      33.8091053,
+      -84.3749425
+    ],
+    [
+      33.809146,
+      -84.374919
+    ],
+    [
+      33.8092834,
+      -84.3748013
+    ],
+    [
+      33.809399,
+      -84.374677
+    ],
+    [
+      33.809496,
+      -84.374535
+    ],
+    [
+      33.8098231,
+      -84.3739571
+    ],
+    [
+      33.8098694,
+      -84.3738753
+    ],
+    [
+      33.80995,
+      -84.373733
+    ],
+    [
+      33.81003,
+      -84.373576
+    ],
+    [
+      33.810106,
+      -84.373403
+    ],
+    [
+      33.810186,
+      -84.373186
+    ],
+    [
+      33.810244,
+      -84.372992
+    ],
+    [
+      33.8103076,
+      -84.3727418
+    ],
+    [
+      33.8104019,
+      -84.3723712
+    ],
+    [
+      33.810548,
+      -84.371797
+    ],
+    [
+      33.8105861,
+      -84.3716319
+    ],
+    [
+      33.810616,
+      -84.3715021
+    ]
+  ],
+  "corridor_leftovers": [
+    [
+      [
+        33.8109005,
+        -84.3688584
+      ],
+      [
+        33.8108913,
+        -84.3687789
+      ],
+      [
+        33.8108727,
+        -84.3686825
+      ],
+      [
+        33.8108486,
+        -84.3685933
+      ],
+      [
+        33.8107987,
+        -84.3684733
+      ]
+    ],
+    [
+      [
+        33.81066,
+        -84.37037
+      ],
+      [
+        33.810701,
+        -84.370174
+      ],
+      [
+        33.8107271,
+        -84.370085
+      ],
+      [
+        33.8107951,
+        -84.3698525
+      ],
+      [
+        33.810833,
+        -84.369723
+      ],
+      [
+        33.810868,
+        -84.369578
+      ],
+      [
+        33.810898,
+        -84.36939
+      ],
+      [
+        33.8109088,
+        -84.3692071
+      ],
+      [
+        33.8109097,
+        -84.3691624
+      ],
+      [
+        33.8109102,
+        -84.3691369
+      ],
+      [
+        33.8109081,
+        -84.3690122
+      ],
+      [
+        33.8109056,
+        -84.3689325
+      ],
+      [
+        33.8109005,
+        -84.3688584
+      ]
+    ],
+    [
+      [
+        33.8107987,
+        -84.3684733
+      ],
+      [
+        33.8107468,
+        -84.3684102
+      ],
+      [
+        33.8106886,
+        -84.3683493
+      ],
+      [
+        33.8104699,
+        -84.3681172
+      ],
+      [
+        33.8103374,
+        -84.3679766
+      ]
+    ],
+    [
+      [
+        33.8106569,
+        -84.3712137
+      ],
+      [
+        33.8107086,
+        -84.3712267
+      ],
+      [
+        33.810753,
+        -84.3712689
+      ],
+      [
+        33.8107755,
+        -84.3713289
+      ],
+      [
+        33.810772,
+        -84.3714143
+      ],
+      [
+        33.8107503,
+        -84.3714596
+      ],
+      [
+        33.810729,
+        -84.371485
+      ],
+      [
+        33.8106978,
+        -84.3715037
+      ],
+      [
+        33.8106596,
+        -84.3715113
+      ],
+      [
+        33.810616,
+        -84.3715021
+      ],
+      [
+        33.8105724,
+        -84.3714489
+      ],
+      [
+        33.8105583,
+        -84.3713946
+      ],
+      [
+        33.8105565,
+        -84.3713298
+      ],
+      [
+        33.8105741,
+        -84.3712736
+      ],
+      [
+        33.8105931,
+        -84.3712383
+      ],
+      [
+        33.8106209,
+        -84.3712219
+      ],
+      [
+        33.8106569,
+        -84.3712137
+      ]
+    ],
+    [
+      [
+        33.8106569,
+        -84.3712137
+      ],
+      [
+        33.8106418,
+        -84.3707467
+      ],
+      [
+        33.8106391,
+        -84.3706625
+      ]
+    ],
+    [
+      [
+        33.8106391,
+        -84.3706625
+      ],
+      [
+        33.810637,
+        -84.370598
+      ],
+      [
+        33.81066,
+        -84.37037
+      ]
+    ]
+  ],
+  "boundaries": {
+    "b-8th": {
+      "name": "8th St (south limit / Phase II start)",
+      "coord": [
+        33.779493,
+        -84.369409
+      ]
+    },
+    "b-park": {
+      "name": "Park Dr (Phase I / II split)",
+      "coord": [
+        33.785694,
+        -84.36745
+      ]
+    },
+    "b-piedmont": {
+      "name": "Piedmont Ave (4-lane segment start)",
+      "coord": [
+        33.7997212,
+        -84.3710335
+      ]
+    },
+    "b-ansley": {
+      "name": "Ansley Mall frontage (4-lane segment end)",
+      "coord": [
+        33.80184,
+        -84.3723
+      ]
+    },
+    "b-armour": {
+      "name": "Armour Dr (north limit)",
+      "coord": [
+        33.810772,
+        -84.3714143
+      ]
+    }
+  },
+  "features": [
+    {
+      "id": "sig-virginia",
+      "type": "signal",
+      "name": "Virginia Ave",
+      "title": "Full traffic signal \u2014 Virginia Ave",
+      "description": "Upgraded full traffic signal. Phase II intersection improvement; right-of-way acquisition here.",
+      "section": 8,
+      "quote": "Full traffic signals are located at: Virginia Ave, Amsterdam Ave, Worchester Dr, Dutch Valley Rd, Ansley Mall Driveway, and Montgomery Ferry Dr.",
+      "phase": "II",
+      "lat": 33.78054,
+      "lng": -84.369065,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "sig-amsterdam",
+      "type": "signal",
+      "name": "Amsterdam Ave",
+      "title": "Full traffic signal \u2014 Amsterdam Ave",
+      "description": "Upgraded full traffic signal.",
+      "section": 8,
+      "quote": "Full traffic signals are located at: Virginia Ave, Amsterdam Ave, Worchester Dr, Dutch Valley Rd, Ansley Mall Driveway, and Montgomery Ferry Dr.",
+      "phase": "II",
+      "lat": 33.788219,
+      "lng": -84.367238,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "sig-worcester",
+      "type": "signal",
+      "name": "Worcester Dr",
+      "title": "Full traffic signal \u2014 Worcester Dr",
+      "description": "Upgraded full traffic signal.",
+      "section": 8,
+      "quote": "Full traffic signals are located at: Virginia Ave, Amsterdam Ave, Worchester Dr, Dutch Valley Rd, Ansley Mall Driveway, and Montgomery Ferry Dr.",
+      "phase": "I",
+      "lat": 33.7908244,
+      "lng": -84.3671139,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "sig-dutchvalley",
+      "type": "signal",
+      "name": "Dutch Valley Rd",
+      "title": "Full traffic signal \u2014 Dutch Valley Rd",
+      "description": "Upgraded full traffic signal.",
+      "section": 8,
+      "quote": "Full traffic signals are located at: Virginia Ave, Amsterdam Ave, Worchester Dr, Dutch Valley Rd, Ansley Mall Driveway, and Montgomery Ferry Dr.",
+      "phase": "I",
+      "lat": 33.791808,
+      "lng": -84.366967,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "sig-ansleymall",
+      "type": "signal",
+      "name": "Ansley Mall Driveway",
+      "title": "Full traffic signal \u2014 Ansley Mall Driveway",
+      "description": "Upgraded full traffic signal at the Ansley Mall driveway. Within the segment that retains four lanes.",
+      "section": 8,
+      "quote": "Full traffic signals are located at: ... Ansley Mall Driveway, and Montgomery Ferry Dr.",
+      "phase": "I",
+      "lat": 33.80069,
+      "lng": -84.37171,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "sig-montgomeryferry",
+      "type": "signal",
+      "name": "Montgomery Ferry Dr",
+      "title": "Full signal + safety rebuild \u2014 Montgomery Ferry Dr",
+      "description": "Left-turn signals and congestion relief. Raised center median island on the north leg, upgraded ADA ramps and crosswalks, and up to 4 ft of pavement widening north of the intersection to reduce the northbound skew and run-off-road crashes. Right-of-way acquisition here.",
+      "section": 4,
+      "quote": "The proposed safety improvements ... maintaining an 11-foot northbound travel lane: minor widening of the edge of pavement ... up to four feet north of the intersection to provide a less severe skew ... upgraded ADA ramps and crosswalks, and installation of a center raised median on the northern leg of the intersection.",
+      "phase": "I",
+      "lat": 33.80184,
+      "lng": -84.372304,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "roundabout-park",
+      "type": "roundabout",
+      "name": "Roundabout (~Park Dr)",
+      "title": "New roundabout (replaces a signal)",
+      "description": "One of the 10 existing signals along the corridor is replaced with a roundabout, within the Phase II segment (8th St through Park Dr).",
+      "section": 5,
+      "quote": "One of the 10 existing signals will be replaced with a roundabout...",
+      "phase": "II",
+      "lat": 33.785694,
+      "lng": -84.36745,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "phb-westminster",
+      "type": "phb",
+      "name": "Westminster Dr",
+      "title": "Pedestrian Hybrid Beacon \u2014 Westminster Dr",
+      "description": "New Pedestrian Hybrid Beacon (PHB) \u2014 pedestrian-actuated signal that stops traffic for crossings.",
+      "section": 8,
+      "quote": "PHBs are located at: Westminster Dr and the Publix property.",
+      "phase": "I",
+      "lat": 33.79379,
+      "lng": -84.367214,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "phb-publix",
+      "type": "phb",
+      "name": "Publix property",
+      "title": "Pedestrian Hybrid Beacon \u2014 Publix property",
+      "description": "New Pedestrian Hybrid Beacon (PHB) at the Publix property crossing (Ansley Mall).",
+      "section": 8,
+      "quote": "PHBs are located at: Westminster Dr and the Publix property.",
+      "phase": "I",
+      "lat": 33.79905,
+      "lng": -84.37186,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "phb-ansleymall-midblock",
+      "type": "phb",
+      "name": "Ansley Mall mid-block",
+      "title": "PHB \u2014 Ansley Mall mid-block crossing",
+      "description": "New Pedestrian Hybrid Beacon at a mid-block crossing with a center median island in front of Ansley Mall, connecting the mall to the Atlanta BeltLine along Montgomery Ferry Dr.",
+      "section": 4,
+      "quote": "a Pedestrian Hybrid Beacon at new mid-block crossing with a center median island in front of Ansley Mall will provide connectivity ... to the Atlanta BeltLine.",
+      "phase": "I",
+      "lat": 33.8013,
+      "lng": -84.37202,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "phb-ansley-piedmont",
+      "type": "phb",
+      "name": "Ansley Circle\u2013Piedmont Rd",
+      "title": "PHB \u2014 between Ansley Circle & Piedmont Rd",
+      "description": "One of two new signalized crossings added between Montgomery Ferry Dr and Piedmont Rd for transit users.",
+      "section": 6,
+      "quote": "A Pedestrian Hybrid Beacon will be between Ansley Circle and Piedmont Rd ...",
+      "phase": "I",
+      "lat": 33.804,
+      "lng": -84.37367,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "rrfb-cresthill",
+      "type": "rrfb",
+      "name": "Cresthill Ave",
+      "title": "RRFB \u2014 Cresthill Ave",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB) \u2014 pedestrian-actuated flashing warning at a marked crosswalk.",
+      "section": 8,
+      "quote": "RRFBs are located at: Cresthill Ave, Elmwood Dr, Orme Cir, Yorkshire Dr, Kroger property, and Rock Springs Rd.",
+      "phase": "I",
+      "lat": 33.783804,
+      "lng": -84.368035,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "rrfb-elmwood",
+      "type": "rrfb",
+      "name": "Elmwood Dr",
+      "title": "RRFB \u2014 Elmwood Dr",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB).",
+      "section": 8,
+      "quote": "RRFBs are located at: Cresthill Ave, Elmwood Dr, Orme Cir, Yorkshire Dr, Kroger property, and Rock Springs Rd.",
+      "phase": "I",
+      "lat": 33.784738,
+      "lng": -84.367741,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "rrfb-orme",
+      "type": "rrfb",
+      "name": "Orme Cir",
+      "title": "RRFB \u2014 Orme Cir",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB).",
+      "section": 8,
+      "quote": "RRFBs are located at: Cresthill Ave, Elmwood Dr, Orme Cir, Yorkshire Dr, Kroger property, and Rock Springs Rd.",
+      "phase": "I",
+      "lat": 33.787124,
+      "lng": -84.367242,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "rrfb-yorkshire",
+      "type": "rrfb",
+      "name": "Yorkshire Rd",
+      "title": "RRFB + permitted left turn \u2014 Yorkshire Rd",
+      "description": "New RRFB. A left turn from Yorkshire Rd onto Monroe Dr will remain permitted.",
+      "section": 8,
+      "quote": "RRFBs are located at: ... Yorkshire Dr ...  Yes, a left from Yorkshire Rd onto Monroe Dr will be permitted.",
+      "phase": "II",
+      "lat": 33.795249,
+      "lng": -84.367445,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "rrfb-kroger",
+      "type": "rrfb",
+      "name": "Kroger property",
+      "title": "RRFB \u2014 Kroger property",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB) at the Kroger property crossing (north of Ansley Mall).",
+      "section": 8,
+      "quote": "RRFBs are located at: ... Kroger property, and Rock Springs Rd.",
+      "phase": "I",
+      "lat": 33.80049,
+      "lng": -84.37306,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "rrfb-rocksprings",
+      "type": "rrfb",
+      "name": "Rock Springs Rd",
+      "title": "RRFB \u2014 Rock Springs Rd",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB).",
+      "section": 8,
+      "quote": "RRFBs are located at: ... and Rock Springs Rd.",
+      "phase": "I",
+      "lat": 33.80553,
+      "lng": -84.37465,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "rrfb-ansley-mferry",
+      "type": "rrfb",
+      "name": "Ansley Circle\u2013Montgomery Ferry",
+      "title": "RRFB \u2014 between Ansley Circle & Montgomery Ferry Dr",
+      "description": "One of two new signalized crossings added between Montgomery Ferry Dr and Piedmont Rd for transit users.",
+      "section": 6,
+      "quote": "a Reflective Rapid Flashing Beacon will be installed between Ansley Circle and Montgomery Ferry Dr.",
+      "phase": "I",
+      "lat": 33.80242,
+      "lng": -84.37266,
+      "geocode_method": "manual"
+    },
+    {
+      "id": "align-cumberland",
+      "type": "median",
+      "name": "Cumberland Rd",
+      "title": "Intersection realignment \u2014 Cumberland Rd",
+      "description": "Alignment adjusted to shorten the pedestrian crossing across Cumberland Rd by ~30 ft, improve sight lines, simplify movements, and slow right-turning vehicles onto Monroe Dr.",
+      "section": 4,
+      "quote": "The alignment of the intersection has been adjusted to reduce the length for the pedestrian crossing across Cumberland Rd by approximately 30-feet...",
+      "phase": "I",
+      "lat": 33.796148,
+      "lng": -84.368174,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "align-sherwood",
+      "type": "median",
+      "name": "Sherwood Rd",
+      "title": "Intersection realignment \u2014 Sherwood Rd",
+      "description": "Alignment adjusted to shorten the pedestrian crossing across Sherwood Rd by ~40 ft, improve sight lines, and slow right-turning vehicles onto Sherwood Rd.",
+      "section": 5,
+      "quote": "The alignment of the intersection has been adjusted to reduce the length for the pedestrian crossing across Sherwood Rd by approximately 40 feet...",
+      "phase": "I",
+      "lat": 33.7965636,
+      "lng": -84.3685223,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "curb-piedmont",
+      "type": "curb",
+      "name": "Piedmont Ave & Monroe",
+      "title": "Curb & ADA upgrades \u2014 Piedmont Ave",
+      "description": "Each corner receives upgraded curb lines and ADA ramps to better define the vehicle travel path and shorten pedestrian crossings. Northern end of the segment that retains four lanes.",
+      "section": 5,
+      "quote": "Each corner of the intersection will receive upgraded curb lines and ADA ramps to better define the vehicle travel path and provide shorter pedestrian crossings.",
+      "phase": "I",
+      "lat": 33.7997212,
+      "lng": -84.3710335,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "recon-kanuga",
+      "type": "curb",
+      "name": "Kanuga St",
+      "title": "Intersection reconfiguration \u2014 Kanuga St",
+      "description": "Reconfigured concurrently with the 10th St & Monroe Dr intersection to incorporate roadway and BeltLine improvements.",
+      "section": 1,
+      "quote": "The present intersection reconfiguration at Kanuga St and Monroe Dr and the intersection at 10th St and Monroe Dr were concurrently designed...",
+      "phase": "II",
+      "lat": 33.7823032,
+      "lng": -84.3685111,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "beltline-10th",
+      "type": "beltline",
+      "name": "10th St & BeltLine",
+      "title": "BeltLine crossing + all-stop ped phase \u2014 10th St",
+      "description": "Key Atlanta BeltLine access point. Existing all-stop (pedestrian scramble) phase; safe bicycle crossing of Monroe Dr incorporated. Excluded from the 22 side-street count and treated as a signature crossing.",
+      "section": 6,
+      "quote": "There is already an all-stop phase for pedestrian crossings at the 10th St intersection... Opportunities for safe bicycle crossing of Monroe Dr at the BeltLine/10th St intersection ... have been incorporated.",
+      "phase": "II",
+      "lat": 33.7817715,
+      "lng": -84.3686753,
+      "geocode_method": "overpass-intersection"
+    },
+    {
+      "id": "bike-parkdr",
+      "type": "beltline",
+      "name": "Park Dr SE bike crossing",
+      "title": "Bicycle crossing \u2014 Park Dr SE",
+      "description": "Safe bicycle crossing of Monroe Dr incorporated at Park Dr SE (bike lanes are not included along Monroe itself).",
+      "section": 1,
+      "quote": "Opportunities for safe bicycle crossing of Monroe Dr at the BeltLine/10th St intersection and Park Dr SE have been incorporated...",
+      "phase": "II",
+      "lat": 33.785,
+      "lng": -84.36745,
+      "geocode_method": "manual"
+    }
+  ]
+}

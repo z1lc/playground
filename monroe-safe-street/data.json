@@ -981,7 +981,7 @@
       "description": "Upgraded full traffic signal.",
       "section": 8,
       "quote": "Full traffic signals are located at: Virginia Ave, Amsterdam Ave, Worchester Dr, Dutch Valley Rd, Ansley Mall Driveway, and Montgomery Ferry Dr.",
-      "phase": "II",
+      "phase": "I",
       "lat": 33.788219,
       "lng": -84.367238,
       "geocode_method": "overpass-intersection"
@@ -1021,8 +1021,8 @@
       "section": 8,
       "quote": "Full traffic signals are located at: ... Ansley Mall Driveway, and Montgomery Ferry Dr.",
       "phase": "I",
-      "lat": 33.80069,
-      "lng": -84.37171,
+      "lat": 33.8005321,
+      "lng": -84.3716312,
       "geocode_method": "manual"
     },
     {
@@ -1033,7 +1033,7 @@
       "description": "Left-turn signals and congestion relief. Raised center median island on the north leg, upgraded ADA ramps and crosswalks, and up to 4 ft of pavement widening north of the intersection to reduce the northbound skew and run-off-road crashes. Right-of-way acquisition here.",
       "section": 4,
       "quote": "The proposed safety improvements ... maintaining an 11-foot northbound travel lane: minor widening of the edge of pavement ... up to four feet north of the intersection to provide a less severe skew ... upgraded ADA ramps and crosswalks, and installation of a center raised median on the northern leg of the intersection.",
-      "phase": "I",
+      "phase": "II",
       "lat": 33.80184,
       "lng": -84.372304,
       "geocode_method": "overpass-intersection"
@@ -1069,38 +1069,12 @@
       "type": "phb",
       "name": "Publix property",
       "title": "Pedestrian Hybrid Beacon \u2014 Publix property",
-      "description": "New Pedestrian Hybrid Beacon (PHB) at the Publix property crossing (Ansley Mall).",
+      "description": "New Pedestrian Hybrid Beacon (PHB) at a mid-block crossing in front of Ansley Mall (the Publix property), with a center median island. One of two new signalized crossings added between Montgomery Ferry Dr and Piedmont Rd for transit users; provides an accessible pedestrian connection between Ansley Mall and the Atlanta BeltLine via Montgomery Ferry Dr.",
       "section": 8,
-      "quote": "PHBs are located at: Westminster Dr and the Publix property.",
+      "quote": "PHBs are located at: Westminster Dr and the Publix property. ... a Pedestrian Hybrid Beacon at new mid-block crossing with a center median island in front of Ansley Mall will provide connectivity ... to the Atlanta BeltLine.",
       "phase": "I",
-      "lat": 33.79905,
-      "lng": -84.37186,
-      "geocode_method": "manual"
-    },
-    {
-      "id": "phb-ansleymall-midblock",
-      "type": "phb",
-      "name": "Ansley Mall mid-block",
-      "title": "PHB \u2014 Ansley Mall mid-block crossing",
-      "description": "New Pedestrian Hybrid Beacon at a mid-block crossing with a center median island in front of Ansley Mall, connecting the mall to the Atlanta BeltLine along Montgomery Ferry Dr.",
-      "section": 4,
-      "quote": "a Pedestrian Hybrid Beacon at new mid-block crossing with a center median island in front of Ansley Mall will provide connectivity ... to the Atlanta BeltLine.",
-      "phase": "I",
-      "lat": 33.8013,
-      "lng": -84.37202,
-      "geocode_method": "manual"
-    },
-    {
-      "id": "phb-ansley-piedmont",
-      "type": "phb",
-      "name": "Ansley Circle\u2013Piedmont Rd",
-      "title": "PHB \u2014 between Ansley Circle & Piedmont Rd",
-      "description": "One of two new signalized crossings added between Montgomery Ferry Dr and Piedmont Rd for transit users.",
-      "section": 6,
-      "quote": "A Pedestrian Hybrid Beacon will be between Ansley Circle and Piedmont Rd ...",
-      "phase": "I",
-      "lat": 33.804,
-      "lng": -84.37367,
+      "lat": 33.80013,
+      "lng": -84.3713,
       "geocode_method": "manual"
     },
     {
@@ -1111,7 +1085,7 @@
       "description": "New Rectangular Rapid Flashing Beacon (RRFB) \u2014 pedestrian-actuated flashing warning at a marked crosswalk.",
       "section": 8,
       "quote": "RRFBs are located at: Cresthill Ave, Elmwood Dr, Orme Cir, Yorkshire Dr, Kroger property, and Rock Springs Rd.",
-      "phase": "I",
+      "phase": "II",
       "lat": 33.783804,
       "lng": -84.368035,
       "geocode_method": "overpass-intersection"
@@ -1124,7 +1098,7 @@
       "description": "New Rectangular Rapid Flashing Beacon (RRFB).",
       "section": 8,
       "quote": "RRFBs are located at: Cresthill Ave, Elmwood Dr, Orme Cir, Yorkshire Dr, Kroger property, and Rock Springs Rd.",
-      "phase": "I",
+      "phase": "II",
       "lat": 33.784738,
       "lng": -84.367741,
       "geocode_method": "overpass-intersection"
@@ -1150,7 +1124,7 @@
       "description": "New RRFB. A left turn from Yorkshire Rd onto Monroe Dr will remain permitted.",
       "section": 8,
       "quote": "RRFBs are located at: ... Yorkshire Dr ...  Yes, a left from Yorkshire Rd onto Monroe Dr will be permitted.",
-      "phase": "II",
+      "phase": "I",
       "lat": 33.795249,
       "lng": -84.367445,
       "geocode_method": "overpass-intersection"
@@ -1160,12 +1134,12 @@
       "type": "rrfb",
       "name": "Kroger property",
       "title": "RRFB \u2014 Kroger property",
-      "description": "New Rectangular Rapid Flashing Beacon (RRFB) at the Kroger property crossing (north of Ansley Mall).",
+      "description": "New Rectangular Rapid Flashing Beacon (RRFB) at the Kroger property (1700 Monroe Dr), on Monroe Dr between Ansley Circle and Montgomery Ferry Dr \u2014 one of two new signalized crossings added in this stretch for transit users.",
       "section": 8,
-      "quote": "RRFBs are located at: ... Kroger property, and Rock Springs Rd.",
+      "quote": "RRFBs are located at: ... Kroger property, and Rock Springs Rd. ... a Reflective Rapid Flashing Beacon will be installed between Ansley Circle and Montgomery Ferry Dr.",
       "phase": "I",
-      "lat": 33.80049,
-      "lng": -84.37306,
+      "lat": 33.801129,
+      "lng": -84.371926,
       "geocode_method": "manual"
     },
     {
@@ -1180,19 +1154,6 @@
       "lat": 33.80553,
       "lng": -84.37465,
       "geocode_method": "overpass-intersection"
-    },
-    {
-      "id": "rrfb-ansley-mferry",
-      "type": "rrfb",
-      "name": "Ansley Circle\u2013Montgomery Ferry",
-      "title": "RRFB \u2014 between Ansley Circle & Montgomery Ferry Dr",
-      "description": "One of two new signalized crossings added between Montgomery Ferry Dr and Piedmont Rd for transit users.",
-      "section": 6,
-      "quote": "a Reflective Rapid Flashing Beacon will be installed between Ansley Circle and Montgomery Ferry Dr.",
-      "phase": "I",
-      "lat": 33.80242,
-      "lng": -84.37266,
-      "geocode_method": "manual"
     },
     {
       "id": "align-cumberland",
@@ -1268,7 +1229,7 @@
       "section": 1,
       "quote": "Opportunities for safe bicycle crossing of Monroe Dr at the BeltLine/10th St intersection and Park Dr SE have been incorporated...",
       "phase": "II",
-      "lat": 33.785,
+      "lat": 33.785694,
       "lng": -84.36745,
       "geocode_method": "manual"
     }

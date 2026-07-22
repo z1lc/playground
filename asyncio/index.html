@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python asyncio: A Staff Interview Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elev: #f8fafc;
+      --code-bg: #f6f8fa;
+      --fg: #0f172a;
+      --muted: #475569;
+      --dim: #94a3b8;
+      --accent: #0891b2;
+      --accent-2: #0e7490;
+      --border: #e2e8f0;
+      --border-2: #cbd5e1;
+      --note-tint: #ecfeff;
+      --warn-tint: #fef3c7;
+      --warn-fg: #92400e;
+      --warn-border: #f59e0b;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 80px;
+    }
+
+    aside.toc {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 0.85rem;
+    }
+    aside.toc h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    aside.toc nav { display: flex; flex-direction: column; gap: 2px; }
+    aside.toc a {
+      display: block;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.35;
+    }
+    aside.toc a:hover { color: var(--fg); background: var(--bg-elev); }
+    aside.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 8px 10px;
+      background: var(--bg-elev);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .copy-md-btn:hover {
+      color: var(--fg);
+      background: #eef2f7;
+      border-color: var(--dim);
+    }
+    .copy-md-btn.copied {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--note-tint);
+    }
+    .copy-md-btn.failed {
+      color: #b91c1c;
+      border-color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .toc-toggle {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .toc-toggle::after { content: ' ▾'; color: var(--muted); }
+    .toc-toggle.open::after { content: ' ▴'; }
+
+    main { min-width: 0; max-width: 760px; }
+
+    /* ---------- Header ---------- */
+    .back-link {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .doc-title .emoji { font-size: 2rem; }
+    .doc-subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.55;
+    }
+
+    /* ---------- Sections ---------- */
+    section { margin-bottom: 56px; scroll-margin-top: 20px; }
+    section > h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    section > h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--fg);
+    }
+    section > h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    section p { margin-bottom: 14px; color: var(--fg); }
+    section p + p { margin-top: -4px; }
+    section a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(8,145,178,0.3);
+      transition: border-color 0.15s;
+    }
+    section a:hover { border-bottom-color: var(--accent); }
+    section strong { color: var(--fg); font-weight: 600; }
+    section em { color: var(--fg); font-style: italic; }
+    section ul, section ol { margin: 8px 0 16px 24px; }
+    section li { margin-bottom: 6px; color: var(--fg); }
+    section li::marker { color: var(--dim); }
+
+    code, .code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 12px 0 18px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+      white-space: pre;
+      color: var(--fg);
+    }
+    .com { color: var(--muted); }
+    .kw { color: #7c3aed; }
+    .str { color: #15803d; }
+    .fn { color: #2563eb; }
+    .out { color: var(--muted); }
+    .bad { color: #b91c1c; }
+
+    /* ---------- TL;DR card ---------- */
+    .tldr-card {
+      background: linear-gradient(140deg, rgba(8,145,178,0.06), rgba(8,145,178,0.01));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+    }
+    .tldr-card h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      font-weight: 700;
+    }
+    .tldr-card ul { margin-left: 18px; }
+    .tldr-card li { margin-bottom: 8px; }
+
+    /* ---------- Callouts ---------- */
+    .callout {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--dim);
+      border-radius: 4px 8px 8px 4px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+    .callout .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .callout.note { background: var(--note-tint); border-left-color: var(--accent); }
+    .callout.note .label { color: var(--accent); }
+    .callout.warn { background: var(--warn-tint); border-left-color: var(--warn-border); }
+    .callout.warn .label { color: var(--warn-fg); }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; margin: 14px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead { background: var(--bg-elev); }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td code { white-space: nowrap; }
+    td:first-child { font-weight: 600; color: var(--fg); }
+    /* column tints for the vs table */
+    #vs-table th.c-async, #vs-table td.c-async { background: rgba(8,145,178,0.06); }
+    #vs-table th.c-thread, #vs-table td.c-thread { background: rgba(245,158,11,0.06); }
+    #vs-table th.c-proc, #vs-table td.c-proc { background: rgba(124,58,237,0.06); }
+    #vs-table th.c-async { color: var(--accent); }
+    #vs-table th.c-thread { color: #b45309; }
+    #vs-table th.c-proc { color: #6d28d9; }
+
+    /* ---------- Diagrams ---------- */
+    .diagram {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 18px 0 22px;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+    .diagram .caption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* SVG default text */
+    svg text { font-family: var(--font-sans); }
+    svg text.mono { font-family: var(--font-mono); }
+
+    /* ---------- Explainer tooltips ---------- */
+    .x {
+      border-bottom: 1px dashed rgba(8,145,178,0.6);
+      cursor: help;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .x:hover, .x.tapped { color: var(--accent); }
+    .x a { color: inherit; border-bottom: none; }
+    .x:hover a, .x.tapped a { color: inherit; }
+    .x code { color: inherit; }
+
+    .explainer-pop {
+      position: fixed;
+      max-width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: var(--fg);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .explainer-pop.show { opacity: 1; }
+    .explainer-pop .term {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px 60px; }
+      aside.toc {
+        position: static;
+        max-height: none;
+        padding: 0;
+      }
+      .toc-toggle { display: block; }
+      aside.toc nav { display: none; flex-direction: column; gap: 2px; padding: 4px 0 12px; }
+      aside.toc.open nav { display: flex; }
+      aside.toc a { padding: 8px 12px; }
+      main { max-width: none; }
+      .doc-title { font-size: 1.7rem; }
+      section > h2 { font-size: 1.25rem; }
+      .explainer-pop { max-width: calc(100vw - 32px); }
+    }
+    @media (max-width: 520px) {
+      .layout { padding: 18px 14px 50px; }
+      pre { font-size: 0.78rem; }
+      .diagram { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="toc" id="toc">
+    <button class="toc-toggle" id="tocToggle" aria-expanded="false">Contents</button>
+    <nav id="tocNav">
+      <h3>On this page</h3>
+      <a href="#tldr">TL;DR</a>
+      <a href="#why">Why asyncio exists</a>
+      <a href="#model">Mental model in 60 seconds</a>
+      <a href="#coroutines">Coroutines &amp; await</a>
+      <a href="#trio">Coroutine vs Task vs Future</a>
+      <a href="#concurrent">Running things concurrently</a>
+      <a href="#structured">Structured concurrency &amp; cancellation</a>
+      <a href="#blocking">Never block the event loop</a>
+      <a href="#coordinating">Coordinating tasks</a>
+      <a href="#vs">asyncio vs threads vs processes</a>
+      <a href="#gotchas">Interview gotchas</a>
+      <a href="#further">Further reading</a>
+      <button type="button" class="copy-md-btn" id="copyMdBtn" aria-label="Copy page as Markdown to clipboard">Copy as Markdown</button>
+    </nav>
+  </aside>
+
+  <main>
+    <a href="../" class="back-link">← Back to playground</a>
+
+    <h1 class="doc-title"><span class="emoji">🔄</span>Python asyncio</h1>
+    <p class="doc-subtitle">A staff interview guide to Python's <code>asyncio</code> — the mental models and trade-offs an interviewer probes, for a strong Python engineer who hasn't written async before. Not an API tour: the event loop, the coroutine/task/future trio, structured concurrency, and the one rule that decides whether your service falls over.</p>
+
+    <div class="tldr-card" id="tldr">
+      <h2>TL;DR</h2>
+      <ul>
+        <li><strong><code>asyncio</code> is single-threaded <span class="x" data-term="Cooperative multitasking" data-def="Tasks voluntarily hand control back to the scheduler at defined points (here, every await). The scheduler cannot forcibly interrupt a running task — contrast preemptive scheduling, where the OS can switch threads at any instruction.">cooperative</span> concurrency for <span class="x" data-term="I/O-bound" data-def="Work whose wall-clock time is dominated by waiting on external I/O — network, disk, database — rather than by the CPU. The opposite is CPU-bound. asyncio wins on I/O-bound workloads; it does nothing for CPU-bound ones.">I/O-bound</span> work.</strong> One thread runs an <span class="x" data-term="Event loop" data-def="The scheduler at the heart of asyncio. A single thread that keeps a queue of ready tasks, runs one until it awaits, then picks the next — driven underneath by an OS readiness API (epoll / kqueue / IOCP).">event loop</span> that juggles thousands of tasks by letting each run until it <code>await</code>s, then switching to another.</li>
+        <li><strong><code>await</code> is a suspension point, not a thread.</strong> It marks the <em>only</em> places a task can pause and yield control. Between two <code>await</code>s your code runs uninterrupted — which makes reasoning easy and makes one bad line catastrophic.</li>
+        <li><strong>Know the trio: <span class="x" data-term="Coroutine" data-def="What an `async def` function returns when called. A suspendable computation that does nothing until it is awaited or scheduled — analogous to a generator object.">coroutine</span> (the recipe) → <span class="x" data-term="Task" data-def="A coroutine that the event loop has been scheduled to run concurrently, via asyncio.create_task(). It is a subclass of Future. It makes progress whenever the current task awaits.">Task</span> (scheduled to run concurrently) → <span class="x" data-term="Future" data-def="A low-level placeholder for a result that will be available later (pending → done, with a result or an exception). Task subclasses Future. You rarely create one directly.">Future</span> (a result, later).</strong> Awaiting a bare coroutine is <em>sequential</em>; wrapping it in a Task is what makes work overlap.</li>
+        <li><strong>The cardinal rule: never block the loop.</strong> There is one thread, and no <span class="x" data-term="Preemption" data-def="The scheduler forcibly pausing a running unit of execution to run another. OS threads are preemptive; asyncio tasks are not — so a task that never awaits is never interrupted.">preemption</span>. A CPU-bound loop or a synchronous call (<code>time.sleep</code>, <code>requests.get</code>) freezes <em>every</em> task at once. It is not parallelism — under the <span class="x" data-term="GIL" data-def="Global Interpreter Lock: CPython allows only one thread to execute Python bytecode at a time. It's why threads don't give CPU parallelism, and part of why asyncio is single-threaded by design.">GIL</span> you get concurrency, not extra cores.</li>
+      </ul>
+    </div>
+
+    <section id="why">
+      <h2>Why asyncio exists</h2>
+      <p>Picture a web service that, per request, waits on a database, then an upstream API, then writes a response. It spends almost all of its wall-clock time <em>waiting</em> — the CPU is idle, parked on a socket. The classic way to handle many such requests at once is one OS thread per connection. That works until it doesn't: each thread carries a stack measured in megabytes, and the kernel pays a <span class="x" data-term="Context switch" data-def="Saving one thread's CPU registers and stack pointer and restoring another's so the CPU can run it. Cheap individually, but thousands of switches per second across thousands of threads becomes real overhead.">context-switch</span> cost every time it swaps them. At ten thousand mostly-idle connections — the famous <span class="x" data-term="C10k problem" data-def="The turn-of-the-century challenge of serving 10,000 concurrent connections on one machine. The answer that won was event-driven I/O (select/poll/epoll) instead of a thread per connection — the model asyncio, Node.js, and nginx all use.">C10k problem</span> — the machine spends more effort scheduling threads than doing work.</p>
+      <p>asyncio makes a different bet: if the work is <em>waiting</em>, you don't need a thread for each wait. One thread runs an event loop. Each in-flight operation is a cheap coroutine — a heap object, not an OS stack. When a coroutine would block on I/O, it registers interest with the loop's <span class="x" data-term="Selector (epoll/kqueue)" data-def="The OS readiness API the event loop blocks on: epoll on Linux, kqueue on BSD/macOS, IOCP on Windows. It tells the loop, in one call, which of thousands of sockets are ready to read or write.">selector</span> and yields; the loop moves on to whatever is ready now. Concurrency scales to tens of thousands of connections on a single core, because idle connections cost almost nothing.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 232" role="img" aria-label="Concurrency is interleaving many tasks on one thread; parallelism is running tasks at the same instant on multiple cores">
+  <!-- PARALLELISM -->
+  <text x="20" y="30" fill="#0f172a" font-size="12" font-weight="700">Parallelism — 2 cores, at the same instant</text>
+  <text x="20" y="64" fill="#475569" font-size="10">core 1</text>
+  <rect x="70" y="52" width="620" height="20" rx="4" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="380" y="66" fill="#6d28d9" font-size="10" text-anchor="middle">task A running</text>
+  <text x="20" y="92" fill="#475569" font-size="10">core 2</text>
+  <rect x="70" y="80" width="620" height="20" rx="4" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="380" y="94" fill="#6d28d9" font-size="10" text-anchor="middle">task B running</text>
+
+  <line x1="20" y1="122" x2="700" y2="122" stroke="#e2e8f0"/>
+
+  <!-- CONCURRENCY -->
+  <text x="20" y="152" fill="#0f172a" font-size="12" font-weight="700">Concurrency — 1 thread, interleaved (asyncio)</text>
+  <text x="20" y="186" fill="#475569" font-size="10">thread</text>
+  <rect x="70"  y="174" width="150" height="20" rx="4" fill="#cffafe" stroke="#0891b2"/>
+  <text x="145" y="188" fill="#0e7490" font-size="10" text-anchor="middle">A</text>
+  <rect x="224" y="174" width="150" height="20" rx="4" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="299" y="188" fill="#a16207" font-size="10" text-anchor="middle">B</text>
+  <rect x="378" y="174" width="120" height="20" rx="4" fill="#cffafe" stroke="#0891b2"/>
+  <text x="438" y="188" fill="#0e7490" font-size="10" text-anchor="middle">A</text>
+  <rect x="502" y="174" width="188" height="20" rx="4" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="596" y="188" fill="#a16207" font-size="10" text-anchor="middle">B</text>
+  <text x="70" y="216" fill="#475569" font-size="9.5">each switch happens where a task awaits →</text>
+  <line x1="70" y1="204" x2="700" y2="204" stroke="#94a3b8" stroke-width="1" marker-end="url(#whyar)"/>
+  <defs><marker id="whyar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/></marker></defs>
+  <text x="700" y="216" fill="#94a3b8" font-size="9.5" text-anchor="end">time</text>
+</svg>
+        <div class="caption">Concurrency is structure — dealing with many things by interleaving them; parallelism is doing many things at the same instant. asyncio gives you the top-to-bottom win of the lower lane on a single thread.</div>
+      </div>
+
+      <p>So the scope is narrow and worth stating out loud in an interview: <strong>asyncio buys concurrency, not parallelism.</strong> It shines when you have many operations that spend their time waiting on the network or disk. It does nothing for a workload that keeps a CPU busy — that needs multiple processes (see the <a href="#vs">comparison</a> below).</p>
+      <div class="callout note">
+        <span class="label">Lineage</span>
+        <p>This is the same event-loop idea behind nginx, Node.js, and libuv, ported into Python's standard library (<span class="x" data-term="PEP 3156" data-def="The 2012 proposal (Guido van Rossum) that introduced asyncio and the event-loop model to the standard library, originally built on generator-based coroutines with `yield from`.">PEP 3156</span>, 2012). It began on generator-based coroutines and got dedicated <code>async</code>/<code>await</code> syntax in Python 3.5 (<span class="x" data-term="PEP 492" data-def="The 2015 proposal that added native `async def` / `await` syntax, making coroutines a first-class language construct distinct from generators.">PEP 492</span>).</p>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Mental model in 60 seconds</h2>
+      <p>The event loop is a single thread running one job: keep a queue of ready-to-run tasks, take one, run it until it <code>await</code>s something not yet ready, then set it aside and take the next. When an awaited operation completes — a timer fires, a socket becomes readable — its task goes back on the ready queue. Repeat until nothing is left to do.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 640 300" role="img" aria-label="The event loop cycle: pick a ready task, run it until it awaits, park it, and repeat as I/O completes">
+  <defs>
+    <marker id="loopar" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+      <polygon points="0 0, 8 3.5, 0 7" fill="#0891b2"/>
+    </marker>
+  </defs>
+  <!-- center -->
+  <text x="320" y="140" fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle">event loop</text>
+  <text x="320" y="158" fill="#475569" font-size="10" text-anchor="middle">one thread · one task at a time</text>
+
+  <!-- node 1 top -->
+  <rect x="218" y="24" width="204" height="52" rx="8" fill="#cffafe" stroke="#0891b2"/>
+  <text x="320" y="46" fill="#0e7490" font-size="11" font-weight="700" text-anchor="middle">1 · pick a ready task</text>
+  <text x="320" y="63" fill="#475569" font-size="9.5" text-anchor="middle">from the ready queue</text>
+
+  <!-- node 2 bottom-right -->
+  <rect x="372" y="206" width="204" height="52" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="474" y="228" fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle">2 · run until it awaits</text>
+  <text x="474" y="245" fill="#475569" font-size="9.5" text-anchor="middle">no interruption in between</text>
+
+  <!-- node 3 bottom-left -->
+  <rect x="64" y="206" width="204" height="52" rx="8" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="166" y="228" fill="#a16207" font-size="11" font-weight="700" text-anchor="middle">3 · park it</text>
+  <text x="166" y="245" fill="#475569" font-size="9.5" text-anchor="middle">waiting on I/O / a timer</text>
+
+  <!-- arrows around the cycle -->
+  <path d="M424 66 C 500 92, 512 150, 486 202" fill="none" stroke="#0891b2" stroke-width="1.6" marker-end="url(#loopar)"/>
+  <path d="M372 236 L 272 236" fill="none" stroke="#0891b2" stroke-width="1.6" marker-end="url(#loopar)"/>
+  <path d="M156 204 C 128 150, 148 92, 220 66" fill="none" stroke="#0891b2" stroke-width="1.6" marker-end="url(#loopar)"/>
+
+  <text x="320" y="288" fill="#0891b2" font-size="9.5" text-anchor="middle">when the I/O completes, the task is put back on the ready queue →</text>
+</svg>
+        <div class="caption">The whole model. A task only ever pauses at an <code>await</code>; while it waits, the loop runs someone else.</div>
+      </div>
+
+      <p>Three properties fall out of this, and they explain almost everything about how async code behaves:</p>
+      <ul>
+        <li><strong>Single-threaded.</strong> Your coroutine code never runs concurrently with itself. Within one uninterrupted run there are no data races on ordinary variables — a relief compared to threads.</li>
+        <li><strong>Cooperative, not preemptive.</strong> The loop can only switch tasks <em>at an <code>await</code></em>. Between two awaits your code runs to completion, uninterrupted. That is the double edge of asyncio: you always know exactly where a switch can happen, but a task that never awaits (a busy CPU loop) never yields and starves the loop.</li>
+        <li><strong>One loop, started with <code>asyncio.run</code>.</strong> It creates the loop, drives your top-level coroutine to completion, and closes the loop. One event loop per thread.</li>
+      </ul>
+
+<pre><code><span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="kw">await</span> asyncio.<span class="fn">gather</span>(<span class="fn">worker</span>(<span class="str">"a"</span>), <span class="fn">worker</span>(<span class="str">"b"</span>))
+
+asyncio.<span class="fn">run</span>(main())   <span class="com"># create the loop, run main() to completion, close the loop</span></code></pre>
+
+      <div class="callout note">
+        <span class="label">Use the front door</span>
+        <p><code>asyncio.run()</code> (3.7+) is the entry point for new code. You will see older tutorials call <code>get_event_loop()</code> / <code>run_until_complete()</code> by hand — avoid that; it is easy to get loop lifecycle wrong, and a common source of "there is no current event loop" errors.</p>
+      </div>
+    </section>
+
+    <section id="coroutines">
+      <h2>Coroutines &amp; <code>await</code></h2>
+      <p>An <code>async def</code> defines a <em>coroutine function</em>. The thing to internalize: <strong>calling it does not run it.</strong> It returns a coroutine object — inert — exactly the way calling a generator function returns a generator without executing the body. Nothing happens until you <code>await</code> it (or schedule it as a Task, or hand it to <code>asyncio.run</code>).</p>
+
+<pre><code><span class="kw">async def</span> <span class="fn">fetch</span>(url): ...
+
+fetch(url)         <span class="com"># returns a coroutine object — the body never runs (RuntimeWarning)</span>
+<span class="kw">await</span> fetch(url)   <span class="com"># now it actually runs</span></code></pre>
+
+      <p><code>await X</code> does two things at once. It drives <code>X</code> toward its result, and — the important part — if <code>X</code> is not ready, it <strong>suspends the current coroutine and hands control back to the event loop</strong>. <code>await</code> is the <em>only</em> place a coroutine can pause, and you can only write it inside an <code>async def</code>. What you can await is any <span class="x" data-term="Awaitable" data-def="Anything you can use with await: a coroutine, a Task, or a Future. Under the hood it implements __await__. asyncio.sleep(), a Task from create_task(), and the result of an async library call are all awaitables.">awaitable</span> — a coroutine, a Task, or a Future.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 210" role="img" aria-label="Task A runs until it awaits, yielding to the loop which runs Task B; when A's I/O is ready, A resumes">
+  <defs>
+    <marker id="awar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <!-- lane labels -->
+  <text x="18" y="60" fill="#0e7490" font-size="11" font-weight="700">Task A</text>
+  <text x="18" y="140" fill="#a16207" font-size="11" font-weight="700">Task B</text>
+
+  <!-- A runs -->
+  <rect x="70" y="42" width="170" height="30" rx="5" fill="#cffafe" stroke="#0891b2"/>
+  <text x="155" y="62" fill="#0e7490" font-size="10.5" text-anchor="middle">running</text>
+  <!-- await handoff down -->
+  <line x1="240" y1="57" x2="290" y2="120" stroke="#94a3b8" stroke-dasharray="4 3" marker-end="url(#awar)"/>
+  <text x="245" y="96" fill="#475569" font-size="9">await → yields</text>
+
+  <!-- B runs -->
+  <rect x="292" y="122" width="180" height="30" rx="5" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="382" y="142" fill="#a16207" font-size="10.5" text-anchor="middle">running</text>
+  <!-- resume up -->
+  <line x1="472" y1="137" x2="522" y2="72" stroke="#94a3b8" stroke-dasharray="4 3" marker-end="url(#awar)"/>
+  <text x="486" y="112" fill="#475569" font-size="9">I/O ready</text>
+
+  <!-- A resumes -->
+  <rect x="524" y="42" width="166" height="30" rx="5" fill="#cffafe" stroke="#0891b2"/>
+  <text x="607" y="62" fill="#0e7490" font-size="10.5" text-anchor="middle">resumes</text>
+
+  <line x1="70" y1="182" x2="700" y2="182" stroke="#94a3b8" marker-end="url(#awar)"/>
+  <text x="700" y="200" fill="#94a3b8" font-size="9.5" text-anchor="end">time</text>
+</svg>
+        <div class="caption">While Task A waits on I/O, the loop isn't idle — it runs Task B. <code>await</code> is the handoff.</div>
+      </div>
+
+      <p>This is why <code>await asyncio.sleep(1)</code> and <code>time.sleep(1)</code> are worlds apart. <code>asyncio.sleep</code> suspends the coroutine for a second and lets the loop run everyone else; <code>time.sleep</code> blocks the whole thread — and with it the loop and every other task. Hold that thought; it becomes the <a href="#blocking">cardinal rule</a> below.</p>
+
+      <div class="callout warn">
+        <span class="label">The #1 beginner bug: a missing <code>await</code></span>
+        <p>Forget the <code>await</code> and you create a coroutine that never runs — silently, unless you notice the warning.</p>
+<pre><code><span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="fn">save</span>(record)         <span class="com"># BUG: coroutine created, never awaited → the save never happens</span>
+    <span class="kw">await</span> <span class="fn">save</span>(record)   <span class="com"># fix</span></code></pre>
+        <p>Python emits <code>RuntimeWarning: coroutine '...' was never awaited</code>. In an interview, "did you <code>await</code> that?" is a fast, credible catch.</p>
+      </div>
+    </section>
+
+    <section id="trio">
+      <h2>Coroutine vs Task vs Future</h2>
+      <p>Interviewers love this one because the three are easy to conflate and the difference is where concurrency actually comes from. Three related things:</p>
+      <ul>
+        <li><strong>Coroutine — the recipe.</strong> What <code>async def</code> returns. Inert until driven. Awaiting a coroutine directly runs it <em>inline</em>, in the current task: sequential.</li>
+        <li><strong>Task — a coroutine the loop runs concurrently.</strong> <code>asyncio.create_task(coro())</code> wraps the coroutine, schedules it on the loop, and returns <em>immediately</em> with a handle. The task advances whenever the current task awaits. You <code>await</code> the handle later to collect its result.</li>
+        <li><strong>Future — a result that will exist later.</strong> A low-level placeholder with a state (pending → done) and eventually a value or an exception. Libraries hand you Futures to bridge callback-style code; you rarely build one yourself. Crucially, <strong><code>Task</code> is a subclass of <code>Future</code></strong> — a Future whose value is produced by running a coroutine.</li>
+      </ul>
+
+      <div class="diagram">
+<svg viewBox="0 0 640 216" role="img" aria-label="Future contains Task contains coroutine: Task is a Future that drives a coroutine">
+  <!-- Future (outer) -->
+  <rect x="30" y="30" width="580" height="156" rx="10" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="48" y="52" fill="#6d28d9" font-size="11" font-weight="700">Future</text>
+  <text x="48" y="69" fill="#475569" font-size="9.5">a result, later · pending → done</text>
+
+  <!-- Task (middle) -->
+  <rect x="70" y="80" width="500" height="92" rx="9" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="88" y="102" fill="#0e7490" font-size="11" font-weight="700">Task  <tspan fill="#94a3b8" font-size="9" font-weight="400">(is-a Future)</tspan></text>
+  <text x="88" y="119" fill="#475569" font-size="9.5">create_task() → scheduled on the loop → runs concurrently</text>
+
+  <!-- Coroutine (inner) -->
+  <rect x="110" y="128" width="420" height="34" rx="7" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="128" y="149" fill="#0f172a" font-size="10.5" font-weight="600">Coroutine</text>
+  <text x="300" y="149" fill="#475569" font-size="9.5">the async def body · await it directly → runs inline (sequential)</text>
+</svg>
+        <div class="caption">A Task <em>is</em> a Future that <em>drives</em> a coroutine. The nesting is the relationship.</div>
+      </div>
+
+      <p>The operational punchline — worth being able to write on a whiteboard:</p>
+
+<pre><code><span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">slow</span>(n):
+    <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(n)
+    <span class="kw">return</span> n
+
+<span class="com"># Sequential — await one, then the next. total ≈ 1 + 2 = 3s</span>
+a = <span class="kw">await</span> <span class="fn">slow</span>(<span class="kw">1</span>)
+b = <span class="kw">await</span> <span class="fn">slow</span>(<span class="kw">2</span>)
+
+<span class="com"># Concurrent — schedule both, then await. total ≈ max(1, 2) = 2s</span>
+ta = asyncio.<span class="fn">create_task</span>(<span class="fn">slow</span>(<span class="kw">1</span>))   <span class="com"># both are running now</span>
+tb = asyncio.<span class="fn">create_task</span>(<span class="fn">slow</span>(<span class="kw">2</span>))
+a, b = <span class="kw">await</span> ta, <span class="kw">await</span> tb        <span class="com"># they progressed while we awaited</span></code></pre>
+
+      <p>Same coroutines, very different timing. <strong>Awaiting a coroutine is not the same as scheduling a Task.</strong> <code>create_task</code> is the verb that makes work overlap — remember it and the rest of concurrency is ergonomics.</p>
+    </section>
+
+    <section id="concurrent">
+      <h2>Running things concurrently</h2>
+      <p>You rarely hand-roll <code>create_task</code> pairs. Two ergonomic tools cover almost everything.</p>
+
+      <h3><code>asyncio.gather</code> — fan out, collect in order</h3>
+      <p>Schedules every coroutine, waits for all of them, and returns their results positionally.</p>
+<pre><code>results = <span class="kw">await</span> asyncio.<span class="fn">gather</span>(<span class="fn">fetch</span>(a), <span class="fn">fetch</span>(b), <span class="fn">fetch</span>(c))   <span class="com"># [ra, rb, rc]</span></code></pre>
+      <p>Watch the failure semantics — a favorite follow-up. By default, if one coroutine raises, <code>gather</code> propagates that first exception to the caller <em>but the others keep running</em> (and if you never await them, they can leak). Pass <code>return_exceptions=True</code> and it instead returns exceptions <em>as</em> results rather than raising — convenient, but it silently turns failures into return values, so you must inspect them.</p>
+
+      <h3><code>asyncio.TaskGroup</code> — the modern default (3.11+)</h3>
+      <p>A context manager that <em>owns</em> its child tasks. This is the recommended way to run concurrent work today.</p>
+<pre><code><span class="kw">async with</span> asyncio.<span class="fn">TaskGroup</span>() <span class="kw">as</span> tg:
+    t1 = tg.<span class="fn">create_task</span>(<span class="fn">fetch</span>(a))
+    t2 = tg.<span class="fn">create_task</span>(<span class="fn">fetch</span>(b))
+<span class="com"># the block exits only after both finish;</span>
+<span class="com"># if either raises, the other is cancelled and errors surface together</span>
+results = t1.<span class="fn">result</span>(), t2.<span class="fn">result</span>()</code></pre>
+      <p>It is <span class="x" data-term="Structured concurrency" data-def="A model where a task's lifetime is bounded by a lexical scope: you cannot leave the block while a child task is still running. Errors aggregate, cancellation propagates, and there are no orphaned tasks. asyncio.TaskGroup implements it; the idea comes from Trio's nurseries.">structured</span>: control does not leave the <code>async with</code> block until every child is done, and if one fails, the siblings are cancelled and the errors are raised together as an <span class="x" data-term="ExceptionGroup" data-def="A container holding multiple exceptions raised concurrently (PEP 654, Python 3.11). TaskGroup raises one when several children fail. You handle its members with the `except*` syntax.">ExceptionGroup</span>. No orphaned tasks, no swallowed errors — the two things <code>gather</code> makes easy to get wrong.</p>
+
+      <div class="callout warn">
+        <span class="label">Fire-and-forget footgun</span>
+        <p><code>create_task</code> hands the loop only a <em>weak</em> reference to the task. If you don't keep the handle yourself, the task can be garbage-collected mid-flight and vanish silently. Keep a reference (or just use a TaskGroup):</p>
+<pre><code>_background = <span class="fn">set</span>()
+
+<span class="kw">def</span> <span class="fn">spawn</span>(coro):
+    t = asyncio.<span class="fn">create_task</span>(coro)
+    _background.<span class="fn">add</span>(t)                       <span class="com"># keep a strong ref...</span>
+    t.<span class="fn">add_done_callback</span>(_background.discard)   <span class="com"># ...drop it when finished</span>
+    <span class="kw">return</span> t</code></pre>
+      </div>
+    </section>
+
+    <section id="structured">
+      <h2>Structured concurrency &amp; cancellation</h2>
+      <p>Structured concurrency means a task's lifetime is bounded by a scope, so you can't leak tasks and errors can't disappear. <code>TaskGroup</code> is asyncio's implementation of the idea (borrowed from Trio's <em>nurseries</em>). Cancellation is the machinery that makes it work.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 640 210" role="img" aria-label="Inside a TaskGroup, one child raising causes its siblings to be cancelled and errors to surface as an ExceptionGroup">
+  <rect x="30" y="26" width="580" height="120" rx="10" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="50" y="48" fill="#0e7490" font-size="11" font-weight="700" class="mono">async with TaskGroup() as tg:</text>
+
+  <!-- child t1 ok -->
+  <rect x="60" y="66" width="150" height="60" rx="8" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="135" y="92" fill="#15803d" font-size="11" font-weight="700" text-anchor="middle">t1</text>
+  <text x="135" y="110" fill="#15803d" font-size="10" text-anchor="middle">done ✓</text>
+
+  <!-- child t2 fails -->
+  <rect x="245" y="66" width="150" height="60" rx="8" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="320" y="92" fill="#b91c1c" font-size="11" font-weight="700" text-anchor="middle">t2</text>
+  <text x="320" y="110" fill="#b91c1c" font-size="10" text-anchor="middle">raises ✗</text>
+
+  <!-- child t3 cancelled -->
+  <rect x="430" y="66" width="150" height="60" rx="8" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="505" y="92" fill="#a16207" font-size="11" font-weight="700" text-anchor="middle">t3</text>
+  <text x="505" y="110" fill="#a16207" font-size="10" text-anchor="middle">cancelled</text>
+
+  <text x="320" y="176" fill="#475569" font-size="10.5" text-anchor="middle">one child fails → siblings are cancelled → errors raised together as an <tspan class="mono" fill="#0f172a">ExceptionGroup</tspan></text>
+</svg>
+        <div class="caption">The group is all-or-nothing: it does not exit with a task still running, and it never loses an error.</div>
+      </div>
+
+      <h3>Cancellation is cooperative too</h3>
+      <p><code>task.cancel()</code> does not kill anything on the spot. It schedules a <span class="x" data-term="CancelledError" data-def="The exception asyncio raises inside a coroutine to cancel it — at its next await point. It derives from BaseException (not Exception) so a broad `except Exception` won't accidentally swallow it. Catch it only to clean up, then re-raise.">CancelledError</span> to be raised <em>inside</em> the coroutine at its next <code>await</code>. The coroutine may catch it to clean up — but should re-raise, or cancellation silently fails to happen.</p>
+<pre><code><span class="kw">try</span>:
+    <span class="kw">await</span> <span class="fn">do_work</span>()
+<span class="kw">except</span> asyncio.CancelledError:
+    <span class="kw">await</span> <span class="fn">rollback</span>()   <span class="com"># clean up...</span>
+    <span class="kw">raise</span>              <span class="com"># ...then let the cancellation propagate</span></code></pre>
+      <p>Put cleanup in <code>finally</code>. And note the type hierarchy is deliberate: <code>CancelledError</code> derives from <code>BaseException</code>, not <code>Exception</code>, precisely so a broad <code>except Exception:</code> doesn't accidentally eat a cancellation.</p>
+
+      <h3>Timeouts</h3>
+      <p><code>asyncio.timeout()</code> (3.11+) is a context manager that cancels whatever runs inside it once the clock runs out — built directly on cancellation.</p>
+<pre><code><span class="kw">async with</span> asyncio.<span class="fn">timeout</span>(<span class="kw">5</span>):
+    <span class="kw">await</span> <span class="fn">slow_operation</span>()          <span class="com"># raises TimeoutError if it runs &gt; 5s</span>
+
+<span class="com"># older, still fine — wraps a single coroutine:</span>
+<span class="kw">await</span> asyncio.<span class="fn">wait_for</span>(<span class="fn">slow_operation</span>(), timeout=<span class="kw">5</span>)</code></pre>
+      <p>Both work by cancelling the inner operation, so the same rules apply: clean up in <code>finally</code>, don't swallow the <code>CancelledError</code>. When you have an operation that must <em>not</em> be interrupted by an outer cancel — a commit, say — wrap it in <code>asyncio.<span class="x" data-term="shield" data-def="asyncio.shield(coro) protects an awaitable from cancellation propagating in from the outside — the shielded work keeps running even if the caller is cancelled. Use sparingly; it breaks the clean structure of structured concurrency.">shield</span>(...)</code>, sparingly.</p>
+    </section>
+
+    <section id="blocking">
+      <h2>Never block the event loop</h2>
+      <p>If you remember one operational fact about asyncio, make it this — and expect an interviewer to push on it. <strong>There is one thread.</strong> Any code that runs without awaiting holds the loop hostage; nothing else — not another request, not a health-check heartbeat — makes progress until it returns. Two ways to commit this sin:</p>
+      <ol>
+        <li><strong>CPU-bound work</strong> — a tight loop, hashing, parsing a huge payload, resizing an image. It never awaits, so nothing else runs until it finishes.</li>
+        <li><strong>Synchronous I/O</strong> — <code>time.sleep</code>, <code>requests.get</code>, a blocking database driver, a plain file read. These block the OS thread, and the loop is on that thread.</li>
+      </ol>
+      <p>The symptom is distinctive: latency spikes across <em>unrelated</em> requests, all stalling in lockstep, because they share the one thread that is stuck.</p>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 214" role="img" aria-label="Awaiting sleep lets other tasks run; a blocking call freezes every task at once">
+  <!-- GOOD lane -->
+  <text x="20" y="30" fill="#15803d" font-size="11" font-weight="700">await asyncio.sleep(1) — yields</text>
+  <rect x="70"  y="42" width="90"  height="22" rx="4" fill="#cffafe" stroke="#0891b2"/><text x="115" y="58" fill="#0e7490" font-size="9.5" text-anchor="middle">A</text>
+  <rect x="164" y="42" width="90"  height="22" rx="4" fill="#dcfce7" stroke="#16a34a"/><text x="209" y="58" fill="#15803d" font-size="9.5" text-anchor="middle">B</text>
+  <rect x="258" y="42" width="90"  height="22" rx="4" fill="#fef9c3" stroke="#ca8a04"/><text x="303" y="58" fill="#a16207" font-size="9.5" text-anchor="middle">C</text>
+  <rect x="352" y="42" width="90"  height="22" rx="4" fill="#cffafe" stroke="#0891b2"/><text x="397" y="58" fill="#0e7490" font-size="9.5" text-anchor="middle">A</text>
+  <rect x="446" y="42" width="90"  height="22" rx="4" fill="#dcfce7" stroke="#16a34a"/><text x="491" y="58" fill="#15803d" font-size="9.5" text-anchor="middle">B</text>
+  <rect x="540" y="42" width="150" height="22" rx="4" fill="#fef9c3" stroke="#ca8a04"/><text x="615" y="58" fill="#a16207" font-size="9.5" text-anchor="middle">C</text>
+  <text x="70" y="86" fill="#15803d" font-size="9.5">all three tasks make progress</text>
+
+  <line x1="20" y1="108" x2="700" y2="108" stroke="#e2e8f0"/>
+
+  <!-- BAD lane -->
+  <text x="20" y="138" fill="#b91c1c" font-size="11" font-weight="700">time.sleep(1) / CPU loop — blocks</text>
+  <rect x="70" y="150" width="470" height="22" rx="4" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="305" y="166" fill="#b91c1c" font-size="9.5" text-anchor="middle">A holds the thread — nothing else runs</text>
+  <rect x="544" y="150" width="70" height="22" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="579" y="166" fill="#94a3b8" font-size="9.5" text-anchor="middle">B</text>
+  <rect x="618" y="150" width="72" height="22" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/><text x="654" y="166" fill="#94a3b8" font-size="9.5" text-anchor="middle">C</text>
+  <text x="70" y="194" fill="#b91c1c" font-size="9.5">B and C are frozen until A returns</text>
+</svg>
+        <div class="caption">Same three tasks. Awaiting hands the loop around; one blocking call takes the whole loop down with it.</div>
+      </div>
+
+      <p>The fix is to get the blocking work <em>off</em> the loop thread.</p>
+<pre><code><span class="com"># Blocking I/O call → run it on a worker thread, await the result</span>
+row = <span class="kw">await</span> asyncio.<span class="fn">to_thread</span>(<span class="fn">blocking_db_query</span>, sql)        <span class="com"># 3.9+</span>
+
+<span class="com"># CPU-bound work → a process pool, which sidesteps the GIL</span>
+loop = asyncio.<span class="fn">get_running_loop</span>()
+result = <span class="kw">await</span> loop.<span class="fn">run_in_executor</span>(process_pool, <span class="fn">heavy_cpu</span>, data)</code></pre>
+      <p><code>asyncio.to_thread</code> hands the call to a <code>ThreadPoolExecutor</code> and gives you back an awaitable; the loop keeps serving other tasks while the worker thread sits in the blocking call.</p>
+
+      <div class="callout warn">
+        <span class="label">The GIL caveat — say this precisely</span>
+        <p>Threads help for <em>blocking I/O</em>, because the GIL is released while a thread waits on I/O (and inside many C extensions). They do <strong>not</strong> give you parallel <em>CPU</em> — the GIL still serializes Python bytecode, so CPU-bound threads just take turns. For CPU work you need separate processes (<code>ProcessPoolExecutor</code> or <code>multiprocessing</code>), which run independent interpreters. Rule of thumb: <em>I/O that blocks → thread; CPU that grinds → process; a native async library exists → use it and stay on the loop.</em></p>
+      </div>
+
+      <div class="callout note">
+        <span class="label">Better still: don't block in the first place</span>
+        <p>Prefer async-native libraries so there's nothing to offload — <code>asyncpg</code> for Postgres, <code>httpx</code> or <code>aiohttp</code> for HTTP, <code>aiofiles</code> for disk. <code>to_thread</code> is the escape hatch for libraries that only ship a synchronous API.</p>
+      </div>
+    </section>
+
+    <section id="coordinating">
+      <h2>Coordinating tasks</h2>
+      <p>Even on one thread you need coordination, for a subtle reason: <strong>state can change across an <code>await</code>.</strong> Between awaits your code is atomic, but at an <code>await</code> another task may run and mutate shared state. That is where async races live — a check-then-act split by an <code>await</code>.</p>
+<pre><code><span class="com"># NOT atomic: the await lets another task run between check and act</span>
+<span class="kw">async def</span> <span class="fn">get</span>(key):
+    <span class="kw">if</span> key <span class="kw">not in</span> cache:              <span class="com"># check</span>
+        cache[key] = <span class="kw">await</span> <span class="fn">load</span>(key)   <span class="com"># two tasks can both miss and both load</span>
+    <span class="kw">return</span> cache[key]</code></pre>
+      <p>Guard the critical section with an <code>asyncio.<span class="x" data-term="Lock" data-def="asyncio.Lock serializes a critical section that spans awaits, so two coroutines can't interleave in the middle of it. It coordinates coroutines on one loop — it is NOT thread-safe and is not for OS threads.">Lock</span></code> so the check-then-act runs to completion for one task at a time:</p>
+<pre><code>lock = asyncio.<span class="fn">Lock</span>()
+
+<span class="kw">async def</span> <span class="fn">get</span>(key):
+    <span class="kw">async with</span> lock:                 <span class="com"># serialize the whole check-then-act</span>
+        <span class="kw">if</span> key <span class="kw">not in</span> cache:
+            cache[key] = <span class="kw">await</span> <span class="fn">load</span>(key)
+        <span class="kw">return</span> cache[key]</code></pre>
+
+      <h3>Bounded concurrency with <code>Semaphore</code></h3>
+      <p>Fanning out ten thousand requests at once will exhaust sockets or file descriptors, or get you rate-limited. A <span class="x" data-term="Semaphore" data-def="A counter-based primitive that permits up to N holders at once. asyncio.Semaphore(N) caps how many coroutines are inside the guarded block concurrently; the rest await their turn. The standard tool for bounding fan-out.">semaphore</span> caps how many run at a time while still letting you schedule them all.</p>
+<pre><code>sem = asyncio.<span class="fn">Semaphore</span>(<span class="kw">20</span>)          <span class="com"># at most 20 in flight</span>
+
+<span class="kw">async def</span> <span class="fn">fetch</span>(url):
+    <span class="kw">async with</span> sem:                  <span class="com"># waits here if 20 are already out</span>
+        <span class="kw">return await</span> client.<span class="fn">get</span>(url)
+
+<span class="kw">await</span> asyncio.<span class="fn">gather</span>(*(<span class="fn">fetch</span>(u) <span class="kw">for</span> u <span class="kw">in</span> urls))   <span class="com"># 10k scheduled, 20 at a time</span></code></pre>
+
+      <div class="diagram">
+<svg viewBox="0 0 700 168" role="img" aria-label="A semaphore of size three lets three tasks run while the rest wait in a queue">
+  <!-- waiting queue -->
+  <text x="20" y="34" fill="#475569" font-size="10" font-weight="600">waiting</text>
+  <rect x="20" y="44" width="34" height="34" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/><text x="37" y="66" font-size="10" fill="#94a3b8" text-anchor="middle">t6</text>
+  <rect x="58" y="44" width="34" height="34" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/><text x="75" y="66" font-size="10" fill="#94a3b8" text-anchor="middle">t5</text>
+  <rect x="96" y="44" width="34" height="34" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/><text x="113" y="66" font-size="10" fill="#94a3b8" text-anchor="middle">t4</text>
+
+  <line x1="140" y1="61" x2="210" y2="61" stroke="#94a3b8" marker-end="url(#semar)"/>
+  <defs><marker id="semar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="#94a3b8"/></marker></defs>
+
+  <!-- semaphore box, 3 slots -->
+  <rect x="220" y="26" width="260" height="86" rx="9" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="350" y="46" fill="#0e7490" font-size="10.5" font-weight="700" text-anchor="middle" class="mono">Semaphore(3)</text>
+  <rect x="238" y="58" width="66" height="40" rx="6" fill="#cffafe" stroke="#0891b2"/><text x="271" y="82" font-size="10" fill="#0e7490" text-anchor="middle">t1</text>
+  <rect x="317" y="58" width="66" height="40" rx="6" fill="#cffafe" stroke="#0891b2"/><text x="350" y="82" font-size="10" fill="#0e7490" text-anchor="middle">t2</text>
+  <rect x="396" y="58" width="66" height="40" rx="6" fill="#cffafe" stroke="#0891b2"/><text x="429" y="82" font-size="10" fill="#0e7490" text-anchor="middle">t3</text>
+
+  <line x1="480" y1="61" x2="550" y2="61" stroke="#16a34a" marker-end="url(#semar2)"/>
+  <defs><marker id="semar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="#16a34a"/></marker></defs>
+  <text x="560" y="52" fill="#15803d" font-size="10" font-weight="600">done</text>
+  <text x="560" y="70" fill="#475569" font-size="9">→ frees a slot</text>
+
+  <text x="350" y="140" fill="#475569" font-size="9.5" text-anchor="middle">at most 3 run at once; each completion admits the next waiter</text>
+</svg>
+        <div class="caption">Bounded fan-out: schedule everything, but only N are ever inside the guarded block.</div>
+      </div>
+
+      <h3>Producer / consumer with <code>Queue</code></h3>
+      <p>An <code>asyncio.Queue</code> decouples producers from consumers, and a <code>maxsize</code> gives you <span class="x" data-term="Backpressure" data-def="When a consumer can't keep up, a bounded queue fills and blocks producers (await q.put(...) suspends), slowing them to the consumer's rate instead of building an unbounded backlog in memory.">backpressure</span> for free — <code>put</code> suspends when the queue is full, throttling producers to the consumers' pace.</p>
+<pre><code>q = asyncio.<span class="fn">Queue</span>(maxsize=<span class="kw">100</span>)        <span class="com"># bounded → backpressure</span>
+
+<span class="kw">async def</span> <span class="fn">producer</span>():
+    <span class="kw">for</span> item <span class="kw">in</span> source:
+        <span class="kw">await</span> q.<span class="fn">put</span>(item)             <span class="com"># suspends when full</span>
+
+<span class="kw">async def</span> <span class="fn">consumer</span>():
+    <span class="kw">while</span> <span class="kw">True</span>:
+        item = <span class="kw">await</span> q.<span class="fn">get</span>()
+        <span class="kw">await</span> <span class="fn">handle</span>(item)
+        q.<span class="fn">task_done</span>()</code></pre>
+
+      <div class="callout warn">
+        <span class="label">These primitives are for coroutines, not threads</span>
+        <p><code>asyncio.Lock</code>, <code>Semaphore</code>, <code>Event</code>, and <code>Queue</code> coordinate coroutines on one event loop — they are <strong>not</strong> thread-safe like their <code>threading</code> namesakes. To poke the loop from another thread, use <code>loop.call_soon_threadsafe(...)</code> or <code>asyncio.run_coroutine_threadsafe(coro, loop)</code>.</p>
+      </div>
+    </section>
+
+    <section id="vs">
+      <h2>asyncio vs threads vs processes</h2>
+      <p>The architecture question, and the one where a crisp answer signals seniority. Choose by <strong>what the work is waiting on.</strong></p>
+
+      <div class="table-wrap">
+        <table id="vs-table">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th class="c-async">asyncio</th>
+              <th class="c-thread">threading</th>
+              <th class="c-proc">multiprocessing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Best for</td><td class="c-async">I/O-bound, very high concurrency</td><td class="c-thread">I/O-bound with blocking libraries</td><td class="c-proc">CPU-bound work</td></tr>
+            <tr><td>Unit of work</td><td class="c-async">Coroutine (~KB, on the heap)</td><td class="c-thread">OS thread (~MB stack)</td><td class="c-proc">Process (own interpreter)</td></tr>
+            <tr><td>Scheduling</td><td class="c-async">Cooperative, 1 thread</td><td class="c-thread">Preemptive, N threads</td><td class="c-proc">Preemptive, N processes</td></tr>
+            <tr><td>Parallel CPU?</td><td class="c-async">No — one thread</td><td class="c-thread">No — GIL serializes bytecode</td><td class="c-proc">Yes — separate interpreters</td></tr>
+            <tr><td>Switch cost</td><td class="c-async">Cheap (a function return)</td><td class="c-thread">Kernel context switch</td><td class="c-proc">High (IPC + pickling)</td></tr>
+            <tr><td>Sharing data</td><td class="c-async">Shared; safe within a step</td><td class="c-thread">Shared; needs locks</td><td class="c-proc">Serialize / IPC</td></tr>
+            <tr><td>Main hazard</td><td class="c-async">One blocking call stalls all</td><td class="c-thread">Races &amp; deadlocks</td><td class="c-proc">IPC &amp; memory overhead</td></tr>
+            <tr><td>Scales to</td><td class="c-async">10⁴–10⁵ tasks</td><td class="c-thread">10²–10³ threads</td><td class="c-proc">~ number of cores</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="diagram">
+<svg viewBox="0 0 720 190" role="img" aria-label="asyncio is many coroutines on one thread; threading is a few threads sharing memory under the GIL; multiprocessing is separate processes on separate cores">
+  <!-- asyncio -->
+  <rect x="16" y="24" width="216" height="140" rx="10" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="124" y="46" fill="#0e7490" font-size="11" font-weight="700" text-anchor="middle">asyncio</text>
+  <rect x="40" y="60" width="168" height="26" rx="5" fill="#ffffff" stroke="#0891b2"/>
+  <text x="124" y="77" fill="#475569" font-size="9" text-anchor="middle">1 thread · event loop</text>
+  <circle cx="60" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <circle cx="84" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <circle cx="108" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <circle cx="132" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <circle cx="156" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <circle cx="180" cy="112" r="7" fill="#cffafe" stroke="#0891b2"/>
+  <text x="124" y="150" fill="#0e7490" font-size="9.5" text-anchor="middle">many coroutines, I/O-bound</text>
+
+  <!-- threading -->
+  <rect x="252" y="24" width="216" height="140" rx="10" fill="#fffbeb" stroke="#ca8a04"/>
+  <text x="360" y="46" fill="#a16207" font-size="11" font-weight="700" text-anchor="middle">threading</text>
+  <rect x="276" y="64" width="168" height="18" rx="4" fill="#fef9c3" stroke="#ca8a04"/><text x="360" y="77" fill="#a16207" font-size="9" text-anchor="middle">thread 1</text>
+  <rect x="276" y="88" width="168" height="18" rx="4" fill="#fef9c3" stroke="#ca8a04"/><text x="360" y="101" fill="#a16207" font-size="9" text-anchor="middle">thread 2</text>
+  <rect x="276" y="112" width="168" height="18" rx="4" fill="#fef9c3" stroke="#ca8a04"/><text x="360" y="125" fill="#a16207" font-size="9" text-anchor="middle">thread 3</text>
+  <text x="360" y="150" fill="#a16207" font-size="9.5" text-anchor="middle">shared memory · one GIL</text>
+
+  <!-- multiprocessing -->
+  <rect x="488" y="24" width="216" height="140" rx="10" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="596" y="46" fill="#6d28d9" font-size="11" font-weight="700" text-anchor="middle">multiprocessing</text>
+  <rect x="508" y="62" width="52" height="42" rx="5" fill="#ede9fe" stroke="#7c3aed"/><text x="534" y="87" fill="#6d28d9" font-size="9" text-anchor="middle">proc</text>
+  <rect x="570" y="62" width="52" height="42" rx="5" fill="#ede9fe" stroke="#7c3aed"/><text x="596" y="87" fill="#6d28d9" font-size="9" text-anchor="middle">proc</text>
+  <rect x="632" y="62" width="52" height="42" rx="5" fill="#ede9fe" stroke="#7c3aed"/><text x="658" y="87" fill="#6d28d9" font-size="9" text-anchor="middle">proc</text>
+  <text x="596" y="128" fill="#6d28d9" font-size="9" text-anchor="middle">own interpreter each</text>
+  <text x="596" y="150" fill="#6d28d9" font-size="9.5" text-anchor="middle">true CPU parallelism</text>
+</svg>
+        <div class="caption">Three shapes of concurrency. The GIL is why the middle box doesn't give CPU parallelism and the right box does.</div>
+      </div>
+
+      <p>The decision, in one breath: <strong>waiting on the network or disk with an async library available → asyncio.</strong> Waiting on a blocking library you can't replace → threads (or asyncio plus <code>to_thread</code>). Crunching numbers → processes. And they compose — a common production shape is an asyncio server that offloads occasional CPU chunks to a <code>ProcessPoolExecutor</code> and stubborn blocking calls to a thread pool.</p>
+      <div class="callout note">
+        <span class="label">Worth a sentence in 2026</span>
+        <p>The <span class="x" data-term="Free-threaded CPython" data-def="An experimental build of CPython (PEP 703, first shipped as an option in 3.13) that removes the GIL, allowing threads to run Python bytecode in parallel. Still opt-in and maturing — don't assume it in an interview answer unless asked.">free-threaded (no-GIL) build</span> introduced experimentally in 3.13 could eventually change the threading calculus for CPU work. It's opt-in and maturing; the GIL-based reasoning above is still the safe default answer.</p>
+      </div>
+    </section>
+
+    <section id="gotchas">
+      <h2>Interview gotchas</h2>
+      <p>A tight checklist of the mistakes and "gotcha" questions that come up most. Being able to name and fix each is most of what "knows asyncio" means at this level.</p>
+      <ul>
+        <li><strong>Forgot the <code>await</code>.</strong> A coroutine created but never awaited never runs — Python only whispers a <code>RuntimeWarning</code>.</li>
+        <li><strong>Blocking the loop.</strong> <code>time.sleep</code>, <code>requests</code>, or a CPU loop freezes every task. Offload with <code>to_thread</code> / a process pool, or use an async-native library.</li>
+        <li><strong>Sequential when you meant concurrent.</strong> <code>await a(); await b()</code> runs one after the other. Overlap them with <code>gather</code>, a <code>TaskGroup</code>, or explicit <code>create_task</code>.</li>
+        <li><strong>Orphaned tasks.</strong> The result of <code>create_task</code> must be kept alive, or the task can be GC'd and silently dropped. Hold the handle or use a TaskGroup.</li>
+        <li><strong>Swallowing <code>CancelledError</code>.</strong> It's a <code>BaseException</code>, so <code>except Exception</code> misses it — but catching it explicitly and not re-raising breaks cancellation.</li>
+        <li><strong>Trusting <code>gather(return_exceptions=True)</code>.</strong> It converts failures into ordinary return values; if you don't inspect them, errors vanish.</li>
+        <li><strong>Expecting parallelism.</strong> asyncio is one thread — it will not speed up CPU-bound code. That's what processes are for.</li>
+        <li><strong>Mixing sync and async.</strong> You can't <code>await</code> in a plain function, and calling an <code>async def</code> without awaiting (or a running loop) just makes an inert coroutine.</li>
+        <li><strong>Racing across an <code>await</code>.</strong> Check-then-act split by an <code>await</code> isn't atomic; another task can slip in. Guard it with a <code>Lock</code>.</li>
+        <li><strong>Cross-thread misuse.</strong> asyncio primitives aren't thread-safe; bridge threads and the loop with <code>run_coroutine_threadsafe</code> / <code>call_soon_threadsafe</code>.</li>
+      </ul>
+    </section>
+
+    <section id="further">
+      <h2>Further reading</h2>
+      <ul>
+        <li><strong><a href="https://docs.python.org/3/library/asyncio.html">CPython <code>asyncio</code> docs</a></strong> — start with <a href="https://docs.python.org/3/library/asyncio-dev.html">Developing with asyncio</a> and the <a href="https://docs.python.org/3/library/asyncio-task.html">Coroutines &amp; Tasks</a> page (TaskGroup, timeouts, cancellation). The authoritative reference for the current API.</li>
+        <li><strong>PEPs that shaped it</strong> — <a href="https://peps.python.org/pep-3156/">3156</a> (asyncio), <a href="https://peps.python.org/pep-0492/">492</a> (<code>async</code>/<code>await</code>), <a href="https://peps.python.org/pep-0525/">525</a> (async generators), <a href="https://peps.python.org/pep-0654/">654</a> (exception groups / <code>except*</code>).</li>
+        <li><strong>Structured concurrency</strong> — Nathaniel J. Smith's <a href="https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/">Notes on structured concurrency</a> and the <a href="https://trio.readthedocs.io/">Trio</a> docs, the design that TaskGroup borrows from.</li>
+        <li><strong>Talks</strong> — David Beazley's <a href="https://www.youtube.com/watch?v=MCs5OvhV9S4">Build Your Own Async</a> and <a href="https://www.youtube.com/watch?v=x1ndXuw7S0s">Die Threads</a> build the event loop from scratch — the fastest way to make the model click.</li>
+        <li><strong>Ecosystem</strong> — <a href="https://github.com/MagicStack/uvloop">uvloop</a> (a faster libuv-backed loop), <a href="https://anyio.readthedocs.io/">AnyIO</a> (a structured-concurrency layer that runs on asyncio or Trio), and async-native drivers like <a href="https://github.com/MagicStack/asyncpg">asyncpg</a> and <a href="https://www.python-httpx.org/">httpx</a>.</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <p>Unofficial. Written 2026 for interview preparation, targeting modern Python (3.11+ for <code>TaskGroup</code>, <code>asyncio.timeout</code>, and <code>ExceptionGroup</code>; <code>asyncio.to_thread</code> is 3.9+). Where anything here drifts from the official docs, treat the docs as ground truth.</p>
+    </div>
+  </main>
+</div>
+
+<div class="explainer-pop" id="pop" role="tooltip"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- ToC mobile toggle ----------
+  var tocToggle = document.getElementById('tocToggle');
+  var toc = document.getElementById('toc');
+  if (tocToggle && toc) {
+    var savedOpen = localStorage.getItem('async-toc-open') === '1';
+    if (savedOpen) {
+      toc.classList.add('open');
+      tocToggle.classList.add('open');
+      tocToggle.setAttribute('aria-expanded', 'true');
+    }
+    tocToggle.addEventListener('click', function () {
+      var open = toc.classList.toggle('open');
+      tocToggle.classList.toggle('open', open);
+      tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      localStorage.setItem('async-toc-open', open ? '1' : '0');
+    });
+  }
+
+  // ---------- ToC active section highlighting ----------
+  var tocLinks = document.querySelectorAll('aside.toc nav a');
+  var sections = [];
+  tocLinks.forEach(function (link) {
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  function setActive() {
+    var fromTop = window.scrollY + 100;
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= fromTop) current = sections[i];
+    }
+    tocLinks.forEach(function (l) { l.classList.remove('active'); });
+    if (current) {
+      current.link.classList.add('active');
+      try { localStorage.setItem('async-last-section', current.id); } catch (e) {}
+    }
+  }
+
+  var scrollTick = null;
+  window.addEventListener('scroll', function () {
+    if (scrollTick) return;
+    scrollTick = window.requestAnimationFrame(function () {
+      setActive();
+      scrollTick = null;
+    });
+  }, { passive: true });
+  setActive();
+
+  // ---------- Explainer popovers ----------
+  var pop = document.getElementById('pop');
+  var explains = document.querySelectorAll('.x');
+  var activeTap = null;
+
+  function showPop(target) {
+    var term = target.getAttribute('data-term') || '';
+    var def = target.getAttribute('data-def') || '';
+    pop.innerHTML = '<span class="term">' + escapeHtml(term) + '</span>' + escapeHtml(def);
+
+    var r = target.getBoundingClientRect();
+    pop.style.visibility = 'hidden';
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    pop.classList.add('show');
+    var pw = pop.offsetWidth;
+    var ph = pop.offsetHeight;
+
+    var left = r.left + r.width / 2 - pw / 2;
+    var top = r.top - ph - 8;
+    if (top < 8) top = r.bottom + 8;
+    if (left < 8) left = 8;
+    if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.visibility = 'visible';
+  }
+  function hidePop() {
+    pop.classList.remove('show');
+    if (activeTap) {
+      activeTap.classList.remove('tapped');
+      activeTap = null;
+    }
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Hover on desktop / focus
+  explains.forEach(function (el) {
+    el.tabIndex = 0;
+    el.addEventListener('mouseenter', function () { if (!activeTap) showPop(el); });
+    el.addEventListener('mouseleave', function () { if (!activeTap) hidePop(); });
+    el.addEventListener('focus', function () { showPop(el); });
+    el.addEventListener('blur', function () { if (!activeTap) hidePop(); });
+
+    // Tap on mobile/touch
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeTap === el) {
+        hidePop();
+      } else {
+        if (activeTap) activeTap.classList.remove('tapped');
+        activeTap = el;
+        el.classList.add('tapped');
+        showPop(el);
+      }
+    });
+  });
+
+  // Dismiss tap-popover on outside click
+  document.addEventListener('click', function () {
+    if (activeTap) hidePop();
+  });
+
+  // Hide on scroll/resize to avoid drift
+  window.addEventListener('scroll', function () {
+    if (activeTap) hidePop();
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (activeTap) hidePop();
+  });
+
+  // ---------- Copy as Markdown ----------
+  function pageToMarkdown() {
+    var main = document.querySelector('main');
+    if (!main) return '';
+
+    function isBlock(tag) {
+      return /^(p|div|section|ul|ol|li|h[1-6]|pre|blockquote|table|tr)$/.test(tag);
+    }
+
+    function tableToMd(table) {
+      var rows = table.querySelectorAll('tr');
+      if (!rows.length) return '';
+      var lines = [];
+      var firstCells = rows[0].querySelectorAll('th');
+      var hasHeader = firstCells.length > 0;
+      if (!hasHeader) firstCells = rows[0].querySelectorAll('td');
+      var cellToText = function (c) {
+        return inlineToMd(c).replace(/\|/g, '\\|').replace(/\s*\n+\s*/g, ' ').trim();
+      };
+      lines.push('| ' + Array.prototype.map.call(firstCells, cellToText).join(' | ') + ' |');
+      lines.push('|' + Array.prototype.map.call(firstCells, function () { return ' --- '; }).join('|') + '|');
+      var startRow = hasHeader ? 1 : 1;
+      for (var i = startRow; i < rows.length; i++) {
+        var cells = rows[i].querySelectorAll('td');
+        if (!cells.length) continue;
+        lines.push('| ' + Array.prototype.map.call(cells, cellToText).join(' | ') + ' |');
+      }
+      return '\n\n' + lines.join('\n') + '\n\n';
+    }
+
+    function inlineToMd(node) {
+      var out = '';
+      for (var i = 0; i < node.childNodes.length; i++) {
+        out += nodeToMd(node.childNodes[i], true);
+      }
+      return out;
+    }
+
+    function nodeToMd(node, inline) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent.replace(/\s+/g, ' ');
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+      var tag = node.tagName.toLowerCase();
+      var cls = (node.getAttribute('class') || '').split(/\s+/);
+
+      // Skip non-content elements
+      if (cls.indexOf('back-link') !== -1) return '';
+      if (tag === 'script' || tag === 'style') return '';
+
+      // Diagrams: emit the raw <svg> inline (modern LLMs parse SVG fine),
+      // followed by the caption as italic text.
+      if (cls.indexOf('diagram') !== -1) {
+        var svg = node.querySelector('svg');
+        var cap = node.querySelector('.caption');
+        var capText = cap ? cap.textContent.trim() : '';
+        var out = '\n\n';
+        if (svg) out += svg.outerHTML.replace(/\n\s+/g, '\n').trim() + '\n\n';
+        if (capText) out += '*' + capText + '*\n\n';
+        return out;
+      }
+      if (tag === 'svg' || cls.indexOf('caption') !== -1) return '';
+
+      // Headings
+      var h = tag.match(/^h([1-6])$/);
+      if (h) {
+        return '\n\n' + '#'.repeat(parseInt(h[1], 10)) + ' ' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Paragraphs
+      if (tag === 'p') {
+        return '\n\n' + inlineToMd(node).trim() + '\n\n';
+      }
+
+      // Lists
+      if (tag === 'ul' || tag === 'ol') {
+        var items = [];
+        var idx = 1;
+        for (var i = 0; i < node.children.length; i++) {
+          var li = node.children[i];
+          if (li.tagName.toLowerCase() !== 'li') continue;
+          var bullet = tag === 'ol' ? (idx++) + '.' : '-';
+          var content = inlineToMd(li).trim().replace(/\n/g, '\n  ');
+          items.push(bullet + ' ' + content);
+        }
+        return '\n\n' + items.join('\n') + '\n\n';
+      }
+
+      // Code blocks
+      if (tag === 'pre') {
+        return '\n\n```\n' + node.textContent.replace(/\n$/, '') + '\n```\n\n';
+      }
+
+      // Tables
+      if (tag === 'table') return tableToMd(node);
+
+      // Callouts → blockquote
+      if (cls.indexOf('callout') !== -1 || cls.indexOf('tldr-card') !== -1) {
+        var clone = node.cloneNode(true);
+        var lbl = clone.querySelector('.label');
+        var labelText = lbl ? lbl.textContent.trim() : '';
+        if (lbl) lbl.remove();
+        var body = '';
+        for (var j = 0; j < clone.childNodes.length; j++) {
+          body += nodeToMd(clone.childNodes[j], false);
+        }
+        body = body.trim();
+        if (labelText) body = '**' + labelText + '**\n\n' + body;
+        var quoted = body.split('\n').map(function (l) { return l.length ? '> ' + l : '>'; }).join('\n');
+        return '\n\n' + quoted + '\n\n';
+      }
+
+      // Inline formatting
+      if (tag === 'strong' || tag === 'b') return '**' + inlineToMd(node) + '**';
+      if (tag === 'em' || tag === 'i') return '*' + inlineToMd(node) + '*';
+
+      if (tag === 'code') return '`' + node.textContent + '`';
+
+      if (tag === 'a') {
+        var href = node.getAttribute('href') || '';
+        var text = inlineToMd(node);
+        if (!href || href.charAt(0) === '#') return text;
+        return '[' + text + '](' + href + ')';
+      }
+
+      if (tag === 'br') return inline ? '  \n' : '\n';
+
+      // Default: walk children
+      var sep = inline ? '' : '\n';
+      var out = '';
+      for (var k = 0; k < node.childNodes.length; k++) {
+        out += nodeToMd(node.childNodes[k], inline);
+      }
+      return isBlock(tag) ? '\n\n' + out.trim() + '\n\n' : out;
+    }
+
+    var md = nodeToMd(main, false);
+    // Normalize whitespace
+    md = md.replace(/[ \t]+\n/g, '\n');
+    md = md.replace(/\n{3,}/g, '\n\n');
+    md = md.replace(/[ \t]{2,}/g, ' ');
+    return md.trim() + '\n';
+  }
+
+  function copyToClipboardFallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  var copyBtn = document.getElementById('copyMdBtn');
+  if (copyBtn) {
+    var defaultLabel = copyBtn.textContent;
+    var resetTimer = null;
+    var setState = function (label, cls) {
+      copyBtn.textContent = label;
+      copyBtn.classList.remove('copied', 'failed');
+      if (cls) copyBtn.classList.add(cls);
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        copyBtn.textContent = defaultLabel;
+        copyBtn.classList.remove('copied', 'failed');
+      }, 1600);
+    };
+    copyBtn.addEventListener('click', function () {
+      var md;
+      try { md = pageToMarkdown(); } catch (e) {
+        setState('Error', 'failed');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(
+          function () { setState('Copied ✓', 'copied'); },
+          function () {
+            var ok = copyToClipboardFallback(md);
+            setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+          }
+        );
+      } else {
+        var ok = copyToClipboardFallback(md);
+        setState(ok ? 'Copied ✓' : 'Copy failed', ok ? 'copied' : 'failed');
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

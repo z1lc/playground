@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Main Metro Dominance — How Much of Each State Is One Metro?</title>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "htm": "https://esm.sh/htm@3.1.1"
+  }
+}
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #f9f9f7;
+    --surface-1:      #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --muted:          #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11, 11, 11, 0.10);
+    --accent:         #2a78d6;
+    /* The sequential ramp itself lives in JS (RAMP_LIGHT / RAMP_DARK) because the
+       marks interpolate it continuously rather than snapping to fixed steps. */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page:           #0d0d0d;
+      --surface-1:      #1a1a19;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --muted:          #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255, 255, 255, 0.10);
+      --accent:         #3987e5;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+    line-height: 1.5;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; }
+
+  header { margin-bottom: 24px; }
+  header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  header .sub { color: var(--text-secondary); font-size: 15px; margin-top: 8px; max-width: 74ch; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---- controls ---- */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    margin-bottom: 20px;
+  }
+  .seg {
+    display: inline-flex; background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: 10px; padding: 3px;
+  }
+  .seg button {
+    font: inherit; font-size: 13px; font-weight: 550;
+    color: var(--text-secondary); background: none; border: 0;
+    padding: 6px 13px; border-radius: 7px; cursor: pointer; white-space: nowrap;
+  }
+  .seg button:hover { color: var(--text-primary); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .spacer { flex: 1 1 auto; }
+  /* Keeps the label glued to its control when the control bar wraps. */
+  .sortgroup { display: inline-flex; align-items: center; gap: 8px; }
+  .sortlabel { font-size: 13px; color: var(--muted); }
+  /* accent-color themes the track and thumb in one line, and follows light/dark. */
+  .cutoff { accent-color: var(--accent); width: 116px; cursor: pointer; }
+  /* Fixed width + tabular figures so dragging never nudges the layout. */
+  .cutoffval {
+    font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+    min-width: 62px;
+  }
+  .filternote { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+  select {
+    font: inherit; font-size: 13px; color: var(--text-primary);
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 9px; cursor: pointer;
+  }
+
+  /* ---- ranked bars ---- */
+  .rows { display: flex; flex-direction: column; gap: 2px; }
+  .row {
+    display: grid; grid-template-columns: 30px 210px 1fr;
+    gap: 12px; align-items: center; min-height: 42px;
+    padding: 6px 10px; border-radius: 8px; cursor: pointer;
+    background: none; border: 0; width: 100%; text-align: left;
+    font: inherit; color: inherit;
+  }
+  .row:hover { background: var(--surface-1); }
+  .row[aria-pressed="true"] { background: var(--surface-1); outline: 1px solid var(--border); }
+  .rank { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .who .name { font-size: 14px; font-weight: 600; }
+  .who .metro { font-size: 11.5px; color: var(--text-secondary); line-height: 1.3; margin-top: 1px; }
+  .track { display: flex; align-items: center; gap: 10px; }
+  .bar-bg { flex: 1 1 auto; height: 20px; background: var(--grid); border-radius: 0 4px 4px 0; }
+  .bar { height: 100%; border-radius: 0 4px 4px 0; min-width: 3px; }
+  .pct { font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; width: 52px; text-align: right; }
+  .shared-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--text-secondary); border: 1px solid var(--border);
+    border-radius: 4px; padding: 0 4px; margin-left: 5px; vertical-align: 1px;
+  }
+
+  /* ---- tile cartogram ---- */
+  .map-area { display: grid; grid-template-columns: 1fr 260px; gap: 24px; align-items: start; }
+  .cartogram {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+  }
+  /* Rows are left auto so each tile takes its width from the 1fr column and derives
+     its height from aspect-ratio. Sizing rows explicitly reverses that and overflows. */
+  .tile {
+    grid-column: var(--c); grid-row: var(--r);
+    aspect-ratio: 1; border: 0; padding: 0; cursor: pointer;
+    border-radius: 5px; font: inherit;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    /* Without these the tile's own label sets a min-content floor and the 1fr
+       columns stop shrinking, pushing the grid wider than its container. */
+    min-width: 0; overflow: hidden;
+  }
+  .tile:hover, .tile[aria-pressed="true"] { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+  .tile .code { font-size: 12px; font-weight: 700; letter-spacing: 0.01em; }
+  .tile .val { font-size: 10px; font-variant-numeric: tabular-nums; margin-top: -1px; }
+
+  .legend { margin-top: 18px; }
+  .legend .caption { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .legend .scale { height: 12px; border-radius: 3px; }
+  .legend .ticks {
+    position: relative; height: 14px;
+    font-size: 10.5px; color: var(--muted); margin-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  .legend .ticks span { position: absolute; top: 0; white-space: nowrap; }
+
+  /* ---- detail card ---- */
+  /* .card is only the surface. Positioning belongs to its two variants below —
+     the map's sidebar panel and the ranking's floating tip — so a rule aimed at
+     one can never reposition the other. */
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+  }
+  .map-area .card { position: sticky; top: 20px; }
+  .card h3 { font-size: 17px; font-weight: 700; }
+  .card .metro-name { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+  .card .big {
+    font-size: 34px; font-weight: 700; letter-spacing: -0.02em;
+    margin: 12px 0 2px; line-height: 1;
+  }
+  .card .biglabel { font-size: 12px; color: var(--muted); }
+  .card dl { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; font-size: 12.5px; }
+  .card dt { color: var(--muted); }
+  .card dd { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+  .card .hint { font-size: 12px; color: var(--muted); }
+
+  /* Floating variant of the same card, shown on row hover in the ranking view.
+     Declared after .card so it wins on position; pointer-events off so it can
+     never sit between the cursor and the row underneath it. */
+  .tip {
+    position: fixed; z-index: 50; pointer-events: none;
+    padding: 12px 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  }
+  .tip h3 { font-size: 15px; }
+  .tip .big { font-size: 26px; margin: 9px 0 2px; }
+  .tip dl { margin-top: 11px; }
+
+  /* ---- notes ---- */
+  .notes {
+    margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--text-secondary); max-width: 78ch;
+  }
+  .notes h2 { font-size: 14px; font-weight: 650; color: var(--text-primary); margin-bottom: 8px; }
+  .notes p { margin-bottom: 10px; }
+
+  @media (max-width: 780px) {
+    .map-area { grid-template-columns: 1fr; }
+    .map-area .card { position: static; }
+    /* Without this the spacer strands the "Sort" label at the far right and
+       wraps its select onto the next line. */
+    .spacer { display: none; }
+    .row { grid-template-columns: 26px 118px 1fr; gap: 8px; }
+    .who .metro { display: none; }
+    /* Tiles get too small for two lines of type; the fill and legend carry the
+       magnitude, and tapping a tile still opens the full detail card. */
+    .tile .val { display: none; }
+    .tile .code { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="module">
+import React, { useMemo, useState, useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+import htm from 'htm';
+
+const html = htm.bind(React.createElement);
+
+    // DATA_START
+    const DATA = {"meta":{"popVintage":2025,"delineation":2023,"generated":"2026-07-28","countyPopUrl":"https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/counties/totals/co-est2025-alldata.csv","delineationUrl":"https://www2.census.gov/programs-surveys/metro-micro/geographies/reference-files/2023/delineation-files/list1_2023.xlsx","csaFallbacks":["AK","HI","MT","SD","WY"]},"states":[{"code":"AL","name":"Alabama","pop":5193088,"msa":{"name":"Birmingham, AL","short":"Birmingham, AL","inState":1197766,"metroTotal":1197766,"share":23.1,"shared":false,"spans":["AL"]},"csa":{"name":"Birmingham-Cullman-Talladega, AL","short":"Birmingham, AL","inState":1383539,"metroTotal":1383539,"share":26.6,"shared":false,"spans":["AL"],"isFallback":false}},{"code":"AK","name":"Alaska","pop":737270,"msa":{"name":"Anchorage, AK","short":"Anchorage, AK","inState":405821,"metroTotal":405821,"share":55.0,"shared":false,"spans":["AK"]},"csa":{"name":"Anchorage, AK","short":"Anchorage, AK","inState":405821,"metroTotal":405821,"share":55.0,"shared":false,"spans":["AK"],"isFallback":true}},{"code":"AZ","name":"Arizona","pop":7623818,"msa":{"name":"Phoenix-Mesa-Chandler, AZ","short":"Phoenix, AZ","inState":5228938,"metroTotal":5228938,"share":68.6,"shared":false,"spans":["AZ"]},"csa":{"name":"Phoenix-Mesa, AZ","short":"Phoenix, AZ","inState":5282739,"metroTotal":5282739,"share":69.3,"shared":false,"spans":["AZ"],"isFallback":false}},{"code":"AR","name":"Arkansas","pop":3114791,"msa":{"name":"Little Rock-North Little Rock-Conway, AR","short":"Little Rock, AR","inState":777607,"metroTotal":777607,"share":25.0,"shared":false,"spans":["AR"]},"csa":{"name":"Little Rock-North Little Rock, AR","short":"Little Rock, AR","inState":927903,"metroTotal":927903,"share":29.8,"shared":false,"spans":["AR"],"isFallback":false}},{"code":"CA","name":"California","pop":39355309,"msa":{"name":"Los Angeles-Long Beach-Anaheim, CA","short":"Los Angeles, CA","inState":12844441,"metroTotal":12844441,"share":32.6,"shared":false,"spans":["CA"]},"csa":{"name":"Los Angeles-Long Beach, CA","short":"Los Angeles, CA","inState":18444299,"metroTotal":18444299,"share":46.9,"shared":false,"spans":["CA"],"isFallback":false}},{"code":"CO","name":"Colorado","pop":6012561,"msa":{"name":"Denver-Aurora-Centennial, CO","short":"Denver, CO","inState":3092037,"metroTotal":3092037,"share":51.4,"shared":false,"spans":["CO"]},"csa":{"name":"Denver-Aurora-Greeley, CO","short":"Denver, CO","inState":3799023,"metroTotal":3799023,"share":63.2,"shared":false,"spans":["CO"],"isFallback":false}},{"code":"CT","name":"Connecticut","pop":3688496,"msa":{"name":"Hartford-West Hartford-East Hartford, CT","short":"Hartford, CT","inState":1171426,"metroTotal":1171426,"share":31.8,"shared":false,"spans":["CT"]},"csa":{"name":"New Haven-Hartford-Waterbury, CT","short":"New Haven, CT","inState":2710317,"metroTotal":2710317,"share":73.5,"shared":false,"spans":["CT"],"isFallback":false}},{"code":"DE","name":"Delaware","pop":1059952,"msa":{"name":"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD","short":"Philadelphia, PA-NJ-DE-MD","inState":588026,"metroTotal":6329118,"share":55.5,"shared":true,"spans":["PA","NJ","DE","MD"]},"csa":{"name":"Philadelphia-Reading-Camden, PA-NJ-DE-MD","short":"Philadelphia, PA-NJ-DE-MD","inState":782812,"metroTotal":7493171,"share":73.9,"shared":true,"spans":["PA","NJ","DE","MD"],"isFallback":false}},{"code":"FL","name":"Florida","pop":23462518,"msa":{"name":"Miami-Fort Lauderdale-West Palm Beach, FL","short":"Miami, FL","inState":6391072,"metroTotal":6391072,"share":27.2,"shared":false,"spans":["FL"]},"csa":{"name":"Miami-Port St. Lucie-Fort Lauderdale, FL","short":"Miami, FL","inState":7255606,"metroTotal":7255606,"share":30.9,"shared":false,"spans":["FL"],"isFallback":false}},{"code":"GA","name":"Georgia","pop":11302748,"msa":{"name":"Atlanta-Sandy Springs-Roswell, GA","short":"Atlanta, GA","inState":6482182,"metroTotal":6482182,"share":57.4,"shared":false,"spans":["GA"]},"csa":{"name":"Atlanta--Athens-Clarke County--Sandy Springs, GA-AL","short":"Atlanta, GA-AL","inState":7392516,"metroTotal":7426769,"share":65.4,"shared":true,"spans":["GA","AL"],"isFallback":false}},{"code":"HI","name":"Hawaii","pop":1432820,"msa":{"name":"Urban Honolulu, HI","short":"Urban Honolulu, HI","inState":988703,"metroTotal":988703,"share":69.0,"shared":false,"spans":["HI"]},"csa":{"name":"Urban Honolulu, HI","short":"Urban Honolulu, HI","inState":988703,"metroTotal":988703,"share":69.0,"shared":false,"spans":["HI"],"isFallback":true}},{"code":"ID","name":"Idaho","pop":2029733,"msa":{"name":"Boise City, ID","short":"Boise City, ID","inState":864243,"metroTotal":864243,"share":42.6,"shared":false,"spans":["ID"]},"csa":{"name":"Boise City-Mountain Home-Ontario, ID-OR","short":"Boise City, ID-OR","inState":921532,"metroTotal":953793,"share":45.4,"shared":true,"spans":["ID","OR"],"isFallback":false}},{"code":"IL","name":"Illinois","pop":12719141,"msa":{"name":"Chicago-Naperville-Elgin, IL-IN","short":"Chicago, IL-IN","inState":8705380,"metroTotal":9434123,"share":68.4,"shared":true,"spans":["IL","IN"]},"csa":{"name":"Chicago-Naperville, IL-IN-WI","short":"Chicago, IL-IN-WI","inState":8956807,"metroTotal":9965292,"share":70.4,"shared":true,"spans":["IL","IN","WI"],"isFallback":false}},{"code":"IN","name":"Indiana","pop":6973333,"msa":{"name":"Indianapolis-Carmel-Greenwood, IN","short":"Indianapolis, IN","inState":2205695,"metroTotal":2205695,"share":31.6,"shared":false,"spans":["IN"]},"csa":{"name":"Indianapolis-Carmel-Muncie, IN","short":"Indianapolis, IN","inState":2722834,"metroTotal":2722834,"share":39.0,"shared":false,"spans":["IN"],"isFallback":false}},{"code":"IA","name":"Iowa","pop":3238387,"msa":{"name":"Des Moines-West Des Moines, IA","short":"Des Moines, IA","inState":758539,"metroTotal":758539,"share":23.4,"shared":false,"spans":["IA"]},"csa":{"name":"Des Moines-West Des Moines-Ames, IA","short":"Des Moines, IA","inState":942701,"metroTotal":942701,"share":29.1,"shared":false,"spans":["IA"],"isFallback":false}},{"code":"KS","name":"Kansas","pop":2977220,"msa":{"name":"Kansas City, MO-KS","short":"Kansas City, MO-KS","inState":938283,"metroTotal":2270682,"share":31.5,"shared":true,"spans":["MO","KS"]},"csa":{"name":"Kansas City-Overland Park-Kansas City, MO-KS","short":"Kansas City, MO-KS","inState":1109268,"metroTotal":2609913,"share":37.3,"shared":true,"spans":["MO","KS"],"isFallback":false}},{"code":"KY","name":"Kentucky","pop":4606864,"msa":{"name":"Louisville/Jefferson County, KY-IN","short":"Louisville, KY-IN","inState":1121085,"metroTotal":1402509,"share":24.3,"shared":true,"spans":["KY","IN"]},"csa":{"name":"Louisville/Jefferson County--Elizabethtown, KY-IN","short":"Louisville, KY-IN","inState":1249751,"metroTotal":1531175,"share":27.1,"shared":true,"spans":["KY","IN"],"isFallback":false}},{"code":"LA","name":"Louisiana","pop":4618189,"msa":{"name":"New Orleans-Metairie, LA","short":"New Orleans, LA","inState":970849,"metroTotal":970849,"share":21.0,"shared":false,"spans":["LA"]},"csa":{"name":"New Orleans-Metairie-Slidell, LA-MS","short":"New Orleans, LA-MS","inState":1294894,"metroTotal":1354257,"share":28.0,"shared":true,"spans":["LA","MS"],"isFallback":false}},{"code":"ME","name":"Maine","pop":1414874,"msa":{"name":"Portland-South Portland, ME","short":"Portland, ME","inState":577635,"metroTotal":577635,"share":40.8,"shared":false,"spans":["ME"]},"csa":{"name":"Portland-Lewiston-South Portland, ME","short":"Portland, ME","inState":694122,"metroTotal":694122,"share":49.1,"shared":false,"spans":["ME"],"isFallback":false}},{"code":"MD","name":"Maryland","pop":6265347,"msa":{"name":"Baltimore-Columbia-Towson, MD","short":"Baltimore, MD","inState":2857781,"metroTotal":2857781,"share":45.6,"shared":false,"spans":["MD"]},"csa":{"name":"Washington-Baltimore-Arlington, DC-MD-VA-WV-PA","short":"Washington, DC-MD-VA-WV-PA","inState":5822986,"metroTotal":10274894,"share":92.9,"shared":true,"spans":["MD","VA","WV","PA"],"isFallback":false}},{"code":"MA","name":"Massachusetts","pop":7154084,"msa":{"name":"Boston-Cambridge-Newton, MA-NH","short":"Boston, MA-NH","inState":4575101,"metroTotal":5034221,"share":64.0,"shared":true,"spans":["MA","NH"]},"csa":{"name":"Boston-Worcester-Providence, MA-RI-NH","short":"Boston, MA-RI-NH","inState":6290782,"metroTotal":8521063,"share":87.9,"shared":true,"spans":["MA","NH","RI"],"isFallback":false}},{"code":"MI","name":"Michigan","pop":10127884,"msa":{"name":"Detroit-Warren-Dearborn, MI","short":"Detroit, MI","inState":4390913,"metroTotal":4390913,"share":43.4,"shared":false,"spans":["MI"]},"csa":{"name":"Detroit-Warren-Ann Arbor, MI","short":"Detroit, MI","inState":5416003,"metroTotal":5416003,"share":53.5,"shared":false,"spans":["MI"],"isFallback":false}},{"code":"MN","name":"Minnesota","pop":5830405,"msa":{"name":"Minneapolis-St. Paul-Bloomington, MN-WI","short":"Minneapolis, MN-WI","inState":3648500,"metroTotal":3790295,"share":62.6,"shared":true,"spans":["MN","WI"]},"csa":{"name":"Minneapolis-St. Paul, MN-WI","short":"Minneapolis, MN-WI","inState":4046583,"metroTotal":4188378,"share":69.4,"shared":true,"spans":["MN","WI"],"isFallback":false}},{"code":"MS","name":"Mississippi","pop":2954160,"msa":{"name":"Jackson, MS","short":"Jackson, MS","inState":609847,"metroTotal":609847,"share":20.6,"shared":false,"spans":["MS"]},"csa":{"name":"Jackson-Vicksburg-Brookhaven, MS","short":"Jackson, MS","inState":686618,"metroTotal":686618,"share":23.2,"shared":false,"spans":["MS"],"isFallback":false}},{"code":"MO","name":"Missouri","pop":6270541,"msa":{"name":"St. Louis, MO-IL","short":"St. Louis, MO-IL","inState":2142468,"metroTotal":2814421,"share":34.2,"shared":true,"spans":["MO","IL"]},"csa":{"name":"St. Louis-St. Charles-Farmington, MO-IL","short":"St. Louis, MO-IL","inState":2210277,"metroTotal":2918612,"share":35.2,"shared":true,"spans":["MO","IL"],"isFallback":false}},{"code":"MT","name":"Montana","pop":1144694,"msa":{"name":"Billings, MT","short":"Billings, MT","inState":193603,"metroTotal":193603,"share":16.9,"shared":false,"spans":["MT"]},"csa":{"name":"Billings, MT","short":"Billings, MT","inState":193603,"metroTotal":193603,"share":16.9,"shared":false,"spans":["MT"],"isFallback":true}},{"code":"NE","name":"Nebraska","pop":2018006,"msa":{"name":"Omaha, NE-IA","short":"Omaha, NE-IA","inState":887424,"metroTotal":1009836,"share":44.0,"shared":true,"spans":["NE","IA"]},"csa":{"name":"Omaha-Fremont, NE-IA","short":"Omaha, NE-IA","inState":925481,"metroTotal":1047893,"share":45.9,"shared":true,"spans":["NE","IA"],"isFallback":false}},{"code":"NV","name":"Nevada","pop":3282188,"msa":{"name":"Las Vegas-Henderson-North Las Vegas, NV","short":"Las Vegas, NV","inState":2407226,"metroTotal":2407226,"share":73.3,"shared":false,"spans":["NV"]},"csa":{"name":"Las Vegas-Henderson, NV","short":"Las Vegas, NV","inState":2464562,"metroTotal":2464562,"share":75.1,"shared":false,"spans":["NV"],"isFallback":false}},{"code":"NH","name":"New Hampshire","pop":1415342,"msa":{"name":"Boston-Cambridge-Newton, MA-NH","short":"Boston, MA-NH","inState":459120,"metroTotal":5034221,"share":32.4,"shared":true,"spans":["MA","NH"]},"csa":{"name":"Boston-Worcester-Providence, MA-RI-NH","short":"Boston, MA-RI-NH","inState":1115760,"metroTotal":8521063,"share":78.8,"shared":true,"spans":["MA","NH","RI"],"isFallback":false}},{"code":"NJ","name":"New Jersey","pop":9548215,"msa":{"name":"New York-Newark-Jersey City, NY-NJ","short":"New York, NY-NJ","inState":7110622,"metroTotal":20112448,"share":74.5,"shared":true,"spans":["NY","NJ"]},"csa":{"name":"New York-Newark, NY-NJ-CT-PA","short":"New York, NY-NJ-CT-PA","inState":7509911,"metroTotal":22535017,"share":78.7,"shared":true,"spans":["NY","NJ","CT","PA"],"isFallback":false}},{"code":"NM","name":"New Mexico","pop":2125498,"msa":{"name":"Albuquerque, NM","short":"Albuquerque, NM","inState":925279,"metroTotal":925279,"share":43.5,"shared":false,"spans":["NM"]},"csa":{"name":"Albuquerque-Santa Fe-Los Alamos, NM","short":"Albuquerque, NM","inState":1171736,"metroTotal":1171736,"share":55.1,"shared":false,"spans":["NM"],"isFallback":false}},{"code":"NY","name":"New York","pop":20002427,"msa":{"name":"New York-Newark-Jersey City, NY-NJ","short":"New York, NY-NJ","inState":13001826,"metroTotal":20112448,"share":65.0,"shared":true,"spans":["NY","NJ"]},"csa":{"name":"New York-Newark, NY-NJ-CT-PA","short":"New York, NY-NJ-CT-PA","inState":13984119,"metroTotal":22535017,"share":69.9,"shared":true,"spans":["NY","NJ","CT","PA"],"isFallback":false}},{"code":"NC","name":"North Carolina","pop":11197968,"msa":{"name":"Charlotte-Concord-Gastonia, NC-SC","short":"Charlotte, NC-SC","inState":2484646,"metroTotal":2938830,"share":22.2,"shared":true,"spans":["NC","SC"]},"csa":{"name":"Charlotte-Concord, NC-SC","short":"Charlotte, NC-SC","inState":3078889,"metroTotal":3533073,"share":27.5,"shared":true,"spans":["NC","SC"],"isFallback":false}},{"code":"ND","name":"North Dakota","pop":799358,"msa":{"name":"Fargo, ND-MN","short":"Fargo, ND-MN","inState":201794,"metroTotal":269528,"share":25.2,"shared":true,"spans":["ND","MN"]},"csa":{"name":"Fargo-Wahpeton, ND-MN","short":"Fargo, ND-MN","inState":218525,"metroTotal":292547,"share":27.3,"shared":true,"spans":["ND","MN"],"isFallback":false}},{"code":"OH","name":"Ohio","pop":11900510,"msa":{"name":"Columbus, OH","short":"Columbus, OH","inState":2242028,"metroTotal":2242028,"share":18.8,"shared":false,"spans":["OH"]},"csa":{"name":"Cleveland-Akron-Canton, OH","short":"Cleveland, OH","inState":3743802,"metroTotal":3743802,"share":31.5,"shared":false,"spans":["OH"],"isFallback":false}},{"code":"OK","name":"Oklahoma","pop":4123288,"msa":{"name":"Oklahoma City, OK","short":"Oklahoma City, OK","inState":1512813,"metroTotal":1512813,"share":36.7,"shared":false,"spans":["OK"]},"csa":{"name":"Oklahoma City-Shawnee, OK","short":"Oklahoma City, OK","inState":1587915,"metroTotal":1587915,"share":38.5,"shared":false,"spans":["OK"],"isFallback":false}},{"code":"OR","name":"Oregon","pop":4273586,"msa":{"name":"Portland-Vancouver-Hillsboro, OR-WA","short":"Portland, OR-WA","inState":1997494,"metroTotal":2542282,"share":46.7,"shared":true,"spans":["OR","WA"]},"csa":{"name":"Portland-Vancouver-Salem, OR-WA","short":"Portland, OR-WA","inState":2673879,"metroTotal":3333552,"share":62.6,"shared":true,"spans":["OR","WA"],"isFallback":false}},{"code":"PA","name":"Pennsylvania","pop":13059432,"msa":{"name":"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD","short":"Philadelphia, PA-NJ-DE-MD","inState":4237805,"metroTotal":6329118,"share":32.5,"shared":true,"spans":["PA","NJ","DE","MD"]},"csa":{"name":"Philadelphia-Reading-Camden, PA-NJ-DE-MD","short":"Philadelphia, PA-NJ-DE-MD","inState":4677877,"metroTotal":7493171,"share":35.8,"shared":true,"spans":["PA","NJ","DE","MD"],"isFallback":false}},{"code":"RI","name":"Rhode Island","pop":1114521,"msa":{"name":"Providence-Warwick, RI-MA","short":"Providence, RI-MA","inState":1114521,"metroTotal":1708161,"share":100.0,"shared":true,"spans":["RI","MA"]},"csa":{"name":"Boston-Worcester-Providence, MA-RI-NH","short":"Boston, MA-RI-NH","inState":1114521,"metroTotal":8521063,"share":100.0,"shared":true,"spans":["MA","NH","RI"],"isFallback":false}},{"code":"SC","name":"South Carolina","pop":5570274,"msa":{"name":"Greenville-Anderson-Greer, SC","short":"Greenville, SC","inState":1014101,"metroTotal":1014101,"share":18.2,"shared":false,"spans":["SC"]},"csa":{"name":"Greenville-Spartanburg-Anderson, SC","short":"Greenville, SC","inState":1659022,"metroTotal":1659022,"share":29.8,"shared":false,"spans":["SC"],"isFallback":false}},{"code":"SD","name":"South Dakota","pop":935094,"msa":{"name":"Sioux Falls, SD-MN","short":"Sioux Falls, SD-MN","inState":305114,"metroTotal":314638,"share":32.6,"shared":true,"spans":["SD","MN"]},"csa":{"name":"Sioux Falls, SD-MN","short":"Sioux Falls, SD-MN","inState":305114,"metroTotal":314638,"share":32.6,"shared":true,"spans":["SD","MN"],"isFallback":true}},{"code":"TN","name":"Tennessee","pop":7315076,"msa":{"name":"Nashville-Davidson--Murfreesboro--Franklin, TN","short":"Nashville, TN","inState":2197416,"metroTotal":2197416,"share":30.0,"shared":false,"spans":["TN"]},"csa":{"name":"Nashville-Davidson--Murfreesboro, TN","short":"Nashville, TN","inState":2452592,"metroTotal":2452592,"share":33.5,"shared":false,"spans":["TN"],"isFallback":false}},{"code":"TX","name":"Texas","pop":31709821,"msa":{"name":"Dallas-Fort Worth-Arlington, TX","short":"Dallas, TX","inState":8477157,"metroTotal":8477157,"share":26.7,"shared":false,"spans":["TX"]},"csa":{"name":"Dallas-Fort Worth, TX-OK","short":"Dallas, TX-OK","inState":9000627,"metroTotal":9051994,"share":28.4,"shared":true,"spans":["TX","OK"],"isFallback":false}},{"code":"UT","name":"Utah","pop":3538904,"msa":{"name":"Salt Lake City-Murray, UT","short":"Salt Lake City, UT","inState":1308377,"metroTotal":1308377,"share":37.0,"shared":false,"spans":["UT"]},"csa":{"name":"Salt Lake City-Provo-Orem, UT-ID","short":"Salt Lake City, UT-ID","inState":2901562,"metroTotal":2906647,"share":82.0,"shared":true,"spans":["UT","ID"],"isFallback":false}},{"code":"VT","name":"Vermont","pop":644663,"msa":{"name":"Burlington-South Burlington, VT","short":"Burlington, VT","inState":227803,"metroTotal":227803,"share":35.3,"shared":false,"spans":["VT"]},"csa":{"name":"Burlington-South Burlington-Barre, VT","short":"Burlington, VT","inState":287455,"metroTotal":287455,"share":44.6,"shared":false,"spans":["VT"],"isFallback":false}},{"code":"VA","name":"Virginia","pop":8880107,"msa":{"name":"Washington-Arlington-Alexandria, DC-VA-MD-WV","short":"Washington, DC-VA-MD-WV","inState":3184545,"metroTotal":6465724,"share":35.9,"shared":true,"spans":["VA","MD","WV"]},"csa":{"name":"Washington-Baltimore-Arlington, DC-MD-VA-WV-PA","short":"Washington, DC-MD-VA-WV-PA","inState":3352855,"metroTotal":10274894,"share":37.8,"shared":true,"spans":["MD","VA","WV","PA"],"isFallback":false}},{"code":"WA","name":"Washington","pop":8001020,"msa":{"name":"Seattle-Tacoma-Bellevue, WA","short":"Seattle, WA","inState":4161883,"metroTotal":4161883,"share":52.0,"shared":false,"spans":["WA"]},"csa":{"name":"Seattle-Tacoma, WA","short":"Seattle, WA","inState":5127377,"metroTotal":5127377,"share":64.1,"shared":false,"spans":["WA"],"isFallback":false}},{"code":"WV","name":"West Virginia","pop":1766147,"msa":{"name":"Charleston, WV","short":"Charleston, WV","inState":200170,"metroTotal":200170,"share":11.3,"shared":false,"spans":["WV"]},"csa":{"name":"Charleston-Huntington-Ashland, WV-OH-KY","short":"Charleston, WV-OH-KY","inState":385547,"metroTotal":637500,"share":21.8,"shared":true,"spans":["WV","OH","KY"],"isFallback":false}},{"code":"WI","name":"Wisconsin","pop":5972787,"msa":{"name":"Milwaukee-Waukesha, WI","short":"Milwaukee, WI","inState":1575010,"metroTotal":1575010,"share":26.4,"shared":false,"spans":["WI"]},"csa":{"name":"Milwaukee-Racine-Waukesha, WI","short":"Milwaukee, WI","inState":2055658,"metroTotal":2055658,"share":34.4,"shared":false,"spans":["WI"],"isFallback":false}},{"code":"WY","name":"Wyoming","pop":588753,"msa":{"name":"Cheyenne, WY","short":"Cheyenne, WY","inState":102938,"metroTotal":102938,"share":17.5,"shared":false,"spans":["WY"]},"csa":{"name":"Cheyenne, WY","short":"Cheyenne, WY","inState":102938,"metroTotal":102938,"share":17.5,"shared":false,"spans":["WY"],"isFallback":true}}]};
+    // DATA_END
+
+// Standard US tile-grid layout: [row, col], 1-indexed for CSS grid. Alaska top-left,
+// Hawaii bottom-left, Maine top-right, New England stacked in the upper right.
+const GRID = {
+  AK: [1, 1],  ME: [1, 12],
+  VT: [2, 11], NH: [2, 12],
+  WA: [3, 2],  ID: [3, 3],  MT: [3, 4],  ND: [3, 5],  MN: [3, 6],  WI: [3, 7],
+  MI: [3, 8],  NY: [3, 10], MA: [3, 11], RI: [3, 12],
+  OR: [4, 2],  NV: [4, 3],  WY: [4, 4],  SD: [4, 5],  IA: [4, 6],  IL: [4, 7],
+  IN: [4, 8],  OH: [4, 9],  PA: [4, 10], NJ: [4, 11], CT: [4, 12],
+  CA: [5, 2],  UT: [5, 3],  CO: [5, 4],  NE: [5, 5],  MO: [5, 6],  KY: [5, 7],
+  WV: [5, 8],  VA: [5, 9],  MD: [5, 10], DE: [5, 11],
+  AZ: [6, 3],  NM: [6, 4],  KS: [6, 5],  AR: [6, 6],  TN: [6, 7],  NC: [6, 8],  SC: [6, 9],
+  OK: [7, 4],  LA: [7, 5],  MS: [7, 6],  AL: [7, 7],  GA: [7, 8],
+  HI: [8, 1],  TX: [8, 4],  FL: [8, 8],
+};
+
+// Sequential encoding: one hue, ordered by magnitude, interpolated continuously —
+// the same scale paints the bars and the tiles so the two views read as one system.
+// Discrete bins were tried first and flattened the top of the range: eight states
+// sit between 62% and 75% and all landed on the same step.
+const RAMP_LIGHT = ['#cde2fb', '#9ec5f4', '#6da7ec', '#3987e5', '#2a78d6', '#1c5cab', '#104281'];
+// Same hue re-stepped for the dark surface, running dark→light so low values recede
+// into the background rather than glow.
+const RAMP_DARK = ['#184f95', '#1c5cab', '#256abf', '#2a78d6', '#3987e5', '#6da7ec', '#9ec5f4'];
+
+// Domain floor is 10%, just under West Virginia, so the lightest step is reached
+// but never wasted on empty range below the data.
+const DOMAIN = [10, 100];
+const TICKS = [10, 25, 50, 75, 100];
+
+const clamp01 = (t) => Math.max(0, Math.min(1, t));
+const norm = (share) => clamp01((share - DOMAIN[0]) / (DOMAIN[1] - DOMAIN[0]));
+
+function hexToRgb(h) {
+  return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+}
+
+function rampColor(ramp, t) {
+  const x = clamp01(t) * (ramp.length - 1);
+  const i = Math.min(Math.floor(x), ramp.length - 2);
+  const f = x - i;
+  const a = hexToRgb(ramp[i]);
+  const b = hexToRgb(ramp[i + 1]);
+  return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * f)).join(',')})`;
+}
+
+// Pick whichever ink actually contrasts better against this fill, rather than
+// guessing at a lightness threshold — the ramp is continuous, so the crossover
+// point lands mid-ramp and a hand-picked threshold gets the middle wrong.
+// Pure black/white rather than the page's ink tokens: on a colored fill these buy
+// the extra contrast that keeps the worst point of the ramp above 4.5:1.
+const INK_DARK = '#000000';
+const INK_LIGHT = '#ffffff';
+
+function luminance(rgbString) {
+  const [r, g, b] = rgbString.match(/[\d.]+/g).map(Number);
+  const lin = (c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+const L_INK_DARK = luminance('rgb(0,0,0)');
+const L_INK_LIGHT = luminance('rgb(255,255,255)');
+
+function inkOn(rgbString) {
+  const L = luminance(rgbString);
+  const onDark = (L + 0.05) / (L_INK_DARK + 0.05);
+  const onLight = (L_INK_LIGHT + 0.05) / (L + 0.05);
+  return onDark >= onLight ? INK_DARK : INK_LIGHT;
+}
+
+function useRamp() {
+  const [dark, setDark] = useState(
+    () => typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
+  );
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return undefined;
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (e) => setDark(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return dark ? RAMP_DARK : RAMP_LIGHT;
+}
+
+const fmt = (n) => n.toLocaleString('en-US');
+
+// Minimum-state-population rungs, in millions. Trimmed so every stop actually
+// changes the list: past 14M the next state down is a long way off, so 16/18/20
+// would all repeat 14M's four states, and nothing at all clears 40M.
+const CUTOFFS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 25, 35];
+const cutoffLabel = (m) => (m === 0 ? 'All states' : `${m}M`);
+
+const STORAGE_KEY = 'main-metro-dominance-v1';
+const DEFAULTS = { mode: 'msa', view: 'bars', sort: 'share', selected: null, cutoff: 0 };
+const MODES = ['msa', 'csa'];
+const VIEWS = ['bars', 'map'];
+const SORTS = ['share', 'name', 'metro', 'pop'];
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const s = { ...DEFAULTS, ...JSON.parse(raw) };
+      // guard against stale/invalid persisted values
+      if (!MODES.includes(s.mode)) s.mode = DEFAULTS.mode;
+      if (!VIEWS.includes(s.view)) s.view = DEFAULTS.view;
+      if (!SORTS.includes(s.sort)) s.sort = DEFAULTS.sort;
+      // Stored as the value in millions, not the slider index — an index would
+      // quietly mean a different cutoff if the ladder ever changed.
+      if (!CUTOFFS.includes(s.cutoff)) s.cutoff = DEFAULTS.cutoff;
+      if (s.selected !== null && !DATA.states.some((x) => x.code === s.selected)) s.selected = null;
+      return s;
+    }
+  } catch (e) { /* private mode etc. */ }
+  return { ...DEFAULTS };
+}
+
+// Rank is always by share, independent of the display sort, so a state keeps the
+// same "#3 in the country" label whichever way the list is ordered.
+function buildRows(mode) {
+  const rows = DATA.states.map((s) => ({ code: s.code, name: s.name, pop: s.pop, m: s[mode] }));
+  rows.sort((a, b) => b.m.share - a.m.share);
+  rows.forEach((r, i) => { r.rank = i + 1; });
+  return rows;
+}
+
+function Seg({ value, options, onChange, label }) {
+  return html`
+    <div class="seg" role="group" aria-label=${label}>
+      ${options.map(([val, text]) => html`
+        <button key=${val} type="button" aria-pressed=${value === val} onClick=${() => onChange(val)}>${text}</button>
+      `)}
+    </div>`;
+}
+
+function BarRow({ r, ramp, selected, onSelect, onHover }) {
+  // Anchored on enter rather than tracked on move: following the cursor would set
+  // state on every mousemove and re-render all fifty rows for no real gain.
+  const fromPointer = (e) => onHover({ code: r.code, x: e.clientX, y: e.clientY });
+  const fromRow = (e) => {
+    const b = e.currentTarget.getBoundingClientRect();
+    onHover({ code: r.code, x: Math.min(b.left + 240, b.right), y: b.top });
+  };
+  const shared = r.m.shared ? `, a metro shared with ${r.m.spans.filter((c) => c !== r.code).join(', ')}` : '';
+  return html`
+    <button type="button" class="row" aria-pressed=${selected} onClick=${() => onSelect(selected ? null : r.code)}
+      aria-label=${`${r.name}: ${r.m.share.toFixed(1)} percent of the state lives in the ${r.m.name} metro${shared}`}
+      onMouseEnter=${fromPointer} onMouseLeave=${() => onHover(null)}
+      onFocus=${fromRow} onBlur=${() => onHover(null)}>
+      <div class="rank">${r.rank}</div>
+      <div class="who">
+        <div class="name">${r.name}</div>
+        <div class="metro">
+          ${r.m.short}
+          ${r.m.shared && html`<span class="shared-tag">⇄ ${r.m.spans.filter((c) => c !== r.code).join(' ')}</span>`}
+        </div>
+      </div>
+      <div class="track">
+        <div class="bar-bg">
+          <div class="bar" style=${{ width: r.m.share + '%', background: rampColor(ramp, norm(r.m.share)) }}></div>
+        </div>
+        <div class="pct">${r.m.share.toFixed(1)}%</div>
+      </div>
+    </button>`;
+}
+
+function Cartogram({ rows, ramp, active, onSelect, onHover }) {
+  const byCode = useMemo(() => Object.fromEntries(rows.map((r) => [r.code, r])), [rows]);
+  return html`
+    <div class="cartogram">
+      ${Object.entries(GRID).map(([code, [row, col]]) => {
+        const r = byCode[code];
+        if (!r) return null;
+        const bg = rampColor(ramp, norm(r.m.share));
+        return html`
+          <button
+            key=${code} type="button" class="tile"
+            aria-pressed=${active === code}
+            aria-label=${`${r.name}: ${r.m.share.toFixed(1)} percent in ${r.m.name}`}
+            style=${{ '--r': row, '--c': col, background: bg, color: inkOn(bg) }}
+            onClick=${() => onSelect(active === code ? null : code)}
+            onMouseEnter=${() => onHover(code)}
+            onMouseLeave=${() => onHover(null)}
+            onFocus=${() => onHover(code)}
+            onBlur=${() => onHover(null)}
+          >
+            <span class="code">${code}</span>
+            <span class="val">${Math.round(r.m.share)}%</span>
+          </button>`;
+      })}
+    </div>`;
+}
+
+function Legend({ ramp }) {
+  return html`
+    <div class="legend">
+      <div class="caption">Share of state population in its largest metro</div>
+      <div class="scale" style=${{ background: `linear-gradient(to right, ${ramp.join(', ')})` }}></div>
+      <div class="ticks">
+        ${TICKS.map((t) => {
+          // Ticks sit at their true position on the 10–100 domain, not evenly spaced.
+          const p = norm(t);
+          return html`<span key=${t} style=${{ left: `${p * 100}%`, transform: `translateX(-${p * 100}%)` }}>${t}%</span>`;
+        })}
+      </div>
+    </div>`;
+}
+
+// Shared by the map's sidebar panel and the ranking's hover box, so the two views
+// never drift apart on what they report about a state.
+function DetailBody({ r, mode }) {
+  const m = r.m;
+  const others = m.spans.filter((c) => c !== r.code);
+  return html`<${React.Fragment}>
+      <h3>${r.name}</h3>
+      <div class="metro-name">${m.name}</div>
+      <div class="big">${m.share.toFixed(1)}%</div>
+      <div class="biglabel">of the state lives here · rank #${r.rank} of 50</div>
+      <dl>
+        <dt>In-state residents</dt><dd>${fmt(m.inState)}</dd>
+        <dt>State population</dt><dd>${fmt(r.pop)}</dd>
+        ${m.shared && html`<${React.Fragment}>
+          <dt>Metro nationwide</dt><dd>${fmt(m.metroTotal)}</dd>
+          <dt>Also spans</dt><dd>${others.join(', ')}</dd>
+        <//>`}
+        ${mode === 'csa' && m.isFallback && html`<${React.Fragment}>
+          <dt>Note</dt><dd>no CSA — MSA shown</dd>
+        <//>`}
+      </dl>
+    <//>`;
+}
+
+function DetailCard({ r, mode }) {
+  if (!r) {
+    return html`<div class="card"><p class="hint">Hover or select a state to see its largest metro, how big that metro is nationwide, and whether it crosses a state line.</p></div>`;
+  }
+  return html`<div class="card"><${DetailBody} r=${r} mode=${mode} /></div>`;
+}
+
+// Floating box for the ranking view, where there is no room for a sidebar.
+const TIP_W = 250;
+const TIP_H = 200;
+const TIP_PAD = 12;
+
+function HoverTip({ r, mode, x, y }) {
+  if (!r) return null;
+  // Flip to the pointer's left when the box would run off the right edge, and clamp
+  // vertically rather than flipping so it never leaves the viewport.
+  const left = x + 16 + TIP_W > window.innerWidth - TIP_PAD ? Math.max(TIP_PAD, x - 16 - TIP_W) : x + 16;
+  const top = Math.min(Math.max(TIP_PAD, y + 16), Math.max(TIP_PAD, window.innerHeight - TIP_H - TIP_PAD));
+  return html`
+    <div class="tip card" aria-hidden="true" style=${{ left: `${left}px`, top: `${top}px`, width: `${TIP_W}px` }}>
+      <${DetailBody} r=${r} mode=${mode} />
+    </div>`;
+}
+
+function App() {
+  const init = useMemo(loadState, []);
+  const [mode, setMode] = useState(init.mode);
+  const [view, setView] = useState(init.view);
+  const [sort, setSort] = useState(init.sort);
+  const [selected, setSelected] = useState(init.selected);
+  const [cutoff, setCutoff] = useState(init.cutoff);
+  const [hovered, setHovered] = useState(null);
+  const [tip, setTip] = useState(null);
+  const ramp = useRamp();
+
+  // A box left over from the previous view, mode, or cutoff would describe a row
+  // that is no longer under the cursor — or no longer on screen at all.
+  useEffect(() => { setTip(null); setHovered(null); }, [view, mode, cutoff]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ mode, view, sort, selected, cutoff }));
+    } catch (e) { /* swallow */ }
+  }, [mode, view, sort, selected, cutoff]);
+
+  // `ranked` stays the full 50, so ranks are national and the map, the hover box,
+  // and the header's extremes are all unaffected by the cutoff.
+  const ranked = useMemo(() => buildRows(mode), [mode]);
+  const ordered = useMemo(() => {
+    const rows = ranked.filter((r) => r.pop >= cutoff * 1e6);
+    if (sort === 'name') rows.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sort === 'metro') rows.sort((a, b) => b.m.inState - a.m.inState);
+    else if (sort === 'pop') rows.sort((a, b) => b.pop - a.pop);
+    return rows;
+  }, [ranked, sort, cutoff]);
+
+  const activeCode = hovered || selected;
+  const active = ranked.find((r) => r.code === activeCode) || null;
+  const top = ranked[0];
+  const bottom = ranked[ranked.length - 1];
+  const fallbacks = DATA.meta.csaFallbacks.join(', ');
+
+  return html`
+    <div class="wrap">
+      <header>
+        <h1>Main Metro Dominance</h1>
+        <p class="sub">
+          Every state has a biggest metro area. In ${top.name} it holds ${top.m.share.toFixed(0)}% of the
+          state; in ${bottom.name}, ${bottom.m.share.toFixed(0)}%. Population is
+          US Census Bureau <a href=${DATA.meta.countyPopUrl} target="_blank" rel="noopener">county estimates for ${DATA.meta.popVintage}</a>,
+          grouped by the <a href=${DATA.meta.delineationUrl} target="_blank" rel="noopener">OMB ${DATA.meta.delineation} metro delineations</a>.
+        </p>
+      </header>
+
+      <div class="controls">
+        <${Seg} label="Metro definition" value=${mode} onChange=${setMode}
+          options=${[['msa', 'Metro area (MSA)'], ['csa', 'Combined area (CSA)']]} />
+        <${Seg} label="View" value=${view} onChange=${setView}
+          options=${[['bars', 'Ranking'], ['map', 'Map']]} />
+        <div class="spacer"></div>
+        ${view === 'bars' && html`
+          <div class="sortgroup">
+            <label class="sortlabel" for="cutoff">Min. population</label>
+            <input type="range" id="cutoff" class="cutoff"
+              min="0" max=${CUTOFFS.length - 1} step="1"
+              value=${CUTOFFS.indexOf(cutoff)}
+              onInput=${(e) => setCutoff(CUTOFFS[Number(e.target.value)])}
+              aria-label="Minimum state population"
+              aria-valuetext=${`${cutoffLabel(cutoff)}, showing ${ordered.length} of ${ranked.length} states`} />
+            <span class="cutoffval">${cutoffLabel(cutoff)}</span>
+          </div>
+          <div class="sortgroup">
+            <label class="sortlabel" for="sort">Sort</label>
+            <select id="sort" value=${sort} onChange=${(e) => setSort(e.target.value)}>
+              <option value="share">By share</option>
+              <option value="name">Alphabetical</option>
+              <option value="metro">By metro size</option>
+              <option value="pop">By state population</option>
+            </select>
+          </div>`}
+      </div>
+
+      ${view === 'bars' && cutoff > 0 && html`
+        <p class="filternote">
+          Showing ${ordered.length} of ${ranked.length} states · minimum population ${cutoffLabel(cutoff)}.
+          Ranks stay national, so the gaps are the states filtered out.
+        </p>`}
+
+      ${view === 'bars'
+        ? html`<div class="rows">
+            ${ordered.length === 0 && html`<p class="filternote">No states match this cutoff.</p>`}
+            ${ordered.map((r) => html`
+              <${BarRow} key=${r.code} r=${r} ramp=${ramp} selected=${selected === r.code}
+                onSelect=${setSelected} onHover=${setTip} />`)}
+            ${tip && html`<${HoverTip} r=${ranked.find((r) => r.code === tip.code)} mode=${mode}
+              x=${tip.x} y=${tip.y} />`}
+          </div>`
+        : html`<div class="map-area">
+            <div>
+              <${Cartogram} rows=${ranked} ramp=${ramp} active=${activeCode}
+                onSelect=${setSelected} onHover=${setHovered} />
+              <${Legend} ramp=${ramp} />
+            </div>
+            <${DetailCard} r=${active} mode=${mode} />
+          </div>`}
+
+      <div class="notes">
+        <h2>How this is counted</h2>
+        <p>
+          A metro that straddles a state line is counted only for the part inside each state. New Jersey's
+          largest metro is the New York metro — 74% of New Jersey lives in it, and that share is measured
+          against the New Jersey portion alone, never the whole metro. The same is true of Delaware and
+          Philadelphia, New Hampshire and Boston, Kansas and Kansas City, Virginia and Washington. That is
+          why a share can never exceed 100%, and why those rows carry a ⇄ marker.
+        </p>
+        <p>
+          <strong>Metro area (MSA)</strong> is a core urban area plus the counties economically tied to it —
+          the everyday meaning of "the Phoenix area." <strong>Combined area (CSA)</strong> merges adjacent
+          metros that overlap in commuting, so the Bay Area becomes one region rather than three and
+          Baltimore joins Washington. Switching modes reshuffles the ranking substantially. Five states
+          (${fallbacks}) have no CSA at all, so CSA mode shows their plain metro instead.
+        </p>
+        <p>
+          Washington, D.C. is left out: it sits entirely inside its own metro, so its 100% describes a
+          border, not a concentration of people. Denominators are state totals summed from the same county
+          file as the numerators, so the two always agree. Rebuild the dataset
+          with${' '}<code>uv run build_data.py</code>.
+        </p>
+      </div>
+    </div>`;
+}
+
+createRoot(document.getElementById('root')).render(html`<${App} />`);
+</script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI token usage by week</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #f9f9f7;
+    --surface-1:      #fcfcfb;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11, 11, 11, 0.10);
+    --series-in:      #2a78d6;
+    --series-out:     #eb6834;
+    --series-prompts: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:           #0d0d0d;
+      --surface-1:      #1a1a19;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255, 255, 255, 0.10);
+      --series-in:      #3987e5;
+      --series-out:     #d95926;
+      --series-prompts: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:           #0d0d0d;
+    --surface-1:      #1a1a19;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255, 255, 255, 0.10);
+    --series-in:      #3987e5;
+    --series-out:     #d95926;
+    --series-prompts: #199e70;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 24px 64px;
+    background: var(--page);
+    color: var(--text-primary);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); font-size: 14px; margin: 0 0 28px; }
+
+  /* ---- KPI row ---- */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .tile {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px 16px;
+  }
+  .tile-label { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 5px; }
+  .tile-value { font-size: 27px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+  .tile-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ---- chart card ---- */
+  .card {
+    position: relative;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px 12px;
+  }
+  .card-head {
+    display: flex; align-items: baseline; flex-wrap: wrap;
+    gap: 6px 18px; margin-bottom: 12px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .legend { display: flex; gap: 15px; margin-left: auto; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-secondary); }
+  .swatch { width: 11px; height: 11px; border-radius: 2.5px; flex: none; }
+  .swatch.line { width: 14px; height: 2.5px; border-radius: 1.25px; }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg:focus { outline: none; }
+  svg:focus-visible { outline: 2px solid var(--series-in); outline-offset: 4px; border-radius: 6px; }
+
+  .tick       { font-size: 11.5px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .axis-title { font-size: 11px; fill: var(--text-muted); }
+
+  /* ---- tooltip ---- */
+  .tip {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .12s ease;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .13);
+    border-radius: 8px;
+    padding: 9px 11px;
+    min-width: 182px;
+    z-index: 5;
+  }
+  .tip.on { opacity: 1; }
+  .tip-head { font-size: 11.5px; color: var(--text-muted); margin-bottom: 7px; white-space: nowrap; }
+  .tip-row { display: flex; align-items: baseline; gap: 9px; margin-top: 4px; }
+  .tip-row.rule { margin-top: 7px; padding-top: 6px; border-top: 1px solid var(--gridline); }
+  /* line keys, not boxes — at tooltip density a filled box is data-weight ink doing a label's job */
+  .key { width: 12px; height: 2px; border-radius: 1px; flex: none; transform: translateY(-3px); }
+  .key.blank { background: none; }
+  .tip-val { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tip-name { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+
+  /* ---- table view ---- */
+  details { margin-top: 18px; }
+  summary {
+    cursor: pointer; font-size: 13.5px; color: var(--text-secondary);
+    padding: 6px 2px; width: max-content;
+  }
+  summary:hover { color: var(--text-primary); }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 13.5px; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--gridline); }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--text-secondary); font-weight: 600; font-size: 12.5px; }
+  td { font-variant-numeric: tabular-nums; }
+  tfoot td { font-weight: 600; border-bottom: none; border-top: 1px solid var(--baseline); }
+
+  .footer { margin-top: 28px; font-size: 13px; color: var(--text-muted); }
+  .footer a { color: var(--text-secondary); }
+
+  @media (max-width: 860px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) {
+    .kpis { grid-template-columns: 1fr; }
+    .legend { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI token usage by week</h1>
+  <p class="sub" id="subtitle"></p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">Tokens + prompts per week</span>
+      <div class="legend" id="legend"></div>
+    </div>
+    <svg id="chart" tabindex="0" role="img"
+         aria-label="Stacked column chart of weekly AI token usage — input tokens and output tokens stacked into a weekly total, read against the left axis — with prompt count drawn as a line against a separate right-hand axis. Arrow keys step through the weeks; exact values are in the table view below."></svg>
+    <div class="tip" id="tip" role="status" aria-live="polite"></div>
+  </div>
+
+  <details id="table-view">
+    <summary>Table view</summary>
+    <table id="table"></table>
+  </details>
+
+  <p class="footer">Part of <a href="../">playground</a>.</p>
+</div>
+
+<script>
+const DATA = [
+  { start: "2026-04-20", end: "2026-04-26", input:   1368828, output:    6794, prompts:   0 },
+  { start: "2026-04-27", end: "2026-05-03", input:   5581908, output:  133229, prompts:  31 },
+  { start: "2026-05-04", end: "2026-05-10", input:  14516359, output:   94403, prompts:  37 },
+  { start: "2026-05-11", end: "2026-05-17", input:   2895070, output:  116568, prompts:  13 },
+  { start: "2026-05-18", end: "2026-05-24", input:   6135143, output:   65008, prompts:  19 },
+  { start: "2026-05-25", end: "2026-05-31", input:  18877807, output:  227342, prompts:  53 },
+  { start: "2026-06-01", end: "2026-06-07", input:   4059941, output:  103674, prompts:   8 },
+  { start: "2026-06-08", end: "2026-06-14", input:    524136, output:   19331, prompts:   4 },
+  { start: "2026-06-15", end: "2026-06-21", input:  27033016, output:  274082, prompts:  30 },
+  { start: "2026-06-22", end: "2026-06-28", input: 158928579, output: 1145238, prompts: 119 },
+  { start: "2026-06-29", end: "2026-07-05", input:  21346020, output:  410327, prompts:  32 },
+  { start: "2026-07-06", end: "2026-07-12", input:  25139469, output:  263167, prompts:  28 },
+  { start: "2026-07-13", end: "2026-07-19", input: 181368152, output: 1112332, prompts: 133 },
+  { start: "2026-07-20", end: "2026-07-26", input:  86593929, output:  713036, prompts:  95 },
+  { start: "2026-07-27", end: "2026-08-02", input: 238504448, output: 1278059, prompts: 119 },
+];
+
+/* Stack order is bottom-up: input sits on the baseline, output caps the column. */
+const STACK = [
+  { key: "input",  name: "Input tokens",  color: "var(--series-in)" },
+  { key: "output", name: "Output tokens", color: "var(--series-out)" },
+];
+const PROMPTS = { key: "prompts", name: "Prompts", color: "var(--series-prompts)" };
+
+/* ---------- formatting ---------- */
+const compact = (n) => {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
+  if (n >= 1e6) return (n / 1e6).toFixed(n < 1e7 ? 1 : 0) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(n < 1e4 ? 1 : 0) + "K";
+  return String(n);
+};
+const full = (n) => n.toLocaleString("en-US");
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const parts = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return { y, label: MONTHS[m - 1] + " " + d };
+};
+const shortDate = (iso) => parts(iso).label;
+const range = (r) => shortDate(r.start) + " – " + shortDate(r.end) + ", " + parts(r.end).y;
+
+/* Round ticks in a FIXED number of bands. Both axes use the same band count, so the two
+   scales share one set of gridlines instead of drawing two conflicting grids over each other. */
+function niceTicks(max, bands) {
+  const mag = Math.pow(10, Math.floor(Math.log10(max / bands)));
+  const steps = [1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20].map((m) => m * mag);
+  const step = steps.find((s) => s * bands >= max) ?? steps[steps.length - 1];
+  return Array.from({ length: bands + 1 }, (_, k) => k * step);
+}
+
+/* ---------- totals ---------- */
+DATA.forEach((r) => { r.total = r.input + r.output; });
+const totalIn = DATA.reduce((a, r) => a + r.input, 0);
+const totalOut = DATA.reduce((a, r) => a + r.output, 0);
+const totalPrompts = DATA.reduce((a, r) => a + r.prompts, 0);
+const grandTotal = totalIn + totalOut;
+const outShare = (100 * totalOut / grandTotal).toFixed(2) + "%";
+
+document.getElementById("subtitle").textContent =
+  DATA.length + " weekly WakaTime reports · " + shortDate(DATA[0].start) +
+  " – " + shortDate(DATA[DATA.length - 1].end) + ", " + parts(DATA[DATA.length - 1].end).y;
+
+/* ---------- KPI row ---------- */
+const KPIS = [
+  { label: "Total input tokens", value: compact(totalIn), note: full(totalIn) },
+  { label: "Total output tokens", value: compact(totalOut), note: full(totalOut) + " · " + outShare + " of all tokens" },
+  { label: "Prompts", value: full(totalPrompts), note: "across " + DATA.length + " weeks" },
+  { label: "Avg tokens per prompt", value: compact(Math.round(grandTotal / totalPrompts)), note: "input + output combined" },
+];
+const kpiRoot = document.getElementById("kpis");
+for (const k of KPIS) {
+  const tile = document.createElement("div");
+  tile.className = "tile";
+  for (const [cls, text] of [["tile-label", k.label], ["tile-value", k.value], ["tile-note", k.note]]) {
+    const d = document.createElement("div");
+    d.className = cls;
+    d.textContent = text;
+    tile.appendChild(d);
+  }
+  kpiRoot.appendChild(tile);
+}
+
+/* ---------- legend: mirrors the mark — rects for the stacked bars, a stroke for the line ---------- */
+const legend = document.getElementById("legend");
+for (const s of [...STACK, PROMPTS]) {
+  const item = document.createElement("span");
+  item.className = "legend-item";
+  const sw = document.createElement("span");
+  sw.className = "swatch" + (s === PROMPTS ? " line" : "");
+  sw.style.background = s.color;
+  const label = document.createElement("span");
+  label.textContent = s === PROMPTS ? s.name + " (right axis)" : s.name;
+  item.append(sw, label);
+  legend.appendChild(item);
+}
+
+/* ---------- chart geometry ---------- */
+const W = 960, PAD_L = 66, PAD_R = 66, PLOT_TOP = 30, PLOT_H = 300, AXIS_H = 32;
+const IW = W - PAD_L - PAD_R;
+const H = PLOT_TOP + PLOT_H + AXIS_H;
+const N = DATA.length;
+const BAND = IW / N;
+const BAR_W = Math.min(24, BAND - 14);
+const GAP = 2;                                  /* the surface gap between stacked segments */
+const BANDS = 5;
+
+const TOK_TICKS = niceTicks(Math.max(...DATA.map((r) => r.total)), BANDS);
+const PRM_TICKS = niceTicks(Math.max(...DATA.map((r) => r.prompts)), BANDS);
+const TOK_MAX = TOK_TICKS[BANDS], PRM_MAX = PRM_TICKS[BANDS];
+
+const yTok = (v) => PLOT_TOP + PLOT_H - (v / TOK_MAX) * PLOT_H;
+const yPrm = (v) => PLOT_TOP + PLOT_H - (v / PRM_MAX) * PLOT_H;
+const barX = (i) => PAD_L + i * BAND + (BAND - BAR_W) / 2;
+const midX = (i) => barX(i) + BAR_W / 2;
+
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs = {}) => {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  return n;
+};
+const text = (str, attrs) => {
+  const t = el("text", attrs);
+  t.textContent = str;
+  return t;
+};
+/* rect with a rounded top and square baseline */
+const cappedBar = (x, y, w, h, r) => {
+  const rr = Math.min(r, w / 2, Math.max(h, 0) / 2);
+  return `M${x} ${y + h} L${x} ${y + rr} Q${x} ${y} ${x + rr} ${y}` +
+         ` L${x + w - rr} ${y} Q${x + w} ${y} ${x + w} ${y + rr} L${x + w} ${y + h} Z`;
+};
+
+const svg = document.getElementById("chart");
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+/* ---------- one gridline set, labelled on both sides ---------- */
+for (let k = 0; k <= BANDS; k++) {
+  const y = PLOT_TOP + PLOT_H - (k / BANDS) * PLOT_H;
+  svg.appendChild(el("line", {
+    x1: PAD_L - 8, x2: PAD_L + IW + 8, y1: y, y2: y,
+    stroke: k === 0 ? "var(--baseline)" : "var(--gridline)", "stroke-width": 1,
+  }));
+  svg.appendChild(text(k === 0 ? "0" : compact(TOK_TICKS[k]),
+    { x: PAD_L - 16, y: y + 4, class: "tick", "text-anchor": "end" }));
+  svg.appendChild(text(full(PRM_TICKS[k]),
+    { x: PAD_L + IW + 16, y: y + 4, class: "tick", "text-anchor": "start" }));
+}
+
+/* axis titles — the reader must never have to guess which scale a mark belongs to */
+svg.appendChild(text("Tokens", { x: PAD_L - 16, y: PLOT_TOP - 12, class: "axis-title", "text-anchor": "end" }));
+svg.appendChild(el("rect", {
+  x: PAD_L + IW + 6, y: PLOT_TOP - 17, width: 12, height: 2, rx: 1, fill: PROMPTS.color,
+}));
+svg.appendChild(text("Prompts", { x: PAD_L + IW + 23, y: PLOT_TOP - 12, class: "axis-title", "text-anchor": "start" }));
+
+/* ---------- stacked columns, clipped to a 4px-capped silhouette ---------- */
+const defs = el("defs");
+svg.appendChild(defs);
+const bars = DATA.map((r, i) => {
+  const x = barX(i), yTot = yTok(r.total), yIn = yTok(r.input), yBase = yTok(0);
+  const hOut = yIn - yTot, hIn = yBase - yIn;
+
+  const clip = el("clipPath", { id: "bar-clip-" + i });
+  clip.appendChild(el("path", { d: cappedBar(x, yTot, BAR_W, yBase - yTot, 4) }));
+  defs.appendChild(clip);
+
+  const g = el("g", { "clip-path": `url(#bar-clip-${i})` });
+  /* output first, as the full silhouette; input then paints over everything below it */
+  g.appendChild(el("rect", { x, y: yTot, width: BAR_W, height: Math.max(yBase - yTot, 0.6), fill: STACK[1].color }));
+  g.appendChild(el("rect", { x, y: yIn, width: BAR_W, height: Math.max(hIn, 0), fill: STACK[0].color }));
+  /* The gap is carved out of the input segment, never the output one — at well under 2% of a
+     column, output is already sub-pixel and a gap taken from it would erase the series. */
+  if (hOut >= 6 && hIn >= 6) {
+    g.appendChild(el("rect", { x, y: yIn, width: BAR_W, height: GAP, fill: "var(--surface-1)" }));
+  }
+  svg.appendChild(g);
+  return g;
+});
+
+/* ---------- prompts line, on the right-hand scale ---------- */
+const linePts = DATA.map((r, i) => [midX(i), yPrm(r.prompts)]);
+svg.appendChild(el("path", {
+  d: linePts.map(([x, y], i) => (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1)).join(" "),
+  fill: "none", stroke: PROMPTS.color, "stroke-width": 2,
+  "stroke-linejoin": "round", "stroke-linecap": "round",
+}));
+const dots = DATA.map((r, i) => {
+  const c = el("circle", {
+    cx: midX(i), cy: yPrm(r.prompts), r: 4,
+    fill: PROMPTS.color, stroke: "var(--surface-1)", "stroke-width": 2,
+  });
+  svg.appendChild(c);
+  return c;
+});
+
+/* No direct value labels: the axes carry the scale, hover/focus carries the exact
+   numbers, and the table view keeps every value reachable without a pointer. */
+
+/* x axis — every other week, so labels never collide */
+DATA.forEach((r, i) => {
+  if (i % 2) return;
+  svg.appendChild(text(shortDate(r.start), {
+    x: midX(i), y: yTok(0) + 20, class: "tick", "text-anchor": "middle",
+  }));
+});
+
+/* ---------- hover: the mark is the hit target ---------- */
+const tip = document.getElementById("tip");
+let active = -1;
+
+DATA.forEach((r, i) => {
+  const h = el("rect", {
+    x: PAD_L + i * BAND, y: PLOT_TOP - 10, width: BAND, height: PLOT_H + 10, fill: "transparent",
+  });
+  h.addEventListener("pointerenter", () => show(i));
+  svg.appendChild(h);
+});
+
+function row(value, name, color, ruled) {
+  const r = document.createElement("div");
+  r.className = "tip-row" + (ruled ? " rule" : "");
+  const key = document.createElement("span");
+  key.className = "key" + (color ? "" : " blank");
+  if (color) key.style.background = color;
+  const val = document.createElement("span");
+  val.className = "tip-val";
+  val.textContent = full(value);
+  const nm = document.createElement("span");
+  nm.className = "tip-name";
+  nm.textContent = name;
+  r.append(key, val, nm);
+  return r;
+}
+
+function show(i) {
+  if (i === active) return;
+  active = i;
+  const r = DATA[i];
+  bars.forEach((g, k) => g.setAttribute("opacity", k === i ? 1 : 0.55));
+  dots.forEach((d, k) => d.setAttribute("r", k === i ? 5.5 : 4));
+
+  tip.replaceChildren();
+  const head = document.createElement("div");
+  head.className = "tip-head";
+  head.textContent = range(r);
+  tip.appendChild(head);
+  tip.appendChild(row(r.output, "Output", STACK[1].color));
+  tip.appendChild(row(r.input, "Input", STACK[0].color));
+  tip.appendChild(row(r.total, "Total tokens", null, true));
+  tip.appendChild(row(r.prompts, "Prompts", PROMPTS.color, true));
+  tip.classList.add("on");
+
+  const box = svg.getBoundingClientRect();
+  const px = (midX(i) / W) * box.width;
+  const flip = px > box.width - 205;
+  tip.style.left = Math.max(0, px + (flip ? -16 - tip.offsetWidth : 16)) + "px";
+  tip.style.top = 16 + (Math.min(yTok(r.total), yPrm(r.prompts)) / H) * box.height + "px";
+}
+
+function hide() {
+  active = -1;
+  bars.forEach((g) => g.setAttribute("opacity", 1));
+  dots.forEach((d) => d.setAttribute("r", 4));
+  tip.classList.remove("on");
+}
+
+svg.addEventListener("pointerleave", hide);
+
+/* keyboard reaches the same readout as hover */
+svg.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") show(Math.min(N - 1, (active < 0 ? -1 : active) + 1));
+  else if (e.key === "ArrowLeft") show(Math.max(0, (active < 0 ? N : active) - 1));
+  else if (e.key === "Home") show(0);
+  else if (e.key === "End") show(N - 1);
+  else if (e.key === "Escape") { hide(); return; }
+  else return;
+  e.preventDefault();
+});
+svg.addEventListener("blur", hide);
+window.addEventListener("resize", () => { const i = active; hide(); if (i >= 0) show(i); });
+
+/* ---------- table view ---------- */
+const table = document.getElementById("table");
+const head = table.createTHead().insertRow();
+for (const h of ["Week", "Input tokens", "Output tokens", "Total", "Prompts"]) {
+  const th = document.createElement("th");
+  th.textContent = h;
+  head.appendChild(th);
+}
+const tbody = table.createTBody();
+for (const r of DATA) {
+  const tr = tbody.insertRow();
+  for (const v of [range(r), full(r.input), full(r.output), full(r.total), full(r.prompts)]) {
+    tr.insertCell().textContent = v;
+  }
+}
+const foot = table.createTFoot().insertRow();
+for (const v of ["Total", full(totalIn), full(totalOut), full(grandTotal), full(totalPrompts)]) {
+  foot.insertCell().textContent = v;
+}
+
+/* the one piece of user state on the page — keep it across refreshes */
+const STORE_KEY = "token-usage:table-open";
+const details = document.getElementById("table-view");
+try {
+  if (localStorage.getItem(STORE_KEY) === "1") details.open = true;
+  details.addEventListener("toggle", () => {
+    localStorage.setItem(STORE_KEY, details.open ? "1" : "0");
+  });
+} catch (_) { /* private mode / storage disabled — the page still works */ }
+</script>
+</body>
+</html>

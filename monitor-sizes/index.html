@@ -119,6 +119,7 @@
     }
     button.reset:hover { background: #fff; border-color: var(--axis); color: var(--ink); }
     .hint { color: var(--muted); font-size: 0.82rem; margin-top: 8px; }
+    .actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
 
     .sources ul { list-style: none; }
     .sources li { font-size: 0.84rem; color: var(--ink-2); padding: 7px 0; border-bottom: 1px solid rgba(20,34,48,0.05); line-height: 1.45; }
@@ -147,7 +148,7 @@
         </p>
         <svg class="chart" id="top" role="img" aria-label="Top-down view: each monitor's curve drawn to scale, showing straight-line width and curve depth"></svg>
       </div>
-      <p class="hint" id="hint">Hover a screen or a row to isolate it &middot; click a row below to hide/show it &middot; hover a curved screen in the top view to see its focal point.</p>
+      <p class="hint" id="hint">Hover a screen or a row to isolate it &middot; click a row below to show/hide it (only two are on to start) &middot; hover a curved screen in the top view to see its focal point.</p>
     </div>
 
     <div class="legend">
@@ -173,7 +174,10 @@
 
     <div class="foot">
       <p class="note"><strong>How to read it.</strong> Makers quote a curved screen's active area and diagonal along the panel surface (pixel pitch &times; pixel count), so the front view draws every screen as if flattened. The top view turns that arc back into desk geometry: the straight-line width between the screen's edges (the chord) and how far the edges reach toward you from the centre (the curve depth), with the maker's chassis width and depth without stand underneath. A radius like 1000R means every point of the screen is 1000&nbsp;mm from one spot &mdash; hover a curved screen to see where that spot is. The side-by-side pairs are drawn toed in, meeting at the seam, with each screen aimed so its outer edge lands where a curved ultrawide&rsquo;s does (the 32-inch pair at the Neo&nbsp;G9&rsquo;s, the 27-inch pair at the LG&nbsp;52&rsquo;s). <strong>Physical area</strong> is the active screen surface &mdash; unrolled width &times; height for curved screens, and the two panels without the seam for the side-by-side pair &mdash; so a 47.6-inch 16:9 TV has more screen than a 51.6-inch 21:9 ultrawide. PPI is computed as 25.4&nbsp;mm &divide; pixel pitch. Screens are centred on one another, as they would be at eye level.</p>
-      <button class="reset" id="reset">Reset view</button>
+      <span class="actions">
+        <button class="reset" id="show-all">Show all</button>
+        <button class="reset" id="reset">Reset to default</button>
+      </span>
     </div>
 
     <div class="legend sources">
@@ -349,6 +353,10 @@
 
       const MM_IN = 1 / 25.4;
 
+      // What a first-time visitor sees: everything else starts hidden (toggle rows to add more).
+      const DEFAULT_VISIBLE = ['s2725qc-x2', '45gx950a'];
+      const defaultHidden = list => list.map(m => m.id).filter(id => !DEFAULT_VISIBLE.includes(id));
+
       // Arc of length s on a circle of radius r: straight-line chord and sagitta
       // (how far the arc's middle bows away from the chord). Flat → chord = s.
       function arcGeom(sMm, rMm) {
@@ -502,19 +510,22 @@
       const fmtR = m => (m.radiusMm ? `${m.radiusMm}R` : 'Flat');
       const labelName = m => m.short || `${m.maker} ${m.model}`;
 
-      globalThis.MonitorSizes = { MONITORS, MM_IN, arcGeom, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, physAreaMm2, panelType, fmt1, fmtRes, fmtArea, fmtR, labelName };
+      globalThis.MonitorSizes = { MONITORS, MM_IN, DEFAULT_VISIBLE, defaultHidden, arcGeom, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, physAreaMm2, panelType, fmt1, fmtRes, fmtArea, fmtR, labelName };
     })();
   </script>
 
   <script>
-    const { MONITORS, MM_IN, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, panelType, fmt1, fmtRes, fmtArea, fmtR, labelName } = MonitorSizes;
+    const { MONITORS, MM_IN, defaultHidden, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, panelType, fmt1, fmtRes, fmtArea, fmtR, labelName } = MonitorSizes;
     MONITORS.forEach(derive);
     selfCheck(MONITORS).forEach(p => console.warn('[monitor-sizes] ' + p));
 
     // ---- State / persistence ---------------------------------------------
     const LS_KEY = 'monitorSizes.hidden.v1';
     const hidden = new Set();
-    try { (JSON.parse(localStorage.getItem(LS_KEY)) || []).forEach(id => hidden.add(id)); } catch {}
+    try {
+      const stored = JSON.parse(localStorage.getItem(LS_KEY));
+      (Array.isArray(stored) ? stored : defaultHidden(MONITORS)).forEach(id => hidden.add(id));
+    } catch { defaultHidden(MONITORS).forEach(id => hidden.add(id)); }
     function persist(){ try { localStorage.setItem(LS_KEY, JSON.stringify([...hidden])); } catch {} }
     const SPLITS_KEY = 'monitorSizes.splits.v1';
     const SPLITS_MAX = 4;
@@ -801,7 +812,7 @@
       if (!vis.length){
         for (const svg of CHARTS){
           svg.setAttribute('viewBox', '0 0 1000 60');
-          svg.appendChild(el('text', { class: 'axis-txt', x: 500, y: 36, 'text-anchor': 'middle' }, 'Nothing selected — click a row below, or Reset view.'));
+          svg.appendChild(el('text', { class: 'axis-txt', x: 500, y: 36, 'text-anchor': 'middle' }, 'Nothing selected — click a row below, or Show all.'));
         }
         return;
       }
@@ -870,8 +881,11 @@
       }
     }
 
-    document.getElementById('reset').addEventListener('click', () => {
+    document.getElementById('show-all').addEventListener('click', () => {
       hidden.clear(); persist(); render(); renderLegend();
+    });
+    document.getElementById('reset').addEventListener('click', () => {
+      hidden.clear(); defaultHidden(MONITORS).forEach(id => hidden.add(id)); persist(); render(); renderLegend();
     });
 
     const splitsEl = document.getElementById('splits');

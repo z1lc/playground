@@ -8,7 +8,7 @@ if (!coreMatch) throw new Error('Inline monitor core was not found');
 const sandbox = {};
 vm.runInNewContext(coreMatch[1], sandbox);
 
-const { MONITORS, MM_IN, arcGeom, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, physAreaMm2, panelType } = sandbox.MonitorSizes;
+const { MONITORS, MM_IN, DEFAULT_VISIBLE, defaultHidden, arcGeom, arcPoint, splitPart, derive, layoutColumn, selfCheck, partitionRows, physAreaMm2, panelType } = sandbox.MonitorSizes;
 const derived = MONITORS.map(m => derive({ ...m }, 0, MONITORS));
 const byId = Object.fromEntries(derived.map(m => [m.id, m]));
 
@@ -270,5 +270,17 @@ describe('splitPart (front-view rows)', () => {
     expect(splitPart(byId.u4025qw, 3).aspect).toBeCloseTo(0.79, 2);   // one third of it
     expect(splitPart(byId.u2725qe, 2).aspect).toBeCloseTo(0.89, 2);   // half of 16:9
     expect(splitPart(byId['neo-g9-57'], 2).aspect).toBeCloseTo(16 / 9, 6);   // half a 32:9 is exactly 16:9
+  });
+});
+
+describe('default selection', () => {
+  it('starts with only the 27-inch pair and the LG 45GX950A-B visible', () => {
+    expect(DEFAULT_VISIBLE.sort()).toEqual(['45gx950a', 's2725qc-x2']);
+    for (const id of DEFAULT_VISIBLE) expect(MONITORS.some(m => m.id === id), id).toBe(true);
+    const hidden = defaultHidden(MONITORS);
+    expect(hidden).toHaveLength(MONITORS.length - 2);
+    expect(hidden).not.toContain('45gx950a');
+    expect(hidden).not.toContain('s2725qc-x2');
+    expect(hidden).toContain('neo-g9-57');
   });
 });

@@ -1,0 +1,23 @@
+# GitHub Pages (Jekyll) publishes the pages and the files they load. Source, notes and build data stay in git
+# but off the site. `exclude` patterns match paths in any folder. If a page loads an excluded file at runtime,
+# list it under `include`. Pages runs Jekyll 3.10, which matches `include` by file name only (a folder path never
+# matches), so "data.json" re-includes every data.json in the repo.
+exclude:
+  - "*.md"
+  - "*.py"
+  - "*.mjs"
+  - "*.test.js"
+  - "*.yaml"
+  - "*.yml"
+  - "*.pdf"
+  - "*.json"
+  - "*.csv"
+  - "*.txt"
+  - "*.toml"
+  - "*.lock"
+  - "*.ipynb"
+  - "*/raw_html/*"
+  - "*/tools/*"
+include:
+  - markets.json # ga-ballot-2026
+  - data.json # monroe-safe-street fetches it; fde-jobs only as a dev fallback

@@ -12,3 +12,6 @@ KEYS
 # Python bytecode caches.
 __pycache__/
 *.pyc
+
+# Ruff lint/format cache.
+.ruff_cache/

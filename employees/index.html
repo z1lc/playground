@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Big Tech Employment (2011–2025)</title>
+  <title>Big Tech Employment (2011–2026)</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -67,6 +67,12 @@
       color: #64748b;
       padding: 0 8px 12px;
       margin-top: -8px;
+      line-height: 1.5;
+    }
+    .footnote {
+      font-size: 12px;
+      color: #64748b;
+      padding: 8px 8px 0;
       line-height: 1.5;
     }
     .summary-card {
@@ -176,13 +182,13 @@
   <script type="module">
     import React, { useMemo, useState, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
-    import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from 'recharts';
+    import { ComposedChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from 'recharts';
     import htm from 'htm';
     const html = htm.bind(React.createElement);
 
-    // fedRate: FRED FEDFUNDS, calendar-year avg.  t10y: FRED DGS10, calendar-year avg.
+    // fedRate: FRED FEDFUNDS, calendar-year avg.  t10y: FRED DGS10, calendar-year avg (2026: year-to-date).
     // vc: US VC investment ($B), PitchBook–NVCA Venture Monitor (full-year totals).
-    // adGrowth: US digital ad spending YoY % (IAB/PwC actuals 2011–2024; eMarketer estimate for 2025).
+    // adGrowth: US digital ad spending YoY % (IAB/PwC Internet Advertising Revenue Report actuals).
     // revPerEmp: combined revenue across all 9 companies / combined year-end headcount, in $K (10-Ks).
     // capex: combined capex across all 9 companies, $B (cash-flow-statement "Purchases of property and equipment").
     const DATA = [
@@ -200,7 +206,12 @@
       { year: 2022, microsoft: 221000, google: 190234, apple: 164000, oracle: 143000, tesla: 127855, meta: 86482, salesforce: 73541, nvidia: 22473, netflix: 12800, fedRate: 1.68, t10y: 2.95, vc: 238.3, adGrowth: 10.8, revPerEmp: 1153, capex: 111.3 },
       { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, salesforce: 79390, nvidia: 26196, netflix: 13000, fedRate: 5.03, t10y: 3.96, vc: 170.6, adGrowth: 7.3, revPerEmp: 1210, capex: 119.2 },
       { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, salesforce: 72682, nvidia: 29600, netflix: 14000, fedRate: 5.15, t10y: 4.21, vc: 213.2, adGrowth: 14.9, revPerEmp: 1367, capex: 164.2 },
-      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000, fedRate: 4.50, t10y: 4.29, vc: 339.4, adGrowth: 9.5, revPerEmp: 1531, capex: 272.8 },
+      { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000, fedRate: 4.21, t10y: 4.29, vc: 339.4, adGrowth: 13.9, revPerEmp: 1531, capex: 272.8 },
+      // Provisional: only MSFT, ORCL, CRM, NVDA have filed FY2026 10-Ks. vc, adGrowth, revPerEmp are left blank.
+      // capex: FY2026 actuals (MSFT 116.0, ORCL 55.7, CRM 0.6, NVDA 6.0) + 2026 guidance midpoints (GOOG 200, META 140,
+      // TSLA 20) + trailing 12 months (AAPL 10.0 through Jun, NFLX 0.9 through Sep).
+      { year: 2026, microsoft: 223000, google: 198933, apple: 166000, oracle: 141000, tesla: 134785, meta: 66775, salesforce: 83334, nvidia: 42000, netflix: 16000, fedRate: 3.65, t10y: 4.52, capex: 549.2,
+        provisional: { google: 'as of Jun 30 (Q2)', meta: 'as of Sep 30 (Q3)', apple: '2025 carried forward', tesla: '2025 carried forward', netflix: '2025 carried forward' } },
     ];
 
     const COMPANIES = [
@@ -279,10 +290,10 @@
         label: 'Combined Capex',
         legendName: 'Combined Capex ($B/yr)',
         tooltipLabel: 'Combined capex',
-        domain: [0, 300],
+        domain: [0, 600],
         axisFormat: (v) => '$' + v + 'B',
         tooltipFormat: (v) => '$' + v.toFixed(0) + 'B',
-        description: 'Yellow line is combined annual capital expenditures across all 9 companies, in billions of dollars (cash-flow-statement capex from each 10-K). The post-2022 vertical climb is overwhelmingly AI/data-center spending at MSFT, GOOG, META, and NVDA.',
+        description: 'Yellow line is combined annual capital expenditures across all 9 companies, in billions of dollars (cash-flow-statement capex from each 10-K). The post-2022 vertical climb is overwhelmingly AI/data-center spending at MSFT, GOOG, META, and ORCL. 2026 is provisional: FY2026 actuals for MSFT, ORCL, CRM, and NVDA; full-year guidance midpoints for GOOG ($195–205B), META ($135–145B, incl. finance leases), and TSLA (>$20B); trailing 12 months for AAPL and NFLX.',
       },
       {
         key: 'adGrowth',
@@ -292,7 +303,7 @@
         domain: [0, 40],
         axisFormat: (v) => v + '%',
         tooltipFormat: (v) => '+' + v.toFixed(1) + '%',
-        description: `Yellow line is the year-over-year % growth in U.S. digital ad spending (IAB/PwC Internet Advertising Revenue Report; 2025 is an eMarketer estimate). CAGR: +${adCagr1}% (2011–2021), +${adCagr2}% (2021–2025).`,
+        description: `Yellow line is the year-over-year % growth in U.S. digital ad spending (IAB/PwC Internet Advertising Revenue Report). CAGR: +${adCagr1}% (2011–2021), +${adCagr2}% (2021–2025).`,
       },
     ];
     const RATES_BY_KEY = Object.fromEntries(RATES.map(r => [r.key, r]));
@@ -302,6 +313,7 @@
     const BASELINE_START = 2011;
     const BASELINE_END = 2019;
 
+    const isProvisional = (year) => !!DATA.find(d => d.year === year)?.provisional;
     const formatK = (v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v;
     const formatNum = (v) => v.toLocaleString();
     const cagrPct = (start, end, years) => ((Math.pow(end / start, 1 / years) - 1) * 100).toFixed(1);
@@ -317,14 +329,16 @@
       const rateValue = rateEntry?.value;
       const total = real.reduce((s, p) => s + (p.value || 0), 0);
       const sorted = [...real].reverse();
+      const provisional = payload[0].payload.provisional || {};
       return html`
         <div style=${{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
-          <div style=${{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>${label}</div>
+          <div style=${{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>${label}${isProvisional(label) ? ' (provisional)' : ''}</div>
           ${sorted.map(p => html`
             <div key=${p.dataKey} style=${{ display: 'flex', justifyContent: 'space-between', gap: 24, padding: '2px 0' }}>
               <span style=${{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style=${{ width: 10, height: 10, borderRadius: 2, background: p.color, display: 'inline-block' }} />
                 ${p.name}
+                ${provisional[p.dataKey] && html`<span style=${{ color: '#64748b', fontSize: 11, fontStyle: 'italic' }}>${provisional[p.dataKey]}</span>`}
               </span>
               <span style=${{ fontFamily: 'monospace', fontWeight: 500 }}>${formatNum(p.value)}</span>
             </div>
@@ -436,7 +450,7 @@
 
       return html`
         <div class="container">
-          <h1>Big Tech Employment (2011–2025)</h1>
+          <h1>Big Tech Employment (2011–2026)</h1>
           <p class="subtitle">
             Full-time employee headcount from SEC 10-K filings.
             Combined headcount CAGR: +${baselineCagr}% (${BASELINE_START}–${BASELINE_END}).
@@ -459,7 +473,7 @@
                   </pattern>
                 </defs>
                 <${CartesianGrid} strokeDasharray="3 3" stroke="#334155" />
-                <${XAxis} dataKey="year" tick=${{ fill: '#94a3b8', fontSize: 12 }} />
+                <${XAxis} dataKey="year" tickFormatter=${(y) => isProvisional(y) ? y + '*' : y} tick=${{ fill: '#94a3b8', fontSize: 12 }} />
                 <${YAxis} tickFormatter=${formatK} tick=${{ fill: '#94a3b8', fontSize: 12 }} width=${55} />
                 ${showRate && html`
                   <${YAxis}
@@ -509,7 +523,9 @@
                     name=${c.name}
                     stackId="a"
                     fill=${c.color}
-                  />
+                  >
+                    ${chartData.map(d => html`<${Cell} key=${d.year} fillOpacity=${d.provisional?.[c.key] ? 0.45 : 1} />`)}
+                  <//>
                 `)}
                 <${Bar}
                   dataKey="missing"
@@ -535,6 +551,12 @@
                 `}
               <//>
             <//>
+            <p class="footnote">
+              * 2026 is provisional. Microsoft, Oracle, Salesforce, and Nvidia are from FY2026 10-Ks; faded segments are
+              stand-ins: Alphabet (Q2) and Meta (Q3) use the latest quarterly headcount, and Apple, Tesla, and Netflix repeat
+              their 2025 values until their FY2026 10-Ks are filed. Rates are year-to-date averages, and combined capex mixes
+              FY2026 actuals with company guidance; the other comparison lines end at 2025.
+            </p>
           </div>
         </div>
       `;

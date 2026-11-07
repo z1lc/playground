@@ -1,0 +1,32 @@
+{
+  "slug": "coinbase",
+  "name": "Coinbase",
+  "cohort": "fintech",
+  "colorSlot": 7,
+  "dashSlot": 1,
+  "status": "public",
+  "founded": "2012-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "incorporation",
+  "foundedNote": "PLACEHOLDER - research in progress.",
+  "public": {
+    "ticker": "COIN",
+    "cik": "0001679788",
+    "cmcSlug": "coinbase",
+    "ipoDate": "2021-04-14",
+    "publicFrom": "2021-04-14",
+    "sharesTag": "auto",
+    "regressions": []
+  },
+  "events": [],
+  "curatorNotes": "PLACEHOLDER - research in progress.",
+  "unresolved": [],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Coinbase Global, Inc. Form S-1 (2021, direct listing)",
+      "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=COIN&type=S-1&dateb=&owner=include&count=40",
+      "type": "filing"
+    }
+  ]
+}

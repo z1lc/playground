@@ -1,0 +1,219 @@
+{
+  "slug": "tesla",
+  "name": "Tesla",
+  "cohort": "mega-cap",
+  "colorSlot": 1,
+  "dashSlot": 1,
+  "status": "public",
+  "founded": "2003-07-01",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Tesla Motors, Inc. was incorporated in Delaware on 2003-07-01 by Martin Eberhard and Marc Tarpenning. The S-1 says only 'We were incorporated in Delaware in 2003'; the day comes from Wikipedia. There is no earlier partnership to date from \u2014 unlike Apple and Microsoft, the incorporation IS the founding. Elon Musk arrived seven months later with the Series A and became chairman and largest shareholder; a 2009 settlement lets five people call themselves founders, but the filing date is unaffected by that.",
+  "public": {
+    "ticker": "TSLA",
+    "cik": "0001318605",
+    "cmcSlug": "tesla",
+    "ipoDate": "2010-06-29",
+    "publicFrom": "2010-06-29",
+    "sharesTag": "auto",
+    "regressions": [
+      {
+        "date": "2024-12-31",
+        "capUsd": 1299000000000,
+        "tolPct": 1.0
+      }
+    ],
+    "crossCheckTolPct": 8.0,
+    "sharesNote": "Cross-check ceiling raised to 8% because companiesmarketcap is the party in error here, not the pipeline, and that was verified rather than assumed. Tesla's share count rose from 3,324,000,000 at 2025-09-30 to 3,751,000,000 at 2025-12-31 \u2014 the audited balance sheet figure (us-gaap:CommonStockSharesOutstanding, 10-Q filed 2026-07-23), independent of the cover-page count this pipeline uses. At the $449.72 close that is $1.687T. companiesmarketcap publishes $1.580T and stockanalysis.com $1.50T; both are computed on pre-issuance share counts. companiesmarketcap's 2024 row fails on its own terms too: $1.385T contradicts its own shares-outstanding page (3.21B x $403.84 = $1.30T), and the +75.42% it claims for 2024 is impossible against TSLA's +62.5% price move that year. All four share tags in the cascade were tried; this one is the best of them at 6.81%, the others land at 19.9%, 94.5% and 1406%. Both splits (5:1 2020, 3:1 2022) are detected and the continuity check passes, so this is not a missed split or a per-class count \u2014 the failures this guard exists for still land far above 8%."
+  },
+  "events": [
+    {
+      "id": "2004-02-series-a",
+      "date": "2004-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 7500009,
+      "valuationUsd": null,
+      "note": "BELOW THE INCLUSION FLOOR, and this is the judgement call the floor exists to force. Elon Musk led this round personally, putting in $6.5M of the $7.5M, and he was at the time a private individual writing a cheque, not a named venture capital firm. The floor test is mechanical and firm-based precisely so that it cannot be argued away by how important the individual turned out to be, so this is marked non-institutional and not plotted, exactly as the Markkula cheque is on the Apple shard. Amount is derived from the S-1 cap table: 15,213,000 Series A shares at $0.493 \u2014 7,213,000 still outstanding at 2009-09-30 plus the 8,000,000 converted to common in November 2007 \u2014 which comes to $7,500,009 and matches the $7.5M that Wikipedia reports. Post-money is not recorded: the common share count in 2004 is not in any filing, and the count is unbounded below, so a valuation here would be a guess. Wikipedia dates the round to February 2004; other accounts put the close in April.",
+      "sourceRefs": [
+        0,
+        2
+      ],
+      "plot": false
+    },
+    {
+      "id": "2005-02-series-b",
+      "date": "2005-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 12919997,
+      "valuationUsd": null,
+      "note": "Also below the floor, for the same reason and with less certainty. Wikipedia says 'Musk led Tesla's Series B venture capital funding round of $13 million', with Valor Equity Partners joining the investor group; several secondary accounts instead describe Valor as the lead. Valor is a named firm and would clear the floor if it led, so the two accounts give different answers \u2014 but the better-sourced one has Musk leading again, so the round is marked non-institutional and the disagreement is recorded here rather than resolved silently. Amount is 17,459,456 shares at $0.740 from the S-1 cap table, $12,919,997, consistent with the reported $13M. Valuation is null for the same reason as the Series A: no 2005 common share count exists in any filing.",
+      "sourceRefs": [
+        0,
+        2
+      ],
+      "plot": false
+    },
+    {
+      "id": "2006-05-series-c",
+      "date": "2006-05-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "institutional": true,
+      "lead": "VantagePoint Venture Partners",
+      "amountRaisedUsd": 39999999,
+      "valuationUsd": 86400000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "THE FLOOR-CLEARING ROUND: the first Tesla financing led by a named venture capital firm, so the plotted line starts here. 35,242,290 shares at $1.135 across closings in May and June 2006, for $39,999,999 \u2014 of which $37,011,968 was cash and $2,988,031 was conversion of the March 2006 convertible notes. Post-money is $1.135 against roughly 76.1M as-converted shares: 15,213,000 Series A plus 17,459,456 Series B plus 35,242,290 Series C plus common of about 8,215,506. That common figure is derived, not reported \u2014 the 2009-09-30 common count of 21,323,176 less the 8,000,000 shares from the November 2007 Series A conversion less the 5,107,670 shares issued on option exercises between 2006-01-01 and 2009-12-31, all three of which the S-1 states \u2014 so it is an upper bound on common at the start of 2006 and the post-money is good to a few per cent. Google's founders and Jeff Skoll were among the 32 purchasers.",
+      "sourceRefs": [
+        0,
+        2
+      ],
+      "plot": true
+    },
+    {
+      "id": "2007-05-series-d",
+      "date": "2007-05-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Technology Partners and VantagePoint Venture Partners (largest institutional purchasers; the S-1 names no lead)",
+      "amountRaisedUsd": 45000227,
+      "valuationUsd": 235270000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "18,440,449 shares at $2.4403 to 29 accredited investors, $45,000,227. The S-1's related-party table gives the largest cheques: the Elon Musk Revocable Trust 4,097,877 shares, Technology Partners Fund VIII 3,829,481, VantagePoint 3,343,253, Valor 1,229,363. Post-money is $2.4403 against the 2007-12-31 balance sheet \u2014 78,355,195 preferred outstanding plus 18,055,060 common, 96,410,255 as-converted \u2014 so it is a year-end figure seven months after the round rather than a closing-date one. Note that the December balance already reflects the November 2007 conversion of 8,000,000 Series A shares into common, which moves shares between the two columns without changing the as-converted total.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": true
+    },
+    {
+      "id": "2009-05-series-e-daimler",
+      "date": "2009-05-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series E (Daimler)",
+      "charterSeries": "E",
+      "institutional": true,
+      "lead": "Blackstar Investco LLC (Daimler AG)",
+      "amountRaisedUsd": 50000001,
+      "valuationUsd": 513000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "The round that saved the company. Daimler invested $50,000,001 in cash through Blackstar Investco LLC for 19,901,290 shares at $2.5124; Herbert Kohler of Daimler joined the board. Alongside the cash, $86,224,670 of convertible notes converted \u2014 1,949,028 shares at the full $2.5124 for holders of the surviving February 2008 notes, and 80,926,461 shares at $1.005, a 60% discount to the round price, for holders who had exchanged into the December 2008 bridge. amountRaisedUsd counts only the new cash. Post-money is $2.5124 against 204,215,634 as-converted shares, being the 2009-09-30 pro forma total of 232.0M less the 27,785,263 Series F shares issued in August. The derivation cross-checks cleanly against the press framing of the deal: Blackstar's 19,901,290 shares are 9.75% of that base, which is the 'nearly 10% for $50 million' that was reported at the time. Note that the Series E discount issuance is what triggered the Series C anti-dilution adjustment, moving its conversion price from $1.135 to $1.081.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": true
+    },
+    {
+      "id": "2009-08-series-f",
+      "date": "2009-08-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": "F",
+      "institutional": true,
+      "lead": "Blackstar Investco LLC (Daimler) and Al Wahada Capital Investment LLC (Aabar)",
+      "amountRaisedUsd": 82500002,
+      "valuationUsd": 688900000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "The last private round: 27,785,263 shares at $2.9692 to just three accredited investors, $82,500,002. Daimler had sold part of its stake to Abu Dhabi's Aabar the month before, and both bought here. Post-money is $2.9692 against the 2009-09-30 as-converted total of 232,001,122 shares \u2014 208,917,237 preferred, adjusted upward by 1,760,709 for the Series C conversion ratio, plus 21,323,176 common. That total reconciles to the pro forma common stock line on the S-1 balance sheet (232 thousand dollars at $0.001 par) to within 0.0005%, which is the tightest check available on any figure in this shard. Cumulative preferred and convertible-note financings through 2009-12-31 came to $319.2M.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": true
+    },
+    {
+      "id": "2010-07-toyota-placement",
+      "date": "2010-07-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Toyota private placement",
+      "institutional": true,
+      "lead": "Toyota Motor Corporation",
+      "amountRaisedUsd": 50000000,
+      "valuationUsd": null,
+      "note": "Not a pre-IPO round: 2,941,176 common shares to Toyota at the $17.00 IPO price on 2010-07-02, three days after the offering, for $50.0M. Recorded because it is routinely listed among Tesla's funding rounds, but a private placement into an already-public company is a purchase at the market price rather than a private mark, and the public series already covers this date. Not plotted.",
+      "sourceRefs": [
+        1
+      ],
+      "plot": false
+    },
+    {
+      "id": "2010-11-panasonic-placement",
+      "date": "2010-11-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Panasonic private placement",
+      "institutional": true,
+      "lead": "Panasonic Corporation",
+      "amountRaisedUsd": 30000000,
+      "valuationUsd": null,
+      "note": "Also post-IPO, and also not plotted: 1,418,573 common shares to a Panasonic affiliate at $21.148 on 2010-11-02, for $30.0M, priced off a trailing average of the market price. Both this and the Toyota placement are strategic supplier and partner investments rather than venture rounds.",
+      "sourceRefs": [
+        1
+      ],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Every private figure here comes from the Form S-1 filed 2010-01-29 \u2014 the preferred-stock note, the balance sheet, the related-party financing tables and Item 15's list of unregistered sales \u2014 plus the FY2010 10-K for the two post-IPO placements. The floor test does real work on this company: the Series A and Series B were both led by Elon Musk as an individual, so the plotted line starts at the May 2006 Series C under VantagePoint rather than at the 2004 Series A, and the first two rounds are recorded with amounts but no valuation and no vertex. Prices per share are exact; post-money figures are price times an as-converted share count assembled from filing balance sheets, so all four are soft. Two splits, 5:1 in 2020 and 3:1 in 2022, are both derived correctly by the pipeline from clean jumps in the SEC cover-page series. CROSS-CHECK WARNING, and it is not a split problem: the computed series diverges 6.81% from companiesmarketcap at 2025-12-31 and 6.21% at 2024-12-31, in opposite directions, because companiesmarketcap's Tesla figures for both years disagree with Nasdaq Data Link and with Tesla's own filings. For 2024 the computed $1.299T matches Nasdaq's $1.30T while companiesmarketcap prints $1.385T. For 2025 the computed $1.687T is the one the filings support \u2014 Tesla's audited FY2025 balance sheet reports 3,751,000,000 shares outstanding at 2025-12-31, up from 3,324,000,000 at 2025-09-30, and both Nasdaq's $1.50T and companiesmarketcap's $1.580T are computed on pre-issuance share counts. The regression checkpoint is deliberately placed at 2024-12-31, where the computation is independently corroborated, rather than at the contested 2025 year end.",
+  "unresolved": [
+    "Whether Valor Equity Partners or Elon Musk led the February 2005 Series B. The answer decides whether the plotted line should start in 2005 rather than 2006, and the available accounts contradict each other.",
+    "Post-money valuations for the 2004 Series A and 2005 Series B. Both need a common share count for 2004-2005, and no filing reaches back before the 2007-12-31 balance sheet.",
+    "The exact closing date of the Series A \u2014 Wikipedia says February 2004, other accounts say April 2004, and the S-1's Item 15 only covers sales since 2006-01-01.",
+    "companiesmarketcap's Tesla annual figures for 2024 and 2025 are irreconcilable with both Nasdaq Data Link and Tesla's audited share counts, which makes it an unreliable arbiter for this ticker and causes the build's cross-check to fail."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Tesla Motors, Inc. Form S-1, filed 2010-01-29",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000119312510017054/ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Tesla Motors, Inc. Form 10-K for fiscal year 2010, filed 2011-03-03",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000119312511054847/d10k.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Tesla, Inc.",
+      "url": "https://en.wikipedia.org/wiki/Tesla,_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Tesla, Inc. XBRL company facts, CIK 0001318605",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001318605.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Tesla (TSLA) market cap history",
+      "url": "https://stockanalysis.com/stocks/tsla/market-cap/",
+      "type": "database"
+    }
+  ]
+}

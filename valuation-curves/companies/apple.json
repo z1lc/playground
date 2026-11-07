@@ -1,0 +1,186 @@
+{
+  "slug": "apple",
+  "name": "Apple",
+  "cohort": "mega-cap",
+  "colorSlot": 3,
+  "dashSlot": 0,
+  "status": "public",
+  "founded": "1976-04-01",
+  "foundedPrecision": "day",
+  "foundedBasis": "partnership",
+  "foundedNote": "The Apple Computer Company partnership was formed 1976-04-01 by Steve Jobs, Steve Wozniak and Ronald Wayne. Apple Computer, Inc. was incorporated in Cupertino, California on 1977-01-03. This chart clocks from the earliest formal founding, so t=0 is the 1976 partnership — nine months before the incorporation.",
+  "public": {
+    "ticker": "AAPL",
+    "cik": "0000320193",
+    "cmcSlug": "apple",
+    "ipoDate": "1980-12-12",
+    "publicFrom": "1980-12-12",
+    "sharesTag": "auto",
+    "annualOverrides": [
+      {
+        "date": "1980-12-12",
+        "capUsd": 1778000000,
+        "sourceRefs": [2],
+        "note": "IPO day. 4.6M shares priced at $22.00; closed at $28.75 (the widely repeated '$29' is wrong by 0.9%). Back-solves to ~61.8M shares outstanding, consistent with every other early-1980s figure."
+      },
+      {
+        "date": "1980-12-31",
+        "capUsd": 2110000000,
+        "sourceRefs": [3],
+        "note": "Year-end price $34.13 on the back-solved IPO share count. Lowest-confidence figure in the series — no free source publishes Apple market cap for 1980-1984."
+      },
+      {
+        "date": "1985-12-31",
+        "capUsd": 1360000000,
+        "sourceRefs": [3],
+        "note": "Matches finhacker.cz's $1.359B. This is the earliest row finhacker publishes — the table has no pre-1985 data at all."
+      },
+      {
+        "date": "1986-12-31",
+        "capUsd": 2537000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Pre-dates the June 1987 2:1 split, so this sits on a ~62M-share basis while later years sit on ~120M; the cap is split-agnostic and the 1986-to-1987 move is a real +108% year, not a split artifact."
+      },
+      {
+        "date": "1987-12-31",
+        "capUsd": 5273000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Brackets the October 1987 crash correctly — the table shows $7.123B at Sep 30, $4.870B at Oct 30, recovering to $5.273B at year end."
+      },
+      {
+        "date": "1988-12-30",
+        "capUsd": 4941000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Last trading day of 1988; Dec 31 fell on a Saturday."
+      },
+      {
+        "date": "1989-12-29",
+        "capUsd": 4450000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Last trading day of 1989; Dec 31 fell on a Sunday."
+      },
+      {
+        "date": "1990-12-31",
+        "capUsd": 4910000000,
+        "sourceRefs": [3],
+        "note": "Price verified; share count from finhacker.cz with no primary source behind it."
+      },
+      {
+        "date": "1991-12-31",
+        "capUsd": 6679000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Series peak for the pre-1996 era."
+      },
+      {
+        "date": "1992-12-31",
+        "capUsd": 7042000000,
+        "sourceRefs": [3],
+        "note": "finhacker.cz. Apple's highest year-end market cap until 1999."
+      },
+      {
+        "date": "1993-12-31",
+        "capUsd": 3408000000,
+        "sourceRefs": [3, 6],
+        "note": "finhacker.cz, cross-checked against SEC. The Q1 FY1994 10-Q cover states 117,242,991 shares outstanding as of 1994-01-21; finhacker's figure implies a $29.07 close, which is 29 1/8 to within 0.2% — a real NASDAQ eighth-tick. Confirms the unadjusted ~117M-share basis, not a split-adjusted one. The -52% year is the Sculley-era collapse and is genuine."
+      },
+      {
+        "date": "1994-12-30",
+        "capUsd": 4663000000,
+        "sourceRefs": [3, 5],
+        "note": "finhacker.cz, cross-checked against SEC. The FY1994 10-K cover states 119,891,418 shares outstanding as of 1994-12-02; finhacker's figure implies a $38.89 close, which is 38 7/8 to within 0.05%. The same cover reports $4,193,708,403 of nonaffiliate voting stock at 1994-12-02, a hard floor on total cap that sits just under finhacker's Nov 30 ($4.453B) and Dec 30 ($4.663B) rows at a ~93% nonaffiliate fraction. Last trading day of 1994; Dec 31 fell on a Saturday."
+      },
+      {
+        "date": "1995-12-29",
+        "capUsd": 3920000000,
+        "sourceRefs": [4],
+        "note": "Computed from the FY1995 10-K cover figure of 123,022,624 shares at the $31.87 close. Independently validated finhacker.cz to 0.08%."
+      }
+    ],
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 3996000000000, "tolPct": 0.5 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1977-01-markkula",
+      "date": "1977-01-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Mike Markkula angel investment",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 92000,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor (an angel cheque, not an institutional round) and recorded but never plotted. The valuation is genuinely unresolvable: Wikipedia's figures imply ~$308K-$354K post-money for 26% ownership, while multiple secondary sources say one-third ownership at roughly $750,000. Sources also disagree on whether it closed in 1976 or 1977, and on whether the amount was $80K, $92K, or the $250K that conflates the equity with a Bank of America credit line.",
+      "sourceRefs": [1],
+      "plot": false
+    },
+    {
+      "id": "1978-01-venrock",
+      "date": "1978-01-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "First institutional round",
+      "institutional": true,
+      "lead": "Venrock",
+      "amountRaisedUsd": 517500,
+      "valuationUsd": 5200000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "estimate",
+      "note": "Venrock $288K, Sequoia $150K and Arthur Rock $57.6K at $0.09/share. Derived from Rock's well-documented 640,000 shares for ~$57,600, which is a genuine arithmetic cross-check, but the post-money is an inference from the share price rather than a reported figure — trust it to about ±20%.",
+      "sourceRefs": [0, 1],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Apple's first two decades rest on the thinnest sourcing in this dataset. 1985-1995 exists only on finhacker.cz, a personal blog that compiles from EDGAR, Bloomberg and Yahoo Finance and explicitly disclaims accuracy — so every figure it supplies is single-sourced. Three independent SEC cross-checks now sit under that series and all three land within 0.2%: the FY1995 10-K (123,022,624 shares at 1995-12-01) validates 1995 to 0.08%, the FY1994 10-K (119,891,418 shares at 1994-12-02) validates 1994 to 0.05%, and the Q1 FY1994 10-Q (117,242,991 shares at 1994-01-21) validates 1993 to 0.2%. In each case finhacker's implied close lands on a real NASDAQ eighth-tick, which confirms the whole table is on an unadjusted ~120M-share basis rather than being scaled by Apple's 224x cumulative split factor. 1980-1984 remains genuinely unsourceable: finhacker's table begins at 1985 and Apple's earliest EDGAR filing of any type is a 10-Q dated 1994-01-26, so no document covers the interval. macrotrends.net ranks first in search for these queries and returns HTTP 402; any citation of it is unread.",
+  "unresolved": [
+    "Annual market cap for 1981-1984 — deliberately left empty, not merely missing. finhacker.cz's table starts at 1985 and Apple filed nothing with the SEC before 1994, so neither available source reaches these years. Filling them would require interpolation or a guessed share count, both of which are worse than the gap. Resolving this needs a paid or offline source: CRSP, a scanned Apple annual report for FY1981-FY1984, or contemporaneous newspaper stock tables.",
+    "1980-12-31 remains the lowest-confidence plotted figure in the series — it is back-solved from the IPO share count and a year-end price, with no tabular source behind it.",
+    "The Markkula investment's valuation and even its year are contradicted across every available source."
+  ],
+  "sources": [
+    {
+      "outlet": "Wikipedia",
+      "title": "Apple Inc.",
+      "url": "https://en.wikipedia.org/wiki/Apple_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Mike Markkula",
+      "url": "https://en.wikipedia.org/wiki/Mike_Markkula",
+      "type": "reference"
+    },
+    {
+      "outlet": "AppleInsider",
+      "title": "Apple Inc. stock IPO created 300 millionaires 33 years ago today",
+      "url": "https://appleinsider.com/articles/13/12/12/apple-inc-stock-ipo-created-300-millionaires-33-years-ago-today",
+      "type": "press"
+    },
+    {
+      "outlet": "finhacker.cz",
+      "title": "Apple market cap 1985-2026",
+      "url": "https://www.finhacker.cz/en/stocks/apple-market-cap/",
+      "type": "database"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Apple Computer, Inc. Form 10-K, FY1995",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/0000320193-95-000016.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Apple Computer, Inc. Form 10-K, FY1994 (filed 1994-12-13)",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/0000320193-94-000016.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Apple Computer, Inc. Form 10-Q for the quarter ended 1993-12-31 (filed 1994-01-26)",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/0000320193-94-000002.txt",
+      "type": "filing"
+    }
+  ]
+}

@@ -1,0 +1,593 @@
+{
+  "slug": "stripe",
+  "name": "Stripe",
+  "cohort": "fintech",
+  "colorSlot": 0,
+  "dashSlot": 0,
+  "status": "private",
+  "founded": "2010-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Stripe and Wikipedia both date the company to 2010; no incorporation date is publicly retrievable (Delaware's registry is captcha-gated and OpenCorporates is behind a bot challenge). The 2009-vs-2010 question is genuinely contested: Y Combinator lists Stripe as a Summer 2009 company on both its directory page and its own 2012 blog post ('Stripe (YC S09)'), and VatorNews says the first lines of code were written in October 2009 with a $20-30K YC cheque landing in January 2010, while Stripe's own materials and Wikipedia say 2010. Stripe's SEC Form D exposes the corporate lineage that secondary sources miss: the issuerPreviousNameList records the company as formerly 'HGSC, Inc.' and then 'SlashDevSlashFinance Inc.' before becoming Stripe, Inc. — the Delaware-legal spelling of the original /dev/payments, renamed because Delaware forbids a leading slash in a corporate name. The same filing (November 2016) reports year of incorporation as 'over five years ago', which only bounds it to before December 2011. Dated to the year rather than inventing a month.",
+  "events": [
+    {
+      "id": "2010-yc",
+      "date": "2010-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Y Combinator accelerator investment",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor — an accelerator cheque, not an institutional round — so recorded but never plotted. VatorNews reports roughly $20,000-$30,000 from Y Combinator in January 2010, taken without the Collisons participating in the batch or demo day; the amount is a range, so no figure is emitted. Y Combinator's own directory nonetheless labels Stripe a Summer 2009 company.",
+      "sourceRefs": [16, 21],
+      "plot": false
+    },
+    {
+      "id": "2011-03-seed",
+      "date": "2011-03-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$2M seed round",
+      "charterSeries": null,
+      "nameConflict": "Wikipedia calls this the Series A; most outlets call it the seed.",
+      "institutional": true,
+      "lead": "Sequoia Capital and Andreessen Horowitz (no single lead consistently reported)",
+      "amountRaisedUsd": 2000000,
+      "valuationUsd": 20000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The first round with named venture firms in it — Sequoia Capital, Andreessen Horowitz and SV Angel alongside Peter Thiel and Elon Musk — but no outlet designates a single lead, and some credit Thiel with leading. The date is contested: Silicon Republic and Crunchbase say March 2011, VatorNews says summer 2010, Wikipedia says May 2011; dated to March 2011 at month precision. The $20M valuation appears only in retrospective secondary write-ups with no primary attribution, hence soft. No Form D exists — Stripe's first SEC filing is from November 2016.",
+      "sourceRefs": [16, 17],
+      "plot": true
+    },
+    {
+      "id": "2012-02-series-a",
+      "date": "2012-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$18M Series A",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 18000000,
+      "valuationUsd": 100000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Sequoia wrote $17M of the $18M. The $100M figure was first carried by Bloomberg ('Stripe Said to Get Funding Valuing Startup at $100 Million', 2012-02-09) and VentureBeat, both sourced to people familiar rather than to the company; neither page could be loaded here, so the figure is recorded from Silicon Republic's and VatorNews' retrospectives and marked soft. Neither pre- nor post-money is stated anywhere.",
+      "sourceRefs": [17, 16],
+      "plot": true
+    },
+    {
+      "id": "2012-07-series-b",
+      "date": "2012-07-09",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$20M Series B",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "General Catalyst",
+      "amountRaisedUsd": 20000000,
+      "valuationUsd": null,
+      "note": "A complete record with an honest gap. No post-money was ever disclosed: TechCrunch and Y Combinator both said only that the valuation was 'in the hundreds of millions, up to a half-billion dollars', and did not say whether that was pre- or post-money. The $500M figure repeated by aggregators is the top of that range, not a reported number, so nothing is plotted. Redpoint joined as a new investor; Sequoia, Peter Thiel, Chris Dixon, Aaron Levie and Elad Gil also participated.",
+      "sourceRefs": [18, 19],
+      "plot": false
+    },
+    {
+      "id": "2014-01-series-c",
+      "date": "2014-01-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$80M Series C",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 80000000,
+      "valuationUsd": 1750000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Khosla Ventures, Sequoia Capital and Allen & Co. also participated. TechCrunch's URL slug still reads '1-25b-valuation' because the story was published on a $1.25B figure and then corrected in place to $1.75B post-money; the body carries $1.75B. Single fetched outlet, so soft.",
+      "sourceRefs": [20],
+      "plot": true
+    },
+    {
+      "id": "2014-12-thrive",
+      "date": "2014-12-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$70M round",
+      "charterSeries": null,
+      "nameConflict": "Variously labelled Series C-1 and a Series C extension; no series letter was announced.",
+      "institutional": true,
+      "lead": "Thrive Capital",
+      "amountRaisedUsd": 70000000,
+      "valuationUsd": 3500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Thrive's Will Gaybrick wrote $30M of the $70M, the largest single cheque Thrive had written at the time; he later became Stripe's CFO and appears as an executive officer on Stripe's 2016 Form D. Sequoia, General Catalyst, Founders Fund and Khosla Ventures followed on. TechCrunch and Forbes independently report $3.5B post-money.",
+      "sourceRefs": [22, 23],
+      "plot": true
+    },
+    {
+      "id": "2015-07-visa",
+      "date": "2015-07-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$5B round with Visa investment",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Visa (alongside Kleiner Perkins, Sequoia Capital and American Express)",
+      "amountRaisedUsd": null,
+      "valuationUsd": 5000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The amount is genuinely undisclosed. Stripe would say only that it was 'less than $100 million'; the round-number '$100M' that circulates in aggregator tables is a ceiling being reported as a figure, so amountRaisedUsd is left null. Visa also announced a commercial partnership at the same time. Single fetched outlet for the $5B, and pre-vs-post is unstated.",
+      "sourceRefs": [24],
+      "plot": true
+    },
+    {
+      "id": "2016-11-series-d",
+      "date": "2016-11-25",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$150M Series D",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "CapitalG and General Catalyst (co-led)",
+      "amountRaisedUsd": 150000000,
+      "valuationUsd": 9200000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "TechCrunch reports $9B pre-money and $9.2B post-money; the widely repeated '$9B' is the pre. This is the first Stripe round with an SEC Form D behind it: first sale 2016-11-22 for $141,000,010 sold, followed by a second Form D with first sale 2016-12-08 for $16,000,000, i.e. about $157M actually placed against the $150M announced. Stripe also arranged a $250M revolving credit facility with J.P. Morgan, Goldman Sachs, Morgan Stanley and Barclays that it was under no obligation to draw. Single fetched outlet for the valuation, so soft.",
+      "sourceRefs": [25, 1, 0],
+      "plot": true
+    },
+    {
+      "id": "2018-09-series-e",
+      "date": "2018-09-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$245M Series E",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Tiger Global Management",
+      "amountRaisedUsd": 245000000,
+      "valuationUsd": 20000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D corroborates the amount exactly: first sale 2018-09-21, $245,000,011 sold. DST Global and Sequoia came in as new investors alongside existing backers Andreessen Horowitz, Kleiner Perkins, Khosla Ventures, General Catalyst and Thrive Capital. John Collison at the time: 'We have no plans to go public.' Single fetched outlet for the valuation.",
+      "sourceRefs": [26, 2],
+      "plot": true
+    },
+    {
+      "id": "2019-01-tiger",
+      "date": "2019-01-29",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$100M follow-on from Tiger Global",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Tiger Global Management",
+      "amountRaisedUsd": 100000000,
+      "valuationUsd": 22500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Outlets disagree on the second decimal: SiliconANGLE, relaying The Information, headlines $22B, while PYMNTS and CNBC say $22.5B. The higher, more specific and more widely carried figure is used and the disagreement recorded here. Form D corroborates the amount: first sale 2019-01-25, $100,000,016 sold. Pre- or post-money is unstated.",
+      "sourceRefs": [27, 28, 3],
+      "plot": true
+    },
+    {
+      "id": "2019-09-series-g",
+      "date": "2019-09-19",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$250M Series G",
+      "charterSeries": "G",
+      "nameConflict": "Announced as Series G with no public Series F; the missing letter has never been explained.",
+      "institutional": true,
+      "lead": "Sequoia Capital, Andreessen Horowitz and General Catalyst (co-led)",
+      "amountRaisedUsd": 250000000,
+      "valuationUsd": 35000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The two best sources contradict each other on basis: Orrick, which acted as Stripe's counsel on the financing, describes $35B as post-money, while TechCrunch's April 2020 follow-up says Stripe 'confirmed a $35 billion pre-money valuation seven months ago'. Recorded as unspecified rather than picking a side. Form D corroborates the amount exactly: first sale 2019-09-23, $250,000,000 sold.",
+      "sourceRefs": [29, 30, 4],
+      "plot": true
+    },
+    {
+      "id": "2020-04-series-g-ext",
+      "date": "2020-04-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$600M Series G extension",
+      "charterSeries": "G",
+      "institutional": true,
+      "lead": "Andreessen Horowitz, General Catalyst, GV and Sequoia Capital (no single lead named)",
+      "amountRaisedUsd": 600000000,
+      "valuationUsd": 36000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D shows $631,000,030 actually sold with first sale 2020-03-25, against the $600M announced three weeks later. Stripe said it had roughly $2B on its balance sheet at the time. Single fetched outlet for the valuation.",
+      "sourceRefs": [30, 5],
+      "plot": true
+    },
+    {
+      "id": "2021-03-series-h",
+      "date": "2021-03-14",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$600M Series H",
+      "charterSeries": "H",
+      "institutional": true,
+      "lead": "Allianz X, Axa, Baillie Gifford, Fidelity and Sequoia Capital (no single lead named)",
+      "amountRaisedUsd": 600000000,
+      "valuationUsd": 95000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ireland's National Treasury Management Agency also participated — an unusual sovereign investor, reflecting Stripe's Dublin roots and the round's stated purpose of funding European expansion. Form D shows $597,775,910 sold with first sale 2021-03-15. This $95B stood as Stripe's high-water mark for four and a half years, until the September 2025 buyback.",
+      "sourceRefs": [31, 32, 6],
+      "plot": true
+    },
+    {
+      "id": "2023-03-series-i",
+      "date": "2023-03-15",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$6.87B Series I",
+      "charterSeries": "I",
+      "institutional": true,
+      "lead": "Andreessen Horowitz, Founders Fund, General Catalyst, MSD Partners and Thrive Capital (existing), with GIC, Goldman Sachs Asset & Wealth Management and Temasek new",
+      "amountRaisedUsd": 6869866984,
+      "valuationUsd": 50000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "A genuine down round: $95B post in March 2021 to $50B post here, a 47% cut. It was not a distress raise — Stripe said explicitly that it 'does not need this capital to run its business'. The purpose was to settle employee withholding tax on expiring RSUs, so the shares retired to fund that settlement offset the new shares issued to Series I investors. The interim marks tell the same story: Contrary records internal 409A revisions to about $74B in July 2022 and about $63B in January 2023, and TechCrunch reported in January 2023 that Stripe had tried and failed to raise at $55-60B. The press figure is '$6.5 billion'; the amount here is the SEC Form D/A total actually sold ($6,869,866,984, first sale 2023-03-15, amending an original Form D of $6,131,843,800).",
+      "sourceRefs": [33, 7, 34, 32],
+      "plot": true
+    },
+    {
+      "id": "2024-02-tender-65b",
+      "date": "2024-02-28",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Employee tender offer at $65B",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 694159778,
+      "valuationUsd": 65000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "tender",
+      "note": "Company-sponsored, announced on Stripe's own newsroom, so it is a real transaction price rather than a platform mark. Sequoia Capital led the buy side with Goldman Sachs Growth Equity participating; Stripe used some of its own capital to repurchase shares and offset employee-equity dilution. The amount is the Form D total for the share sale that funded it: $694,159,778 sold, first sale 2024-04-08.",
+      "sourceRefs": [9, 8],
+      "plot": true
+    },
+    {
+      "id": "2024-07-sequoia-lp",
+      "date": "2024-07-15",
+      "datePrecision": "day",
+      "kind": "secondary_mark",
+      "roundName": "Sequoia LP redemption offer at the $70B 409A",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 70000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "secondary",
+      "note": "Recorded but never plotted. Sequoia offered to buy up to $861M of Stripe shares from the LPs of its own 2009-2011 vintage funds, using newer Sequoia funds as the buyer. Stripe was neither the buyer nor the seller — this is a fund-level secondary priced off Stripe's then-current $70B 409A, not a company-run tender, so it is not a vertex. Sequoia valued its whole Stripe position at $9.8B in the same letter.",
+      "sourceRefs": [15],
+      "plot": false
+    },
+    {
+      "id": "2024-11-buyback-70b",
+      "date": "2024-11-22",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Company share buyback at $70B",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 70000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Stripe itself buying shares back from insiders and some former employees at $27.51 per share, which Bloomberg puts at roughly $70B — the same mark as the mid-2024 409A. Unlike the February and later tenders, Stripe never published a newsroom post for this one; it rests on a single Bloomberg report of 'hundreds of millions of dollars' changing hands, with Stripe declining to comment, so it is soft and the size is left null.",
+      "sourceRefs": [14],
+      "plot": true
+    },
+    {
+      "id": "2025-02-tender-91b",
+      "date": "2025-02-27",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Employee tender offer at $91.5B",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 91500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "tender",
+      "note": "Announced on Stripe's newsroom: investors bought from current and former employees and Stripe repurchased alongside them. Stripe named no investors and disclosed no size. Announced with 2024 total payment volume of $1.4T, up 38%. Company-sponsored, hence a plotted point; the valuation is confirmed but a tender price, not a primary round post-money.",
+      "sourceRefs": [10],
+      "plot": true
+    },
+    {
+      "id": "2025-09-buyback-107b",
+      "date": "2025-09-01",
+      "datePrecision": "month",
+      "kind": "tender_offer",
+      "roundName": "Share buyback from venture investors at $106.7B",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 106700000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "The mark that finally cleared the 2021 peak. Reported in late September 2025 by Bloomberg and Axios as a buyback of venture investors' shares that was still in negotiation — PYMNTS confirmed the $106.7B figure with a person familiar but described the size as undecided. Stripe never published a newsroom post for it. It is treated as completed because CNBC and Crunchbase News, covering the February 2026 tender, both describe $106.7B as the valuation Stripe 'secured' in 2025 and measure the $159B against it. Dated to the month, since the reports describe talks rather than a closing date. Soft on both counts.",
+      "sourceRefs": [12, 13],
+      "plot": true
+    },
+    {
+      "id": "2026-02-tender-159b",
+      "date": "2026-02-24",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Employee tender offer at $159B",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 159000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "tender",
+      "note": "Stripe's current mark and its all-time high, announced alongside the 2025 annual letter: $159B (EUR 135B), up 74% from the February 2025 tender and 49% from the September 2025 buyback. Thrive Capital, Coatue and Andreessen Horowitz supplied most of the money, with Stripe repurchasing shares with its own capital as well. Context in the same letter: $1.9T of 2025 payment volume, up 34% and about 1.6% of global GDP; the Revenue suite on track for a $1B annual run rate in 2026; stablecoin volume roughly doubling to about $400B; and Stripe 'robustly profitable'. Size of the offer not disclosed.",
+      "sourceRefs": [11, 13],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Stripe is the rare private company with a near-complete public valuation history — 11 of 12 priced rounds carry a reported number, far above the usual one-in-five — because it is large enough that every round is a news event and because since 2024 it has published its own tender prices. That completeness is real, but the confidence marks are deliberately conservative: 'confirmed' is used only where Stripe's own newsroom stated the figure or where two independently fetched outlets agreed on it, so several universally repeated numbers ($1.75B, $5B, $9.2B, $20B, $36B) sit at 'soft' because only one source could actually be loaded. SEC Form D is the backbone of the amounts. Stripe's EDGAR history begins in November 2016 (CIK 0001691342) and no Form D exists for any earlier round; from 2016 onward every Form D amount matches or slightly exceeds the announced figure. Four small Form Ds are not recorded as rounds because they have no lead, no valuation and no press coverage, and are most likely acquisition consideration or option-related issuances: first sale 2017-03-15 ($5,050,010 of $5,300,017 offered), 2017-07-19 ($6,215,086), 2018-03-02 ($38,652,942) and 2019-08-27 ($2,000,013). Deliberately excluded: secondary-market platform marks, including Nasdaq Private Market's $67.26/share estimate as of 2026-06-01, which have no disclosed share count and cannot be converted to a company valuation. Also excluded is the July 2022 (~$74B) and January 2023 (~$63B) internal 409A sequence, which Contrary reports but which are appraisals rather than transactions. Stripe has never filed an S-1 and has never IPO'd; as of 2026-08-06 that is still true, with John Collison telling Davos in January 2026 that going public 'isn't one of our top five or ten or twenty priorities'. Stripe's own reported $53B bid for PayPal in 2026 is a use of its equity, not a mark on it, and is not recorded here.",
+  "unresolved": [
+    "Incorporation date. The Form D previous-name chain (HGSC, Inc. to SlashDevSlashFinance Inc. to Stripe, Inc.) proves Delaware incorporation but gives no date; the 2016 Form D says only 'over five years ago'. Delaware's registry is captcha-gated and OpenCorporates is behind a bot challenge.",
+    "Whether Stripe's founding year is 2009 or 2010. Y Combinator labels it S09 in two places and VatorNews dates the first code to October 2009, but Stripe and Wikipedia both say 2010.",
+    "The date of the 2011 seed round: March 2011 (Silicon Republic, Crunchbase), summer 2010 (VatorNews) or May 2011 (Wikipedia).",
+    "The July 2012 Series B post-money. Never disclosed beyond 'hundreds of millions, up to a half-billion dollars'; the $500M in aggregator tables is the top of that range.",
+    "The July 2015 round size. Stripe said only 'less than $100 million'.",
+    "Whether the September 2019 $35B was pre- or post-money: Orrick (Stripe's counsel) says post, TechCrunch says Stripe confirmed it as pre.",
+    "Whether the September 2025 $106.7B buyback actually closed, and at what size. Reported as in-negotiation at the time; later coverage treats it as done, but Stripe never confirmed it."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D filing index (CIK 0001691342)",
+      "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001691342&type=D&dateb=&owner=include&count=40",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2016-11-22, $141,000,010 sold (accession 0001691342-16-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134216000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2018-09-21, $245,000,011 sold (accession 0001691342-18-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134218000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2019-01-25, $100,000,016 sold (accession 0001691342-19-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134219000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2019-09-23, $250,000,000 sold (accession 0001691342-19-000003)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134219000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2020-03-25, $631,000,030 sold (accession 0001691342-20-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134220000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2021-03-15, $597,775,910 sold (accession 0001691342-21-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134221000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D/A, first sale 2023-03-15, $6,869,866,984 sold (accession 0001691342-23-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134223000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Stripe, Inc. Form D, first sale 2024-04-08, $694,159,778 sold (accession 0001691342-24-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1691342/000169134224000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Stripe",
+      "title": "Stripe announces tender offer to provide employee liquidity (February 2024)",
+      "url": "https://stripe.com/newsroom/news/employee-liquidity-feb-2024",
+      "type": "company"
+    },
+    {
+      "outlet": "Stripe",
+      "title": "Stripe announces tender offer to provide liquidity to current and former employees (February 2025)",
+      "url": "https://stripe.com/newsroom/news/employee-liquidity-feb-2025",
+      "type": "company"
+    },
+    {
+      "outlet": "Stripe",
+      "title": "Stripe publishes 2025 annual letter and announces tender offer to provide liquidity to current and former employees",
+      "url": "https://stripe.com/newsroom/news/stripe-2025-update",
+      "type": "company"
+    },
+    {
+      "outlet": "PYMNTS",
+      "title": "Stripe Valuation Reaches Record $106 Billion",
+      "url": "https://www.pymnts.com/news/fintech-investments/2025/stripe-valuation-reaches-record-106-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "Crunchbase News",
+      "title": "Fintech Giant Stripe's Valuation Soars to $159B In Latest Secondary Stock Sale",
+      "url": "https://news.crunchbase.com/fintech/unicorn-stripe-secondary-sale-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Bloomberg Law",
+      "title": "Stripe to Buy Shares in Tender Offer at $70 Billion Valuation",
+      "url": "https://news.bloomberglaw.com/private-equity/stripe-to-buy-shares-in-tender-offer-at-70-billion-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Major Stripe investor Sequoia confirms $70B valuation, offers its investors a payday",
+      "url": "https://techcrunch.com/2024/07/15/major-stripe-investor-sequoia-confirms-70b-valuation-offers-its-investors-a-payday/",
+      "type": "press"
+    },
+    {
+      "outlet": "VatorNews",
+      "title": "When Stripe was young: the early years",
+      "url": "https://vator.tv/2016-12-29-when-stripe-was-young-the-early-years/",
+      "type": "press"
+    },
+    {
+      "outlet": "Silicon Republic",
+      "title": "Collison brothers' Stripe raises a further US$20m in Series B funding",
+      "url": "https://www.siliconrepublic.com/start-ups/collison-brothers-stripe-raises-a-further-us20m-in-series-b-funding",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Sexy Payments Startup Stripe Swipes $20M From General Catalyst, Sequoia, Thiel And More",
+      "url": "https://techcrunch.com/2012/07/09/payments-startup-stripe-swipes-20m-from-general-catalyst-sequoia-thiel-and-more/",
+      "type": "press"
+    },
+    {
+      "outlet": "Y Combinator",
+      "title": "Stripe (YC S09) raises $20M Series B from General Catalyst, Redpoint, now used by over 100,000 developers",
+      "url": "https://www.ycombinator.com/blog/stripe-yc-s09-raises-20m-series-b-from-genera",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Eyeing International Growth, Stripe Raises $80M From Founders Fund, Khosla And Sequoia At A $1.75B Valuation",
+      "url": "https://techcrunch.com/2014/01/22/with-an-eye-to-international-growth-payments-company-stripe-raises-80m-from-peter-thiel-khosla-and-sequoia-at-a-1-25b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Y Combinator",
+      "title": "Stripe: Economic infrastructure for the internet (company directory profile)",
+      "url": "https://www.ycombinator.com/companies/stripe",
+      "type": "reference"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe Raises Another $70 Million, Doubling Its Valuation To $3.5 Billion",
+      "url": "https://techcrunch.com/2014/12/02/stripe-3-5-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "Stripe Raises $70 Million, Valuation Hits $3.5 Billion",
+      "url": "https://www.forbes.com/sites/stevenbertoni/2014/12/02/stripe-raises-70-million-valuation-hits-3-5-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe Lands New Funding At $5B Valuation And Partnership With Visa",
+      "url": "https://techcrunch.com/2015/07/28/stripe-5-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Payments provider Stripe has raised another $150M at a $9B valuation",
+      "url": "https://techcrunch.com/2016/11/25/payments-provider-stripe-has-raised-another-150-at-a-9b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe is now valued at $20B after raising another $245M led by Tiger Global",
+      "url": "https://techcrunch.com/2018/09/26/stripe-is-now-valued-at-20b-after-raising-another-245m-led-by-tiger-global/",
+      "type": "press"
+    },
+    {
+      "outlet": "PYMNTS",
+      "title": "Stripe Raises $100M On A $22.5B Valuation",
+      "url": "https://www.pymnts.com/news/investment-tracker/2019/stripe-venture-capital-funding-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Report: Stripe raises $100M from Tiger Global on $22B valuation",
+      "url": "https://siliconangle.com/2019/01/29/report-stripe-raises-100m-tiger-global-22b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Orrick",
+      "title": "Orrick Advises Stripe on $250 Million Series G Financing at $35 Billion Valuation",
+      "url": "https://www.orrick.com/en/news/2019/10/orrick-advises-stripe-on-250-million-series-g-financing-at-35-billion-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe raises $600M at $36B valuation in Series G extension, says it has $2B on its balance sheet",
+      "url": "https://techcrunch.com/2020/04/16/stripe-raises-600m-at-36b-valuation-in-series-g-extension-says-it-has-2b-on-its-balance-sheet/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe closes $600M round at a $95B valuation",
+      "url": "https://techcrunch.com/2021/03/14/stripe-closes-600m-round-at-a-95b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Stripe, Inc.",
+      "url": "https://en.wikipedia.org/wiki/Stripe,_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Stripe now valued at $50B following $6.5B raise",
+      "url": "https://techcrunch.com/2023/03/15/stripe-now-valued-at-50b-following-6-5b-raise/",
+      "type": "press"
+    },
+    {
+      "outlet": "Contrary Research",
+      "title": "Report: Stripe Business Breakdown & Founding Story",
+      "url": "https://research.contrary.com/report/stripe",
+      "type": "database"
+    }
+  ]
+}

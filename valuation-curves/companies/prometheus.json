@@ -1,0 +1,153 @@
+{
+  "slug": "prometheus",
+  "name": "Prometheus",
+  "cohort": "ai",
+  "colorSlot": 6,
+  "dashSlot": 3,
+  "status": "private",
+  "founded": "2024-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Bezos told CNBC on 2026-06-11 that the company has been working on its goal since late 2024, and that he came in then as a founding investor alongside Vik Bajaj before becoming co-CEO. That is the earliest dated anchor and it comes from a co-founder, but it gives a season rather than a month, so this is dated to the year. Dating it to 2024-01-01 puts t=0 roughly ten months before the work began, which is the known cost of the year-precision rule. WIRED (2025-11-26) instead says Bajaj began working with Bezos on the venture in early 2025, and that its founding date and formal legal name had not been publicly identified. Wikipedia and most secondary accounts say 'founded November 2025', but that is the public reveal (the NYT report of 2025-11-17), not a founding. No incorporation record was found. EDGAR shows no Form D for any 'Prometheus' entity matching this company, and none naming Bezos or Bajaj, and the legal entity name is unknown. The Delaware entity WIRED found, formed by Bajaj in June 2025, was a vehicle to acquire General Agents, not the company's own incorporation.",
+  "events": [
+    {
+      "id": "2025-11-17-first-round",
+      "date": "2025-11-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$6.2B launch round",
+      "charterSeries": null,
+      "nameConflict": "GeekWire calls it the Series A, and The Decoder and other outlets call it seed funding. The FT's April 2026 report describes the later $10B deal as this same round extended because of demand, which blurs any Series A / Series B boundary.",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 6200000000,
+      "valuationUsd": 30000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "BELOW THE INCLUSION FLOOR: recorded but not plotted. This is the same call the Tesla shard makes for Musk's 2004 Series A. No outlet names a lead. GeekWire says Bezos was the round's largest backer. On CNBC, David Faber said Bezos had contributed much of the first round and Bezos agreed. A co-founder personally writing most of the cheque is not a named venture firm leading. The FT names Robert Nelsen (founder of ARCH Venture Partners and a Prometheus director) among the investors, but not as lead, and not clearly as money from an ARCH fund rather than from Nelsen personally. If a firm is ever shown to have led, flip this to institutional and plot it. Valuation: the FT (2026-02-27, citing two people with knowledge of the deal) says the funding valued the business at about $30B 'not including the new investment'. That makes it a pre-money figure, from a single outlet, so it is soft and is not converted to post. Dealroom's ~$30B is the same number without attribution. Dated to the NYT reveal of 2025-11-17, as relayed by The Register and SiliconANGLE. The NYT itself was not readable. The FT says only that the money was raised in November ('late last year').",
+      "sourceRefs": [0, 1, 2, 3, 7, 8],
+      "plot": false
+    },
+    {
+      "id": "2026-04-23-ten-billion-close",
+      "date": "2026-04-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$10B round (interim close)",
+      "charterSeries": null,
+      "nameConflict": "The FT describes this as the November $6.2B round extended. CNBC and GeekWire later present the June $12B as a distinct Series B. Whether this $10B is the Series B at an earlier size or the first round enlarged is unresolved.",
+      "institutional": true,
+      "lead": "JPMorgan and BlackRock among participants (Bloomberg: no lead investor)",
+      "amountRaisedUsd": 10000000000,
+      "valuationUsd": 38000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Not plotted. This is the same raise as the 2026-06-11 point, caught earlier and smaller. A second vertex would present the round growing from $10B to $12B as a markup, and that reading is a guess about the round's mechanics, not a second transaction price. FT (2026-04-20): close to finalising at a $38B valuation including the new money (so post-money), with JPMorgan and BlackRock investing. The FT also says the $10B includes the initial $6.2B raised in November. Bloomberg (2026-04-23, one person familiar, read via its Spanish-language service Bloomberg Linea) reported the round closed at roughly $38B, with no lead investor, and named DST Global and ARCH Venture Partners as the only Silicon Valley-style backers. The two outlets' sourcing is independent and they agree on $38B. eWeek and several aggregators instead read the $10B as new money on top of the $6.2B (total past $16B), which contradicts the FT.",
+      "sourceRefs": [4, 5, 6],
+      "plot": false
+    },
+    {
+      "id": "2026-06-11-series-b",
+      "date": "2026-06-11",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$12B Series B",
+      "charterSeries": null,
+      "nameConflict": "Called the Series B by the company, CNBC and GeekWire. See the April event for the FT's competing account, in which the round is an extension of the November raise.",
+      "institutional": true,
+      "lead": "JPMorgan, BlackRock, Goldman Sachs, DST Global and ARCH Venture Partners (no single lead named)",
+      "amountRaisedUsd": 12000000000,
+      "valuationUsd": 41000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The company announced it on 2026-06-11 alongside the co-CEOs' first joint interview, on CNBC. Faber introduced the Series B as raised to $12B at roughly $41B. Bezos said the Series B had just concluded and that he had invested in it. GeekWire, CNBC and The Next Web all carry $12B / ~$41B. GeekWire's investor list (attributed to Axios) has no lead, consistent with Bloomberg's April report that there was none. The amount is the announced round size. If the FT is right that the April $10B included the November $6.2B, and this is that round grown, then new money is about $5.8B and lifetime funding about $12B, not the 'over $18 billion' The Next Web gets by adding $6.2B and $12B. Neither reading is confirmed. No source labels $41B as pre- or post-money. It is probably post-money by analogy with the FT's April figure, but it is recorded as unspecified. The Next Web calls the move from $38B a 7.9% markup. If the round simply grew by $2B at an unchanged price, most of that rise is new cash rather than repricing.",
+      "sourceRefs": [7, 8, 9, 10],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Prometheus was code-named Project Prometheus until it dropped 'Project' at the June 2026 announcement. It is co-founded and co-run by Jeff Bezos and Vik Bajaj (formerly of Google X and Verily, and founder of Foresite Labs), and is based in San Francisco with offices in London and Zurich. Only one point is plotted. The November 2025 first round is below the floor because Bezos personally was its largest backer and no firm is named as lead. The April 2026 $10B/$38B report is an earlier, smaller close of the raise announced in June at $12B/$41B. Recorded here but excluded from the series: (1) The 'manufacturing transformation vehicle', a separate holding company raising tens of billions to buy industrial businesses. The FT (Feb 2026) reported talks with ADIA and with JPMorgan's Security and Resiliency Initiative, and GeekWire mentions reports of up to $100B. It is an affiliated vehicle, not equity in Prometheus, and no close has been reported. (2) The June 2025 acquisition of General Agents (Sherjil Ozair, William Guss), terms undisclosed. (3) Secondary marks: none found from Hiive, Forge or EquityZen. As of 2026-11-07 no later primary round, tender or Series C has been reported, and in June Bezos said they were not yet thinking about a Series C. Two sources could not be read directly and are cited indirectly: Bloomberg's English original of 2026-04-23 is cited via Bloomberg Linea's Spanish republication, and the NYT launch story via The Register and SiliconANGLE.",
+  "unresolved": [
+    "Legal incorporation date and entity name. EDGAR has no matching Form D, and state registries were not searched because the legal name is unknown.",
+    "Whether the June 2026 $12B Series B is new money on top of the November $6.2B (lifetime ~$18.2B, as The Next Web states) or the November round extended to $12B (lifetime ~$12B, which the FT's April report implies). The FT reading is the more internally consistent one: its ~$30B pre-money for November and $38B post-money on $10B in April imply a roughly constant ~$28-30B pre-money. The additive reading would make the Series B roughly flat-to-down against the first round. But no source settles it.",
+    "Whether the ~$41B is pre- or post-money. No source labels it.",
+    "Whether ARCH Venture Partners invested in the November 2025 round as a firm, or only Robert Nelsen personally, and whether any firm led that round. If a firm led, the round clears the floor and should be plotted at its ~$30B pre-money.",
+    "Exact closing dates. The November round is dated to the NYT reveal, and the Series B to its announcement."
+  ],
+  "sources": [
+    {
+      "outlet": "The Register",
+      "title": "Jeff Bezos gives CEO another go at $6.2B AI startup Prometheus",
+      "url": "https://www.theregister.com/2025/11/17/jeff_bezos_ceo_prometheus/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Report: Startup co-led by Jeff Bezos raises $6.2B to develop 'AI for the physical economy'",
+      "url": "https://siliconangle.com/?p=721535",
+      "type": "press"
+    },
+    {
+      "outlet": "WIRED",
+      "title": "Jeff Bezos' New AI Venture Quietly Acquired an Agentic Computing Startup",
+      "url": "https://www.wired.com/story/jeff-bezos-new-ai-company-acquired-agentic-computing-startup/",
+      "type": "press"
+    },
+    {
+      "outlet": "Financial Times",
+      "title": "Jeff Bezos's $30bn start-up seeks tens of billions to buy industrial companies disrupted by AI",
+      "url": "https://www.ft.com/content/7b1bdc9d-c857-4ec9-91b4-fb4f6dd2e43b",
+      "type": "press"
+    },
+    {
+      "outlet": "Financial Times",
+      "title": "Jeff Bezos's AI lab nears $38bn valuation in funding deal",
+      "url": "https://www.ft.com/content/87ea0ced-bf3c-4822-8dda-437241570ded",
+      "type": "press"
+    },
+    {
+      "outlet": "Bloomberg (via Bloomberg Linea)",
+      "title": "Laboratorio de IA de Bezos capta US$10.000 millones y alcanza valuacion de US$38.000 millones",
+      "url": "https://www.bloomberglinea.com/negocios/laboratorio-de-ia-de-bezos-capta-us10000-millones-y-alcanza-valuacion-de-us38000-millones/",
+      "type": "press"
+    },
+    {
+      "outlet": "eWeek",
+      "title": "Jeff Bezos' AI Startup Nears $10B Funding Deal at $38B Valuation",
+      "url": "https://www.eweek.com/news/jeff-bezos-ai-startup-funding-project-prometheus/",
+      "type": "press"
+    },
+    {
+      "outlet": "GeekWire",
+      "title": "Bezos' AI startup Prometheus raises $12B at $41B valuation, and the CEOs explain what they're doing",
+      "url": "https://www.geekwire.com/2026/bezos-ai-startup-prometheus-raises-12b-at-41b-valuation-and-the-ceos-explain-what-theyre-doing/",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Transcript: Prometheus Co-Founders and Co-CEOs Jeff Bezos and Vik Bajaj Speak with CNBC's David Faber on 'Squawk on the Street'",
+      "url": "https://www.cnbc.com/2026/06/11/cnbc-exclusive-transcript-prometheus-co-founders-and-co-ceos-jeff-bezos-and-vik-bajaj-speak-with-cnbcs-david-faber-on-squawk-on-the-street-today.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Jeff Bezos and Vik Bajaj open up about Prometheus",
+      "url": "https://www.cnbc.com/2026/06/11/project-prometheus-bezos-bajaj-live-updates.html",
+      "type": "press"
+    },
+    {
+      "outlet": "The Next Web",
+      "title": "Bezos's Prometheus raises $12 billion at $41 billion valuation to build AI that engineers physical products",
+      "url": "https://thenextweb.com/news/bezos-prometheus-ai-41-billion-valuation-12b-raise",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Project Prometheus (company)",
+      "url": "https://en.wikipedia.org/wiki/Project_Prometheus_(company)",
+      "type": "reference"
+    }
+  ]
+}

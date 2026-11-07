@@ -1,0 +1,425 @@
+{
+  "slug": "openai",
+  "name": "OpenAI",
+  "cohort": "ai",
+  "colorSlot": 3,
+  "dashSlot": 1,
+  "status": "private",
+  "founded": "2015-12-08",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "OpenAI, Inc. was incorporated in Delaware as a non-stock, non-profit corporation on 2015-12-08 — the Certificate of Incorporation is reproduced as an exhibit to Musk v. Altman and is signed 'Executed on December 8, 2015'. The commonly cited founding date is 2015-12-11, the day the lab was announced publicly with roughly $1B in pledged donations from Elon Musk, Sam Altman, Greg Brockman, Reid Hoffman, Peter Thiel, Jessica Livingston, Amazon Web Services, Infosys and YC Research; the incorporation is three days earlier and is a filing, so it is used here. The non-profit had no equity and no valuation. In March 2019 OpenAI created OpenAI LP, a 'capped-profit' partnership controlled by the non-profit board, whose investors' returns were contractually capped (100x for the first round, lower thereafter) — that is the entity every pre-2025 'valuation' below is priced against. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with ordinary equity, still controlled by the renamed OpenAI Foundation; Delaware's Attorney General completed her review the same day and did not object.",
+  "events": [
+    {
+      "id": "2019-03-11-openai-lp-seed",
+      "date": "2019-03-11",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "OpenAI LP founding investment",
+      "charterSeries": null,
+      "nameConflict": "Never given a series letter. Sometimes called the 2019 seed.",
+      "institutional": true,
+      "lead": "Khosla Ventures",
+      "amountRaisedUsd": 50000000,
+      "valuationUsd": null,
+      "note": "The inclusion floor: Vinod Khosla said on stage that Khosla Ventures wrote a $50M cheque into OpenAI in 2019 as 'its very first VC investor'. Reid Hoffman's charitable foundation is also named as an initial OpenAI LP investor. The $50M is Khosla's portion only — the total round size was never disclosed, and neither was a valuation. What was bought was a capped-profit LP interest, not preferred stock: OpenAI's own announcement says first-round returns are capped at 100x. Third-hand valuation claims circulate (a podcast-sourced '$50M for 10%', implying ~$500M, and an unattributed '$1B') and are irreconcilable, so no valuation is recorded.",
+      "sourceRefs": [0, 1],
+      "plot": false
+    },
+    {
+      "id": "2019-07-22-microsoft-1b",
+      "date": "2019-07-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Microsoft $1B investment",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Microsoft",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": null,
+      "note": "Microsoft's press release states 'an investment of $1 billion from Microsoft' alongside an exclusive Azure computing partnership; TechCrunch reports roughly half of it took the form of Azure credits rather than cash. No valuation was disclosed then or since. Structured as capped-profit units in OpenAI LP, so there is no ordinary post-money to record.",
+      "sourceRefs": [2, 3],
+      "plot": false
+    },
+    {
+      "id": "2021-microsoft-2b",
+      "date": "2021-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Microsoft follow-on investment",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Microsoft",
+      "amountRaisedUsd": 2000000000,
+      "valuationUsd": null,
+      "note": "Never announced by either party. TechCrunch, citing the New York Times, reports Microsoft 'invested an additional $2 billion in OpenAI between 2019 and early 2023'; Semafor's January 2023 piece says only that 'Microsoft previously invested in the company in 2019 and 2021'. Epoch AI's dataset places it at 2021-03-15 on the strength of an NYT report and the UK CMA merger-inquiry record, but nothing I could read pins a month, so this is dated to the year. The $2B is single-source and approximate; no valuation exists.",
+      "sourceRefs": [3, 4, 5],
+      "plot": false
+    },
+    {
+      "id": "2021-tender-14b",
+      "date": "2021-01-01",
+      "datePrecision": "year",
+      "kind": "tender_offer",
+      "roundName": "2021 employee tender offer",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Sequoia Capital and Tiger Global Management (reported buyers)",
+      "amountRaisedUsd": null,
+      "valuationUsd": 14000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "A secondary tender in which existing holders sold to outside funds — proceeds went to selling shareholders, not to OpenAI, and the size was never reported. The $14B figure comes from WSJ reporting relayed by Crunchbase News in January 2023: 'the $14 billion valuation set during OpenAI's most recent tender offer, in 2021'. OpenAI never confirmed it and no month was ever published, so this is dated to the year. First point on the line: everything earlier is a real event with no disclosed price.",
+      "sourceRefs": [6],
+      "plot": true
+    },
+    {
+      "id": "2022-secondary-20b",
+      "date": "2022-01-01",
+      "datePrecision": "year",
+      "kind": "secondary_mark",
+      "roundName": "Undated secondary sale",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 20000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "secondary",
+      "note": "Crunchbase News, relaying WSJ, wrote in January 2023 that 'more recently, it was valued at $20 billion via a secondary sale'. No date, no size, no counterparties and no company confirmation were ever published — the date is only bounded to somewhere between the 2021 tender and January 2023, and 2022-01-01 is a placeholder for ordering. Recorded so the research survives; never plotted.",
+      "sourceRefs": [6],
+      "plot": false
+    },
+    {
+      "id": "2023-01-23-microsoft-10b",
+      "date": "2023-01-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Microsoft multiyear investment (reported ~$10B)",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Microsoft",
+      "amountRaisedUsd": 10000000000,
+      "valuationUsd": null,
+      "note": "OpenAI and Microsoft announced a 'multi-year, multi-billion dollar investment' with no figure attached; Semafor had reported earlier that month that the number under discussion was $10B. The often-repeated '$29 billion valuation' traces to the same reporting — TechCrunch's wording is 'sources previously reported that Microsoft was looking to net a 49% stake in OpenAI, valuing the company at around $29 billion' — and describes a negotiating posture, not a priced round. The deal bought capped-profit units with a profit waterfall (Microsoft reportedly taking 75% of profits until it recouped, then 49% of the entity), and Bloomberg reported much of the value was Azure compute rather than cash, so an ordinary post-money is not defined. No valuation recorded; not plotted.",
+      "sourceRefs": [3, 4, 5],
+      "plot": false
+    },
+    {
+      "id": "2023-04-28-tender-29b",
+      "date": "2023-04-28",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "$300M tender offer",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Thrive Capital, Sequoia Capital, Andreessen Horowitz, K2 Global and Founders Fund (buyers)",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 29000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "A tender offer, so the $300M went to selling employees and early holders, not to OpenAI; outside investors ended up owning more than 30% afterwards. TechCrunch and Reuters report the price as a $27B-$29B range; Reuters relaying the New York Times gives 'around $29 billion', and The Information later referenced $27B. The higher well-sourced figure is used and the $27B alternative recorded here. The exact closing date was never published — dated to the day of the first reports.",
+      "sourceRefs": [8, 9],
+      "plot": true
+    },
+    {
+      "id": "2024-02-16-tender-86b",
+      "date": "2024-02-16",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Thrive-led employee tender offer",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Thrive Capital",
+      "amountRaisedUsd": null,
+      "valuationUsd": 86000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Two well-sourced prices conflict: the New York Times (relayed by Reuters) says the completed deal values OpenAI at '$80 billion or more', while Bloomberg puts it at $86 billion. The higher specific figure is used and $80B+ is the rejected one; the two are not strictly inconsistent. Size of the tender was never reported. The sale had been scheduled for late 2023 and was delayed by Sam Altman's November ouster and reinstatement.",
+      "sourceRefs": [9, 10],
+      "plot": true
+    },
+    {
+      "id": "2024-10-02-thrive-157b",
+      "date": "2024-10-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$6.6B round",
+      "charterSeries": null,
+      "nameConflict": "No series letter. Press variously called it a growth round.",
+      "institutional": true,
+      "lead": "Thrive Capital",
+      "amountRaisedUsd": 6600000000,
+      "valuationUsd": 157000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "OpenAI stated the post-money itself: 'We've raised $6.6B in new funding at a $157B post-money valuation.' Microsoft, Nvidia, SoftBank, Khosla Ventures, Altimeter, Fidelity and MGX participated; Thrive took an option to invest up to $1B more at the same price. A $4B revolving credit facility announced the same week is debt and is excluded from amountRaisedUsd.",
+      "sourceRefs": [11],
+      "plot": true
+    },
+    {
+      "id": "2024-11-27-softbank-tender",
+      "date": "2024-11-27",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "SoftBank $1.5B tender offer",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "SoftBank",
+      "amountRaisedUsd": 1500000000,
+      "valuationUsd": 157000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "SoftBank offered to buy up to $1.5B of stock from current and former employees at $210 per unit, with a decision deadline of 2024-12-24. The price was set off the October primary round rather than independently negotiated, so it re-states the $157B mark instead of establishing a new one — recorded but not plotted, to avoid drawing a second vertex at the same height.",
+      "sourceRefs": [12],
+      "plot": false
+    },
+    {
+      "id": "2025-03-31-softbank-300b",
+      "date": "2025-03-31",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$40B round",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "SoftBank",
+      "amountRaisedUsd": 40000000000,
+      "valuationUsd": 300000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "OpenAI's own wording: 'new funding — $40 billion at a $300 billion post-money valuation'. Largest private round on record at the time. Funded in tranches at a flat price: roughly $10B at signing, a further $8.3B in August 2025, and SoftBank's remaining ~$22.5B approved in December 2025 once the for-profit recapitalisation had completed. SoftBank had disclosed it could cut its total to $20B if OpenAI failed to restructure by 2025-12-31; it did restructure, on 2025-10-28. Microsoft, Coatue, Altimeter and Thrive also participated.",
+      "sourceRefs": [13, 14, 5],
+      "plot": true
+    },
+    {
+      "id": "2025-10-02-tender-500b",
+      "date": "2025-10-02",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "$6.6B employee tender offer",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "SoftBank, Thrive Capital, Dragoneer, MGX and T. Rowe Price (buyers)",
+      "amountRaisedUsd": 6600000000,
+      "valuationUsd": 500000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "A secondary sale: current and former employees were offered the chance to sell up to $10.3B of stock and tendered about $6.6B of it, roughly two-thirds of what was available. Money went to sellers, not to OpenAI. The $500B price is carried by WSJ, Bloomberg, Reuters and CNBC alike and made OpenAI the most valuable private company in the world, ahead of SpaceX — but it is still a tender price, not a primary round, so it is marked soft.",
+      "sourceRefs": [15],
+      "plot": true
+    },
+    {
+      "id": "2025-12-11-disney-cancelled",
+      "date": "2025-12-11",
+      "datePrecision": "day",
+      "kind": "terminated_deal",
+      "roundName": "Disney $1B equity investment (cancelled)",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "The Walt Disney Company",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": null,
+      "note": "Announced 2025-12-11 alongside a Sora character-licensing agreement: Disney would make a $1B equity investment and receive warrants for more, reportedly settled entirely in stock. Ars Technica reports the arrangement collapsed in March 2026 when OpenAI moved to retire Sora, with press accounts saying no money changed hands. Never plotted — nobody transacted at any price. Epoch AI attaches a $500B mark to it; since the deal did not close, no valuation is recorded.",
+      "sourceRefs": [16, 5],
+      "plot": false
+    },
+    {
+      "id": "2026-02-27-round-first-close",
+      "date": "2026-02-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$110B first close",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Amazon, NVIDIA and SoftBank (anchors)",
+      "amountRaisedUsd": 110000000000,
+      "valuationUsd": 730000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "OpenAI announced '$110B in new investment at a $730B pre-money valuation', comprising $50B from Amazon, $30B from NVIDIA and $30B from SoftBank, and explicitly left the round open. This is the first close of the same round that finalised on 2026-03-31 at $122B and an $852B post-money, so it is recorded but not plotted — plotting both would draw one financing as two vertices. Note the disclosed figure is a PRE-money; adding the raise gives ~$840B, which is what Epoch AI records, but that conversion is not made here.",
+      "sourceRefs": [17, 5],
+      "plot": false
+    },
+    {
+      "id": "2026-03-31-round-852b",
+      "date": "2026-03-31",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$122B round",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "SoftBank (co-led with a16z, D. E. Shaw Ventures, MGX, TPG and T. Rowe Price-advised accounts)",
+      "amountRaisedUsd": 122000000000,
+      "valuationUsd": 852000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "OpenAI's own words: 'we closed our latest funding round with $122 billion in committed capital at a post money valuation of $852 billion'. Anchored by strategic partners Amazon, NVIDIA and SoftBank with continued Microsoft participation, plus over $3B raised from individual investors through bank channels — the first time OpenAI opened a round that way. The largest private funding round ever recorded. A separate ~$4.7B revolving credit facility, undrawn at close, is debt and excluded. This is the first OpenAI round priced against ordinary PBC equity rather than capped-profit units, and it is still the latest mark as of 2026-08-06.",
+      "sourceRefs": [18, 19],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "OpenAI is the hardest 'post-money' in this dataset, because for most of its life it had no ordinary equity. From March 2019 to October 2025 investors bought capped-profit units in OpenAI LP (later OpenAI Global, LLC) whose returns were contractually capped — 100x for the 2019 cohort, lower for later ones — and Microsoft's three investments in particular were structured as a profit waterfall (reportedly 75% of profits until recoupment, then a 49% economic interest) rather than as preferred stock. None of Microsoft's investments in 2019, 2021 or January 2023 ever carried a disclosed post-money, and the widely repeated '$29 billion valuation' attached to the January 2023 deal is a report of what Microsoft was 'looking to' pay, not a priced round; all three are therefore recorded with valuationUsd: null and left off the line. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with real equity, controlled by the OpenAI Foundation (26%); Microsoft's converted stake was ~27%, worth about $135B, with employees and other investors holding ~47%. Delaware's Attorney General completed her review and declined to object the same day. Four of the seven plotted points are tender-offer prices rather than primary rounds (2021, April 2023, February 2024, October 2025); all are marked tender/soft and render hollow, because a price at which employees sold to funds is not a negotiated primary post-money. IPO status as of 2026-08-06: OpenAI has confidentially filed a draft registration statement with the SEC — it confirmed the filing in early June 2026, with Goldman Sachs, Morgan Stanley and JPMorgan leading — but has not publicly filed an S-1, has not priced, and has not listed. Reuters reported in late June that a 2027 listing is under consideration after a weak SpaceX debut, with Altman holding out for a $1T price. The company remains private and status is 'private'. Two large announced deals are deliberately absent from the line: NVIDIA's headline $100B systems partnership (2025-09-22) was still at letter-of-intent stage per NVIDIA's own CFO in December 2025 and never priced, and Disney's $1B equity investment was cancelled in March 2026. A reported July 2026 discussion of a ~5% US government stake (~$42.6B, implying the same $852B) is preliminary and not a transaction. Context: revenue ~$13.1B in 2025 and ~$2B per month as of March 2026, still unprofitable. Sourcing note — openai.com returns HTTP 403 to every scripted request, so the four OpenAI blog posts cited here were read verbatim through the Internet Archive; the URLs given are the canonical ones.",
+  "unresolved": [
+    "Total size of the March 2019 OpenAI LP round. Only Khosla Ventures' $50M is public; Reid Hoffman's foundation also participated at an undisclosed amount, and no valuation was ever attached.",
+    "Month of the 2021 Microsoft follow-on. Reporting I could read says only '2021' or 'between 2019 and early 2023'; Epoch AI and the UK CMA record place it in March 2021, but the CMA's underlying figure is redacted.",
+    "Date of the 2021 tender offer that set the $14B mark — WSJ gave only the year — and the date and size of the ~$20B secondary that followed it.",
+    "Size of the February 2024 Thrive-led tender offer was never reported, and its price is $80B+ (NYT) versus $86B (Bloomberg).",
+    "Exact date OpenAI's confidential draft registration statement reached the SEC: CNBC reported a filing as soon as 2026-05-22, while the company's own confirmation and most coverage date it 2026-06-08."
+  ],
+  "sources": [
+    {
+      "outlet": "OpenAI",
+      "title": "OpenAI LP",
+      "url": "https://openai.com/index/openai-lp/",
+      "type": "company"
+    },
+    {
+      "outlet": "Fortune (via Yahoo Finance)",
+      "title": "Vinod Khosla details how much his venture firm had on the line before Sam Altman's reinstatement at OpenAI",
+      "url": "https://finance.yahoo.com/news/vinod-khosla-details-much-venture-134826473.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Microsoft",
+      "title": "OpenAI forms exclusive computing partnership with Microsoft to build new Azure AI supercomputing technologies",
+      "url": "https://news.microsoft.com/source/2019/07/22/openai-forms-exclusive-computing-partnership-with-microsoft-to-build-new-azure-ai-supercomputing-technologies/",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Microsoft invests billions more dollars in OpenAI, extends partnership",
+      "url": "https://techcrunch.com/2023/01/23/microsoft-invests-billions-more-dollars-in-openai-extends-partnership/",
+      "type": "press"
+    },
+    {
+      "outlet": "Semafor",
+      "title": "Microsoft announces new multi-billion dollar investment in ChatGPT creator OpenAI",
+      "url": "https://www.semafor.com/article/01/23/2023/microsoft-announces-new-multi-billion-dollar-investment-in-openai",
+      "type": "press"
+    },
+    {
+      "outlet": "Epoch AI",
+      "title": "AI companies funding rounds dataset",
+      "url": "https://epoch.ai/data/ai_companies_funding_rounds.csv",
+      "type": "database"
+    },
+    {
+      "outlet": "Crunchbase News",
+      "title": "ChatGPT Creator OpenAI Could Be Valued At $29B In Tender Offer — Report",
+      "url": "https://news.crunchbase.com/ai-robotics/openai-chatgpt-tender-offer/",
+      "type": "press"
+    },
+    {
+      "outlet": "Musk v. Altman (Superior Court of California, San Francisco)",
+      "title": "Complaint, with the OpenAI, Inc. Certificate of Incorporation as an exhibit",
+      "url": "https://www.courthousenews.com/wp-content/uploads/2024/02/musk-v-altman-openai-complaint-sf.pdf",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "OpenAI closes $300M share sale at $27B-29B valuation",
+      "url": "https://techcrunch.com/2023/04/28/openai-funding-valuation-chatgpt/",
+      "type": "press"
+    },
+    {
+      "outlet": "Reuters (via Yahoo Finance)",
+      "title": "OpenAI valued at $80 billion after deal, NYT reports",
+      "url": "https://finance.yahoo.com/news/openai-valued-80-billion-deal-224312054.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Thurrott.com",
+      "title": "New Funding Values OpenAI at Over $80 Billion",
+      "url": "https://www.thurrott.com/a-i/openai-a-i/297970/new-funding-values-openai-at-over-80-billion",
+      "type": "press"
+    },
+    {
+      "outlet": "OpenAI",
+      "title": "Scale the benefits of AI",
+      "url": "https://openai.com/index/scale-the-benefits-of-ai/",
+      "type": "company"
+    },
+    {
+      "outlet": "GuruFocus (via Yahoo Finance)",
+      "title": "SoftBank Seeks Larger Stake in OpenAI with $1.5 Billion Tender Offer",
+      "url": "https://finance.yahoo.com/news/softbank-seeks-larger-stake-openai-194155385.html",
+      "type": "press"
+    },
+    {
+      "outlet": "OpenAI",
+      "title": "New funding to build towards AGI",
+      "url": "https://openai.com/index/march-funding-updates/",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "OpenAI raises $40B at $300B post-money valuation",
+      "url": "https://techcrunch.com/2025/03/31/openai-raises-40b-at-300b-post-money-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Barchart",
+      "title": "OpenAI Valued At $500 Billion In Latest Funding Round",
+      "url": "https://www.barchart.com/story/news/35191881/openai-valued-at-500-billion-in-latest-funding-round",
+      "type": "press"
+    },
+    {
+      "outlet": "Ars Technica",
+      "title": "Disney cancels $1 billion OpenAI partnership amid Sora shutdown plans",
+      "url": "https://arstechnica.com/ai/2026/03/the-end-of-sora-also-means-the-end-of-disneys-1-billion-openai-investment/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "OpenAI raises $110B in one of the largest private funding rounds in history",
+      "url": "https://techcrunch.com/2026/02/27/openai-raises-110b-in-one-of-the-largest-private-funding-rounds-in-history/",
+      "type": "press"
+    },
+    {
+      "outlet": "OpenAI",
+      "title": "OpenAI raises $122 billion to accelerate the next phase of AI",
+      "url": "https://openai.com/index/accelerating-the-next-phase-ai/",
+      "type": "company"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "OpenAI Valuation Reaches $852 Billion After Massive Funding Round",
+      "url": "https://www.forbes.com/sites/antoniopequenoiv/2026/03/31/openai-valuation-reaches-852-billion-after-massive-funding-round/",
+      "type": "press"
+    },
+    {
+      "outlet": "Delaware Department of Justice",
+      "title": "AG Jennings completes review of OpenAI recapitalization",
+      "url": "https://news.delaware.gov/2025/10/28/ag-jennings-completes-review-of-openai-recapitalization/",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune (via Yahoo Finance)",
+      "title": "OpenAI completes for-profit restructuring and grants Microsoft a 27% stake in the company",
+      "url": "https://finance.yahoo.com/news/openai-completes-profit-restructuring-grants-161615301.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Yahoo Finance",
+      "title": "OpenAI confidentially files for IPO with SEC",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-files-ipo-sec-223341186.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "OpenAI Considers Delaying IPO To 2027 After SpaceX's Rocky Debut, Report Says",
+      "url": "https://www.forbes.com/sites/aliciapark/2026/06/25/openai-considers-delaying-ipo-to-2027-after-spacexs-rocky-debut-report-says/",
+      "type": "press"
+    }
+  ]
+}

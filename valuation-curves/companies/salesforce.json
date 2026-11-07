@@ -1,0 +1,140 @@
+{
+  "slug": "salesforce",
+  "name": "Salesforce",
+  "cohort": "saas",
+  "colorSlot": 5,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "1999-02-03",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Exhibit 3.1 to the 2003 S-1 — the Eighth Amended and Restated Certificate of Incorporation — states that 'the date of filing of its original Certificate of Incorporation with the Secretary of State of the State of Delaware was February 3, 1999.' The prospectus body says only 'We were incorporated in Delaware in February 1999' and 'We were founded in February 1999'; the exhibit supplies the day, which is exactly the case RESEARCH.md makes for reading the exhibits. Popular accounts date the founding to March 1999, when Marc Benioff, Parker Harris, Dave Moellenhoff and Frank Dominguez started work in a rented apartment on Telegraph Hill in San Francisco; that is a team-founding date a month after the charter. This chart clocks from the earliest formal founding, so t=0 is the Delaware filing.",
+  "public": {
+    "ticker": "CRM",
+    "cik": "0001108524",
+    "cmcSlug": "salesforce",
+    "ipoDate": "2004-06-23",
+    "publicFrom": "2004-06-23",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 248220000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1999-04-27-series-a",
+      "date": "1999-04-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A Preferred (founding round)",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 517000,
+      "valuationUsd": null,
+      "note": "25,850,000 shares at $0.02. Emphatically below the inclusion floor: Marc Benioff took 22,000,000 shares for $440,000 — 85% of the round — with Parker Harris and Dave Moellenhoff at $25,000 each. No venture capital firm is named anywhere in it. Benioff separately lent the company a $62,875 convertible note in April 1999, of which $20,000 later converted into 10,000,000 common shares and $10,000 funded an option exercise.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "1999-06-28-series-b",
+      "date": "1999-06-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B Preferred",
+      "charterSeries": "B",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 3776504,
+      "valuationUsd": null,
+      "note": "12,588,345 shares at $0.30. Still angel money: the S-1's table of preferred sales to officers, directors and 5% holders shows Halsey Minor at $1,500,000, Magdalena Yesil at $500,000 and Benioff at $412,500 — all individuals buying in their own names, no firm. Larry Ellison's widely repeated $2,000,000 does not appear in the filing; he was neither an officer, a director nor a 5% holder when the S-1 was written, so the table would not have captured him. Treated as unverified.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "1999-11-22-series-c",
+      "date": "1999-11-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C Preferred",
+      "charterSeries": "C",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 13171620,
+      "valuationUsd": null,
+      "note": "7,526,640 shares at $1.75. The closest call in this file. Attractor Funds, a Burlingame investment manager, took $2,500,001 — a named fund, but a public-equity investment manager rather than a venture capital firm, and it is outweighed by Halsey Minor's $5,000,000 and Benioff's $1,000,000, both individuals. Held below the floor on the strength of the mechanical test: no named venture capital firm led it. The S-1 dates Minor's purchase 1/22/99, which precedes the November round and the Series C authorisation and is read as a typo for 11/22/99.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "2000-03-30-series-d",
+      "date": "2000-03-30",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D Preferred",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Attractor Funds",
+      "amountRaisedUsd": 46910910,
+      "valuationUsd": null,
+      "note": "12,059,360 shares at $3.89, sold from March 2000 through June 2001 to '33 investors, consisting of 13 individual investors and 20 venture capital and investment funds' — the first time Salesforce's cap table contains institutional funds at all, and where the inclusion floor is met. Recorded at the 3/30/2000 closing, which is when the largest cheques cleared. The S-1 names no lead; Attractor Funds and Halsey Minor each took $13,000,000, so the largest named institution is used and the individual is not. Attractor also received warrants over 580,639 further Series D shares at the same strike. No post-money is recoverable: the price per share is known, but the filing gives no fully-diluted count contemporaneous with the March 2000 closing, and the round stayed open for fifteen months.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "2004-06-23-ipo",
+      "date": "2004-06-23",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO on the NYSE at $11.00",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 110000000,
+      "valuationUsd": 1113825680,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "10,000,000 shares at $11.00. The final prospectus states 101,256,880 shares of common stock outstanding after the offering, which at the offer price is $1,113,825,680 — Salesforce crossed a billion dollars on its first day, five years and four months after incorporation. All 58,024,345 preferred shares converted at closing.",
+      "sourceRefs": [2],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Salesforce is the clearest illustration in this dataset of why the inclusion floor is a mechanical test rather than a series letter. Its Series A, B and C — three rounds and $17.5 million across 1999 — were funded almost entirely by Marc Benioff himself, Halsey Minor, Magdalena Yesil and other individuals, with no venture capital firm named in any of them; the first round with institutional funds in it is the Series D, and a reader going by letters alone would have started the line two years early. Every share count, price and date here comes from the S-1's related-party table and Item 15, cross-read against Exhibit 3.1's authorised-share schedule (25,850,000 Series A, 12,588,345 Series B, 7,650,498 Series C), which independently confirms the A and B counts. None of the four rounds discloses a post-money and none is reconstructible, so none is plotted; the line starts at the IPO. Total pre-IPO capital raised was $64,376,034. One split, 4:1 in April 2013, which the pipeline derives from the cover-page share series. Salesforce's fiscal year ends January 31, so its 10-K and 10-Q cover dates sit at odd-looking points in the calendar (the share count used for the 2025-12-31 checkpoint below is dated 2025-11-28, from the Q3 FY2026 10-Q); the chart itself is on calendar quarters throughout and is unaffected.",
+  "unresolved": [
+    "Post-money valuation for all four pre-IPO rounds. Price per share is known for each; no filing gives the fully-diluted count at any closing.",
+    "Larry Ellison's reported $2,000,000 seed investment — real by every secondary account, but absent from the S-1's preferred-sales table and therefore not recorded as a fact here.",
+    "Which investor actually led the Series D. The S-1 names 20 venture capital and investment funds but identifies none of them beyond Attractor Funds, the only institution that ever crossed 5%."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "salesforce.com, inc. Form S-1, filed 2003-12-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000119312503096073/ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "salesforce.com, inc. Exhibit 3.1, Eighth Amended and Restated Certificate of Incorporation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000119312503096073/dex31.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "salesforce.com, inc. Form 424B1 IPO prospectus, filed 2004-06-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000119312504107098/d424b1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Salesforce, Inc. Form 10-Q for the quarter ended 2025-10-31 (cover-page share count)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108524/000110852425000238/crm-20251031.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Salesforce market cap history",
+      "url": "https://stockanalysis.com/stocks/crm/market-cap/",
+      "type": "database"
+    }
+  ]
+}

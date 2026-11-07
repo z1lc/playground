@@ -1,0 +1,282 @@
+{
+  "slug": "block",
+  "name": "Block",
+  "cohort": "fintech",
+  "colorSlot": 6,
+  "dashSlot": 1,
+  "status": "public",
+  "founded": "2009-06-17",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Exhibit 3.1 to the S-1 — the Restated Certificate of Incorporation signed by Jack Dorsey — states that the certificate 'was originally filed with the Secretary of State of Delaware on June 17, 2009, under the name of Seashell, Inc.' That is the earliest formal founding on record and is what t=0 clocks from. The company's own prospectus separately says 'We started Square in February 2009' and 'Square was incorporated in Delaware in June 2009'; Wikipedia dates the founding to 2009-02-14 and adds Tristan O'Tierney as a third co-founder. No partnership agreement or other formal entity predating the Delaware filing is retrievable, so the February date is a team founding rather than a formal one and is not used. Dorsey and McKelvey both joined the board in July 2009. Two later renames matter for identification but not for the timeline: Square, Inc. became Block, Inc. — announced 2021-12-01, legally effective 'on or about December 10, 2021', with the press release stating explicitly that 'the company's NYSE ticker symbol “SQ” will not change at this time' — and the ticker itself changed only three years later, announced 2025-01-09 and effective 2025-01-21 on the NYSE (2025-01-22 on the ASX), when SQ and SQ2 became XYZ.",
+  "public": {
+    "ticker": "XYZ",
+    "cik": "0001512673",
+    "cmcSlug": "square",
+    "ipoDate": "2015-11-19",
+    "publicFrom": "2015-11-19",
+    "sharesTag": "auto",
+    "annualOverrides": [
+      {
+        "date": "2015-11-19",
+        "capUsd": 4286000000,
+        "sourceRefs": [2, 14],
+        "note": "IPO day, priced at the first-day close rather than the offer price, following the convention used for Apple. The 424(b)(4) states 327,944,711 Class A and Class B shares outstanding after the offering; the stock closed at $13.07 on 2015-11-19, up 45% from the $9.00 offer. 327,944,711 x $13.07 = $4.286B, consistent with the '$4.2 billion' figure the wires carried that evening. Two caveats: the prospectus share count excludes the 1,940,058 Series E shares sold in October 2015 and so understates the true count by about 0.6%, and Fortune's '$3.6 billion market value' at the $11.20 open implies roughly 321M shares, a basis nobody in the coverage explains."
+      }
+    ],
+    "regressions": [
+      { "date": "2024-12-31", "capUsd": 52660000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "2009-12-series-a-khosla",
+      "date": "2009-12-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Khosla Ventures",
+      "amountRaisedUsd": 10100000,
+      "valuationUsd": 45000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The S-1 cap table fixes the amount exactly — 46,700,710 Series A shares at $0.21627, a $10.1M aggregate — but not the date or the valuation, and Square filed no Form D on EDGAR for this round, so the month comes from the press. The valuation is contested. TechCrunch on 2009-12-01 wrote that Square 'is valued at a massive $40 million or more after raising $10 million in funding'; thirteen months later the same outlet described the 2009 Series A as being at a '$45 million valuation', and SiliconANGLE wrote on 2011-01-10 that Square was 'now valued at $240 million, after previous valuations that did not exceed $45 million'. Taking the higher of two conflicting figures, $45M is recorded and $40M rejected; both are journalists' numbers with no company confirmation and neither says pre- or post-money, so this stays soft. Angel cheques from Marissa Mayer, Kevin Rose, Biz Stone and others are consistently described as part of this same round rather than a separate financing, so no angel event is recorded.",
+      "sourceRefs": [0, 7, 8, 9],
+      "plot": true
+    },
+    {
+      "id": "2011-01-10-series-b-sequoia",
+      "date": "2011-01-10",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B (B-1 and B-2)",
+      "charterSeries": "B-1 and B-2",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 35778000,
+      "valuationUsd": 240000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The date is the Form D 'date of first sale', 2011-01-10 — the same day the round was reported. The amount is the one number here that does not match the headline. Press universally said $27.5M; the Form D filed 2011-03-02 records $27,749,962 sold to 10 investors, the Form D/A of 2011-09-30 raises that to $31,749,894 across 13 investors, and the S-1 cap table ends at $35.78M in two tranches at two different prices — B-1, 13,893,330 shares at $0.71977 ($10.0M), and B-2, 27,030,040 shares at $0.95369 ($25.78M). The S-1 total is recorded because it is the complete legal figure, at the cost of exceeding the reported round size by $8.3M. The $240M valuation matches the B-2 price and is verified in TechCrunch and SiliconANGLE, both read in full; Reuters, the LA Times, NYT DealBook and Bloomberg carry the same number in their headlines but block scripted fetches, so they are not cited. No source says pre- or post-money. Khosla Ventures followed on.",
+      "sourceRefs": [0, 3, 4, 8, 9],
+      "plot": true
+    },
+    {
+      "id": "2011-06-27-series-c-kpcb",
+      "date": "2011-06-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Kleiner Perkins Caufield & Byers",
+      "amountRaisedUsd": 103000000,
+      "valuationUsd": 1000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The date is the Form D 'date of first sale', 2011-06-27; the close was reported 2011-06-28. The Form D filed 2011-09-30 records $100,000,052 and the D/A of 2011-12-08 records $103,000,025, which reconciles exactly with the S-1 cap table's 17,764,230 shares at $5.79817. The valuation is recorded at the reported floor and marked soft because no source states a precise number. TechCrunch says only that 'the new round values Square above $1 billion', and Fortune's September 2012 story describes the later $3.25B as 'roughly double its valuation following a $100 million financing round in the summer of 2011' — which implies something nearer $1.6B than $1.0B. The headline number every outlet used was $1B, so that is what is plotted, hollow. Mary Meeker joined the board with this round; Tiger Global also participated.",
+      "sourceRefs": [0, 5, 6, 10, 12],
+      "plot": true
+    },
+    {
+      "id": "2012-09-17-series-d-citi-starbucks",
+      "date": "2012-09-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Citi Ventures and Rizvi Traverse Management",
+      "amountRaisedUsd": 222089000,
+      "valuationUsd": 3250000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The S-1 says the Series D sold 'from July 2012 through September 2012' — 20,164,210 shares at $11.014 for $222.1M, more than the $200M reported when the close was announced on 2012-09-17, which is the date used here. The related-party table names Rizvi Traverse at $150.0M and JPMorgan Chase at $11.2M. Starbucks' $25M was one tranche of this same round, disclosed early alongside the August 2012 payments partnership, and is not a separate financing. Square also issued Starbucks three performance warrants over 15,761,575 common shares at $11.01 to $14.37 in connection with that agreement. The $3.25B is attributed by Fortune to 'a person with knowledge of the transaction' and carried identically by TechCrunch and Reuters; Square never confirmed it and no source says pre- or post-money.",
+      "sourceRefs": [0, 11, 12],
+      "plot": true
+    },
+    {
+      "id": "2014-10-05-series-e-gic",
+      "date": "2014-10-05",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "GIC (Government of Singapore Investment Corporation)",
+      "amountRaisedUsd": 150000000,
+      "valuationUsd": 6000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The S-1 dates the Series E 'from September 2014 through October 2014' — 9,700,289 shares at $15.46345 for exactly $150.0M — with Goldman Sachs and Rizvi Traverse alongside GIC. The $6B was reported on 2014-10-05 by TechCrunch and, in its headline, by the New York Times. It is also the most misleading figure in this series, and the S-1 is what exposes why: the Series E carried an IPO ratchet under which, if Square listed below $18.55614 a share, each Series E share converted into $18.55614 worth of common at the offering price. At the $9.00 IPO that turned 9,700,289 preferred shares into 19,999,985 common, 2.06 for one. The $6B therefore priced a security with downside protection the common stock never had, which is the basis for the argument that it cannot be compared like-for-like with the IPO market cap.",
+      "sourceRefs": [0, 2, 13, 17],
+      "plot": true
+    },
+    {
+      "id": "2015-10-23-series-e-extension",
+      "date": "2015-10-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E extension",
+      "charterSeries": "E",
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 30000000,
+      "valuationUsd": null,
+      "note": "Nine days after the S-1 was filed and four weeks before the IPO, Square sold 1,940,058 further Series E shares at the same $15.46345 for $30.0M to 'one existing investor and one new investor' — neither named, so there is no named institutional lead and the round falls below the inclusion floor. These buyers explicitly waived the Series E IPO ratchet, meaning they paid the October 2014 price for stock that converted one-for-one while the September 2014 buyers were converting at 2.06-for-one. This round appears only in Note 19 of the S-1 and in Item 15; no valuation was disclosed, and carrying the 2014 post-money forward four weeks before a $9.00 IPO would be indefensible, so it is recorded and not plotted.",
+      "sourceRefs": [0, 2],
+      "plot": false
+    },
+    {
+      "id": "2015-11-19-ipo",
+      "date": "2015-11-19",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO on NYSE (SQ)",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 230850000,
+      "valuationUsd": 2951502399,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "DOWN ROUND, and a rare one that is visible at the moment of listing. The 424(b)(4) priced 27,000,000 Class A shares at $9.00 — 25,650,000 from the company for $230.9M gross, 1,350,000 from a selling stockholder — against a last private price of $15.46345, a 42% haircut. With the prospectus's own 327,944,711 shares outstanding after the offering, the offer-price market cap was $2.952B, less than half the $6B reported for the Series E thirteen months earlier. Two things soften the drop without erasing it: the Series E ratchet meant those holders were contractually promised $18.55614 of common per share, so the $6B was never a common-stock valuation on IPO terms; and the stock closed its first day at $13.07, up 45%, for about $4.29B, which is the point actually plotted on the line (see public.annualOverrides). The $9.00 figure is the one where money changed hands, so it is what this event records.",
+      "sourceRefs": [2, 14],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Square's 2015 S-1 is close to an ideal source: the preferred-stock note gives shares outstanding, aggregate proceeds and issue price for all six series, the related-party section dates Series D and E, and Exhibit 3.1 supplies both the exact Delaware incorporation date and the original corporate name (Seashell, Inc.). What the S-1 does not give is a post-money valuation for any round, so every valuationUsd here is a press figure and none was ever confirmed by the company. Four Form D filings from 2011 supply exact first-sale dates for the Series B and C, which no secondary source has. Identifiers were verified rather than recalled: SEC's company_tickers.json maps CIK 1512673 to XYZ (SQ returns HTTP 400 from stockanalysis.com and XYZ returns a full quarterly history), and companiesmarketcap still serves Block under the /square/ slug — /block/ 302s to a 404 — with the page itself titled 'Block (XYZ) - Market capitalization'. The public series carries one real defect and the build does not currently pass because of it. dei:EntityCommonStockSharesOutstanding and us-gaap:CommonStockSharesOutstanding are both absent from Block's companyfacts, so the cascade lands on us-gaap:WeightedAverageNumberOfSharesOutstandingBasic and every computed point is marked soft, which is the expected multi-class-filer behaviour. Nine of the ten cross-check years are fine on that tag: 2017 -1.18%, 2018 -1.75%, 2019 -1.29%, 2020 -2.57%, 2021 -0.92%, 2022 -0.90%, 2023 -0.46%, 2024 -0.51%, 2025 -1.66%, all consistent with a weighted average sitting a little under period-end. 2016 is not: it computes -56.65% against companiesmarketcap, and it also trips the continuity check with a 3.05x jump into 2017Q1. The cause is specific rather than general. A weighted-average fact is dated by its filing date, and the CY2015Q3 fact has only one filing — the Q3 2016 10-Q of 2016-11-02, where it appears as the prior-year comparative. So the 2016-12-31 quarter is priced against 152,334,000 shares, which is Square's weighted-average COMMON count for the quarter before it went public and excludes all 135M convertible preferred shares, instead of the roughly 344M shares actually outstanding at the end of 2016. No shard field can reach this: pinning sharesTag to the only other available tag yields four data points and disables the share series entirely, and annualOverrides cannot help because computed quarterly points overwrite overrides in the same quarter. The two fixes both live in build_data.py — either exclude a weighted-average fact whose filing date is more than ~six months after its period end, or restrict nearest_share_row to counts at or before the quarter end (this second one also brings 2020 from -2.57% to under 1%). The regression checkpoint below was deliberately left at companiesmarketcap's independent 2024 figure of $52.66B rather than tuned to the pipeline's output; the pipeline reproduces it at $52.39B, 0.51% low, hand-checked as the 2024Q4 close of $84.99 times the 616,428,000 shares in the CY2024Q3 fact filed 2024-11-07.",
+  "unresolved": [
+    "Whether the reported valuations for the Series A through E are pre- or post-money. No source states it for any of the five rounds, so all five carry valuationBasis 'unspecified'.",
+    "The Series A valuation: $40M ('or more') in the contemporaneous 2009 TechCrunch report versus $45M in two 2011 reports. The higher figure is recorded per the conflict rule, but neither is company-confirmed.",
+    "The Series C post-money. Every outlet reported '$1 billion' or 'above $1 billion', but Fortune's later description of the $3.25B round as 'roughly double' the 2011 valuation implies roughly $1.6B. Recorded at the reported floor.",
+    "Why the Series B totals $35.78M in the S-1 cap table against $27.5M in the press and $31.75M in the final Form D/A. The likeliest reading is later closings into the same series through 2011, but no filing states the tranche dates.",
+    "Exact shares outstanding on 2015-11-19. The prospectus figure of 327,944,711 excludes the 1,940,058 Series E shares issued in October 2015; the wire reports imply about 321M, on a basis none of them explains.",
+    "BUILD FAILS on one error: the 2016 cross-check diverges -56.65% from companiesmarketcap because the 2016-12-31 quarter is priced against Square's pre-IPO Q3 2015 weighted-average common count of 152,334,000 shares. This is a defect in build_data.py's dating of weighted-average share facts, not something a shard field can correct, and it was reported rather than papered over. Every other year is within 2.6%."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form S-1/A (Amendment No. 3), November 2015",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000119312515378578/d937622ds1a.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Restated Certificate of Incorporation of Square, Inc. (Exhibit 3.1 to Form S-1)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000119312515343733/d937622dex31.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form 424(b)(4) IPO prospectus, November 19, 2015",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000119312515382249/d937622d424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form D (Series B), filed March 2, 2011",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000151267311000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form D/A (Series B-1 and B-2 Preferred), filed September 30, 2011",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000151267311000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form D (Series C Preferred), filed September 30, 2011",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000151267311000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Square, Inc. Form D/A (Series C Preferred), filed December 8, 2011",
+      "url": "https://www.sec.gov/Archives/edgar/data/1512673/000151267311000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Square Worth $40 Million Before Launch",
+      "url": "https://techcrunch.com/2009/12/01/square-worth-40-million-before-launch/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Square Raises $27.5M From Sequoia And Khosla, On Track To Process $40M",
+      "url": "https://techcrunch.com/2011/01/10/sequoia-leads-27-5-million-round-in-mobile-payments-startup-square/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Square Inc. Attracts $27.5 Million Funding",
+      "url": "https://siliconangle.com/2011/01/10/square-inc-attracts-27-5-million-funding/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Square Closes That $100 Million Round, Mary Meeker Joins Board",
+      "url": "https://techcrunch.com/2011/06/28/square-100-million-meeker/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Mobile Payment Juggernaut Square Closes $200M Series D From Starbucks, Citi And Rizvi At $3.25B Valuation",
+      "url": "https://techcrunch.com/2012/09/17/square-closes-200m-series-d-from-starbucks-citi-rizvi-at-3-25b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Payment startup Square valued at $3.25 billion",
+      "url": "https://fortune.com/2012/09/17/payment-startup-square-valued-at-3-25-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Square Closes $150 Million Round At $6 Billion Valuation",
+      "url": "https://techcrunch.com/2014/10/05/square-closes-150-round-at-6-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Square Closes At $13.07 Per Share, Up 45% From IPO Price",
+      "url": "https://fortune.com/2015/11/19/square-close-ipo/",
+      "type": "press"
+    },
+    {
+      "outlet": "Block",
+      "title": "Square, Inc. Changes Name to Block",
+      "url": "https://block.xyz/inside/press-release-block",
+      "type": "company"
+    },
+    {
+      "outlet": "Block",
+      "title": "Block Announces Ticker Symbol Change to XYZ",
+      "url": "https://block.xyz/inside/block-announces-ticker-symbol-change-to-xyz",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Block, Inc.",
+      "url": "https://en.wikipedia.org/wiki/Block,_Inc.",
+      "type": "reference"
+    }
+  ]
+}

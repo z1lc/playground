@@ -1,0 +1,346 @@
+{
+  "slug": "uber",
+  "name": "Uber",
+  "cohort": "marketplace",
+  "colorSlot": 0,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "2009-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "team-founding",
+  "foundedNote": "The S-1 states it plainly: 'We were founded in 2009 and incorporated as Ubercab, Inc., a Delaware corporation, in July 2010. In February 2011, we changed our name to Uber Technologies, Inc.' The 2009 founding is the idea and the founding team (Garrett Camp and Travis Kalanick, in Paris in late 2008 by Kalanick's own telling); the July 2010 Delaware incorporation is corroborated by every Uber Form D, each of which answers 'Year of Incorporation/Organization: 2010'. This chart clocks from the earliest formal founding, so t=0 is 2009 — eighteen months before the incorporation. No month is sourceable for 2009: the S-1 gives only the year, and the commonly repeated 'March 2009' traces to no filing. Dated to the year rather than inventing a month.",
+  "public": {
+    "ticker": "UBER",
+    "cik": "0001543151",
+    "cmcSlug": "uber",
+    "ipoDate": "2019-05-10",
+    "publicFrom": "2019-05-10",
+    "sharesTag": "auto",
+    "crossCheckTolPct": 6.0,
+    "regressions": [
+      {
+        "date": "2026-06-30",
+        "capUsd": 147206000000,
+        "tolPct": 1.0,
+        "note": "Hand-computed: 2,039,994,000 shares outstanding on the 2026-06-30 balance sheet (Q2 2026 10-Q, us-gaap:CommonStockSharesOutstanding in the XBRL facts) times the 72.16 quarter-end close. The pipeline instead uses the dei cover-page count of 2,042,560,121 printed 2026-07-31, which is 0.13% higher."
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "2010-seed",
+      "date": "2010-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Seed round (Series Seed preferred)",
+      "charterSeries": "Seed",
+      "institutional": true,
+      "lead": "First Round Capital",
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "The first round above the inclusion floor: Wikipedia's First Round Capital article states that the firm 'was the first institutional investor in Uber, leading the company's seed funding round in 2010 when the company was known as UberCab', and cites the WSJ for First Round having put roughly $1.6 million into Uber's first two rounds. The S-1 cap table is the only primary trace: 152,591,000 Series Seed shares at a $0.00906 per-share liquidation preference, about $1.4 million, which is consistent with the widely repeated '$1.25M seed'. Neither the amount nor a month could be verified against a contemporaneous source — TechCrunch's 2010 UberCab coverage is all cease-and-desist, and EDGAR holds no Uber Form D before 2012 — so the amount is left null and the date carries year precision. The round necessarily closed after the July 2010 Delaware incorporation and before the February 2011 Series A. No valuation was ever disclosed, so this is recorded but not plotted.",
+      "sourceRefs": [0, 1],
+      "plot": false
+    },
+    {
+      "id": "2011-02-14-series-a",
+      "date": "2011-02-14",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "institutional": true,
+      "lead": "Benchmark",
+      "amountRaisedUsd": 11000000,
+      "valuationUsd": 60000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "TechCrunch: '$11 million round valuing the company at $49 million pre-money valuation, $60 million post-money, we've confirmed from sources.' A single outlet citing unnamed sources, so soft. Bill Gurley joined the board. The S-1 cap table shows the Series A grew to 150,427,000 shares at $0.09248 — about $13.9 million — so more was issued into the series after this close.",
+      "sourceRefs": [2],
+      "plot": true
+    },
+    {
+      "id": "2011-11-23-series-b",
+      "date": "2011-11-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Menlo Ventures",
+      "amountRaisedUsd": 37250402,
+      "valuationUsd": null,
+      "note": "Dated to the Form D date of first sale (2011-11-23), not the 2011-12-07 announcement at LeWeb. The amount is the Form D's final figure — $37,250,402 sold against a $38,999,991 offering — which sits between the '$32 million closed' Kalanick announced and the '$39 million' Menlo's Shervin Pishevar claimed. Jeff Bezos (Bezos Expeditions) and Goldman Sachs invested alongside. Asked for the valuation, Kalanick said only 'We sold very valuable shares', and no figure was ever disclosed, so this round is recorded but not plotted. The S-1 shows the Series B at $0.35448 per share and $43.5 million in aggregate, so the series kept growing after this Form D.",
+      "sourceRefs": [3, 4, 0],
+      "plot": false
+    },
+    {
+      "id": "2013-08-01-series-c",
+      "date": "2013-08-01",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C-1/C-2/C-3",
+      "nameConflict": "One press round, three charter series: the S-1 shows Series C-1 at $4.45438, C-2 at $3.56350 and C-3 at $4.45438 per share, totalling about $455 million against the $258 million reported.",
+      "institutional": true,
+      "lead": "Google Ventures",
+      "amountRaisedUsd": 257790432,
+      "valuationUsd": 3400000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Dated to the Form D date of first sale (2013-08-01); Uber confirmed it on 2013-08-23 in a blog post that briefly appeared and was pulled, reproduced in full by TechCrunch. Amount is the Form D figure ($257,790,432 sold against a $272,790,486 offering), matching the $258 million Uber confirmed. TPG Growth participated; David Drummond and David Bonderman joined the board. The valuation is TechCrunch's retrospective 'valued the company at around $3.4 billion' in its June 2014 Series D story — a single outlet, hedged, hence soft. Contemporary reports also carried $3.5 billion and $3.76 billion; neither could be verified here.",
+      "sourceRefs": [5, 6, 7],
+      "plot": true
+    },
+    {
+      "id": "2014-06-06-series-d",
+      "date": "2014-06-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Fidelity Investments",
+      "amountRaisedUsd": 1200000000,
+      "valuationUsd": 17000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Uber confirmed $1.2 billion at a $17 billion PRE-money valuation; the post-money that most coverage quotes ($18.2 billion) is arithmetic, not a disclosure, so the pre-money is plotted as-is and never converted. Uber said the total would reach about $1.4 billion after a second close of strategic investors. Wellington Management and BlackRock were the other new investors, with Summit Partners, Kleiner Perkins, Google Ventures and Menlo Ventures participating. The S-1 cap table settles the final size: 82,443,000 Series D shares at $15.51305 — $1,279 million.",
+      "sourceRefs": [7, 0],
+      "plot": true
+    },
+    {
+      "id": "2014-12-04-series-e",
+      "date": "2014-12-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "institutional": true,
+      "lead": "Undisclosed at announcement",
+      "amountRaisedUsd": 1200000000,
+      "valuationUsd": 40000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Uber announced $1.2 billion and TechCrunch 'separately confirmed with the company that this latest round was made at a $40 billion valuation' — the company confirmed the number but never labelled it pre- or post-money, so the basis is unspecified. Uber declined to name investors at announcement, which is why no lead is recorded; Kalanick said the round retained 'additional capacity remaining for strategic investments' and a Delaware filing put the potential total at $1.8 billion. The Series E ultimately reached 84,140,000 shares at $33.31758 — $2,803 million — across the December 2014 close, the February 2015 extension and the strategic investors (Baidu among them) that followed.",
+      "sourceRefs": [8, 0],
+      "plot": true
+    },
+    {
+      "id": "2015-09-series-f",
+      "date": "2015-09-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": "F",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 370929715,
+      "valuationUsd": null,
+      "note": "Visible only in the S-1's Recent Sales of Unregistered Securities, which covers sales from September 2015 onward: 6,431,358 shares in September, 2,901,210 in October and 25,227 in November, all at $39.638581, for $370,929,715. The Series F in total is 21,262,000 shares and $843 million, so roughly half of it was sold before the S-1's disclosure window opens and is invisible here — which is also why no lead is named and the round is marked non-institutional rather than asserting one. The $51 billion valuation that circulated for this round in mid-2015 could not be verified against any source fetched for this file; TechCrunch's December 2015 piece says only that Uber was then 'at a current $50 billion valuation'. Recorded, not plotted.",
+      "sourceRefs": [0, 9],
+      "plot": false
+    },
+    {
+      "id": "2015-12-series-g",
+      "date": "2015-12-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series G",
+      "charterSeries": "G",
+      "institutional": true,
+      "lead": "Undisclosed at announcement",
+      "amountRaisedUsd": 947033908,
+      "valuationUsd": 62500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The amount is the S-1's December 2015 tranche exactly: 19,417,483 shares to seventy-seven accredited investors at $48.772228, $947,033,908.06. The Series G kept selling at that same price through February 2019 and reached $6,858 million in total — the biggest single line in Uber's cap table — so this event is the first close of a round that never really shut. The $62.5 billion is soft: TechCrunch was relaying a Bloomberg report of a raise in progress, not a company statement. It is corroborated six months later, when TechCrunch describes the Saudi investment as not increasing 'the company's current $62.5 billion value'. No lead is named: the S-1 lists only 'seventy-seven accredited investors' and the December 2015 coverage names none, so asserting one would be recall rather than research.",
+      "sourceRefs": [0, 9, 10],
+      "plot": true
+    },
+    {
+      "id": "2016-06-01-saudi-pif",
+      "date": "2016-06-01",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Saudi Public Investment Fund investment ($3.5B)",
+      "charterSeries": "G",
+      "institutional": true,
+      "lead": "Public Investment Fund (Saudi Arabia)",
+      "amountRaisedUsd": 3500000000,
+      "valuationUsd": 62500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Uber announced the investment itself and TechCrunch reports it 'doesn't increase the company's current $62.5 billion value' — flat to the December 2015 Series G price, which is exactly what the cap table shows: the S-1 records June 2016 sales of 73,812,498 Series G shares at the unchanged $48.772228 to two accredited investors for $3,599,999,981.71, i.e. PIF's $3.5 billion plus roughly $100 million alongside. Yasir Al Rumayyan took a board seat. The largest single cheque written into a private technology company at the time.",
+      "sourceRefs": [10, 0],
+      "plot": true
+    },
+    {
+      "id": "2017-12-28-softbank-tender",
+      "date": "2017-12-28",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "SoftBank-led tender offer",
+      "institutional": true,
+      "lead": "SoftBank Vision Fund (consortium including Dragoneer)",
+      "amountRaisedUsd": null,
+      "valuationUsd": 48000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "DOWN MARK, and a real one: the SoftBank consortium bought roughly a 14% stake from existing shareholders at $32.97 per share — the price is in Uber's own S-1 — against the $48.772228 the same consortium paid the company three weeks later. TechCrunch: 'The shares purchased from existing shareholders will value the company at approximately $48 billion, a significant discount to the roughly $69 billion that company was valued at in its last private round.' No money reached Uber, so amountRaisedUsd is null; this is a secondary purchase, and it is plotted because it is a company-run tender at a stated price rather than a platform's indicative mark. The discount is not a re-pricing of the company so much as the price of liquidity after the 2017 governance crisis: Benchmark, Menlo, employees and Travis Kalanick (about 29% of his stake) were the sellers, and Benchmark dropped its lawsuit against Kalanick as part of the deal. Dated to the tender's close (2017-12-28); the overall transaction completed 2018-01-18.",
+      "sourceRefs": [11, 0, 12],
+      "plot": true
+    },
+    {
+      "id": "2018-01-18-softbank-primary",
+      "date": "2018-01-18",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "SoftBank primary investment (Series G-1)",
+      "charterSeries": "G-1",
+      "institutional": true,
+      "lead": "SoftBank Vision Fund (consortium including Dragoneer)",
+      "amountRaisedUsd": 1250000014,
+      "valuationUsd": 69000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The other half of the SoftBank deal, and the reason the tender above is so striking: the consortium put $1.25 billion of new money into the company at $48.772228 per share — the S-1 records 25,629,340 Series G-1 shares sold to sixty-one accredited investors in January 2018 for $1,250,000,013.97, the same price as the Series G. TechCrunch puts the primary at 'the $69 billion value'; other coverage of the same transaction says $68 billion or $70 billion, none of which could be verified here, so the figure is soft. Uber confirmed the close on 2018-01-18, along with the governance changes and SoftBank's board seats.",
+      "sourceRefs": [12, 0, 11],
+      "plot": true
+    },
+    {
+      "id": "2018-10-series-g1-second",
+      "date": "2018-10-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series G-1 second tranche ($500M)",
+      "charterSeries": "G-1",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 500000006,
+      "valuationUsd": null,
+      "note": "The S-1 records that in October 2018 Uber sold 10,251,736 Series G-1 shares to ONE accredited investor at $48.772228 for $500,000,005.59. The filing does not name the buyer. Toyota's $500 million strategic investment, announced 2018-08-27 at a reported $72 billion valuation, is the obvious candidate and the amounts match exactly — but that identification is inference, and neither the investor nor the $72 billion could be verified against a source fetched for this file. Recorded so the cap-table line survives; no lead, no valuation, not plotted.",
+      "sourceRefs": [0],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Uber's S-1 is the best pre-IPO disclosure in this dataset. Its preferred-stock note gives an issue price for every series (Seed $0.00906, A $0.09248, B $0.35448, C-1 $4.45438, C-2 $3.56350, C-3 $4.45438, D $15.51305, E $33.31758, F $39.638581, G and G-1 $48.772228) and its Item 15 lists twenty-five individual sales, month by month, from September 2015 to February 2019 — which is how the June 2016 Saudi cheque, the January 2018 SoftBank primary and the unattributed October 2018 $500 million can be pinned to the dollar. Round dates are Form D dates of first sale where EDGAR has one (Series B, Series C) and announcement or S-1 dates otherwise; EDGAR holds no Uber Form D before 2012, which is why the 2010 seed and the 2011 Series A rest on press and on the cap table. Two structural facts about the series letters: the press 'Series C' is three charter series (C-1, C-2, C-3) at two different prices, and the 'Series G' is not a round at all but a three-year, $6.9 billion rolling issuance at one fixed price, of which the December 2015 first close and the June 2016 PIF cheque are recorded separately here. The January 2018 SoftBank transaction is deliberately split into two events because it was two transactions at two prices on the same terms sheet — a secondary tender at $32.97 (~$48 billion) and a primary at $48.772228 (~$69 billion) — and collapsing them into one number would erase the most instructive data point in Uber's private history. The $1.15 billion leveraged loan of July 2016 and the 2016/2018 senior notes are debt and are excluded. On the public side: crossCheckTolPct is raised from the default 3.0 to 6.0 for one specific reason, which is a companiesmarketcap error rather than a pipeline one. companiesmarketcap puts Uber's 2020 year-end market cap at $89.95 billion, which at the $51.00 close implies 1,763,768,098 shares — exactly the count on the Q3 2020 cover page, filed six weeks before the Postmates acquisition closed. Uber's own balance sheet says 1,849,794,000 shares were outstanding on 2020-12-31, giving $94.3 billion; the pipeline computes $94.8 billion. The computed series is right and the reference is stale, so the ceiling is raised rather than the data bent. Every other year agrees to within 2.2%.",
+  "unresolved": [
+    "The 2010 seed round's amount, month and post-money. The S-1 dates no series, EDGAR has no Form D before 2012, and TechCrunch's 2010 UberCab coverage never mentions the financing.",
+    "The Series F's $51 billion valuation, which is repeated everywhere and sourced nowhere that could be fetched for this file. The Series F is recorded without a valuation as a result.",
+    "Whether the January 2018 SoftBank primary was at $68, $69 or $70 billion. TechCrunch says $69 billion twice; the other two figures are widely repeated and were not verifiable here.",
+    "The identity of the single accredited investor behind the October 2018 $500 million Series G-1 tranche. Toyota fits the amount and the timing but the S-1 does not say."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Uber Technologies, Inc. Form S-1, filed 2019-04-11",
+      "url": "https://www.sec.gov/Archives/edgar/data/1543151/000119312519103850/d647752ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "First Round Capital",
+      "url": "https://en.wikipedia.org/wiki/First_Round_Capital",
+      "type": "reference"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Huge Vote Of Confidence: Uber Raises $11 Million From Benchmark Capital",
+      "url": "https://techcrunch.com/2011/02/14/huge-vote-of-confidence-uber-raises-11-million-from-benchmark-capital/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Uber Technologies, Inc. Form D, filed 2012-02-27 (Series B, first sale 2011-11-23)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1543151/000154315112000001/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber Gets $32M From Menlo Ventures, Jeff Bezos And Goldman Sachs",
+      "url": "https://techcrunch.com/2011/12/07/uber-announces-32-million-in-funding/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Uber Technologies, Inc. Form D, filed 2013-08-27 (Series C, first sale 2013-08-01)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1543151/000116840413000011/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber Confirms That It Raised $258M From Google Ventures And TPG",
+      "url": "https://techcrunch.com/2013/08/23/uber-confirms-258m-raise/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber Raises Giant $1.2 Billion Funding Round At A $17 Billion Valuation",
+      "url": "https://techcrunch.com/2014/06/06/uber-1-2b/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber Confirms New $1.2B Funding Round At $40B Valuation",
+      "url": "https://techcrunch.com/2014/12/04/uber-confirms-new-1-2b-funding-round-looks-to-asia-for-expansion/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber Is Raising Another Couple Billion, At A $62.5 Billion Valuation",
+      "url": "https://techcrunch.com/2015/12/03/uber-is-raising-another-couple-billion-at-a-62-5-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber takes its most significant investment yet at $3.5 billion from Saudi Arabia",
+      "url": "https://techcrunch.com/2016/06/01/uber-takes-its-most-significant-investment-yet-at-3-5-billion-from-saudi-arabia/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "SoftBank's big investment in Uber comes to a close",
+      "url": "https://techcrunch.com/2017/12/28/softbanks-big-investment-in-uber-comes-to-a-close/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber's big SoftBank deal has officially closed",
+      "url": "https://techcrunch.com/2018/01/18/ubers-big-softbank-deal-has-officially-closed/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Uber prices IPO at $45 per share, raises $8.1B",
+      "url": "https://techcrunch.com/2019/05/09/uber-reportedly-prices-ipo-at-45-per-share/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "XBRL company facts for Uber Technologies, Inc. (CIK 0001543151)",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001543151.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Uber Technologies, Inc. Form 10-Q for the quarter ended 2026-06-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1543151/000154315126000032/uber-20260630.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Uber (UBER) market capitalization by year",
+      "url": "https://companiesmarketcap.com/uber/marketcap/",
+      "type": "database"
+    }
+  ]
+}

@@ -1,0 +1,966 @@
+{
+  "slug": "spacex",
+  "name": "SpaceX",
+  "cohort": "mega-cap",
+  "colorSlot": 2,
+  "dashSlot": 3,
+  "status": "public",
+  "founded": "2002-03-14",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "The IPO prospectus states it twice. The business section says 'We were founded and incorporated as Space Exploration Technologies Corp., a Delaware corporation, on March 14, 2002 and reincorporated as a Texas corporation on February 14, 2024', and Note 1 says 'SpaceX was incorporated in the state of Delaware on March 14, 2002 and converted into a corporation organized under the laws of the State of Texas on February 14, 2024.' No earlier partnership exists, and the 2024 Texas conversion is a change of domicile, not a new founding, so the original Delaware incorporation is used. The widely repeated date of 2002-05-06 is a de facto team-founding date: Wikipedia's History of SpaceX says the 'de facto founding date might instead be May 6' or around June, while 'According to filings, SpaceX was incorporated on March 14, 2002'. Later anchors from S-1 Exhibit 4.2: Musk's founding Class B shares were issued 2002-07-08 and the Series A purchase agreement is dated 2002-08-05.",
+  "public": {
+    "ticker": "SPCX",
+    "cik": "0001181412",
+    "cmcSlug": "spacex",
+    "ipoDate": "2026-06-12",
+    "publicFrom": "2026-06-12",
+    "sharesTag": "auto",
+    "regressions": [
+      {
+        "date": "2026-09-30",
+        "capUsd": 2048839271140,
+        "tolPct": 1.0
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "2002-08-05-series-a",
+      "date": "2002-08-05",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A (founder capital)",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 60000000,
+      "valuationUsd": null,
+      "note": "BELOW THE INCLUSION FLOOR: Elon Musk's own money, not a named firm. Date is the Series A Preferred Stock Purchase Agreement date listed in S-1 Exhibit 4.2 (Musk's founding Class B common was issued 2002-07-08, per the same exhibit). The S-1 preferred note gives Series A at a $1.00 original issue price with 60.4M shares (plus 0.2M of transferred Series A-1) outstanding at 2025-12-31 and a $60M liquidation preference; that is a floor on what was sold, and the purchases may have spanned several closings. Series A and B are the only high-vote series (they convert to Class B), which is Musk's class. Holders are not named in any filing. Series A, B and C together come to roughly $100M, matching the '$100M of personal money' VentureBeat attributes to Musk in 2009. No valuation exists.",
+      "sourceRefs": [
+        0,
+        2,
+        21
+      ],
+      "plot": false
+    },
+    {
+      "id": "2005-02-24-series-b",
+      "date": "2005-02-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B (founder capital)",
+      "charterSeries": "B",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 10000000,
+      "valuationUsd": null,
+      "note": "Below the floor, as for Series A. Date from the Series B purchase agreement in S-1 Exhibit 4.2. S-1 preferred note: $2.00 issue price, 5.1M shares (plus 0.1M Series B-1) outstanding, $10M liquidation preference. High-vote series, so Musk's capital by the same reasoning as Series A. A 2005-03-11 REGDEX paper filing exists on EDGAR but is not machine-readable. No valuation exists.",
+      "sourceRefs": [
+        0,
+        2
+      ],
+      "plot": false
+    },
+    {
+      "id": "2007-02-28-series-c",
+      "date": "2007-02-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 29000000,
+      "valuationUsd": null,
+      "note": "Treated as below the floor, with less certainty than A and B. Date from the Series C purchase agreement in S-1 Exhibit 4.2. S-1 preferred note: $3.00 issue price, 9.7M shares outstanding, $29M liquidation preference. Unlike A and B, Series C is low-vote (converts to Class A only), so the holder is not Musk by construction. But no filing names the purchaser, contemporaneous coverage describes SpaceX as privately financed by Musk until Founders Fund's 2008 cheque, and A + B + C come to about the $100M VentureBeat attributes to Musk. If a named firm led Series C it would clear the floor; nothing found says one did. A 2007-03-07 REGDEX paper filing exists but is not readable. No valuation exists.",
+      "sourceRefs": [
+        0,
+        2,
+        20,
+        21
+      ],
+      "plot": false
+    },
+    {
+      "id": "2008-07-21-series-d-founders-fund",
+      "date": "2008-07-21",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Founders Fund $20M (Series D)",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 20000000,
+      "valuationUsd": null,
+      "note": "THE FLOOR-CLEARING ROUND: SpaceX's first outside institutional money. Dated to the Series D Preferred Stock Purchase Agreement (2008-07-21, S-1 Exhibit 4.2). Musk told employees on 2008-08-02, after the third Falcon 1 failure, that he had already accepted an outside investment, and named Founders Fund and Luke Nosek's board seat in an Aug. 4 statement (Space.com, 2008-08-05). The S-1 confirms Nosek 'has served on our board since July 2008'. S-1 preferred note: $3.88 issue price, 5.2M shares outstanding (about $20.2M), but a $40M liquidation preference, i.e. apparently a 2x preference, which is the kind of term a company accepts days before a possibly fatal launch. No post-money was ever reported. A ~$315M post-money figure appears in search snippets from a VC blog with no primary attribution; it was not loaded and is not used.",
+      "sourceRefs": [
+        0,
+        2,
+        20,
+        21,
+        26
+      ],
+      "plot": false
+    },
+    {
+      "id": "2009-03-18-series-e-dfj",
+      "date": "2009-03-18",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "institutional": true,
+      "lead": "Draper Fisher Jurvetson",
+      "amountRaisedUsd": 46000000,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2009-03-18, which is also the Series E purchase-agreement date in Exhibit 4.2. The Form D reported $15,025,000 sold of a $60M offering, from 7 investors. VentureBeat (2009-06-29) confirmed with DFJ that it was 'the firm leading the round' and that it could grow to $60M. The amount used is the larger of the two documented floors: the S-1 shows 10.2M Series E shares at $4.50 outstanding, a $46M liquidation preference. Steve Jurvetson joined the board in March 2009 and is listed on the Form D; DFJ Growth's Randy Glein became a board observer in 2009, and Fortune reports DFJ Growth's first cheque was $10M. No valuation was ever reported.",
+      "sourceRefs": [
+        0,
+        2,
+        3,
+        21,
+        22
+      ],
+      "plot": false
+    },
+    {
+      "id": "2010-10-28-series-f",
+      "date": "2010-10-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": "F",
+      "institutional": true,
+      "lead": "Undisclosed (Valor Equity Partners entered in this series)",
+      "amountRaisedUsd": 50199998,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2010-10-28 (also the Series F purchase-agreement date): $50,199,998 sold of a $50,625,000 offering, from 16 investors. The S-1 agrees: 6.7M shares at $7.50, $50M liquidation preference. No lead was reported. Valor's entry is documented three ways: Antonio Gracias 'has served on our board since October 2010' (S-1), he first appears as a director on this Form D, and Exhibit 4.2 lists a 'Valor R&D Series, LLC - Series F' entity. That is strong evidence Valor bought in, but not that it led, so it is not asserted as lead. No valuation was ever reported.",
+      "sourceRefs": [
+        0,
+        2,
+        4
+      ],
+      "plot": false
+    },
+    {
+      "id": "2012-12-dfj-secondary",
+      "date": "2012-12-01",
+      "datePrecision": "month",
+      "kind": "secondary_mark",
+      "roundName": "Late-2012 DFJ-led share purchase",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": "Draper Fisher Jurvetson (per Pando, as relayed by Global Venturing)",
+      "amountRaisedUsd": 30000000,
+      "valuationUsd": null,
+      "note": "Not plotted, and it is not a priced preferred round: the S-1 shows no preferred series between F (2010) and G (2015), and SpaceX filed no Form D between November 2010 and January 2015. Global Venturing (2015-01-20), citing Pando, says SpaceX 'raised $30m in a round led by venture capital firm Draper Fisher Jurvetson in late 2012 that valued it at between $4bn and $5bn'. TechCrunch (2014) notes CrunchBase's 'last round disclosed in December 2012'. With no filing trace the transaction was most likely a purchase of existing common shares, so its price is a secondary mark rather than a company valuation, and a $4B-$5B range is not a number to plot. Earlier 2012 marks recorded by Wikipedia: about $1.3B (February 2012, from secondary pricing of Musk's stake) and about $2.4B or '$20/share' after the May 2012 COTS 2+ flight. Neither has primary attribution.",
+      "sourceRefs": [
+        23,
+        25,
+        26,
+        52
+      ],
+      "plot": false
+    },
+    {
+      "id": "2015-01-20-series-g",
+      "date": "2015-01-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Google and Fidelity $1B (Series G)",
+      "charterSeries": "G",
+      "institutional": true,
+      "lead": "Google and Fidelity",
+      "amountRaisedUsd": 999999925,
+      "valuationUsd": 12000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2015-01-20: $999,999,925 sold from 13 investors (the Series G purchase agreement is dated 2015-01-16). S-1: $77.46 issue price, 12.6M shares still outstanding. Reuters (via Fortune) says only that Google and Fidelity together hold 'just under 10%'; Donald Harrison of Google joined the board in February 2015. The valuation conflicts across outlets: Wikipedia, citing the WSJ, gives 8.33% for $1B, about $12B. The FT, relayed by Global Venturing, said 'more than $10bn'. CNBC (2017) said 'around $11 billion' and Fortune (2018) said $10B. The highest well-sourced figure, $12B, is used and the others are rejected here. SpaceX never confirmed a valuation, and the WSJ piece itself was not loaded, so this is soft.",
+      "sourceRefs": [
+        0,
+        2,
+        5,
+        23,
+        24,
+        25,
+        27,
+        28
+      ],
+      "plot": true
+    },
+    {
+      "id": "2017-07-26-series-h",
+      "date": "2017-07-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series H",
+      "charterSeries": "H",
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 449999820,
+      "valuationUsd": 21000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2017-07-26. The D/A shows the offering grew from $351M to $449,999,820, from 25 investors, which divides into exactly 3,333,332 shares at the S-1's $135.00 Series H price. CNBC (2017-07-27) reported 'up to $350 million' with SpaceX 'now valued at around $21 billion', from filings obtained by Equidate. Fortune (2018) cites PitchBook's $20.8B for the completed $450M. The two figures are close; the higher, $21B, is used and $20.8B is rejected here. No lead was reported.",
+      "sourceRefs": [
+        0,
+        6,
+        27,
+        28
+      ],
+      "plot": true
+    },
+    {
+      "id": "2018-04-05-series-i",
+      "date": "2018-04-05",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series I",
+      "charterSeries": "I",
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 499000000,
+      "valuationUsd": 26000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2018-04-05: $214,000,137 sold at filing (exactly 1,266,273 shares at $169) of a $500,000,189 offering. The amount used is the larger documented floor, the S-1's $499M Series I liquidation preference (3.0M shares at $169.00). The valuation conflicts: Reuters (2018-04-12), from the filing, says 'around $26 billion' and notes the $169 price was 25% above the prior round. Fortune and Bloomberg, both citing PitchBook (so one source), say $25B. The higher, $26B, is used and $25B is rejected here. No lead was reported.",
+      "sourceRefs": [
+        0,
+        7,
+        28,
+        29
+      ],
+      "plot": true
+    },
+    {
+      "id": "2018-12-21-series-j",
+      "date": "2018-12-21",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series J",
+      "charterSeries": "J",
+      "institutional": true,
+      "lead": "Undisclosed (Baillie Gifford named as a participant)",
+      "amountRaisedUsd": 486198978,
+      "valuationUsd": 30500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2018-12-21. The D/A total of $486,198,978 from 8 investors is exactly 2,613,973 shares at the S-1's $186.00 Series J price. Fortune (2018-12-18), relaying the WSJ, gives the $30.5B valuation and names Baillie Gifford among the investors, without a lead. CNBC (2019-05-31) repeats 'valued at $30.5 billion'. Exhibit 4.2 separately carves out Fidelity's and Baillie Gifford's right to disclose their holdings. Soft, because both outlets trace to the same WSJ report and SpaceX never confirmed.",
+      "sourceRefs": [
+        0,
+        2,
+        8,
+        30,
+        31
+      ],
+      "plot": true
+    },
+    {
+      "id": "2019-04-08-series-k",
+      "date": "2019-04-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series K",
+      "charterSeries": "K",
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 535744188,
+      "valuationUsd": 33300000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2019-04-08. The D/A total of $535,744,188 from 5 investors is exactly 2,626,197 shares at the S-1's $204.00 Series K price. CNBC (2019-05-31): 'the company's latest round brought in $536 million at a price of $204 a share' and the value 'has risen to $33.3 billion', from people familiar with the fundraising. Single outlet, anonymous sourcing.",
+      "sourceRefs": [
+        0,
+        9,
+        31,
+        25
+      ],
+      "plot": true
+    },
+    {
+      "id": "2019-06-24-series-l",
+      "date": "2019-06-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series L",
+      "charterSeries": "L",
+      "institutional": true,
+      "lead": "Ontario Teachers' Pension Plan",
+      "amountRaisedUsd": 295000000,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2019-06-24: $214,000,000 sold at filing (exactly 1,000,000 shares at $214) to a single investor, of a $313,999,846 offering. CNBC (2019-06-28) gives $314.15M at $214 a share with 'new investor Ontario Teachers' Pension Plan'. The amount used is the S-1's $295M Series L liquidation preference (1.4M shares outstanding). No outlet reported a valuation for this round; CNBC's $33.3B figure was attached to the April round. Carrying it forward, or scaling it by the $204-to-$214 price step, would be back-solving, so the valuation is null and the round is not plotted.",
+      "sourceRefs": [
+        0,
+        10,
+        32
+      ],
+      "plot": false
+    },
+    {
+      "id": "2020-02-28-series-m",
+      "date": "2020-02-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series M",
+      "charterSeries": "M",
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 596000000,
+      "valuationUsd": 36000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2020-02-28. The D/A reports $346,224,340 sold (exactly 1,573,747 shares at $220), and CNBC (2020-05-26) reports the same $346.2M at 'a valuation of around $36 billion'. CNBC (2020-03-09) had reported $500.06M authorized at $220 a share, valuing SpaceX at around $36B. The S-1 shows 2.7M Series M shares outstanding, a $596M liquidation preference, so about $250M more was sold after the last Form D amendment; the S-1 figure is used. Single outlet.",
+      "sourceRefs": [
+        0,
+        11,
+        33,
+        34
+      ],
+      "plot": true
+    },
+    {
+      "id": "2020-08-04-series-n",
+      "date": "2020-08-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series N",
+      "charterSeries": "N",
+      "institutional": true,
+      "lead": "Undisclosed (Bloomberg reported Fidelity among the largest participants, unconfirmed)",
+      "amountRaisedUsd": 2520000000,
+      "valuationUsd": 46000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2020-08-04 (also the Series N purchase-agreement date): $1,901,446,920 sold at filing (exactly 7,042,396 shares at $270) from 75 investors, of a $2,066,446,620 offering. The S-1 shows 9.3M Series N shares outstanding, a $2,520M liquidation preference, so later closings went past the Form D. The S-1 figure is used. TechCrunch (2020-08-18) says Bloomberg 'pegged the post-money valuation of SpaceX at $46 billion following this raise', and CNBC (2021-02-16) independently describes the round as 'near $2 billion at a $46 billion valuation'. An October 2020 CNBC mention of $44B is the rejected lower figure. Soft, because SpaceX never confirmed.",
+      "sourceRefs": [
+        0,
+        2,
+        12,
+        35,
+        36
+      ],
+      "plot": true
+    },
+    {
+      "id": "2021-02-16-common-raise",
+      "date": "2021-02-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$1.16B equity round at $419.99/share",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 1164061924,
+      "valuationUsd": 74000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2021-02-16; the April 2021 D/A raised the total to $1,164,061,924 from 99 investors. It is the first raise after Series N and created no new preferred series. CNBC (2021-02-16): $850M 'at $419.99 a share', 'sending the company's valuation skyrocketing to about $74 billion', with a concurrent $750M insider secondary at the same terms. CNBC (2021-04-14) confirms the second close to $1.16B. Wikipedia's '$1.61 billion from 99 investors' is a transposition of the filed $1.16B. Single outlet, anonymous sourcing.",
+      "sourceRefs": [
+        13,
+        36,
+        37,
+        25
+      ],
+      "plot": true
+    },
+    {
+      "id": "2021-10-08-tender-100b",
+      "date": "2021-10-08",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Insider share sale at $560/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 100300000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Company-arranged secondary: CNBC (2021-10-08) reports 'an agreement with new and existing investors' to 'sell up to $755 million in stock from insiders at $560 a share', 'increasing the company's valuation to $100.3 billion'. No new capital was raised, so amountRaisedUsd is null and $755M is the offer ceiling. Secondary price, soft. Date is the report date; closing was not disclosed.",
+      "sourceRefs": [
+        38
+      ],
+      "plot": true
+    },
+    {
+      "id": "2021-12-14-equity-raise",
+      "date": "2021-12-14",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$337M equity raise",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 337355200,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2021-12-14: $337,355,200 from 35 investors, fully sold. Reuters (2021-12-30) reported the filing without a price or valuation. The total is exactly 602,420 shares at $560, the October 2021 insider-sale price, which suggests the raise priced at the same ~$100B. But no outlet reported that, and inferring it would be carrying a valuation forward, so it is null and the round is not plotted.",
+      "sourceRefs": [
+        14,
+        39
+      ],
+      "plot": false
+    },
+    {
+      "id": "2022-05-27-equity-raise",
+      "date": "2022-05-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$1.725B equity round at $70/share",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Undisclosed",
+      "amountRaisedUsd": 1724965480,
+      "valuationUsd": 127000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2022-05-27; the D/A shows $1,724,965,480 fully sold from 74 investors, exactly 24,642,364 shares at $70. CNBC (2022-05-22), from a company-wide email, reported 'up to $1.725 billion in new capital, at a price of $70 per share', 'sending the private company's valuation to about $127 billion', plus a separate up-to-$750M insider secondary. The $70 is post the February 2022 10-for-1 split ($700 on the old basis). Single outlet, but based on a company document.",
+      "sourceRefs": [
+        0,
+        15,
+        40
+      ],
+      "plot": true
+    },
+    {
+      "id": "2022-07-20-equity-raise",
+      "date": "2022-07-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$250M equity raise",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Undisclosed (five investors per the filing)",
+      "amountRaisedUsd": 249999890,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2022-07-20: $249,999,890 from 5 investors. CNBC (2022-08-05): SpaceX 'did not disclose a change in its valuation', and the raise brought its 2022 total to $2B. The total is exactly 3,571,427 shares at $70, the May price, but no valuation was reported for this raise, so it is null and not plotted.",
+      "sourceRefs": [
+        16,
+        41
+      ],
+      "plot": false
+    },
+    {
+      "id": "2023-01-02-tender-137b",
+      "date": "2023-01-02",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Insider share sale at $77/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 137000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "SpaceX filed no Form D after July 2022, so every later private-market transaction was a sale of existing shares. CNBC (2023-01-02) reported a $750M deal that 'values the company at $137 billion', with Andreessen Horowitz 'likely' to lead per an email to prospective investors. It cites Bloomberg's report that SpaceX was 'allowing insiders to sell at $77 per share'. Fortune (2026) confirms a16z first backed SpaceX in 2023 'when the company was still valued at $137 billion'. Date is the CNBC report date. Secondary price, soft.",
+      "sourceRefs": [
+        42,
+        22
+      ],
+      "plot": true
+    },
+    {
+      "id": "2023-07-13-tender-150b",
+      "date": "2023-07-13",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Insider share sale at $81/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 150000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "CNBC (2023-07-13): a purchase offer 'sent by CFO Bret Johnsen' to sell 'up to $750 million in stock from insiders' at '$81 a share', putting the valuation 'near $150 billion'. No new capital. Secondary price, soft.",
+      "sourceRefs": [
+        43
+      ],
+      "plot": true
+    },
+    {
+      "id": "2023-12-13-tender-180b",
+      "date": "2023-12-13",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Tender offer at $97/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 180000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "CNBC (2023-12-13) confirmed the valuation 'hit $180 billion based on an ongoing secondary share sale' at '$97 a share', 'expected to close in January'. Reuters, relaying Bloomberg, says the price rose from about $95 to $97 and puts the size at $500M-$750M. No new capital. Two outlets agree, but a tender price is soft by method.",
+      "sourceRefs": [
+        44,
+        45
+      ],
+      "plot": true
+    },
+    {
+      "id": "2024-06-26-tender-210b",
+      "date": "2024-06-26",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Tender offer at $112/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 210000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Bloomberg (2024-06-26, via Yahoo Finance): SpaceX 'will sell insider shares at $112 apiece in a tender offer', lifting its value 'closer to $210 billion'; terms not final. CNBC (2024-12-11) later refers to the $210B 'reached in a June 2024 secondary sale'. Secondary price, soft.",
+      "sourceRefs": [
+        46,
+        47
+      ],
+      "plot": true
+    },
+    {
+      "id": "2024-12-11-tender-350b",
+      "date": "2024-12-11",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Tender offer and buyback at $185/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 350000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "CNBC (2024-12-11): a $1.25B purchase offer at '$185 a share' values SpaceX at $350B, with SpaceX itself buying up to $500M ('a rare share buyback') alongside investors, and 'no new capital'. The S-1 records $920M of common-stock repurchases from employees and holders in 2024. Bloomberg first reported the pricing. Secondary price, soft.",
+      "sourceRefs": [
+        47,
+        0
+      ],
+      "plot": true
+    },
+    {
+      "id": "2025-07-15-tender-400b",
+      "date": "2025-07-15",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Insider share sale at $212/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 400000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Bloomberg (via the Spokesman-Review, 2025-07-15): a share sale at '$212' a share 'would value the company at about $400 billion', with SpaceX repurchasing up to $1.25B from employees and other holders. The S-1 independently corroborates the price: the October 2025 409A option strike and the September 2025 EchoStar share consideration are both $42.40, which is $212 on the pre-May-2026 basis (5-for-1 split). S-1: $522M of common repurchased in 2025. Date is the report date. Secondary price, soft.",
+      "sourceRefs": [
+        48,
+        0,
+        1
+      ],
+      "plot": true
+    },
+    {
+      "id": "2025-12-12-tender-800b",
+      "date": "2025-12-12",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Insider share sale at $421/share",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 800000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Reuters (via CNBC, 2025-12-13) read CFO Bret Johnsen's shareholder letter 'dated Dec. 12': 'new and existing investors and the company will buy up to $2.56 billion of shares from eligible shareholders at $421 a share', valuing SpaceX at $800B. Bloomberg and the NYT also reported it. Dated to the letter. Company-run, so plotted, but a secondary price, so soft.",
+      "sourceRefs": [
+        49
+      ],
+      "plot": true
+    },
+    {
+      "id": "2026-06-12-ipo",
+      "date": "2026-06-12",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO (Nasdaq: SPCX)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 86249999880,
+      "valuationUsd": 1776491798580,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "THE FIGURE IS THE OFFERING PRICE x POST-OFFERING SHARES, NOT THE FIRST-DAY CLOSE. The 424B4 (dated 2026-06-11) prices 555,555,555 Class A shares at a fixed $135.00, with an 83,333,333-share over-allotment. The Q2 10-Q confirms the option was exercised in full at the 2026-06-15 closing: 638,888,888 shares for $86,249,999,880 gross ($85,675M net). Shares outstanding after the offering with full exercise, per the 424B4, are 7,463,530,243 Class A plus 5,695,668,265 Class B = 13,159,198,508, x $135 = $1,776,491,798,580. The base case without the option is $1,765,241,798,625, the '$1.77 trillion' CNBC and Wikipedia report. The count includes 1,302,072,285 unvested performance-restricted Class B shares granted to Musk in 2026; without them the offering value is ~$1.60T. Pricing was 2026-06-11 and trading opened 2026-06-12 at $150. CNBC reports a first close of $160.95, valuing SpaceX at $2.1T. That close is left to the pipeline's public series, as plotting it here would assert SpaceX sold stock at that price.",
+      "sourceRefs": [
+        0,
+        17,
+        50,
+        51
+      ],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "SOURCING. The S-1 preferred-stock note (424B4 Note 13) lists every SpaceX series, A through N, with original issue price and shares outstanding. S-1 Exhibit 4.2 dates each series' purchase agreement (A 2002-08-05, B 2005-02-24, C 2007-02-28, D 2008-07-21, E 2009-03-18, F 2010-10-28, G 2015-01-16, H 2017-07-26, I 2018-04-05, J 2018-12-21, K 2019-04-08, L 2019-06-24, M 2020-02-28, N 2020-08-04). The electronic Form Ds (2009 onward) match those dates, and every Form D total from 2017 on divides into a whole share count at the matching S-1 series price. That pins the series-to-round mapping without relying on press labels. AMOUNTS use the larger of two documented floors: the Form D total sold (as of filing) and the S-1 liquidation preference of the shares still outstanding at 2025-12-31 (net of buybacks). Series M and N closed roughly $250M and $620M beyond their last Form D amendments. PER-SHARE BASIS: S-1 issue prices are pre-split. Common split 10-for-1 in February 2022 and 5-for-1 on 2026-05-04, and each preferred share converted into 50 Class A or B shares at the IPO. Press prices before 2022 ($419.99, $560) are on the oldest basis, 2022-2025 prices ($70-$421) on the middle basis, and the $135 IPO price on today's basis. VALUATIONS: none was ever company-confirmed before the IPO, so every private figure is soft. The pre-2015 rounds (Founders Fund, DFJ, Series F) never had a post-money reported, so the plotted line starts in 2015, 13 years after founding, and the gap is honest. WHAT THE SCHEMA CANNOT HOLD: (1) The xAI merger, effective 2026-02-02, was an all-stock share exchange, not a priced round or tender. Wikipedia reports it valued SpaceX at $1T and xAI at $250B ($1.25T combined). The S-1 gives the mechanics: 0.1433 SpaceX shares or $75.46 cash per xAI share (pre-split), which implies about $526.59 per SpaceX share pre-split ($105.32 post-split); that is my arithmetic, not a filed figure. The S-1 shows SpaceX repurchasing shares after 2026-03-31 at a weighted-average $105.32, which corroborates it. The merger is excluded from events because no event kind fits, but it is the only private mark between the $800B December 2025 tender and the IPO. (2) Cursor (Anysphere) was acquired after the IPO under a 2026-06-16 merger agreement at a $60.0B implied equity value. It closed 2026-08-14 for 391,041,680 Class A shares (389,289,254 for equity plus 1,752,426 for vested RSUs, per the 8-K). It is not a valuation event for SpaceX, but it is why the cover-page share count rises between Q2 and Q3 2026. (3) The EchoStar spectrum purchase (261.8M Class A shares at $42.40) had not closed at the IPO and is excluded from the offering share count. PUBLIC SERIES: SpaceX has two share classes, so its dei:EntityCommonStockSharesOutstanding is dimensional and absent from the companyfacts API. The only non-dimensional share tag, WeightedAverageNumberOfSharesOutstandingBasic, has just 4 quarterly rows (Q2/Q3 2025, Q2/Q3 2026), under the pipeline's 8-row minimum. That tag would also understate cap by about 12%, because it excludes Musk's ~1.3B unvested restricted Class B shares, which the aggregators include. So until enough 10-Qs accumulate, the pipeline cannot compute quarterly caps and falls back to companiesmarketcap's single 2026 row. REGRESSION: hand computation from filed figures, Q3 2026 10-Q cover (2026-10-15): 8,246,541,218 Class A + 5,334,522,491 Class B = 13,581,063,709 shares, x the stockanalysis 2026-09-30 close of $150.86 = $2.0488T. The same count x the 2026-11-06 close of $134.27 gives $1.8235T, which matches companiesmarketcap's $1.823T exactly, so the aggregators use the full two-class cover count.",
+  "unresolved": [
+    "Who bought Series C (2007-02-28, $29M at $3.00). It is low-vote, so not Musk's by construction, but no filing names the holder. Treated as founder-era money below the floor.",
+    "Post-money valuations for the 2008 Founders Fund, 2009 DFJ and 2010 Series F rounds were never reported. A ~$315M figure for 2008 circulates only on a VC blog with no attribution.",
+    "The late-2012 DFJ-led $30M transaction (Pando, via Global Venturing, $4B-$5B): no Form D and no preferred series, so its structure is unknown and it is recorded as a non-plotted secondary mark.",
+    "Lead investors for every round from 2017 to 2022 except Series L. SpaceX never named them and no outlet reported one.",
+    "Why the S-1 shows ~$250M more Series M and ~$620M more Series N than the last Form D amendments. Later closings were never filed.",
+    "The xAI merger valuation ($1T SpaceX, 2026-02-02) has no event kind in the schema and is recorded only in curatorNotes.",
+    "Closing dates and final sizes of the 2021-2025 insider share sales were never disclosed. Event dates are report or CFO-letter dates.",
+    "Public market cap: the pipeline cannot compute SpaceX's quarterly series yet. There is no non-dimensional dei cover count (two share classes), and the weighted-average fallback has 4 quarterly rows against the 8 the pipeline requires."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Space Exploration Technologies Corp. Form 424B4 final IPO prospectus (dated 2026-06-11, filed 2026-06-12)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Space Exploration Technologies Corp. Form S-1/A Amendment No. 2 (2026-06-03), incl. Part II Item 15",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026040364/spaceexplorationtechnologib.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form S-1 Exhibit 4.2: Amended and Restated Investors' Rights Agreement dated 2020-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/exhibit42-sx1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-09-000003), first sale 2009-03-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141209000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-10-000001), first sale 2010-10-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141210000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-15-000001), first sale 2015-01-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141215000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-17-000002), first sale 2017-07-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141217000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-18-000001), first sale 2018-04-05",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141218000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-19-000004), first sale 2018-12-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141219000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-19-000003), first sale 2019-04-08",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141219000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-19-000005), first sale 2019-06-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141219000005/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-20-000002), first sale 2020-02-28",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141220000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-20-000003), first sale 2020-08-04",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141220000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-21-000002), first sale 2021-02-16",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141221000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-21-000004), first sale 2021-12-14",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141221000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D/A (0001181412-22-000002), first sale 2022-05-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141222000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form D (0001181412-22-000003), first sale 2022-07-20",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000118141222000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Space Exploration Technologies Corp. Form 10-Q, quarter ended 2026-06-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026052535/spcx-20260630.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Space Exploration Technologies Corp. Form 10-Q, quarter ended 2026-09-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026066880/spcx-20260930.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form 8-K (2026-08-14): completion of the Anysphere (Cursor) merger",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026056945/spcx-20260814.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Space.com",
+      "title": "PayPal Co-Founders Invest $20 Million in SpaceX",
+      "url": "https://www.space.com/5701-paypal-founders-invest-20-million-spacex.html",
+      "type": "press"
+    },
+    {
+      "outlet": "VentureBeat",
+      "title": "SpaceX raising another $60M for private space travel",
+      "url": "https://venturebeat.com/technology/spacex-raising-another-60m-for-private-space-travel",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Founders Fund, Andreessen Horowitz, Valor, and the biggest VC winners from SpaceX's IPO",
+      "url": "https://fortune.com/2026/06/12/founders-fund-andreessen-horowitz-valor-and-the-biggest-vc-winners-from-spacexs-ipo/",
+      "type": "press"
+    },
+    {
+      "outlet": "Global Venturing",
+      "title": "SpaceX confirms $1bn Google-backed round",
+      "url": "https://globalventuring.com/blog/2015/01/20/spacex-confirms-1bn-google-backed-round/",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune (Reuters)",
+      "title": "SpaceX raises $1 billion in funding from Google, Fidelity",
+      "url": "https://fortune.com/2015/01/21/spacex-raises-1-billion-in-funding-from-google-fidelity/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "SpaceX",
+      "url": "https://en.wikipedia.org/wiki/SpaceX",
+      "type": "reference"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "History of SpaceX",
+      "url": "https://en.wikipedia.org/wiki/History_of_SpaceX",
+      "type": "reference"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX is now one of the world's most valuable privately held companies",
+      "url": "https://www.cnbc.com/2017/07/27/spacex-is-now-one-of-the-worlds-most-valuable-privately-held-companies.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Elon Musk's SpaceX worth $25 billion",
+      "url": "https://fortune.com/2018/04/13/elon-musks-spacex-worth-25-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "Investing.com (Reuters)",
+      "title": "SpaceX looks to raise $507 million in a new funding round: filing",
+      "url": "https://investing.com/news/stock-market-news/spacex-looks-to-raise-507-million-in-a-new-funding-round-filing-1392862",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "SpaceX raising $500M private round valuing company at $30.5B",
+      "url": "https://fortune.com/2018/12/18/spacex-raising-500m-private-round-valuing-company-30b/",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX valuation rises to $33.3 billion as investors look to satellite opportunity",
+      "url": "https://www.cnbc.com/2019/05/31/spacex-valuation-33point3-billion-after-starlink-satellites-fundraising.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX funding round matches to five digits of pi: $314.15 million",
+      "url": "https://www.cnbc.com/2019/06/28/spacex-funding-round-matches-to-five-digits-of-pi-314point15-million.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX raising $500 million in new funding for Elon Musk's company",
+      "url": "https://www.cnbc.com/2020/03/09/spacex-raising-500-million-in-new-funding-for-elon-musks-company.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX raised $346.2 million in its most recent funding round",
+      "url": "https://www.cnbc.com/2020/05/26/spacex-raised-over-567-million-in-first-2020-funding-round.html",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "SpaceX raises $1.9 billion in largest funding round to date",
+      "url": "https://techcrunch.com/2020/08/18/spacex-raises-1-9-billion-in-largest-funding-found-to-date/",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Elon Musk's SpaceX raised $850 million, jumping valuation to about $74 billion",
+      "url": "https://www.cnbc.com/2021/02/16/elon-musks-spacex-raised-850-million-at-419point99-a-share.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX adds to previous equity round, pushing Elon Musk's last raise total to nearly $1.2 billion",
+      "url": "https://www.cnbc.com/2021/04/14/elon-musks-spacex-amends-february-equity-raise-to-nearly-1point2-billion.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Elon Musk's SpaceX hits $100 billion valuation after secondary share sale",
+      "url": "https://www.cnbc.com/2021/10/08/elon-musks-spacex-valuation-100-billion.html",
+      "type": "press"
+    },
+    {
+      "outlet": "The Star (Reuters)",
+      "title": "Elon Musk's SpaceX raises over $337 million in fresh funding",
+      "url": "https://www.thestar.com.my/tech/tech-news/2021/12/30/elon-musk039s-spacex-raises-over-337-million-in-fresh-funding",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX looks to raise $1.7 billion in new funding, boosting its valuation to $127 billion",
+      "url": "https://www.cnbc.com/2022/05/22/elon-musks-spacex-looks-to-raise-1point7-billion-in-new-funding.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX raises another $250 million in equity, lifts total to $2 billion in 2022",
+      "url": "https://www.cnbc.com/2022/08/05/elon-musks-spacex-raises-250-million-in-equity.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX raising $750 million at a $137 billion valuation, investors include Andreessen-Horowitz",
+      "url": "https://www.cnbc.com/2023/01/02/spacex-raising-750-million-at-137-billion-valuation-a16z-investing.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Elon Musk's SpaceX nears $150 billion valuation after secondary share sale",
+      "url": "https://www.cnbc.com/2023/07/13/elon-musk-spacex-near-150-billion-valuation.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX value climbs to $180 billion, higher than Boeing, Verizon",
+      "url": "https://www.cnbc.com/2023/12/13/spacex-value-climbs-to-180-billion-higher-than-boeing-verizon.html",
+      "type": "press"
+    },
+    {
+      "outlet": "The Star (Reuters)",
+      "title": "Musk's SpaceX value jumps closer to $180 billion in tender offer - Bloomberg News",
+      "url": "https://www.thestar.com.my/tech/tech-news/2023/12/13/musk039s-spacex-value-jumps-closer-to-180-billion-in-tender-offer---bloomberg-news",
+      "type": "press"
+    },
+    {
+      "outlet": "Yahoo Finance (Bloomberg)",
+      "title": "SpaceX Tender Offer Said to Value Company at Record $210 Billion",
+      "url": "https://uk.finance.yahoo.com/news/spacex-tender-offer-said-value-033228319.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX valuation surges to $350 billion as company buys back stock",
+      "url": "https://www.cnbc.com/2024/12/11/spacex-valuation-surges-to-350-billion-as-company-buys-back-stock.html",
+      "type": "press"
+    },
+    {
+      "outlet": "The Spokesman-Review (Bloomberg)",
+      "title": "SpaceX plans share sale that would value company at about $400 billion",
+      "url": "https://www.spokesman.com/stories/2025/jul/15/spacex-plans-share-sale-that-would-value-company-a/",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX insider share sale sets $800 billion valuation amid possible IPO, Reuters reports",
+      "url": "https://www.cnbc.com/2025/12/13/musk-spacex-insider-share-sale-sets-800-billion-valuation.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX raising $75 billion in record-setting IPO as Nasdaq debut awaits",
+      "url": "https://www.cnbc.com/2026/06/11/spacex-raises-75-billion-in-record-setting-ipo-ahead-of-nasdaq-debut.html",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "SpaceX IPO takeaways: SPCX closes at $161, jumping 19% after record debut",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Elon Musk's SpaceX Is Raising Money At A Valuation Approaching $10B",
+      "url": "https://techcrunch.com/2014/08/19/spacex/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Form 8-K (2026-06-16): Agreement and Plan of Merger with Anysphere (Cursor)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026043411/spaceexplorationtechnologi.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "SpaceX (SPCX) - Market capitalization",
+      "url": "https://companiesmarketcap.com/spacex/marketcap/",
+      "type": "database"
+    }
+  ]
+}

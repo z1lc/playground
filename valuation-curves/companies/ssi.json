@@ -1,0 +1,195 @@
+{
+  "slug": "ssi",
+  "name": "Safe Superintelligence",
+  "cohort": "ai",
+  "colorSlot": 7,
+  "dashSlot": 3,
+  "status": "private",
+  "founded": "2024-06-19",
+  "foundedPrecision": "day",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Dated to the public launch on 2024-06-19 (a Wednesday), when Ilya Sutskever announced Safe Superintelligence Inc. on X with co-founders Daniel Gross and Daniel Levy. TIME reported it the same day, and Wikipedia's infobox gives the same date. Every source cites this date, but it marks a launch announcement, not a filing. The company may have been organised in the weeks before, since Sutskever left OpenAI in mid-May 2024. Per OpenCorporates, the legal entity is Safe Superintelligence Inc., a Delaware domestic corporation (file no. 3863845, registered agent Incorporating Services, Ltd). It also has a California out-of-state registration (no. 6355390, 317 University Avenue, Palo Alto). OpenCorporates hides both incorporation dates behind a login. Delaware's own entity search is captcha-gated, and California bizfile blocks scripted queries. SSI has filed no Form D. EDGAR full-text and company-name searches for 'Safe Superintelligence' return nothing; the only 'Superintelligence' filers are two unrelated 2026 funds. The Delaware file number cannot date the filing either. It sits among 2004-era entities, but Delaware handed out low numbers again in 2024 (Black Forest Labs Inc., founded 2024, is no. 3228309), so the number says nothing about when the company was formed.",
+  "events": [
+    {
+      "id": "2024-09-04-1b",
+      "date": "2024-09-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$1B round",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "NFDG, Andreessen Horowitz, Sequoia Capital, DST Global and SV Angel (no lead named)",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": 5000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "SSI announced on its own updates page that it had raised $1B from NFDG, a16z, Sequoia, DST Global and SV Angel, and it gave no valuation. The $5B figure comes only from Reuters, which cited unnamed 'sources close to the matter'. TechCrunch and others repeat Reuters rather than reporting it independently, so this is a single-outlet figure and is plotted hollow. NFDG is the investment partnership of Nat Friedman and Daniel Gross, who was SSI's CEO at the time, so it was an insider vehicle. No source names a lead, and SSI has never used a series letter.",
+      "sourceRefs": [1, 2, 3],
+      "plot": true
+    },
+    {
+      "id": "2025-04-11-greenoaks",
+      "date": "2025-04-11",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$2B round",
+      "charterSeries": null,
+      "nameConflict": "TechCrunch's July 2026 recap dates this round to 'Feb 2025', which mixes it up with the February fundraising talks. Wikipedia, citing the WSJ, puts it in March 2025 at $30B.",
+      "institutional": true,
+      "lead": "Greenoaks",
+      "amountRaisedUsd": 2000000000,
+      "valuationUsd": 32000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "SSI never commented. The Financial Times reported a $2B raise at $32B, with Greenoaks committing $500M; TechCrunch and Maginative relayed this, and the FT itself could not be fetched. Reuters, from its own sources, reported the same day that SSI 'was recently valued at $32 billion in a round led by Greenoaks'. That makes two independent tier-1 outlets agreeing on one figure, so it is marked confirmed. The basis (pre or post) is never stated. The round was in the market from February 2025. Reuters reported talks at 'at least $20 billion' on 2025-02-07, and Bloomberg reported on 2025-02-17 (relayed by TechCrunch) more than $1B at 'over $30 billion', with Greenoaks pledging $500M. Wikipedia cites a March 2025 WSJ report of $30B led by Greenoaks, which is paywalled and was not read. Under the conflict rule the later, higher $32B is used. The date is when the closed raise was first reported (Reuters on the evening of 2025-04-11 US time; TechCrunch's FT relay on 2025-04-12); the actual close date was never disclosed. Calcalist lists a16z, Lightspeed and DST Global as participants. The same Reuters story says Alphabet and Nvidia also invested, but Reuters 'could not determine the exact terms', and no source says whether that money sits inside this $2B.",
+      "sourceRefs": [5, 6, 7, 8, 4],
+      "plot": true
+    },
+    {
+      "id": "2026-07-27-nvidia",
+      "date": "2026-07-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "NVIDIA strategic investment",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "NVIDIA",
+      "amountRaisedUsd": 5000000000,
+      "valuationUsd": null,
+      "note": "SSI and NVIDIA announced a 'long-term strategic partnership' to scale SSI's compute roughly tenfold on NVIDIA's Vera Rubin platform. Neither company disclosed the investment amount or a valuation. SSI's updates page dates its post 2026-07-26; the GlobeNewswire release is dated 2026-07-27. Bloomberg first reported $5B. Reuters, citing a person briefed on the deal, separately reported 'a $5 billion equity investment'. TechCrunch's source said only that it 'stretches into multiple billions'. Per Moneywise, the FT notes that commitments this size are often tied to milestones, so the $5B may be paid in stages. No outlet read gives a price for this investment. The $32B that appears alongside it in coverage is the April 2025 mark repeated by the press, not a new price, so valuationUsd is null and this event is not plotted. The instrument (priced equity or otherwise) was never disclosed.",
+      "sourceRefs": [1, 10, 11, 12, 13, 18],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "SSI publishes almost nothing. Its updates page has three entries in 28 months, and it has never disclosed a valuation. Both plotted vertices rest on anonymous-source reporting. No tender offer or company-sponsored secondary was found through 2026-11-07. Hiive, Forge and EquityZen all list SSI, but no indicative price could be verified, and platform marks are not plotted in any case. Meta tried to acquire SSI earlier in 2025 and Sutskever rebuffed it (CNBC, 2025-06-19). No price was reported and nothing was agreed, so it is a rejected approach rather than a terminated deal, and it is not recorded as an event. Daniel Gross left effective 2025-06-29 to join Meta; Sutskever became CEO and Daniel Levy President (SSI updates page, 2025-07-03). Reported totals raised disagree: about $3B (Maginative, after the April 2025 round), 'around $7 billion' before NVIDIA (Calcalist, July 2026), and higher figures in aggregator blogs. These have not been reconciled, and they suggest either undisclosed money (for example the April 2025 Alphabet and Nvidia cheques) or sloppy addition.",
+  "unresolved": [
+    "Legal incorporation date of Safe Superintelligence Inc. (Delaware file no. 3863845; California registration no. 6355390). Both are behind a login or captcha, and no Form D exists. Resolving it needs a Delaware Division of Corporations status request or a manual bizfile lookup.",
+    "Valuation, instrument and tranching of NVIDIA's July 2026 investment. No price has been reported.",
+    "Terms of Alphabet's and Nvidia's April 2025 investments, and whether they were inside the $2B Greenoaks round.",
+    "The WSJ's March 2025 report of a $30B valuation was not read (paywalled). It is known only through Wikipedia's citation. It may describe an earlier price in the same round."
+  ],
+  "sources": [
+    {
+      "outlet": "TIME",
+      "title": "Former OpenAI Chief Scientist Announces New Safety-Focused Company",
+      "url": "https://time.com/6990076/safe-superintelligence-inc-announced",
+      "type": "press"
+    },
+    {
+      "outlet": "Safe Superintelligence",
+      "title": "Updates",
+      "url": "https://ssi.inc/updates",
+      "type": "company"
+    },
+    {
+      "outlet": "Reuters (via Business Day)",
+      "title": "OpenAI cofounder's safety-minded AI start-up raises $1bn",
+      "url": "https://www.businessday.co.za/bd/companies/telecoms-and-technology/2024-09-04-openai-cofounders-safety-minded-ai-start-up-raises-1bn/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ilya Sutskever's startup, Safe Superintelligence, raises $1B",
+      "url": "https://techcrunch.com/2024/09/04/ilya-sutskevers-startup-safe-super-intelligence-raises-1b",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Safe Superintelligence, Ilya Sutskever's AI startup, is reportedly close to raising roughly $1B",
+      "url": "https://techcrunch.com/2025/02/18/safe-superintelligence-ilya-sutskevers-ai-startup-is-reportedly-close-to-raising-roughly-1b",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "OpenAI co-founder Ilya Sutskever's Safe Superintelligence reportedly valued at $32B",
+      "url": "https://techcrunch.com/2025/04/12/openai-co-founder-ilya-sutskevers-safe-superintelligence-reportedly-valued-at-32b",
+      "type": "press"
+    },
+    {
+      "outlet": "Reuters (via The Star)",
+      "title": "Exclusive-Alphabet, Nvidia invest in OpenAI co-founder Sutskever's SSI, source says",
+      "url": "https://www.thestar.com.my/tech/tech-news/2025/04/12/exclusive-alphabet-nvidia-invest-in-openai-co-founder-sutskever039s-ssi-source-says",
+      "type": "press"
+    },
+    {
+      "outlet": "Maginative",
+      "title": "Sutskever's Safe Superintelligence Raises Another $2B at $32B Valuation",
+      "url": "https://www.maginative.com/article/sutskevers-safe-superintelligence-raises-another-2b-at-32b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Calcalist (CTech)",
+      "title": "Ilya Sutskever's Safe Superintelligence raises $2B at $32B valuation—with no product yet",
+      "url": "https://www.calcalistech.com/ctechnews/article/hjfywdtajl",
+      "type": "press"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Meta tried to buy Ilya Sutskever's $32 billion AI startup, but is now planning to hire its CEO",
+      "url": "https://www.cnbc.com/2025/06/19/meta-tried-to-buy-safe-superintelligence-hired-ceo-daniel-gross.html",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ilya Sutskever's Safe Superintelligence partners with Nvidia to scale its AI research",
+      "url": "https://techcrunch.com/2026/07/27/ilya-sutskevers-safe-superintelligence-partners-with-nvidia-to-scale-its-ai-research/",
+      "type": "press"
+    },
+    {
+      "outlet": "Reuters (via The Star)",
+      "title": "Nvidia to invest $5 billion in Ilya Sutskever's AI startup, source says",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/07/28/nvidia-to-invest-5-billion-in-ilya-sutskever039s-ai-startup-source-says",
+      "type": "press"
+    },
+    {
+      "outlet": "Calcalist (CTech)",
+      "title": "Ilya Sutskever's Safe Superintelligence raises $5 billion from Nvidia despite not yet releasing a product",
+      "url": "https://www.calcalistech.com/ctechnews/article/qy9eg5jw4",
+      "type": "press"
+    },
+    {
+      "outlet": "Moneywise (via Yahoo Finance)",
+      "title": "This AI startup has roughly 50 employees, no product and has never published a word of research. It's worth $32 billion",
+      "url": "https://finance.yahoo.com/technology/ai/articles/ai-startup-roughly-50-employees-133000150.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Safe Superintelligence Inc.",
+      "url": "https://en.wikipedia.org/wiki/Safe_Superintelligence_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "OpenCorporates",
+      "title": "SAFE SUPERINTELLIGENCE INC. (Delaware, 3863845)",
+      "url": "https://opencorporates.com/companies/us_de/3863845",
+      "type": "database"
+    },
+    {
+      "outlet": "OpenCorporates",
+      "title": "SAFE SUPERINTELLIGENCE INC. (California branch, 6355390)",
+      "url": "https://opencorporates.com/companies/us_ca/6355390",
+      "type": "database"
+    },
+    {
+      "outlet": "SEC EDGAR",
+      "title": "EDGAR full-text search for \"Safe Superintelligence\" (no Form D)",
+      "url": "https://efts.sec.gov/LATEST/search-index?q=%22Safe%20Superintelligence%22",
+      "type": "database"
+    },
+    {
+      "outlet": "eWeek",
+      "title": "Nvidia Backs Ilya Sutskever's SSI With Reported $5B Investment",
+      "url": "https://www.eweek.com/news/nvidia-ssi-5b-ai-partnership/",
+      "type": "press"
+    },
+    {
+      "outlet": "OpenCorporates",
+      "title": "BLACK FOREST LABS INC. (Delaware, 3228309)",
+      "url": "https://opencorporates.com/companies/us_de/3228309",
+      "type": "database"
+    }
+  ]
+}

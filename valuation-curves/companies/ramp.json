@@ -1,0 +1,463 @@
+{
+  "slug": "ramp",
+  "name": "Ramp",
+  "cohort": "fintech",
+  "colorSlot": 2,
+  "dashSlot": 2,
+  "status": "private",
+  "founded": "2019-03-01",
+  "foundedPrecision": "month",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Founded by Eric Glyman, Karim Atiyeh and Gene Lee. Ramp Business Corporation is a Delaware corporation and every one of its SEC Form D filings reports year of incorporation 2019 — the filings establish the year but never the month. Ramp's own March 2022 announcement says the company had raised over $1 billion 'since its founding in March 2019', and Wikipedia's infobox gives the same March 2019; neither cites a charter document, and Delaware's registry is captcha-gated, so the day is not recoverable. Dated to the month rather than inventing a day. The precise anchors are the seed round's first sale on 2019-06-28 (Form D) and the public product launch on 2020-02-12.",
+  "events": [
+    {
+      "id": "2019-06-28-seed",
+      "date": "2019-06-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Seed round",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Founders Fund (Keith Rabois)",
+      "amountRaisedUsd": 7000000,
+      "valuationUsd": 25000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Ramp's first institutional cheque and the reason Founders Fund is described in Ramp's own later releases as 'the company's first and largest investor'. Three figures circulate for the size: contemporaneous August 2019 coverage said $7M at a $25M pre-money, TechCrunch's December 2019 retrospective restated it as $8M, and the matching Form D documents only $4,499,996 sold with a first sale of 2019-06-28 — the gap is most likely SAFEs or notes outside that exempt offering, but no filing confirms it. The $25M pre-money traces to a single report, so it is soft, and it is a pre-money plotted as-is rather than converted to a post.",
+      "sourceRefs": [0, 13],
+      "plot": true
+    },
+    {
+      "id": "2020-01-15-series-a",
+      "date": "2020-01-15",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 15494931,
+      "valuationUsd": null,
+      "note": "Amount is the exact Form D figure ($15,494,931, first sale 2020-01-15); press rounded it to $15M. Announced 2020-02-12 alongside Ramp's public launch, where Fortune reported the headline '$25 million raised' — that is cumulative seed-plus-A, not the round size. No valuation was disclosed: Keith Rabois would say only that it was 'well below $1 billion'. Recorded but not plotted.",
+      "sourceRefs": [1, 14],
+      "plot": false
+    },
+    {
+      "id": "2020-08-31-d1-coatue",
+      "date": "2020-08-31",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$30M round",
+      "charterSeries": null,
+      "nameConflict": "Ramp assigned no letter; Glyman called it 'akin to a Series A3'.",
+      "institutional": true,
+      "lead": "D1 Capital Partners and Coatue (co-led)",
+      "amountRaisedUsd": 31874853,
+      "valuationUsd": null,
+      "note": "Amount is the exact Form D figure ($31,874,853, first sale 2020-08-31); press reported $30M. Closed in August 2020 but not announced until 2020-12-17, and Glyman said he raised it without needing the money. No valuation disclosed, so not plotted.",
+      "sourceRefs": [2, 15],
+      "plot": false
+    },
+    {
+      "id": "2021-03-17-series-b",
+      "date": "2021-03-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": null,
+      "nameConflict": "Ramp's own announcement gave no letter; Forbes, Crunchbase and Wikipedia all call it Series B.",
+      "institutional": true,
+      "lead": "D1 Capital Partners and Stripe (co-led)",
+      "amountRaisedUsd": 115000000,
+      "valuationUsd": 1600000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's own blog states the $1.6B valuation. Dated to the Form D first sale of 2021-03-17; announced 2021-04-07. The Form D records only $65,689,108 sold against the $115M announced — no single filing accounts for the balance, so the announced round size is used. Goldman Sachs, Founders Fund, Coatue, Thrive, Redpoint, Box Group, Neo and Contrary also participated.",
+      "sourceRefs": [3, 16],
+      "plot": true
+    },
+    {
+      "id": "2021-08-06-series-c",
+      "date": "2021-08-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 3900000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's own post states $300M at $3.9B and labels it Series C. Dated to the Form D first sale of 2021-08-06 ($350,749,955 actually sold, above the announced figure); announced 2021-08-23 together with Ramp's first acquisition, the negotiation-as-a-service company Buyer.",
+      "sourceRefs": [4, 17],
+      "plot": true
+    },
+    {
+      "id": "2021-12-30-eight-billion",
+      "date": "2021-12-30",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$200M round announced March 2022",
+      "charterSeries": null,
+      "nameConflict": "Ramp assigned no letter. Databases variously file it as Series C-2 and as Series D, which then collides with the August 2023 round that TechCrunch calls Series D.",
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 200000000,
+      "valuationUsd": 8100000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The widely repeated '$750 million' headline is $200M of equity plus $550M of debt from Citi and Goldman Sachs; only the equity is recorded here, since a credit facility is not a priced round. Dated to the Form D first sale of 2021-12-30 ($198,279,780 sold) rather than the 2022-03-21 announcement — Ramp itself later described this mark as 'our peak in late 2021', which corroborates that the round priced in December 2021.",
+      "sourceRefs": [5, 18, 19],
+      "plot": true
+    },
+    {
+      "id": "2023-08-22-series-d",
+      "date": "2023-08-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Thrive Capital and Sands Capital (co-led)",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 5800000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "A genuine down round: $5.8B post-money is 28% below the $8.1B set in the round that priced in December 2021. Ramp acknowledged it in its own announcement — 'While today's valuation is lower than our peak in late 2021, given the broader startup market valuation reset and increased cost of capital, we know it reflects exceptional performance by our team.' This is the 2022-23 fintech repricing, not a company-specific stumble; revenue had grown roughly 4x in 2022. Dated to the Form D first sale of 2023-08-22, which recorded $339,000,000 sold against the $300M announced. General Catalyst, Founders Fund, Lux Capital and Definition Capital also participated.",
+      "sourceRefs": [6, 20, 21],
+      "plot": true
+    },
+    {
+      "id": "2024-04-25-series-d-2",
+      "date": "2024-04-25",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D extension",
+      "charterSeries": null,
+      "nameConflict": "TechCrunch calls it a Series D extension; Wikipedia labels it Series D-2.",
+      "institutional": true,
+      "lead": "Khosla Ventures and Founders Fund (co-led)",
+      "amountRaisedUsd": 150000000,
+      "valuationUsd": 7650000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The recovery leg: $7.65B is 32% above the $5.8B of eight months earlier but still short of the $8.1B 2021 peak. Announced 2024-04-17, a week before the Form D first sale of 2024-04-25 ($156,109,975 sold); dated to the filing. Sequoia Capital, Greylock and 8VC also participated.",
+      "sourceRefs": [7, 22],
+      "plot": true
+    },
+    {
+      "id": "2025-03-03-tender",
+      "date": "2025-03-03",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "$150M employee and investor tender offer",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 13000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Not a primary round. Employees and early investors sold roughly $150 million of existing shares to GIC, Thrive Capital, Khosla Ventures, General Catalyst, Avenir Growth, Stripes, Lux Capital, 137 Ventures and Definition Capital; no new capital reached Ramp, which is why amountRaisedUsd is null. A tender clearing price is not a primary-round post-money — no share count or per-share price was published — so the $13B is recorded soft. There is no Form D because the issuer sold nothing. This is the mark the June 2025 Series E was measured against.",
+      "sourceRefs": [23],
+      "plot": true
+    },
+    {
+      "id": "2025-06-16-series-e",
+      "date": "2025-06-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 200000000,
+      "valuationUsd": 16000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's own release states $200M at $16B and calls it Series E. Founders Fund's fifth Ramp round as lead. Dated to the Form D first sale of 2025-06-16 ($199,999,557 sold); announced 2025-06-17. Purely primary — no tender component was reported.",
+      "sourceRefs": [8, 24],
+      "plot": true
+    },
+    {
+      "id": "2025-07-28-series-e-2",
+      "date": "2025-07-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E-2",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "ICONIQ Growth",
+      "amountRaisedUsd": 500000000,
+      "valuationUsd": 22500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's own release states $500M at $22.5B and labels it Series E-2. Dated to the Form D first sale of 2025-07-28 ($514,088,705 sold of a $599,999,270 offering); announced 2025-07-30, 45 days after the Series E. Purely primary. Sutter Hill, Lightspeed, T. Rowe Price, GV, Emerson Collective, Operator Collective and Pinegrove joined as new investors.",
+      "sourceRefs": [9, 25, 26],
+      "plot": true
+    },
+    {
+      "id": "2025-11-17-lightspeed",
+      "date": "2025-11-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$300M round",
+      "charterSeries": null,
+      "nameConflict": "Ramp assigned no letter. Sacra files it as Series F, which collides with Ramp's own use of 'Series F' for the June 2026 round.",
+      "institutional": true,
+      "lead": "Lightspeed Venture Partners",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 32000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's release describes 'a $300 million primary financing round and an employee tender offer'. The tender ran alongside the primary at the same $32B price, so it is folded into this event rather than double-plotted at an identical coordinate. Only the $300M of primary capital is recorded as amount raised. Form D first sale 2025-11-17, $311,722,380 sold. Context at the time: 50,000+ customers and over $1B of annualised revenue.",
+      "sourceRefs": [10, 27, 28],
+      "plot": true
+    },
+    {
+      "id": "2026-06-01-series-f",
+      "date": "2026-06-01",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": null,
+      "nameConflict": "Ramp's own release calls this the Series F; Sacra calls it a Series G, having already used Series F for November 2025.",
+      "institutional": true,
+      "lead": "ICONIQ, GIC and Ontario Teachers' Pension Plan (co-led)",
+      "amountRaisedUsd": 750000000,
+      "valuationUsd": 44000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Ramp's latest mark as of 2026-08-06, and the current valuation. Announced 2026-06-04 as a $750M primary financing at $44B; dated to the Form D first sale of 2026-06-01, which records $781,998,720 sold of an $868,313,280 offering — more than the announced headline. No tender component was reported. TechCrunch reported on 2026-05-07 that the round was in talks at $40B+; the closed price came in higher at $44B, and the $40B figure is the rejected one. New investors: Goldman Sachs Alternatives, D.E. Shaw, Morgan Stanley Investment Management, Generation Investment Management, Insight Partners and BroadLight Capital.",
+      "sourceRefs": [11, 29, 30],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Ramp is unusually well documented for a private company, on two axes at once. First, it has filed a Form D for every equity round since the seed (CIK 0001803782), so each event here is dated to a legally reported date of first sale rather than to a press embargo — which matters most for the $8.1B round, whose first sale was 2021-12-30 even though it was announced 2022-03-21, and which Ramp itself later called 'our peak in late 2021'. Second, Ramp announces post-money valuations in its own press releases, so ten of twelve priced rounds carry a valuation. That beats the roughly one-in-five base rate for private disclosure and will trip the corpus completeness warning; it is a real property of this company's disclosure habits, not gap-filling. The two rounds without a valuation (the 2020 Series A and the 2020 $30M round) are recorded with amounts and left unplotted. Debt is excluded throughout: the '$750M' of March 2022 was $200M equity plus $550M of Citi and Goldman facilities, and the $150M Goldman line of February 2021 is not an equity event at all. Ramp has run tender offers twice — a standalone $150M secondary in March 2025 at $13B (plotted as a tender_offer, method 'tender', soft) and one bundled with the November 2025 primary at the same $32B price (folded into that round). Secondary-marketplace marks from Forge, Hiive and EquityZen are excluded: indicative prices with no disclosed share count cannot be converted to a company valuation. IPO status as of 2026-08-06: Ramp has neither filed nor completed one. EDGAR shows no S-1, F-1 or any registration statement for CIK 0001803782 — only Form Ds and a single ABS-15G — and Glyman has said only that Ramp intends to go public eventually, with no timeline. Revenue context: roughly 4x growth in 2022, cash-flow positive in early 2025, over $1B annualised revenue by November 2025, 70,000+ customers and ~170% year-over-year growth reported for March 2026.",
+  "unresolved": [
+    "The exact founding day. Ramp and Wikipedia both say 'March 2019' without citing a charter; Form D confirms only year of incorporation 2019 and Delaware's registry is captcha-gated.",
+    "Seed round size: $7M in August 2019 coverage, $8M in TechCrunch's later restatement, $4,499,996 in the Form D. Probably SAFEs or notes outside the exempt offering, but nothing confirms it.",
+    "Series B size: $115M announced, but the only Form D covering it records $65,689,108 sold. No filing accounts for the other ~$49M.",
+    "Whether the March 2025 tender cleared at the same per-share price a primary round would have. No share count or price per share was disclosed, which is why the $13B is soft.",
+    "Whether the June 2026 Form D's $781,998,720 sold reflects a larger final close than the announced $750M or includes securities beyond the Series F preferred."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, seed offering (first sale 2019-06-28)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378220000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series A (first sale 2020-01-15)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378220000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, August 2020 offering (first sale 2020-08-31)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378220000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series B (first sale 2021-03-17)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378221000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series C (first sale 2021-08-06)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378221000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, December 2021 offering (first sale 2021-12-30)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378222000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series D (first sale 2023-08-22)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378223000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series D extension (first sale 2024-04-25)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378224000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series E (first sale 2025-06-16)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378225000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series E-2 (first sale 2025-07-28)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378225000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, November 2025 offering (first sale 2025-11-17)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378225000005/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp Form D, Series F (first sale 2026-06-01)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1803782/000180378226000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Ramp Business Corp complete EDGAR filing history, CIK 0001803782",
+      "url": "https://data.sec.gov/submissions/CIK0001803782.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "FinTech Global",
+      "title": "Ramp Financial said to raise $7m in funding",
+      "url": "https://fintech.global/2019/08/12/ramp-financial-said-to-raise-7m-in-funding/",
+      "type": "press"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Ramp, a corporate credit card to rival Brex and Amex, raises $25 million",
+      "url": "https://fortune.com/2020/02/12/ramp-a-corporate-credit-card-to-rival-brex-and-amex-raises-25-million",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp raises $30M as the battle to own corporate spend heats up",
+      "url": "https://techcrunch.com/2020/12/17/ramp-raises-30m-as-the-battle-to-own-corporate-spend-heats-up/",
+      "type": "press"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp raises $115M, reaches $1.6B valuation as fastest growing corporate card",
+      "url": "https://ramp.com/blog/ramp-raises-115m-reaches-1-6b-valuation-as-fastest-growing-corporate-card",
+      "type": "company"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp raises $300M to build its finance automation platform and acquires Buyer",
+      "url": "https://ramp.com/blog/ramp-series-c",
+      "type": "company"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp secures $750 million in funding to help businesses automate their financial operations",
+      "url": "https://ramp.com/blog/ramp-march-2022-funding",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp confirms new $8.1B valuation after 'a nearly 10x' YoY increase in revenue",
+      "url": "https://techcrunch.com/2022/03/21/corporate-spend-startup-ramp-closes-on-750-million-confirms-new-8-1b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp announces $300 million in new funding",
+      "url": "https://ramp.com/blog/ramp-august-2023-funding",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Fintech startup Ramp raises $300M at a 28% lower valuation of $5.8B",
+      "url": "https://techcrunch.com/2023/08/22/fintech-startup-ramp-raises-300m-at-a-28-lower-valuation-of-5-8b",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp raises another $150 million co-led by Khosla, Founders Fund at a $7.65B valuation",
+      "url": "https://techcrunch.com/2024/04/17/ramp-raises-another-150-million-co-led-by-khosla-founders-fund-at-a-7-65b-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "Retail Banker International",
+      "title": "Ramp finalises secondary share sale at $13bn valuation",
+      "url": "https://www.retailbankerinternational.com/news/ramp-secondary-share-sale-13bn-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp Raises $200M Series E at $16B Valuation",
+      "url": "https://www.prnewswire.com/news-releases/ramp-raises-200m-series-e-at-16b-valuation-as-companies-of-all-sizes-choose-ai-powered-finance-platform-302483377.html",
+      "type": "company"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp Raises $500 Million at $22.5 Billion Valuation to Accelerate AI and Build the Future of Finance",
+      "url": "https://www.prnewswire.com/news-releases/ramp-raises-500-million-at-22-5-billion-valuation-to-accelerate-ai-and-build-the-future-of-finance-302516953.html",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp hits $22.5B valuation just 45 days after reaching $16B",
+      "url": "https://techcrunch.com/2025/07/30/ramp-hits-22-5b-valuation-just-45-days-after-reaching-16b/",
+      "type": "press"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp Reaches $32 Billion Valuation, Doubling Revenue and Customers in Past Year",
+      "url": "https://www.prnewswire.com/news-releases/ramp-reaches-32-billion-valuation-doubling-revenue-and-customers-in-past-year-302616510.html",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp hits $32B valuation, just 3 months after hitting $22.5B",
+      "url": "https://techcrunch.com/2025/11/17/ramp-hits-32b-valuation-just-three-months-after-hitting-22-5b/",
+      "type": "press"
+    },
+    {
+      "outlet": "Ramp",
+      "title": "Ramp Raises Series F at $44 Billion Valuation",
+      "url": "https://www.prnewswire.com/news-releases/ramp-raises-series-f-at-44-billion-valuation-302791103.html",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Ramp raises $750M at $44B valuation as investors hunger for fintechs with an AI story",
+      "url": "https://techcrunch.com/2026/06/04/ramp-raises-750m-at-44b-valuation-as-investors-hunger-for-fintechs-with-an-ai-story/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Ramp (company)",
+      "url": "https://en.wikipedia.org/wiki/Ramp_(company)",
+      "type": "reference"
+    },
+    {
+      "outlet": "Sacra",
+      "title": "Ramp revenue, valuation & funding",
+      "url": "https://sacra.com/c/ramp/",
+      "type": "database"
+    }
+  ]
+}

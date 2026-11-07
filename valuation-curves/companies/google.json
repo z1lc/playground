@@ -1,0 +1,148 @@
+{
+  "slug": "google",
+  "name": "Google",
+  "cohort": "mega-cap",
+  "colorSlot": 5,
+  "dashSlot": 0,
+  "status": "public",
+  "founded": "1998-09-04",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Google Inc. was incorporated in California on September 4, 1998. The S-1 states only 'We were incorporated in California in September 1998. In August 2003, we reincorporated in Delaware'; the day comes from Wikipedia's history of the company. This chart clocks from that original California incorporation, so t=0 is 1998-09-04 rather than the 2003 Delaware reincorporation. On 2015-08-10 Larry Page announced a reorganisation under a new Delaware holding company, Alphabet Inc., completed 2015-10-02: every Google share converted one-for-one into an Alphabet share and Alphabet took over the listing. The ticker and CIK in the public block are therefore Alphabet's (CIK 0001652044), a legal entity seventeen years younger than t=0; Google Inc. filed under CIK 0001288776 until the reorganisation and became Google LLC in 2017.",
+  "public": {
+    "ticker": "GOOGL",
+    "cik": "0001652044",
+    "cmcSlug": "alphabet-google",
+    "ipoDate": "2004-08-19",
+    "publicFrom": "2004-08-19",
+    "sharesTag": "auto",
+    "annualOverrides": [
+      {
+        "date": "2004-08-19",
+        "capUsd": 23053669655,
+        "sourceRefs": [0, 2],
+        "note": "IPO day. The Dutch auction priced 19,605,052 shares at $85.00, of which 14,142,135 were sold by the company. The final S-1/A puts total common stock outstanding after the offering at 271,219,643 shares (33,603,386 Class A plus 237,616,257 Class B), which at $85.00 is $23.05B - matching the 'more than $23 billion' every contemporary account reports. This is the offer-price capitalisation, not the first-day close: no free source I could fetch publishes GOOG's 2004-08-19 close, and the widely repeated $100.34 is a recalled figure. finhacker's 2004-08-31 month-end of $27.769B shows the stock ended its first fortnight about 20% above the offer, so this figure is a floor for the day."
+      },
+      { "date": "2004-12-31", "capUsd": 52731000000, "sourceRefs": [5] },
+      { "date": "2005-12-31", "capUsd": 122606000000, "sourceRefs": [5] },
+      { "date": "2006-12-31", "capUsd": 140928000000, "sourceRefs": [5] },
+      { "date": "2007-12-31", "capUsd": 216297000000, "sourceRefs": [5] },
+      { "date": "2008-12-31", "capUsd": 96850000000, "sourceRefs": [5] },
+      { "date": "2009-12-31", "capUsd": 197034000000, "sourceRefs": [5] },
+      { "date": "2010-12-31", "capUsd": 190849000000, "sourceRefs": [5] },
+      { "date": "2011-12-31", "capUsd": 209151000000, "sourceRefs": [5] },
+      { "date": "2012-12-31", "capUsd": 233485000000, "sourceRefs": [5] },
+      { "date": "2013-12-31", "capUsd": 376363000000, "sourceRefs": [5] }
+    ],
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 3783544000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1998-09-angel",
+      "date": "1998-09-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Andy Bechtolsheim's $100,000 cheque (Series A angel round)",
+      "charterSeries": "A",
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 100000,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor - an angel cheque with no institutional lead - so it is recorded and never plotted. Bechtolsheim wrote the $100,000 cheque in August 1998, made out to a corporation that did not yet legally exist; it could only be banked after the September 4 incorporation, and no closing date for the round is disclosed anywhere, so the event is pinned to the incorporation date. The S-1 cap table prices the whole angel round: 15,360,000 shares of Series A preferred at a $0.0625 liquidation preference, i.e. $960,000 in total, consistent with the roughly $1M raised across Bechtolsheim, David Cheriton, Ram Shriram and Jeff Bezos through late 1998 and early 1999.",
+      "sourceRefs": [0, 2],
+      "plot": false
+    },
+    {
+      "id": "1999-06-07-series-b",
+      "date": "1999-06-07",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$25M round",
+      "charterSeries": "B",
+      "nameConflict": "Frequently retold as Google's 'Series A' (Acquired among others), because it was the first venture round. The charter letter is B: the S-1 cap table assigns Series A to the 1998 angel money.",
+      "institutional": true,
+      "lead": "Kleiner Perkins Caufield & Byers and Sequoia Capital (co-led)",
+      "amountRaisedUsd": 25000000,
+      "valuationUsd": null,
+      "note": "The first institutional round, and the only one Google ever raised. Google's own press release of 1999-06-07 announces '$25 million' and names Sequoia and Kleiner Perkins, with Michael Moritz and John Doerr joining the board; it states no valuation. The S-1 cap table prices the round exactly - 49,823,000 Series B preferred shares at a $0.4953 liquidation preference, i.e. $24,678,332 - but gives no post-money, and none can be derived. The filing does not reach back to 1999 at all: its equity statement opens at 2000-12-31 with 69,988,000 preferred and 119,940,000 common shares, 189,928,000 in total. Since the share count only grew over 1999-2000, that caps a June-1999 post-money at 189,928,000 x $0.4953 = about $94M and puts the true figure materially below it. The widely repeated '$25M at a $100M valuation' is therefore arithmetically incompatible with the filing and is not used; the same source's '$1M seed at a $10M post-money' would require 160,000,000 shares outstanding in 1998 against 135,300,000 at the end of 2000, and fails the same test. Recorded with amount only rather than a back-solved valuation, so it is not plotted.",
+      "sourceRefs": [0, 1, 2, 7],
+      "plot": false
+    },
+    {
+      "id": "2000-series-c",
+      "date": "2000-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Series C preferred issuance",
+      "charterSeries": "C",
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Reconstructed from the S-1 and reported by nobody at the time. The equity statement opens at 2000-12-31 with 69,988,000 convertible preferred shares; subtracting the 15,360,000 Series A and the 49,823,000 Series B leaves 4,805,000 Series C shares already issued during 2000. At the $2.3425 Series C price that is roughly $11.3M, though the filing does not say how much of it was cash rather than shares issued for other consideration. It has no named lead and the S-1's Item 15 disclosure of unregistered sales only reaches back to January 2001, so the buyers cannot be identified - `institutional: false` here means 'not classifiable', not 'angel'. No 2003 round exists: Series C grew during 2003 only by the net exercise of a single warrant into 1,229,944 shares, and the 7,437,452 Series D shares were a warrant issued to a Google Network member in May 2002 and exercised for $21,642,985 in May 2004, three months before the IPO.",
+      "sourceRefs": [0],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Google is the rare company whose entire private history is one institutional round, and whose post-money nobody ever published. The 2004 S-1 gives the complete preferred cap table - Series A at $0.0625, B at $0.4953, C at $2.3425, D at $2.91, with share counts - so every amount here is a primary-source figure, but the S-1's earliest balance sheet is 2000-12-31 and there is no 1999 share count anywhere, which is why no round carries a valuation and no round is plotted. The line therefore begins at the IPO. Share counts: Alphabet is a multi-class filer and does not tag `dei:EntityCommonStockSharesOutstanding` at all in the XBRL company-facts API, so the pipeline falls through to `us-gaap:CommonStockSharesOutstanding`. That fact is the TOTAL across Class A, B and C, not a per-class count - it reads 12,088,000,000 at 2025-12-31, against a FY2025 10-K cover page of 5,822,000,000 Class A plus 837,000,000 Class B plus 5,438,000,000 Class C = 12,097,000,000 as of the later cover date, a 0.07% difference. The feared ~40% per-class understatement does not occur. The regression checkpoint is that 12,088,000,000 times GOOGL's 2025-12-31 close of $313.00, i.e. $3.784T; companiesmarketcap independently reports $3.802T for 2025 (0.49% apart) and finhacker $3.777T (0.17% apart). The build's cross-check clears ten years against companiesmarketcap with a worst error of 2.26%, in 2024; there the computed $2.312T matches finhacker's $2.311T to 0.04%, so it is companiesmarketcap's $2.365T that is the outlier, not the share tag. Pipeline note: this shard exposed a bug in build_data.py. SEC's `frame`-marked canonical fact for 2021-12-31 carries 13,242,000,000 shares - the count restated into the post-July-2022 basis - against the pre-split 662,121,000 that Alphabet actually printed on its February 2022 10-K cover. Preferring the frame made detect_splits find two 20:1 splits instead of one and inflated every pre-2022 quarter twentyfold (a 1,932% divergence in 2016). `_shares_from_unit` now always takes the earliest filing for a period; Apple's and Amazon's series are unchanged. 2004-2013 is hand-entered from finhacker because companiesmarketcap's alphabet-google page only publishes 2014 onward and the SEC share series starts at 2014-12-31; finhacker's 2014 figure of $361.379B validates against companiesmarketcap's $359.5B to 0.52%, the same check apple.json uses to trust that source. macrotrends.net was not consulted - it returns HTTP 402.",
+  "unresolved": [
+    "The June 1999 post-money valuation. It is bounded above at about $94M by the S-1's 2000-12-31 share count, but the actual June-1999 share count is not in any filing, so the round cannot be plotted.",
+    "Who bought the 4,805,000 Series C shares issued during 2000, and how much of the roughly $11.3M implied was cash. The S-1's unregistered-sales disclosure only reaches back to January 2001.",
+    "GOOG's closing price on 2004-08-19. No free source I could fetch publishes it, so the IPO-day figure uses the $85 offer price and understates the day's closing capitalisation by roughly 18%.",
+    "Quarterly resolution before 2016. stockanalysis.com serves at most ten years of quarterly closes and the SEC share series begins 2014-12-31, so 2004-2013 is annual only."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Google Inc. Form S-1/A, filed August 18, 2004",
+      "url": "https://www.sec.gov/Archives/edgar/data/1288776/000119312504142742/ds1a.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Google",
+      "title": "Google Receives $25 Million in Equity Funding",
+      "url": "https://googlepress.blogspot.com/1999/06/google-receives-25-million-in-equity.html",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "History of Google",
+      "url": "https://en.wikipedia.org/wiki/History_of_Google",
+      "type": "reference"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Google",
+      "url": "https://en.wikipedia.org/wiki/Google",
+      "type": "reference"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Alphabet Inc.",
+      "url": "https://en.wikipedia.org/wiki/Alphabet_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "finhacker.cz",
+      "title": "Alphabet market cap 2004-2026",
+      "url": "https://www.finhacker.cz/en/stocks/alphabet-market-cap/",
+      "type": "database"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Alphabet Inc. Form 10-K, FY2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Acquired Briefing",
+      "title": "Google I (1996-2004)",
+      "url": "https://www.acquiredbriefing.com/p/google-i-1996-2004",
+      "type": "reference"
+    }
+  ]
+}

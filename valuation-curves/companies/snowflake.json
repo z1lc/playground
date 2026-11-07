@@ -1,0 +1,271 @@
+{
+  "slug": "snowflake",
+  "name": "Snowflake",
+  "cohort": "saas",
+  "colorSlot": 6,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "2012-07-23",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Snowflake's own S-1 states the company \"was incorporated in the state of Delaware on July 23, 2012 and is headquartered in San Mateo, California\"; the business section separately says \"incorporated in Delaware in July 2012 under the name Snowflake Computing, Inc.\" There is no earlier partnership on record, so the incorporation IS the earliest formal founding here. Founded by Benoit Dageville, Thierry Cruanes and Marcin Zukowski, with Mike Speiser of Sutter Hill Ventures acting as founding CEO. The company operated in stealth for just over two years and only announced itself on 2014-10-21, so secondary sources that date Snowflake to 2014 are dating the launch, not the founding.",
+  "public": {
+    "ticker": "SNOW",
+    "cik": "0001640147",
+    "cmcSlug": "snowflake",
+    "ipoDate": "2020-09-16",
+    "publicFrom": "2020-09-16",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2023-12-31", "capUsd": 65530700000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "2012-08-24-seed",
+      "date": "2012-08-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Seed",
+      "charterSeries": "Seed",
+      "institutional": true,
+      "lead": "Sutter Hill Ventures",
+      "amountRaisedUsd": 899999,
+      "valuationUsd": null,
+      "note": "Date of first sale from the Form D (accession 0001640147-17-000005, filed retroactively on 2017-04-11), which reports $899,999 sold in an equity offering. The S-1 preferred-stock note records only $758K of Seed convertible preferred (4,410,736 shares at $0.1719), so roughly $142K of the Form D total was some other security in the same offering. Sutter Hill both incubated Snowflake and funded the seed - TechCrunch's launch story says plainly that \"Sutter Hill funded the seed round and Series A\" - so this clears the named-institutional-lead floor even though press coverage calls it a seed. No post-money was ever disclosed.",
+      "sourceRefs": [0, 2, 10],
+      "plot": false
+    },
+    {
+      "id": "2013-03-08-series-a",
+      "date": "2013-03-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "nameConflict": "Wikipedia and most funding databases date the $5M Series A to 2012. The Form D puts the date of first sale at 2013-03-08, and the filing is used here.",
+      "institutional": true,
+      "lead": "Sutter Hill Ventures",
+      "amountRaisedUsd": 4950000,
+      "valuationUsd": null,
+      "note": "Amount from the S-1 cap table: 14,240,500 shares of Series A at $0.3476 = $4.95M (liquidation preference $4,950K). The Form D reports $4,999,111 sold, a $49K difference of the kind that shows up when warrants or a small common-stock component ride along in the same offering. No valuation disclosed.",
+      "sourceRefs": [0, 3],
+      "plot": false
+    },
+    {
+      "id": "2014-04-02-series-b",
+      "date": "2014-04-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Redpoint Ventures",
+      "amountRaisedUsd": 19950000,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2014-04-02, total sold $19,949,670; the S-1 cap table agrees at 20,608,098 shares of Series B at $0.96805 (liquidation preference $19,950K). The round was not announced until 2014-10-21, when Snowflake left stealth. TechCrunch's headline that day - \"$26M in Series B funding\", led by Redpoint with Sutter Hill and Wing - overstates the round: $26M is Snowflake's CUMULATIVE funding at that point ($0.76M seed + $4.95M A + $19.95M B = $25.7M). The filing figure is used. No valuation disclosed.",
+      "sourceRefs": [0, 4, 10],
+      "plot": false
+    },
+    {
+      "id": "2015-02-27-series-c",
+      "date": "2015-02-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "institutional": true,
+      "lead": "Altimeter Capital",
+      "amountRaisedUsd": 78834000,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2015-02-27; total sold $78,834,305, matching the S-1 cap table exactly (34,393,170 shares at $2.29215, liquidation preference $78,834K). TechCrunch announced this on 2015-06-23 as a $45M Series C led by Altimeter with Redpoint, Sutter Hill and Wing, and said it took Snowflake to $71M total - so the announced $45M was the first tranche of a Series C that eventually closed $78.8M at the same price. No valuation disclosed.",
+      "sourceRefs": [0, 5, 11],
+      "plot": false
+    },
+    {
+      "id": "2017-03-24-series-d",
+      "date": "2017-03-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "ICONIQ Capital",
+      "amountRaisedUsd": 105000000,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2017-03-24 ($100.0M sold against a $105.0M offering as of the April 2017 filing). The S-1 confirms the full round: \"In March and August 2017, we sold an aggregate of 29,981,998 shares of Series D convertible preferred stock at a price of $3.5021 per share for aggregate gross proceeds of approximately $105.0 million.\" Reported at the time as a $100M round led by ICONIQ; ICONIQ took 15,704,862 of the 29,981,998 Series D shares, more than any other holder, which corroborates the lead. No post-money was ever reported for this round, and none is invented here.",
+      "sourceRefs": [0, 6, 13],
+      "plot": false
+    },
+    {
+      "id": "2018-01-12-series-e",
+      "date": "2018-01-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "nameConflict": "Some coverage of the 2017 ICONIQ round called it a Series C and this one a Series D. The S-1's charter letters are used throughout: the 2017 round is D and this is E.",
+      "institutional": true,
+      "lead": "ICONIQ Capital and Altimeter Capital (co-led)",
+      "amountRaisedUsd": 264495000,
+      "valuationUsd": 1500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2018-01-12, $263,494,759 sold; the S-1 records the full series as \"In January and September 2018, we sold an aggregate of 35,446,984 shares of Series E convertible preferred stock at a price of $7.4617 per share for aggregate gross proceeds of approximately $264.5 million.\" The $1.5B post-money is the figure carried in the announcement coverage and repeated by Wikipedia; Snowflake never confirmed it, so it is soft. Sequoia entered here (6,700,884 Series E shares), while ICONIQ and Altimeter each took 13,401,770.",
+      "sourceRefs": [0, 7, 13],
+      "plot": true
+    },
+    {
+      "id": "2018-10-09-series-f",
+      "date": "2018-10-09",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": "F",
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 461402000,
+      "valuationUsd": 3900000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Two well-sourced valuations conflict for this round and the higher is taken. Wikipedia and the October 2018 announcement coverage say $450M led by Sequoia at a $3.5 billion valuation; TechCrunch's February 2020 piece describes the same financing as \"the company's previous $3.9 billion valuation from October 2018.\" The two reconcile arithmetically - $3.5B PRE-money plus the $450M raised is $3.95B post - so $3.5B is the rejected figure, recorded here, and it is a pre-money rather than an error. Form D first sale 2018-10-09 ($437.3M sold against a $450.0M offering); the S-1 shows the series ran longer and larger than the announcement: \"In October 2018, February 2019, and August 2019, we sold an aggregate of 30,839,786 shares of Series F convertible preferred stock at a price of $14.96125 per share for aggregate gross proceeds of approximately $461.4 million.\" Sequoia bought 13,367,864 Series F shares, the largest single block.",
+      "sourceRefs": [0, 8, 12, 13],
+      "plot": true
+    },
+    {
+      "id": "2020-02-07-series-g",
+      "date": "2020-02-07",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series G",
+      "charterSeries": "G-1 and G-2",
+      "institutional": true,
+      "lead": "Dragoneer Investment Group and Salesforce Ventures (co-led)",
+      "amountRaisedUsd": 478803000,
+      "valuationUsd": 12400000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2020-02-07, total sold $478,802,793 - matching the S-1 to the dollar: \"In February 2020, we sold an aggregate of 8,480,857 shares of Series G-1 convertible preferred stock and 3,868,970 shares of Series G-2 convertible preferred stock, each at a price of $38.77 per share, for aggregate gross proceeds of approximately $478.8 million.\" $12.4B post-money is carried independently by TechCrunch and Wikipedia and appeared in Snowflake's own announcement headline, so it is confirmed.",
+      "sourceRefs": [0, 9, 12, 13],
+      "plot": true
+    },
+    {
+      "id": "2020-09-16-ipo",
+      "date": "2020-09-16",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO (NYSE: SNOW)",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 3360000000,
+      "valuationUsd": 33203379360,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "THE FIGURE RECORDED HERE IS THE OFFERING PRICE, NOT THE FIRST-DAY MARKET CAP, and the two differ by more than 2x. The final prospectus (424B4, dated 2020-09-15, filed 2020-09-16) prices 28,000,000 Class A shares at $120.00 for $3,360,000,000 gross, and its summary states that 276,694,828 total Class A and Class B shares would be outstanding after the offering, the concurrent private placements and Berkshire Hathaway's secondary purchase. 276,694,828 x $120.00 = $33.20B, which is the value the company and its buyers actually transacted at. The stock then opened at $245 and closed its first day at $253.93, which on the same share count is roughly $70.3B - the number most retrospectives cite. Plotting the $70B close would assert that Snowflake sold itself at that price, which it did not; the pipeline picks up the market's opinion from the next quarter-end quote on its own.",
+      "sourceRefs": [1, 13],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Snowflake is unusually well documented: the S-1 preferred-stock note gives the issue price and share count for every series from Seed through G-2, and the company filed Form Ds retroactively in April 2017 covering the Seed, A, B, C and D offerings, so every round date here is a filed date of first sale rather than a press date. Those two sources disagree with the press on three rounds - the Series A is dated 2013 not 2012, the 'Series B $26M' was really $19.95M with $26M being cumulative funding, and the '$45M Series C' eventually closed at $78.8M - and the filings win each time. Only four of nine events carry a valuation, which is the expected ratio; the Seed, A, B, C and D never had a post-money reported and none is fabricated. On the public side, the pipeline's computed quarterly caps agree with companiesmarketcap to within 0.01-0.15% for 2021-2023 but run 2.0-2.7% BELOW it in 2024 and 2025; companiesmarketcap's 2025 figure of $76.61B implies about 349.2M shares against the SEC cover count of 342.2M (2025-11-21) and 346.6M (2026-05-15), i.e. more shares than Snowflake has ever reported outstanding, so the divergence is on their side. The regression checkpoint is therefore anchored on a hand computation in a year where the two agree: 329,300,000 shares (dei cover dated 2023-11-17) x $199.00 close = $65.53B, which is 0.15% from companiesmarketcap's $65.43B.",
+  "unresolved": [
+    "Whether the ~$142K gap between the Form D seed total ($899,999) and the S-1's Seed preferred ($758K) is common stock, a warrant, or a second security - the Form D does not itemise it.",
+    "Post-money valuations for the Seed, Series A, B, C and D. None was ever reported and the S-1 gives issue prices but not the fully diluted share count at each of those dates, so no post-money can be derived without inventing a denominator.",
+    "Whether the Series A's date of first sale really is 2013-03-08 or whether the retroactive 2017 Form D restated it; every secondary source says 2012."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Inc. Form S-1 (2020)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000162828020013010/snowflakes-1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Inc. Form 424B4 final IPO prospectus (2020-09-16)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000162828020013667/snowflake424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Seed (0001640147-17-000005)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014717000005/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series A (0001640147-17-000006)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014717000006/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series B (0001640147-17-000007)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014717000007/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series C (0001640147-17-000008)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014717000008/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series D (0001640147-17-000004)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014717000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series E (0001640147-18-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014718000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Computing Form D - Series F (0001640147-18-000003)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014718000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Snowflake Inc. Form D - Series G (0001640147-20-000004)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1640147/000164014720000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Snowflake Computing emerges from stealth with $26M in funding to modernize the data warehouse",
+      "url": "https://techcrunch.com/2014/10/21/snowflake-computing-gets-26m-to-modernize-the-data-warehouse/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Snowflake raises $45M Series C round for its data warehousing service, comes out of beta",
+      "url": "https://techcrunch.com/2015/06/23/snowflake-raises-45m-series-c-round-for-its-data-warehousing-service-comes-out-of-beta/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "After $479M round on $12.4B valuation, Snowflake CEO says IPO is next step",
+      "url": "https://techcrunch.com/2020/02/09/after-479m-round-on-12-4b-valuation-snowflake-ceo-says-ipo-is-next-step/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Snowflake Inc.",
+      "url": "https://en.wikipedia.org/wiki/Snowflake_Inc.",
+      "type": "reference"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Snowflake (SNOW) - Market capitalization",
+      "url": "https://companiesmarketcap.com/snowflake/marketcap/",
+      "type": "database"
+    }
+  ]
+}

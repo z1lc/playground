@@ -1,0 +1,132 @@
+{
+  "slug": "amazon",
+  "name": "Amazon",
+  "cohort": "mega-cap",
+  "colorSlot": 4,
+  "dashSlot": 0,
+  "status": "public",
+  "founded": "1994-07-05",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Jeff Bezos filed articles of incorporation in Washington State on 1994-07-05 under the name Cadabra, Inc., and renamed it Amazon.com, Inc. within a few months after a lawyer misheard 'Cadabra' as 'cadaver'. The filings corroborate the month but not the day: the IPO prospectus says only 'The Company was incorporated in Washington in July 1994', and records Bezos buying 10,200,000 founder shares for $10,000 in July 1994. The 1994-07-05 date and the Cadabra name come from Wikipedia rather than from a filing. Amazon reincorporated in Delaware on 1996-05-28 through a Washington-into-Delaware merger (S-1 Exhibit 2.1, 'Agreement and Plan of Merger dated May 28, 1996'), five weeks before the Kleiner Perkins round; per the brief this chart clocks from the original Washington incorporation, so t=0 is 22 months before the Delaware entity existed.",
+  "public": {
+    "ticker": "AMZN",
+    "cik": "0001018724",
+    "cmcSlug": "amazon",
+    "ipoDate": "1997-05-15",
+    "publicFrom": "1997-05-15",
+    "sharesTag": "auto",
+    "annualOverrides": [
+      {
+        "date": "1997-05-15",
+        "capUsd": 560700000,
+        "sourceRefs": [0, 2, 3],
+        "note": "IPO day. 3,000,000 shares priced at $18.00; the final prospectus states 23,858,702 shares outstanding after the offering (as of 1997-05-13). The over-allotment was never exercised — the FY1997 10-K reports net proceeds of $49.1 million after ~$4.9 million of expenses, i.e. $54.0 million gross, exactly 3,000,000 x $18.00. The stock closed its first session at $23.50, which gives 23,858,702 x $23.50 = $560.7M and matches CNBC's '$560 million' to the dollar. At the $18.00 offer price the figure is $429M; the widely repeated '$438M' silently assumes the 450,000-share over-allotment that was not taken."
+      }
+    ],
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 2478000000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1995-02-family-bezos",
+      "date": "1995-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Family investment (Mike and Jackie Bezos)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 245573,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor — family money with no institutional lead and no disclosed valuation, so recorded but never plotted. The prospectus 'Certain Transactions' section itemises both legs at $0.1717 per share (split-adjusted): 582,528 shares to Miguel A. Bezos in February 1995 ($100,020) and 847,716 shares to the Gise Family Trust in July 1995 ($145,553). The two sum to $245,573, which is exactly the figure Wikipedia and every secondary account report for 'Bezos' parents' investment' — the S-1 shows it was two purchases five months apart, not one cheque. Dated here to the first leg.",
+      "sourceRefs": [0, 4],
+      "plot": false
+    },
+    {
+      "id": "1996-06-21-series-a-kpcb",
+      "date": "1996-06-21",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$8M Series A",
+      "charterSeries": "A",
+      "nameConflict": "Amazon's only pre-IPO preferred series. Secondary accounts usually call it just 'the Kleiner Perkins round'.",
+      "institutional": true,
+      "lead": "Kleiner Perkins Caufield & Byers",
+      "amountRaisedUsd": 8000014,
+      "valuationUsd": 44400000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "First round with a named institutional lead, and the only pre-IPO institutional round. Reconstructed from the legal cap table rather than from press: the prospectus records 555,161 shares to Kleiner Perkins Caufield & Byers VIII and 14,235 to KPCB Information Sciences Zaibatsu Fund II, both at $14.05 per share — 569,396 shares for $8,000,013.80. S-1 Exhibit 10.2, the Series A Preferred Stock Purchase Agreement dated June 21, 1996, gives the closing-day denominator in its section 2.2 capitalisation representation: 2,589,711 common shares issued and outstanding. Series A converted 1:1 at the time (6:1 after the November 1996 4-for-1 and April 1997 3-for-2 splits), so post-money on outstanding as-converted shares is (2,589,711 + 569,396) x $14.05 = $44.39M, pre-money $36.39M, and Kleiner's stake 18.0% — which the prospectus corroborates at 16.3% by May 1997 after a year of dilution. The widely repeated '$8M for 13% at a $60M valuation' (HistoryLink, following Brad Stone) cannot be reconciled with those share counts: 13% would require 4.38M shares outstanding when the signed agreement says 3.16M. Adding the 414,636 options then outstanding and the 341,615-share reserve gets to $55.0M fully diluted, which is the closest any defensible convention comes to $60M. Marked soft because the choice between the outstanding and fully-diluted convention moves the number 24%.",
+      "sourceRefs": [0, 1, 5],
+      "plot": true
+    },
+    {
+      "id": "1997-02-series-a-followon",
+      "date": "1997-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series A follow-on (Cook and Stonesifer)",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 200000,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor and not plotted: a $200,000 purchase by two sitting directors, not a priced institutional round. The prospectus records 2,500 shares of Series A each to Scott D. Cook and Patricia Q. Stonesifer at $40.00 per share, and dates Stonesifer's purchase to February 1997. The price is 2.85x the $14.05 Kleiner paid eight months earlier; against the 20,798,782 as-converted shares outstanding at March 31, 1997 it implies roughly $139M, but that is an inference from a director's cheque rather than a negotiated round price, so no valuation is recorded.",
+      "sourceRefs": [0],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "The 1997 prospectus is unusually generous: it itemises every private sale of stock since inception, and Exhibit 10.2 hands over the closing-day share count for the Kleiner round, so the pre-IPO history here rests almost entirely on filings rather than on recollection. Two things the S-1 shows that the shards do not carry as events. First, an angel syndicate: the statement of stockholders' equity shows 4,235,244 common shares sold during 1995 for $1,172,000, of which only 1,430,244 shares / $245,573 were the family purchases, leaving roughly 2.8M shares at $0.3333 — the ~$1M raised from about twenty angels that secondary accounts describe, including director Tom A. Alberg's 150,000 shares in December 1995. The per-share amounts do not reconcile to the thousands-rounded total, so no amount is asserted. Second, Amazon's stock split four times (1998-06-02 2:1, 1999-01-05 3:1, 1999-09-02 2:1, 2022-06-06 20:1); only the 2022 split falls inside the SEC share series the pipeline reads (2009+), and it is derived from the jump in cover-page counts rather than entered here. Note also that all share and per-share figures in the prospectus are retroactively adjusted for the November 23, 1996 4-for-1 and April 18, 1997 3-for-2 splits, which is why the Series A converts 6:1 there but 1:1 in the June 1996 purchase agreement. CNBC dates the Kleiner investment to 1995; the signed purchase agreement is dated June 21, 1996.",
+  "unresolved": [
+    "The 1995-96 angel syndicate: the S-1 equity statement implies ~2.8M shares at $0.3333 beyond the family purchases, but the per-share arithmetic does not close against the rounded $1,172,000 total, and no filing names the investors.",
+    "Whether the widely cited '$8M for 13% at $60M' for the June 1996 round reflects some fully-diluted convention or is simply wrong. The signed purchase agreement's share counts support 18.0% and $44.4M outstanding, or $55.0M fully diluted; neither yields 13%.",
+    "The 1994-07-05 incorporation day and the Cadabra, Inc. name are not in any SEC filing — the prospectus says only 'July 1994'. Washington's corporate registry was not consulted."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Amazon.com, Inc. Form 424B1 (final IPO prospectus), May 15, 1997",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/0000891020-97-000868.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Amazon.com, Inc. Form S-1, Exhibit 10.2 - Series A Preferred Stock Purchase Agreement dated June 21, 1996",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/0000891618-97-001309.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Amazon.com, Inc. Form 10-K405 for fiscal year 1997",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/0000891020-98-000448.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "CNBC",
+      "title": "Even during Amazon's IPO process 20 years ago, Jeff Bezos was obsessed with details",
+      "url": "https://www.cnbc.com/2017/05/14/amazons-bezos-was-in-the-weeds-during-ipo-20-years-ago.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "History of Amazon",
+      "url": "https://en.wikipedia.org/wiki/History_of_Amazon",
+      "type": "reference"
+    },
+    {
+      "outlet": "HistoryLink.org",
+      "title": "Amazon: The Early Years (1995-1999)",
+      "url": "https://www.historylink.org/File/23230",
+      "type": "reference"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Amazon (AMZN) market cap history, 1997-2026",
+      "url": "https://companiesmarketcap.com/amazon/marketcap/",
+      "type": "database"
+    }
+  ]
+}

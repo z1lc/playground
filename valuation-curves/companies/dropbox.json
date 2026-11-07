@@ -1,0 +1,232 @@
+{
+  "slug": "dropbox",
+  "name": "Dropbox",
+  "cohort": "saas",
+  "colorSlot": 7,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "2007-05-01",
+  "foundedPrecision": "month",
+  "foundedBasis": "incorporation",
+  "foundedNote": "The S-1 states it plainly: \"We were incorporated in May 2007 as Evenflow, Inc., a Delaware corporation, and changed our name to Dropbox, Inc. in October 2009.\" The 2009 Form D filed under the Evenflow name independently gives jurisdiction Delaware and year of incorporation 2007. No source fixes the day \u2014 Delaware's registry is captcha-gated and the S-1 gives only the month \u2014 so this is dated to the month rather than inventing a date. There is no earlier partnership: Drew Houston conceived Dropbox in early 2007, applied to Y Combinator alone in April 2007, and recruited Arash Ferdowsi as co-founder before the Summer 2007 batch, so the Delaware incorporation is the earliest formal founding.",
+  "public": {
+    "ticker": "DBX",
+    "cik": "0001467623",
+    "cmcSlug": "dropbox",
+    "ipoDate": "2018-03-23",
+    "publicFrom": "2018-03-23",
+    "sharesTag": "auto",
+    "regressions": [
+      {
+        "date": "2025-12-31",
+        "capUsd": 7320000000,
+        "tolPct": 2.0,
+        "note": "This checks agreement with companiesmarketcap, NOT ground truth. The hand-derived figure is $6.98B (FY2025 10-K: 167.2M Class A + 75.7M Class B + 8.3M co-founder RSAs = 251.2M x the $27.80 close). The pipeline computes $7.26B and companiesmarketcap publishes $7.32B \u2014 both ~4-5% high, because Dropbox retired roughly 18% of its stock during 2025 and both methods lag a share count moving that fast. Dropbox exposes no cover-page share tag to the SEC companyfacts API, so the series runs on weighted-average basic shares and cannot reach the hand-derived number. The regression guards against a future tag or split regression; it does not certify the level."
+      }
+    ],
+    "sharesNote": "No dei:EntityCommonStockSharesOutstanding and no us-gaap:CommonStockSharesOutstanding: Dropbox tags its cover count with a share-class axis, which companyfacts does not expose. Falls back to weighted-average basic shares, so every quarterly point is marked soft."
+  },
+  "events": [
+    {
+      "id": "2007-06-y-combinator",
+      "date": "2007-06-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Y Combinator (Summer 2007 batch)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor: an accelerator batch investment, not a round led by a named venture firm. Recorded but never plotted. The amount is left null on purpose \u2014 Y Combinator's standard Summer 2007 cheque is widely repeated as $15,000-$20,000 for 5-7%, but no filing, YC post or company statement I could load states Dropbox's figure, and the 2009 Form D lumps every pre-2009 sale into one $7,252,763 offering. Dated to the start of the Summer 2007 batch; no source fixes the day.",
+      "sourceRefs": [
+        8
+      ],
+      "plot": false
+    },
+    {
+      "id": "2007-09-24-sequoia-note",
+      "date": "2007-09-24",
+      "datePrecision": "day",
+      "kind": "convertible_note",
+      "roundName": "$1.2M seed (convertible debt)",
+      "charterSeries": "A-1",
+      "nameConflict": "Usually called the seed round. The charter letter is almost certainly A-1, which sits below Series A in price \u2014 the opposite of the usual ordering, because it is a note converting at a discount rather than a later round.",
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 1200000,
+      "valuationUsd": null,
+      "note": "The first money from a named venture firm, so it clears the inclusion floor even though it is a note rather than a priced round. TechCrunch reports $1.2M of convertible debt from Sequoia Capital with Amidzad Partners. The date is the \"date of first sale\" on the Form D that Evenflow, Inc. filed in 2009 (2007-09-24); that Form D covers a single $7,252,763 offering of both equity and debt to 8 investors, i.e. this note plus the 2008 Series A together, which is exactly the \"$7.2 million raised prior\" TechCrunch cites in 2011. No valuation was ever disclosed and a note has no post-money by construction, so this is recorded, not plotted. The S-1 cap table's Series A-1 (51.9M shares post-split, $1.3M aggregate liquidation preference, ~$0.025/share against Series A's ~$0.094) is almost certainly this note converted with its discount \u2014 an inference from the arithmetic, not a statement in the filing.",
+      "sourceRefs": [
+        2,
+        4,
+        0,
+        5
+      ],
+      "plot": false
+    },
+    {
+      "id": "2008-10-series-a",
+      "date": "2008-10-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$6M Series A",
+      "charterSeries": "A",
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 6000000,
+      "valuationUsd": null,
+      "note": "Drew Houston corrected the record himself to TechCrunch in 2009: \"$6 million, and it was back in October 2008,\" led by Sequoia, with Accel participating (GigaOm had reported $7.25M in summer 2009 \u2014 that figure is the 2009 Form D's cumulative $7,252,763, which also includes the 2007 note). The S-1 cap table corroborates the size exactly: Series A carries a $6.0M aggregate liquidation preference at $0.09/share post-split ($0.06 pre-split). No post-money was ever disclosed and the S-1 gives no 2008 share count to reconstruct one, so valuation stays null and the round is not plotted. Aggregators circulate a $25M post-money with no primary attribution; it is not used here.",
+      "sourceRefs": [
+        4,
+        0,
+        2
+      ],
+      "plot": false
+    },
+    {
+      "id": "2011-10-18-series-b",
+      "date": "2011-10-18",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$250M Series B",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Index Ventures",
+      "amountRaisedUsd": 250000000,
+      "valuationUsd": 4000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "New investors Benchmark, Goldman Sachs, Greylock, IVP, RIT Capital Partners and Valiant Capital; Sequoia, Accel and Hadi and Ali Partovi followed on. TechCrunch reported the $4B mark when the round was still being assembled in August 2011 and again on close, and Forbes restated it independently in 2014, so the figure is treated as confirmed \u2014 though no source says whether it is pre- or post-money, hence basis \"unspecified\". TechCrunch also notes this took Dropbox's lifetime raise to $257.2M, which reconciles to $1.2M + $6M + $250M. The S-1 cap table shows Series B at $13.58/share post-split ($9.05 pre-split) with a $264.8M aggregate liquidation preference \u2014 $14.8M more than the announced $250M, implying a later tranche the press never covered; the announced round size is used for the event.",
+      "sourceRefs": [
+        5,
+        6,
+        7,
+        0
+      ],
+      "plot": true
+    },
+    {
+      "id": "2014-01-30-series-c",
+      "date": "2014-01-30",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$352.6M Series C",
+      "charterSeries": "C",
+      "institutional": true,
+      "lead": "BlackRock",
+      "amountRaisedUsd": 352625362,
+      "valuationUsd": 10000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The amount is the S-1's exact figure: 18,460,901 shares of Series C sold to 55 accredited investors at ~$19.1012/share ($28.6518 post-split) for $352,625,362, from January through April 2014. The date is the Form D's date of first sale. The press numbers were all partial views of that: WSJ (via TechCrunch, 2014-01-17) reported ~$250M at $10B; the Form D filed 2014-02-24 showed a $450M offering with $324,999,850 sold so far, which is where Forbes's \"$450 million\" came from. Valuation is soft because well-sourced figures disagree \u2014 WSJ and every outlet following it say $10B, while Forbes, working from the Delaware restated certificate via VC Experts, computes ~$9.6B on ~502M fully diluted shares at the $19.1012 issue price. The higher figure is used, per policy, with the rejected $9.6B recorded here.",
+      "sourceRefs": [
+        0,
+        3,
+        7,
+        10
+      ],
+      "plot": true
+    },
+    {
+      "id": "2018-03-23-ipo",
+      "date": "2018-03-23",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO at $21.00 (Nasdaq: DBX)",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Goldman Sachs, J.P. Morgan and Deutsche Bank (joint book-runners)",
+      "amountRaisedUsd": 563270589,
+      "valuationUsd": 8229963231,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "A visible down round at the IPO: Dropbox priced at $8.23B against the $10B private mark of 2014, four years earlier. Both inputs come from the final prospectus \u2014 $21.00 per share and 391,903,011 shares of Class A and Class B outstanding after the offering and the concurrent private placement. That count excludes the 14,733,333 Class A shares under the co-founders' unvested restricted stock awards; including them the figure is $8.54B, still below $10B. The company sold 26,822,409 shares for $563.3M gross, selling stockholders another 9,177,591 (the $756.0M total usually quoted), and Salesforce Ventures bought $100.0M more in a concurrent private placement. The stock then closed its first day at $29.89, up 42%, which is ~$11.71B \u2014 the public series picks the market up from there.",
+      "sourceRefs": [
+        1,
+        8
+      ],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Dropbox has no usable cover-page share tag, so every quarterly point in the public series is computed from a weighted average and is correctly drawn hollow. dei:EntityCommonStockSharesOutstanding and us-gaap:CommonStockSharesOutstanding are both absent from its XBRL facts \u2014 it is a Class A/Class B filer and tags the cover count with a share-class axis the companyfacts API does not expose \u2014 and us-gaap:CommonStockSharesIssued carries only two non-dimensional values (2020 and 2021). The cascade lands on us-gaap:WeightedAverageNumberOfSharesOutstandingBasic, which holds 22 rows. Two structural gaps follow. First, there is no Q4 row at all: the 10-K reports a full-year weighted average, which the >100-day span filter correctly drops, so every 31 December point is priced on the Q3 average, roughly 85 days stale. Second, Dropbox's 2018 and 2019 10-Qs tagged the figure as WeightedAverageNumberOfShareOutstandingBasicAndDiluted, so the Basic series only begins with the 2019 periods carried as comparatives in the 2020 10-Qs; the six quarters from 2018-06-30 to 2019-09-30 have no share row within 200 days and drop out, leaving 2018 covered only by companiesmarketcap's annual point and by the IPO event itself. The cross-check still passes comfortably: seven overlapping years, worst 2.69% (2024), and 0.28-1.45% everywhere else. What that agreement hides is that companiesmarketcap carries the same lag. Hand-derived truth at 2025-12-31, from the FY2025 10-K, is 167.2M Class A plus 75.7M Class B issued and outstanding plus the 8.3M legally outstanding but unvested co-founder restricted stock awards the balance sheet excludes and the cover page includes \u2014 251.2M shares at the $27.80 close, or $6.98B. The pipeline's 261.1M Q3 average gives $7.26B (3.9% high) and companiesmarketcap gives $7.32B (4.9% high). Dropbox retired about 18% of its stock during 2025, so a one-quarter-stale count costs several per cent there while costing well under one per cent in the flatter years. Excluded events: the March 2017 $600M revolving credit facility is debt, not equity; the third-party tender offer that ran somewhere between 2014 and 2017 (8,193,202 Class A shares issued on conversion, per the S-1) has no disclosed price or date and cannot be turned into a valuation.",
+  "unresolved": [
+    "The exact day of the May 2007 Delaware incorporation. The S-1 gives only the month and Delaware's registry is captcha-gated.",
+    "Y Combinator's Summer 2007 investment amount and the equity it bought. Every figure in circulation ($15,000-$20,000, 5-7%) traces to secondary retellings, and the 2009 Form D reports only the $7,252,763 cumulative total.",
+    "The 2008 Series A post-money. Never disclosed, and the S-1 gives no 2008 share count from which to reconstruct it.",
+    "Whether the $4B (2011) and $10B (2014) marks are pre- or post-money. No source says.",
+    "Whether Series A-1 really is the converted 2007 Sequoia note. The arithmetic ($1.3M aggregate at a third of the Series A price) fits, but no filing says so.",
+    "The date and price of the 2014-2017 third-party tender offer disclosed in the S-1."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Dropbox, Inc. Form S-1 (filed 2018-02-23)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1467623/000119312518055809/d451946ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Dropbox, Inc. Form 424B4 final IPO prospectus (filed 2018-03-23)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1467623/000119312518092764/d553522d424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Evenflow, Inc. Form D (filed 2009-07-07)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1467623/000146762309000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Dropbox, Inc. Form D (filed 2014-02-24)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1467623/000146762314000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Dropbox Raised $6 Million Sequoia-Led Series A In October 2008",
+      "url": "https://techcrunch.com/2009/11/24/dropbox-sequoia-funding/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Index Leads $4 Billion Valuation Round In Dropbox",
+      "url": "https://techcrunch.com/2011/08/30/index-leads-4-billion-valuation-round-in-dropbox/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Dropbox Raises $250M In Funding, Boasts 45 Million Users",
+      "url": "https://techcrunch.com/2011/10/18/dropbox-raises-250m-in-funding-boasts-45-million-users/",
+      "type": "press"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "Latest Dropbox Funding Round May Have Been $450 Million, Nearly Double Earlier Reports",
+      "url": "https://www.forbes.com/sites/ryanmac/2014/01/31/latest-dropbox-funding-round-may-have-been-450-million-nearly-double-earlier-reports/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Dropbox",
+      "url": "https://en.wikipedia.org/wiki/Dropbox",
+      "type": "reference"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Dropbox, Inc. Form 10-K for fiscal 2025 (filed 2026-02-20)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1467623/000146762326000008/dbx-20251231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Dropbox Closes Roughly $250M Round At $10B Valuation, WSJ Says",
+      "url": "https://techcrunch.com/2014/01/17/dropbox-closes-250m-round-at-10b-valuation-wsj-says/",
+      "type": "press"
+    }
+  ]
+}

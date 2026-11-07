@@ -1,0 +1,221 @@
+{
+  "slug": "vanta",
+  "name": "Vanta",
+  "cohort": "saas",
+  "colorSlot": 1,
+  "dashSlot": 3,
+  "status": "private",
+  "founded": "2017-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "incorporation",
+  "foundedNote": "The founding year is genuinely contested and no incorporation document is publicly retrievable. Vanta's own About page says 'Vanta was founded in 2018' and Wikipedia, Crunchbase and most press repeat 2018 — but Vanta Inc.'s Form D, filed 2022-06-16 and signed by Christina Cacioppo, answers 'Year of Incorporation/Organization' with 'Over Five Years Ago', which requires the entity to have existed on or before roughly June 2017 and rules 2018 out. Sequoia, which led the Series A and holds a board seat, lists 'Founded 2017' on its portfolio page. TechCrunch's October 2022 piece says 2016. First Round Review's account puts the narrative timeline at: Cacioppo leaves Dropbox in late 2016, spends 2017 doing SOC 2 customer discovery with Segment and Front, is accepted to Y Combinator in January 2018 and closes the seed in April 2018 — so the 2018 consensus most likely dates the YC batch and the product, not the corporate entity. Dated to 2017, the earliest year supported by both the filing bound and an insider source; no month is invented.",
+  "events": [
+    {
+      "id": "2018-04-seed",
+      "date": "2018-04-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$3M seed",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 3000000,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor: raised out of Y Combinator's Winter 2018 batch from YC and angels, with no named venture firm leading it that can be sourced to anything better than an aggregator. Vanta then went roughly three years without raising again, and the May 2021 Sequoia round is universally described as its first institutional capital. First Round Review dates the close to April 2018; Forbes gives the $3M figure. No valuation was ever disclosed. Recorded, never plotted.",
+      "sourceRefs": [1, 0],
+      "plot": false
+    },
+    {
+      "id": "2021-05-04-series-a",
+      "date": "2021-05-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$50M Series A",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 50000000,
+      "valuationUsd": 500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Vanta's first institutional round; Sequoia's Andrew Reed joined the board. Vanta's own release announced the $50M and never mentioned a valuation. The ~$500M figure comes only from Forbes, attributed to an unnamed source with knowledge of the round, and Forbes did not say whether it was pre- or post-money. Every later repetition (Sacra, Wellfound, the aggregators) traces back to that single Forbes story, so this is one outlet, not several. ARR had just passed $10M with about 1,000 customers and 65 employees.",
+      "sourceRefs": [0],
+      "plot": true
+    },
+    {
+      "id": "2022-06-08-series-b",
+      "date": "2022-06-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$110M Series B",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Craft Ventures",
+      "amountRaisedUsd": 110000000,
+      "valuationUsd": 1600000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Vanta's own announcement states the $1.6B valuation, and Bloomberg and SiliconANGLE report it independently. Sequoia and Y Combinator followed on. The matching Form D, filed 2022-06-16, reports a first sale of 2022-06-01, a total offering of $150,050,008 and $103,370,214 sold as of filing — so the offering was always sized well above the $110M announced, and the October extension below drew down the same authorization rather than opening a new one. The D/A of 2023-08-23 shows $150,049,972 of the $150,050,008 eventually sold.",
+      "sourceRefs": [2, 3, 4, 5],
+      "plot": true
+    },
+    {
+      "id": "2022-10-12-series-b-extension",
+      "date": "2022-10-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$40M Series B extension",
+      "charterSeries": null,
+      "nameConflict": "Databases variously treat this as a separate round and as part of the June Series B. The Form D shows one offering, so it is recorded as an extension.",
+      "institutional": true,
+      "lead": "CrowdStrike Falcon Fund",
+      "amountRaisedUsd": 40000000,
+      "valuationUsd": null,
+      "note": "No post-money was reported for the extension itself. TechCrunch attaches the $1.6B figure to the June close that this extended, not to the October money, and Vanta never restated a valuation. The Form D arithmetic ($110M + $40M against a $150,050,008 offering that later shows as fully sold) makes it very likely the same preferred at the same price, but that is an inference, so the valuation is left null and the event is not plotted. CrowdStrike's Falcon Fund had announced its investment separately in September 2022; individual investors also participated. Total raised to date reported as $203M.",
+      "sourceRefs": [6, 4, 5],
+      "plot": false
+    },
+    {
+      "id": "2024-07-24-series-c",
+      "date": "2024-07-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$150M Series C",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Sequoia Capital",
+      "amountRaisedUsd": 150000000,
+      "valuationUsd": 2450000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Vanta's own announcement carries the $2.45B figure; SecurityWeek, Reuters and Bloomberg report it independently, with SecurityWeek specifying post-money. New investors Growth Equity at Goldman Sachs Alternatives and J.P. Morgan joined; Atlassian Ventures, Craft Ventures, CrowdStrike Ventures, HubSpot Ventures, Workday Ventures and Y Combinator followed on. Total raised to date reported as $353M; ARR had crossed $100M in January 2024 with more than 8,000 customers.",
+      "sourceRefs": [7, 8],
+      "plot": true
+    },
+    {
+      "id": "2025-07-23-series-d",
+      "date": "2025-07-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$150M Series D",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Wellington Management",
+      "amountRaisedUsd": 150000000,
+      "valuationUsd": 4150000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Vanta's own post states the $4.15B valuation; Bloomberg, Forbes and CNBC report it independently, though CNBC and Forbes round it to '$4 billion' in their headlines. Wellington Management led as a new investor, with Growth Equity at Goldman Sachs Alternatives, Sequoia, J.P. Morgan, Craft Ventures, Y Combinator, Atlassian Ventures and CrowdStrike Ventures participating. Cacioppo told Forbes the company did not need the money. Total raised to date about $504M; more than 12,000 customers and roughly $220M ARR at announcement. This is still the latest priced round as of 2026-08-06.",
+      "sourceRefs": [9, 10],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Verified as of 2026-08-06: no round has been announced since the July 2025 Series D, and Vanta remains private with no S-1 or F-1 on EDGAR and no reported confidential filing — the only EDGAR filings under Vanta Inc. (CIK 0001934145) are the 2022 Form D and its 2023 amendment, both for the Series B. IPO speculation exists only on pre-IPO brokerage marketing pages. Vanta has never run a reported tender offer or company-sponsored secondary. Hiive, Forge, Notice.co and Nasdaq Private Market all publish indicative per-share marks (roughly the mid-teens to $19 per share in July 2026), but none discloses a share count, so they cannot be converted to a company valuation and are excluded rather than recorded as events. Because no Form D exists for the Series A, C or D, there is no cap-table cross-check on any reported valuation except the Series B's offering size. Acquisitions, both on undisclosed terms and neither affecting the curve: Trustpage in January 2023 and the Israeli risk-monitoring startup Riskey in June 2025. ARR for context: ~$10M May 2021, $100M January 2024, ~$220M July 2025, $300M April 2026 (up 69% year over year, ~16,000 customers).",
+  "unresolved": [
+    "Exact incorporation date of Vanta Inc. No Delaware or California filing is publicly retrievable, and the year itself is contested: 2016 (TechCrunch), 2017 (Sequoia's portfolio page, and the only year consistent with the Form D's 'over five years ago' checkbox), 2018 (Vanta's own About page, Wikipedia, Crunchbase).",
+    "Whether the Series A's ~$500M was pre- or post-money, and whether the figure is right at all — it rests on one unnamed source in one Forbes story that Vanta has never confirmed.",
+    "Post-money for the April 2018 seed and for the October 2022 Series B extension; neither was ever disclosed.",
+    "The identity of any lead in the 2018 seed. Aggregators name Pear VC, but no primary or press source supports it, so the round is recorded as non-institutional."
+  ],
+  "sources": [
+    {
+      "outlet": "Forbes",
+      "title": "Vanta Goes From Low-Profile Startup To $500 Million Valuation With $50 Million Sequoia Series A",
+      "url": "https://www.forbes.com/sites/alexkonrad/2021/05/04/vanta-goes-from-low-profile-startup-to-500-million-valuation-with-50-million-sequoia-series-a/",
+      "type": "press"
+    },
+    {
+      "outlet": "First Round Review",
+      "title": "Vanta's Path to Product-Market Fit - Solve the Customer's Problem, Not Your Own",
+      "url": "https://review.firstround.com/vantas-path-to-product-market-fit/",
+      "type": "press"
+    },
+    {
+      "outlet": "Vanta",
+      "title": "Announcing Vanta's $110 Million Series B",
+      "url": "https://www.vanta.com/resources/vanta-announces-series-b",
+      "type": "company"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Vanta raises $110M at $1.6B valuation to simplify cybersecurity compliance",
+      "url": "https://siliconangle.com/2022/06/08/vanta-raises-110m-1-6b-valuation-simplify-cybersecurity-compliance/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Vanta Inc. Form D, filed 2022-06-16 (CIK 0001934145)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1934145/000193414522000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Vanta Inc. Form D/A, filed 2023-08-23 (CIK 0001934145)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1934145/000193414523000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Vanta lands $40M to automate cybersecurity compliance",
+      "url": "https://techcrunch.com/2022/10/12/vanta-lands-40m-to-automate-cybersecurity-compliance/",
+      "type": "press"
+    },
+    {
+      "outlet": "Vanta",
+      "title": "Announcing Vanta's $150 million Series C funding",
+      "url": "https://www.vanta.com/resources/vanta-announces-series-c",
+      "type": "company"
+    },
+    {
+      "outlet": "SecurityWeek",
+      "title": "Vanta Raises $150 Million at $2.45 Billion Valuation",
+      "url": "https://www.securityweek.com/vanta-raises-150-million-at-2-45-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Vanta",
+      "title": "Helping businesses earn and prove trust: Announcing Vanta's $150 million Series D",
+      "url": "https://www.vanta.com/resources/vanta-announces-series-d",
+      "type": "company"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "Christina Cacioppo's Software Startup Just Raised New Funds At A $4 Billion Valuation - Despite Not Needing The Money",
+      "url": "https://www.forbes.com/sites/phoebeliu/2025/07/23/christina-cacioppos-startup-vanta-raised-new-funds-at-a-4-billion-valuation-despite-not-needing-the-money/",
+      "type": "press"
+    },
+    {
+      "outlet": "Sequoia Capital",
+      "title": "Vanta - Sequoia portfolio page (Founded 2017, Partnered 2021)",
+      "url": "https://sequoiacap.com/companies/vanta/",
+      "type": "reference"
+    },
+    {
+      "outlet": "Vanta",
+      "title": "Vanta's mission is to help businesses earn and prove trust (About)",
+      "url": "https://www.vanta.com/company/about",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Vanta (company)",
+      "url": "https://en.wikipedia.org/wiki/Vanta_(company)",
+      "type": "reference"
+    },
+    {
+      "outlet": "Sacra",
+      "title": "Vanta revenue, valuation & funding",
+      "url": "https://sacra.com/c/vanta/",
+      "type": "database"
+    }
+  ]
+}

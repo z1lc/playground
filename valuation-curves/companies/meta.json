@@ -1,0 +1,233 @@
+{
+  "slug": "meta",
+  "name": "Meta",
+  "cohort": "mega-cap",
+  "colorSlot": 6,
+  "dashSlot": 0,
+  "status": "public",
+  "founded": "2004-02-04",
+  "foundedPrecision": "day",
+  "foundedBasis": "team-founding",
+  "foundedNote": "TheFacebook launched at thefacebook.com on 2004-02-04 from Mark Zuckerberg's Harvard dorm room, and this chart clocks from that launch as the earliest formal founding. No entity existed on that date. Wikipedia, citing David Kirkpatrick's The Facebook Effect (pp. 37-38), says the company 'was initially incorporated as a Florida LLC' during 2004 but gives no filing date, and no Florida filing is cited by any source retrieved here — the frequently repeated 'April 2004' could not be tied to a document. The Delaware entity is precisely dated by a primary source: the restated certificate of incorporation filed as Exhibit 3.3 to the S-1 states 'The date of filing its original Certificate of Incorporation with the Secretary of State was July 29, 2004, under the name TheFacebook, Inc.' The S-1 and every 10-K say only 'We were incorporated in Delaware in July 2004.' The entity became Facebook, Inc. in 2005 and Meta Platforms, Inc. on 2021-10-28, announced by Zuckerberg at Connect; EDGAR records the former name 'Facebook Inc' with a date of 2021-10-27, which is a filing-system date rather than a charter date. The rebrand renamed the parent only, not the Facebook service, and did not change the corporate structure. The stock ticker did not move with the name: the October 2021 announcement said the company intended to trade as MVRS from December 1, but it in fact became META later, in 2022.",
+  "public": {
+    "ticker": "META",
+    "cik": "0001326801",
+    "cmcSlug": "meta-platforms",
+    "ipoDate": "2012-05-18",
+    "publicFrom": "2012-05-18",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 1670000000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "2004-06-thiel",
+      "date": "2004-06-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Peter Thiel angel investment",
+      "charterSeries": "A",
+      "nameConflict": "Every charter letter in Facebook's cap table runs one ahead of the press label, because the Thiel angel round took the charter A. Charter B is the round everyone calls the Series A (Accel), charter C the Series B (Greylock), charter D the Series C (Microsoft), charter E the Series D (DST).",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 500000,
+      "valuationUsd": 4900000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "estimate",
+      "note": "Below the inclusion floor and never plotted: Thiel wrote this personally, a year before he founded Founders Fund, so there is no named venture firm as lead. Recorded because it is the first outside money in the company. The ~$4.9M valuation is not a reported post-money — it is arithmetic on the two facts everyone agrees on, $500,001 for 10.2%, and is carried as an estimate. Dates disagree: Wikipedia's timeline says June 2004, its prose says 'the summer of 2004', and the money is usually described as arriving as a convertible note that later converted into preferred. The S-1 cap table shows the whole charter Series A at $0.004605 per share (split-adjusted) on 133,055 thousand shares outstanding at 2011-12-31, an aggregate liquidation preference of roughly $0.6M — so Thiel's cheque is about four-fifths of the series and the balance is other angels, Reid Hoffman and Mark Pincus among them.",
+      "sourceRefs": [0, 3],
+      "plot": false
+    },
+    {
+      "id": "2005-05-accel",
+      "date": "2005-05-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$12.7M Series A (Accel)",
+      "charterSeries": "B",
+      "nameConflict": "Universally called the Series A; the charter letter in the S-1 is B.",
+      "institutional": true,
+      "lead": "Accel Partners",
+      "amountRaisedUsd": 12700000,
+      "valuationUsd": 98000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The inclusion floor: the first round with a named venture firm as lead. The month is contested and the sources split evenly. Wikipedia's prose (citing Bloomberg) says Accel 'agreed' in April 2005, and the S-1 records both Jim Breyer and Peter Thiel joining the board in April 2005, which is when a closing normally grants seats; Forbes says May 2005, and The Harvard Crimson reported the announcement on 2005-05-27 as having happened 'yesterday', i.e. 2005-05-26. Dated to the announcement month; April is equally defensible and the difference is 0.08 years on this axis. The amount is contested the same way: $12.7M is Accel's cheque, and press of the day said '$13 million' because Breyer added $1M of his own. The S-1 cap table prices charter Series B at $0.0570025 per share on 224,273 thousand shares outstanding at 2011-12-31 — about $12.8M — but that count includes warrant exercises in February and December 2011, so it is a cross-check rather than the round size. The $98M figure is carried by a single reporting chain (Bloomberg) and is published with no pre/post label, so it is soft and its basis unspecified.",
+      "sourceRefs": [0, 3, 4, 5],
+      "plot": true
+    },
+    {
+      "id": "2006-04-greylock",
+      "date": "2006-04-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$27.5M Series B (Greylock, Meritech)",
+      "charterSeries": "C",
+      "nameConflict": "Called the Series B; the charter letter is C.",
+      "institutional": true,
+      "lead": "Greylock Partners",
+      "amountRaisedUsd": 27500000,
+      "valuationUsd": 500000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Greylock Partners and Meritech Capital led, with Peter Thiel and Accel following on. Both numbers are soft. The contemporaneous report, The Harvard Crimson on 2006-04-25, was headlined 'Investors Add $25M to Facebook's Coffers'; Wikipedia, citing Kirkpatrick's The Facebook Effect (pp. 170-171), says $27.5M at 'about $500 million'. The S-1 cap table prices charter Series C at $0.2871668 per share on 91,410 thousand shares outstanding, an aggregate liquidation preference of $26M, which sits between the two reported amounts. A $525M valuation is also widely repeated for this round but appears in none of the sources retrieved here, so the $500M figure that is actually sourced is used.",
+      "sourceRefs": [0, 3],
+      "plot": true
+    },
+    {
+      "id": "2007-10-24-microsoft",
+      "date": "2007-10-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$240M Microsoft investment at $15B",
+      "charterSeries": "D",
+      "nameConflict": "Called the Series C; the charter letter is D.",
+      "institutional": true,
+      "lead": "Microsoft",
+      "amountRaisedUsd": 240000000,
+      "valuationUsd": 15000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Confirmed by the investor's own press release: Microsoft 'will take a $240 million equity stake in Facebook's next round of financing, at a $15 billion valuation'. The same deal gave Microsoft exclusivity on Facebook's international ad syndication, so the price was strategic as well as financial and the $15B is widely treated as inflated — Wikipedia's timeline flags the valuation as disputed on exactly that ground. Microsoft's $240M was one tranche of a larger charter Series D that closed at $375M aggregate (S-1 cap table: $7.412454 per share on 50,590 thousand shares), the rest coming from Li Ka-shing in November 2007 and further investors into 2008. Only the Microsoft tranche is recorded, because only it has a stated valuation.",
+      "sourceRefs": [6, 0, 3],
+      "plot": true
+    },
+    {
+      "id": "2009-05-26-dst",
+      "date": "2009-05-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$200M DST round at $10B",
+      "charterSeries": "E",
+      "nameConflict": "Called the Series D; the charter letter is E.",
+      "institutional": true,
+      "lead": "Digital Sky Technologies",
+      "amountRaisedUsd": 200000000,
+      "valuationUsd": 10000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "A genuine down round, and a large one. The issue price fell from $7.412454 for charter Series D (October 2007) to $4.54158 for charter Series E, a 39% cut, and the reported valuation from $15B to $10B. Two things drove it: Facebook raised in the trough after the 2008 financial crisis, and the 2007 mark had been set by a strategic buyer paying for ad exclusivity. The S-1's list of unregistered sales dates the transaction exactly - 'On May 26, 2009, we sold 44,037,540 shares of our Series E preferred stock to one accredited investor at a purchase price of $4.54 per share' - and the related-party note names the buyer as Mail.ru Group Limited, f/k/a Digital Sky Technologies, for approximately $200 million. Yuri Milner's DST invested alongside Alisher Usmanov. The $10B valuation is reported (Guardian and Reuters, via Wikipedia) and was never disclosed by Facebook, so it is soft. DST and Mail.ru also bought large blocks from existing holders in 2009 and 2010 - the S-1 records Facebook assigning its right of first refusal on 28,403,845 Class B shares to them - but those are secondary purchases at unstated prices and are excluded.",
+      "sourceRefs": [0, 3],
+      "plot": true
+    },
+    {
+      "id": "2011-01-goldman-dst",
+      "date": "2011-01-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$1.5B Goldman Sachs / DST round at $50B",
+      "charterSeries": null,
+      "nameConflict": "Not a lettered series at all - this was a sale of Class A common stock, not preferred, so it has no charter letter and press coverage gave it no series label either.",
+      "institutional": true,
+      "lead": "Goldman Sachs",
+      "amountRaisedUsd": 1500000000,
+      "valuationUsd": 50000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The S-1 gives the mechanics precisely. Facebook sold Class A common at $20.85 per share; affiliates of Goldman Sachs bought 69,544,363 shares for $1,450 million across December 2010 and January 2011, and DST Global separately bought 2,398,081 shares for about $50 million in December 2010. The cash-flow discussion splits it by period: a December 2010 offering that generated $500 million, and a January 2011 offering to certain non-U.S. investors that generated $998 million in net proceeds - roughly $1.5B in total, which is the figure recorded. Dated to January 2011, when the round was reported and completed, although its first closing was in December 2010. The $50B valuation comes from NYT DealBook on 2011-01-02 ('$500 million is invested into Facebook for 1% of the company, placing its worth at $50 billion') and was never confirmed by Facebook, so it is soft and its basis unspecified.",
+      "sourceRefs": [0, 3],
+      "plot": true
+    },
+    {
+      "id": "2012-05-18-ipo",
+      "date": "2012-05-18",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO at $38.00/share",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Morgan Stanley (lead underwriter)",
+      "amountRaisedUsd": 16006877370,
+      "valuationUsd": 104000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Priced at $38.00 on 2012-05-17 and first traded 2012-05-18 on NASDAQ under FB, closing the first day at $38.23. The 424B4 prospectus states the offering: 180,000,000 Class A shares sold by Facebook and 241,233,615 by selling stockholders, 421,233,615 in total, which at $38.00 is the $16.0B universally reported as raised - though Facebook itself netted only about $6.8B, the rest going to selling holders. The $104B valuation is the fully diluted figure: the prospectus lists 2,138,085,037 Class A and Class B shares outstanding immediately after the offering plus 116,756,442 option shares, a further 60,000,000 under Zuckerberg's remaining option, 378,429,048 RSUs, 22,999,412 Instagram shares, 25,257,815 later RSUs and 40,000 later Class A shares - 2,741,567,754 in all, which at $38.00 is $104.2B, the reported figure to three digits. On the shares-outstanding basis this series uses for public quotes, the same $38.00 on 2,138,085,037 shares gives $81.2B. The reported $104B is recorded because that is the number every source attaches to this event and because it is the same fully diluted basis on which the private post-money valuations above are stated; the $81.3B figure is here so the basis change into the public series is legible.",
+      "sourceRefs": [1, 7],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Meta is the multi-class case this pipeline has to handle. dei:EntityCommonStockSharesOutstanding is present in every Meta filing but tagged with a share-class axis - the FY2025 10-K cover reports 2,187,177,748 Class A and 342,377,716 Class B shares as of 2026-01-23 as two dimensional facts - and the SEC companyfacts API exposes only non-dimensional facts, so the tag is absent from the API and us-gaap:CommonStockSharesOutstanding is absent entirely. The share cascade therefore lands on us-gaap:WeightedAverageNumberOfSharesOutstandingBasic, which runs about 0.5-1% under period-end because Meta retires roughly 1% of its shares a quarter, and every computed quarterly point is marked soft (hollow) as a result. That is the expected outcome, not a defect. Hand cross-check on the regression year: the FY2025 10-K cover total of 2,529,555,464 shares at the $660.09 quarter-end close is $1.670T, which matches companiesmarketcap's independently published $1.671T for 2025 to 0.08%. The pre-IPO history is unusually complete because the S-1's convertible-preferred note publishes the whole cap table - authorized and outstanding shares, aggregate liquidation preference and issue price for all five series, split-adjusted for the 5-for-1 split of October 2010 - which is what makes the charter-versus-press series-letter offset visible and lets every reported round size be checked against a filed number. Deliberately excluded: Li Ka-shing's $60M of November 2007 and the further 2008 tranches, which are part of the same charter Series D as Microsoft's $240M but carry no separate valuation; the 2009-2010 secondary purchases by DST, Mail.ru and Elevation Partners, which were bought from existing holders rather than from the company; and the 2010 secondary-market marks (SharesPost and SecondMarket trades that The Guardian reported as valuing Facebook above $33B in August 2010), which are platform prices with no disclosed share count. The private line is plotted on fully diluted post-money valuations and the public line on shares outstanding, and the IPO point is where the basis changes - see the note on that event.",
+  "unresolved": [
+    "The Florida LLC's formation date. Wikipedia, citing Kirkpatrick's The Facebook Effect, says Facebook was initially incorporated as a Florida LLC but gives no date; the commonly repeated April 2004 could not be attached to any retrievable filing, and Florida's registry was not consulted. Only the Delaware filing, 2004-07-29, rests on a primary document.",
+    "Whether the Accel round closed in April or May 2005. Bloomberg (via Wikipedia) says April and the S-1's board-seat dates for Breyer and Thiel agree; Forbes says May and The Harvard Crimson dates the announcement to 2005-05-26.",
+    "The Accel round's $98M valuation is published with no pre-money or post-money label, and traces to a single reporting chain.",
+    "The 2006 Greylock round: $25M (The Harvard Crimson, contemporaneous) versus $27.5M (Kirkpatrick via Wikipedia) versus $26M of aggregate liquidation preference in the S-1 cap table; and $500M versus the widely repeated but here-unsourced $525M valuation.",
+    "The exact date within June 2004 of the Thiel investment, and whether it was structured as a convertible note at the time or as preferred stock from the outset."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Facebook, Inc. Form S-1, filed 2012-02-01",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000119312512034517/d287954ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Facebook, Inc. Form 424B4 IPO prospectus, filed 2012-05-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000119312512240111/d287954d424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Facebook, Inc. Restated Certificate of Incorporation (S-1/A Exhibit 3.3)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000119312512175673/d287954dex33.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "History of Facebook",
+      "url": "https://en.wikipedia.org/wiki/History_of_Facebook",
+      "type": "reference"
+    },
+    {
+      "outlet": "The Harvard Crimson",
+      "title": "Firm Invests $13M in Facebook",
+      "url": "https://www.thecrimson.com/article/2005/5/27/firm-invests-13m-in-facebook-a/",
+      "type": "press"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "The Untold Story Of Two Early Facebook Investors",
+      "url": "https://www.forbes.com/sites/tomiogeron/2012/02/01/the-untold-story-of-two-early-facebook-investors/",
+      "type": "press"
+    },
+    {
+      "outlet": "Microsoft",
+      "title": "Facebook and Microsoft Expand Strategic Alliance",
+      "url": "https://news.microsoft.com/2007/10/24/facebook-and-microsoft-expand-strategic-alliance/",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Initial public offering of Facebook",
+      "url": "https://en.wikipedia.org/wiki/Initial_public_offering_of_Facebook",
+      "type": "reference"
+    },
+    {
+      "outlet": "Meta",
+      "title": "Introducing Meta: A Social Technology Company",
+      "url": "https://about.fb.com/news/2021/10/facebook-company-is-now-meta/",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Meta Platforms, Inc. Form 10-K, FY2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Meta Platforms (META) market cap history",
+      "url": "https://companiesmarketcap.com/meta-platforms/marketcap/",
+      "type": "database"
+    }
+  ]
+}

@@ -1,0 +1,579 @@
+{
+  "slug": "anthropic",
+  "name": "Anthropic",
+  "cohort": "ai",
+  "colorSlot": 4,
+  "dashSlot": 1,
+  "status": "private",
+  "founded": "2021-01-26",
+  "foundedPrecision": "day",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Founded by seven former OpenAI staff — Dario Amodei, Daniela Amodei, Jared Kaplan, Jack Clark, Chris Olah, Ben Mann, Sam McCandlish and Tom Brown. Wikipedia's infobox gives 2021-01-26 and the body says 'founded in January 2021'; Anthropic's own materials say only '2021' and its Series A announcement gives no founding date. Anthropic is a Delaware public benefit corporation, but the certificate of incorporation is not publicly retrievable: Anthropic has never filed with the SEC as an issuer (all 35 EDGAR company matches for 'Anthropic' are third-party SPVs), Delaware's registry is captcha-gated, and the copy Zach Stein-Perlman obtained from Delaware and posted to LessWrong is not quoted with a filing date. So the day is sourced but the BASIS is not: 2021-01-26 may be the incorporation date or the date the team formally started, and it is recorded here as the conservative team-founding reading. Anchors that are firm: the Series A closed 2021-05-28, and Dario Amodei left OpenAI at the end of 2020.",
+  "events": [
+    {
+      "id": "2021-05-28-series-a",
+      "date": "2021-05-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Jaan Tallinn",
+      "amountRaisedUsd": 124000000,
+      "valuationUsd": null,
+      "note": "Anthropic's own announcement names Jaan Tallinn as lead with James McClave, Dustin Moskovitz, the Center for Emerging Risk Research and Eric Schmidt participating, and discloses no valuation. The lead is an individual angel rather than a venture firm, which makes the mechanical inclusion floor ambiguous here; it is marked institutional because it is a formally lettered $124M Series A with a named lead and a named institutional co-investor (CERR). PitchBook and Forge both carry a $623M post-money for this round, but no primary source or press report supports it, so it is recorded here as unverified aggregator data and not as a valuation.",
+      "sourceRefs": [0, 1],
+      "plot": false
+    },
+    {
+      "id": "2022-04-29-series-b",
+      "date": "2022-04-29",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Sam Bankman-Fried (FTX/Alameda Research)",
+      "amountRaisedUsd": 580000000,
+      "valuationUsd": null,
+      "note": "The round with the strangest afterlife in this dataset. Anthropic's announcement names Sam Bankman-Fried as lead, with Caroline Ellison, Nishad Singh, Jim McClave, Jaan Tallinn and CERR participating; no valuation was disclosed and none has ever been confirmed. Roughly $500M came from Alameda Research and, per the FTX bankruptcy, from FTX customer deposits. FTX collapsed in November 2022; the estate's ~8% stake was sold in two tranches in 2024 (recorded separately) to repay creditors, and the buyers rather than FTX captured the appreciation. The 8%-for-$500M figure quoted in coverage would imply a ~$6.3B post-money, which cannot be reconciled with the ~$4.1B reported for the Series C a year later, so the stake percentage and the round price are not treated as convertible into each other.",
+      "sourceRefs": [2, 1, 12],
+      "plot": false
+    },
+    {
+      "id": "2023-02-03-google-1",
+      "date": "2023-02-03",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Google strategic investment",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Google",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": null,
+      "note": "First reported by the Financial Times: ~$300M for a roughly 10% stake, with the money required to be spent on Google Cloud compute — the template every later hyperscaler deal followed. Valuation is left null because the two available figures cannot both be right: a 10% stake for $300M implies ~$3B, while the New York Times said the deal 'could give Anthropic a valuation of roughly $5 billion'. Neither is a disclosed post-money and the NYT figure is hedged, so no number is emitted.",
+      "sourceRefs": [3],
+      "plot": false
+    },
+    {
+      "id": "2023-05-23-series-c",
+      "date": "2023-05-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Spark Capital",
+      "amountRaisedUsd": 450000000,
+      "valuationUsd": 4100000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Anthropic's announcement names Spark Capital as lead with Google, Salesforce Ventures, Sound Ventures and Zoom Ventures participating, and discloses no valuation. The $4.1B traces to a single origin — The Information's March 2023 report of a pitch deck seeking 'over $4.1 billion' — which TechCrunch then repeated. That is a pre-round target reported by one outlet, not a confirmed post-money, so the basis is left unspecified and the confidence is soft. Menlo Ventures' own retrospective describes itself as having backed Anthropic from the Series C 'pre-revenue and pre-launch', while Anthropic names Spark as the lead; Menlo participated.",
+      "sourceRefs": [4, 5, 19],
+      "plot": true
+    },
+    {
+      "id": "2023-08-13-sk-telecom",
+      "date": "2023-08-13",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "SK Telecom strategic investment",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "SK Telecom",
+      "amountRaisedUsd": 100000000,
+      "valuationUsd": null,
+      "note": "SK Telecom's own press release confirms $100M and a telco-LLM partnership but discloses no stake or valuation. Korean coverage says the cheque bought roughly 2% (implying ~$5B) and SKT later reported the stake diluted to about 0.3%; neither figure is a disclosed round price, so no valuation is recorded.",
+      "sourceRefs": [6],
+      "plot": false
+    },
+    {
+      "id": "2023-09-25-amazon-note-1",
+      "date": "2023-09-25",
+      "datePrecision": "day",
+      "kind": "convertible_note",
+      "roundName": "Amazon convertible note (first tranche of up to $4B)",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Amazon",
+      "amountRaisedUsd": 1250000000,
+      "valuationUsd": null,
+      "note": "Announced as 'up to $4 billion' with no structure disclosed by either party. Amazon's Q3 2023 Form 10-Q is the primary source and is explicit: 'in September 2023 we invested in a $1.25 billion note from Anthropic, PBC, which is convertible to equity. We have an agreement that expires in Q1 2024 to invest up to an additional $2.75 billion in a second convertible note.' The same filing records the paired commercial arrangement for AWS cloud services and chips. No conversion price, cap or discount has ever been disclosed, so there is no valuation to record.",
+      "sourceRefs": [7, 8],
+      "plot": false
+    },
+    {
+      "id": "2023-10-27-google-2",
+      "date": "2023-10-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Google commitment of up to $2B",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Google",
+      "amountRaisedUsd": 500000000,
+      "valuationUsd": null,
+      "note": "Reported by the Wall Street Journal and picked up by TechCrunch: $500M paid immediately with up to $1.5B more later on undisclosed timing or conditions. Neither Google nor Anthropic announced the deal, no valuation was reported, and the instrument was never characterised — unlike Amazon's, it is not confirmed as a convertible note, so it is recorded as an equity investment of the disclosed upfront amount only. amountRaisedUsd is the $500M that changed hands, not the $2B headline.",
+      "sourceRefs": [9],
+      "plot": false
+    },
+    {
+      "id": "2024-01-series-d",
+      "date": "2024-01-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Menlo Ventures",
+      "amountRaisedUsd": 750000000,
+      "valuationUsd": 18400000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Never announced by Anthropic, so both the date and the price are reconstructed. Crunchbase News reported the talks on 2023-12-21 at $15B pre / $18.4B post; Menlo Ventures filed a Form D for its $500M SPV 'Menlo Inflection AI Partners, L.P.' on 2024-01-09 showing $500M offered and nothing yet sold; Forbes detailed the structure on 2024-01-11 ($500M via the SPV plus $250M from Menlo's fund and insiders). Retrospective summaries frequently date the close to February 2024 instead, and small third-party SPVs kept filing Form Ds against 'Anthropic Series D' into May 2024, so the close is somewhere in Q1 2024 — dated to January, the month with the primary-source anchor, and left at month precision. $18.4B is soft: it comes from reporting on talks and was never confirmed by Anthropic.",
+      "sourceRefs": [10, 11, 34, 19],
+      "plot": true
+    },
+    {
+      "id": "2024-03-25-ftx-estate-sale",
+      "date": "2024-03-25",
+      "datePrecision": "day",
+      "kind": "secondary_mark",
+      "roundName": "FTX estate sale of the Series B stake",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Not a financing — no money reached Anthropic — but the tail of the Series B and worth preserving. Under bankruptcy-court authority the FTX estate sold about two-thirds of its ~8% stake for $884M to roughly two dozen institutional buyers, the largest being ATIC Third International Investment Company (Abu Dhabi) at 16,664,167 shares for close to $500M, with Jane Street, Fidelity funds and the Ford Foundation also buying. A second tranche of about 15 million shares followed in mid-2024 at a reported $30 per share for over $450M, taking total proceeds to roughly $1.3B on a $500M cost. No share count for the whole company was disclosed alongside either tranche, so the prices cannot be converted into a company valuation, and this is recorded as a secondary mark rather than a plottable event.",
+      "sourceRefs": [12],
+      "plot": false
+    },
+    {
+      "id": "2024-03-27-amazon-note-2",
+      "date": "2024-03-27",
+      "datePrecision": "day",
+      "kind": "convertible_note",
+      "roundName": "Amazon second convertible note",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Amazon",
+      "amountRaisedUsd": 2750000000,
+      "valuationUsd": null,
+      "note": "Completes the September 2023 commitment at $4B total. Amazon's own announcement calls it simply an investment for 'a minority ownership position'; the convertible-note characterisation comes from Amazon's Q3 2023 10-Q, which pre-described this exact tranche as 'a second convertible note' with an agreement expiring in Q1 2024. Secondary coverage attaches an $18.4B valuation to the tranche, matching the Series D, but neither party disclosed a conversion price, so no valuation is recorded.",
+      "sourceRefs": [13, 14, 8],
+      "plot": false
+    },
+    {
+      "id": "2024-11-22-amazon-note-3",
+      "date": "2024-11-22",
+      "datePrecision": "day",
+      "kind": "convertible_note",
+      "roundName": "Amazon $4B convertible notes",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Amazon",
+      "amountRaisedUsd": 4000000000,
+      "valuationUsd": null,
+      "note": "Doubles Amazon's total to $8B and makes AWS the primary cloud and training partner. Neither Anthropic's nor Amazon's announcement uses the word 'convertible', but Amazon's Q1 2026 10-Q settles the structure retrospectively: its Anthropic position consisted of 'convertible notes investments in Anthropic, PBC' that 'were converted to nonvoting preferred stock during Q1 2025 and Q1 2026', with $42.2B of notes still on the balance sheet at 2026-03-31. No conversion price was ever disclosed, so no valuation is recorded.",
+      "sourceRefs": [15, 16, 26],
+      "plot": false
+    },
+    {
+      "id": "2025-01-22-google-3",
+      "date": "2025-01-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Google additional $1B",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Google",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": null,
+      "note": "First reported by the Financial Times, taking Google's cumulative investment to about $3B for a reported ~10% stake. No valuation was attached to this tranche; coverage noted only that Anthropic was separately in late-stage talks at ~$60B, which became the Series E six weeks later and is recorded there.",
+      "sourceRefs": [17],
+      "plot": false
+    },
+    {
+      "id": "2025-03-03-series-e",
+      "date": "2025-03-03",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Lightspeed Venture Partners",
+      "amountRaisedUsd": 3500000000,
+      "valuationUsd": 61500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "The first round Anthropic priced in public: the company's own post is headlined '$61.5B post-money valuation'. Bessemer, Cisco Investments, D1, Fidelity, General Catalyst, Jane Street, Menlo and Salesforce Ventures participated. From here forward every lettered round carries a company-confirmed post-money.",
+      "sourceRefs": [18, 19],
+      "plot": true
+    },
+    {
+      "id": "2025-09-02-series-f",
+      "date": "2025-09-02",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "ICONIQ",
+      "amountRaisedUsd": 13000000000,
+      "valuationUsd": 183000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Co-led by Fidelity and Lightspeed. Anthropic disclosed run-rate revenue of ~$1B in January 2025 rising to over $5B by August 2025 alongside this round.",
+      "sourceRefs": [20],
+      "plot": true
+    },
+    {
+      "id": "2025-11-18-microsoft-nvidia",
+      "date": "2025-11-18",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Microsoft and NVIDIA strategic investments",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Microsoft and NVIDIA",
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Microsoft committed 'up to $5 billion' and NVIDIA 'up to $10 billion', against Anthropic committing to purchase $30B of Azure compute and up to a gigawatt of NVIDIA Grace Blackwell and Vera Rubin capacity. amountRaisedUsd is null because 'up to' ceilings are not a closed amount. Anthropic's announcement discloses no valuation; CNBC reported Anthropic was valued 'in the range of' $350B, which is hedged single-outlet language and is not emitted as a figure. The money appears to have actually landed inside the February 2026 Series G, whose announcement says 'Microsoft and NVIDIA also contributed through previously announced investments' — which is why this is recorded but not plotted.",
+      "sourceRefs": [21, 22],
+      "plot": false
+    },
+    {
+      "id": "2026-02-12-series-g",
+      "date": "2026-02-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series G",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "GIC and Coatue (co-led)",
+      "amountRaisedUsd": 30000000000,
+      "valuationUsd": 380000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Co-led by D. E. Shaw Ventures, Dragoneer, Founders Fund, ICONIQ and MGX. $380B post-money implies a $350B pre-money, which is the price that then governs both April 2026 marks below. Anthropic disclosed $14B run-rate revenue with this round.",
+      "sourceRefs": [22, 23],
+      "plot": true
+    },
+    {
+      "id": "2026-04-tender",
+      "date": "2026-04-01",
+      "datePrecision": "month",
+      "kind": "tender_offer",
+      "roundName": "Employee tender offer",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 350000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "Bloomberg reported the plan on 2026-02-04 at a $350B valuation and reported completion on 2026-04-08; the completion date could not be fetched directly, so the event is held at month precision. Investors had lined up $5-6B but employees declined to sell ahead of the expected IPO, so the actual size was 'in the low billions' and is left null. Deliberately NOT plotted despite tender offers normally being plottable: Bloomberg is explicit that $350B here is a PRE-money figure 'meaning it excludes the capital just being raised', i.e. it is the same per-share price as the February Series G whose $380B post-money is already a vertex. Plotting it would draw an 8% decline that never happened in price-per-share terms.",
+      "sourceRefs": [24, 33],
+      "plot": false
+    },
+    {
+      "id": "2026-04-20-amazon-equity",
+      "date": "2026-04-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Amazon $5B preferred plus up to $20B facility",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Amazon",
+      "amountRaisedUsd": 5000000000,
+      "valuationUsd": null,
+      "note": "The one Amazon investment that is NOT a note: its Q1 2026 10-Q says 'Subsequent to March 31, 2026, we invested $5.0 billion in Anthropic nonvoting preferred stock.' The 'up to $20 billion' headline is a separate financing facility with nothing drawable at inception, released only as AWS hits compute-delivery milestones, and drawn 'in the form of new Anthropic convertible notes or, after a liquidity event, Anthropic common stock' — so the convertible-note structure persists in the contingent part. Amazon also holds an option to put up to $5B into future equity financings. Paired with Anthropic committing over $100B to AWS over ten years and up to 5 GW of capacity. No valuation disclosed.",
+      "sourceRefs": [25, 32, 26],
+      "plot": false
+    },
+    {
+      "id": "2026-04-24-google-4",
+      "date": "2026-04-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Google $10B, up to $40B",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Google",
+      "amountRaisedUsd": 10000000000,
+      "valuationUsd": 350000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "$10B in cash now with $30B more contingent on Anthropic hitting compute-consumption milestones on Google TPUs, alongside 5 GW of dedicated TPU capacity. Bloomberg reports the price as '$350 billion... the same amount it was valued at in a funding round in February, not including the recent money raised' — i.e. the Series G pre-money, the same mark as the April tender. Not plotted for the same reason as the tender: it repeats an existing price rather than setting a new one, and drawing it would manufacture a down round. TechCrunch also does not state the $10B had closed as of announcement. Anthropic's Series H a month later says the $65B 'includes $15 billion of previously committed investments from hyperscalers, including $5 billion from Amazon' — arithmetic consistent with this $10B being the balance, though Anthropic does not name Google.",
+      "sourceRefs": [27, 28],
+      "plot": false
+    },
+    {
+      "id": "2026-05-28-series-h",
+      "date": "2026-05-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series H",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Altimeter Capital, Dragoneer, Greenoaks and Sequoia Capital (co-led)",
+      "amountRaisedUsd": 65000000000,
+      "valuationUsd": 965000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Company-confirmed $965B post-money — the current valuation as of 2026-08-06 and the last private mark before the IPO. Co-led by Capital Group, Coatue, D1, GIC, ICONIQ and XN, with Blackstone, Brookfield, Fidelity, MGX, T. Rowe Price and Temasek among the significant investors and Micron, Samsung and SK hynix as strategic infrastructure partners. The $65B includes $15B of previously committed hyperscaler money, $5B of it Amazon's, so it is not $65B of new cheques. Anthropic disclosed run-rate revenue crossing $47B earlier that month.",
+      "sourceRefs": [28, 29],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "IPO status as of 2026-08-06: Anthropic, PBC confidentially submitted a draft Form S-1 to the SEC on 2026-06-01 and said the submission 'gives us the option to go public after the SEC completes its review', with share count and price not yet set. Nothing is public on EDGAR (confidential submissions are not published), no public S-1 exists, no underwriters have been formally announced, and no shares have priced. Anthropic is therefore still private and status stays 'private'. Reporting of an October 2026 Nasdaq listing with Goldman Sachs, JPMorgan and Morgan Stanley leading appears only on low-quality IPO-tracker sites; Fortune says those banks are 'expected to be under consideration' with no formal appointments. Treat any IPO date, size or listing valuation as unsourced.\n\nStructure: Amazon's and Google's money is genuinely different from the lettered rounds. Amazon's first $8B (Sept 2023, Mar 2024, Nov 2024) was convertible notes tied to an AWS cloud-and-chips commercial agreement, confirmed by Amazon's own 10-Qs rather than by either party's press release; those notes converted to nonvoting preferred in tranches during Q1 2025 and Q1 2026, and $42.2B of notes were still outstanding at 2026-03-31. Only the April 2026 $5B was straight preferred stock, and even there the contingent $20B facility draws as new convertible notes. Google's tranches (Feb 2023, Oct 2023, Jan 2025, Apr 2026) were never characterised as notes by any source and are recorded as equity investments, each tied to a cloud-compute commitment. None of the six hyperscaler events carries a disclosed conversion price, which is why they are all valuationUsd null and unplotted — five of the eight unplotted events in this file.\n\nPlotting decisions worth defending: seven of the nineteen events are plotted. The two April 2026 marks at $350B (the employee tender and Google's $10B) are recorded with their prices but not plotted, because $350B is the February Series G's pre-money — the same per-share price already represented by the $380B post-money vertex — and plotting it would draw a down round that did not occur. This is a deliberate departure from the default that company-run tender offers are plottable.\n\nValuation provenance: the first five events (2021-2023, through SK Telecom) have no defensible valuation at all. PitchBook's and Forge's $623M Series A post-money has no primary support and is excluded. The curve therefore starts at the Series C. The Series C ($4.1B) and Series D ($18.4B) are soft — both trace to single-outlet reporting on pitch decks and talks rather than to closed prices, and Anthropic confirmed neither. Everything from the Series E onward is company-confirmed post-money from Anthropic's own posts.\n\nRevenue for context (all Anthropic-disclosed): ~$1B run-rate January 2025, over $5B August 2025, ~$9B end-2025, $14B February 2026, over $30B April 2026, over $47B May 2026. Claude Code alone passed $2.5B run-rate by February 2026.\n\nExcluded: secondary-market platform marks. Coverage of the April 2026 tender noted secondary pricing implying $500B-$800B, but these are indicative platform quotes with no disclosed share count and cannot be converted to a company valuation. Also excluded: Anthropic's compute and infrastructure partnerships that carry no investment (the April 2026 Google/Broadcom TPU expansion, the reported Meta compute-leasing talks).\n\nDisclosure: this file was researched by Claude, made by Anthropic. It was held to the same evidence standard as the rest of the dataset — every figure is either from a fetched primary filing, a fetched company post, or fetched press, and unconfirmed numbers are marked soft. Nothing here rests on the researcher's familiarity with the subject.",
+  "unresolved": [
+    "Whether 2021-01-26 is Anthropic's Delaware incorporation date or the team founding. The certificate of incorporation exists (obtained from Delaware and posted publicly by Zach Stein-Perlman) but is not quoted with a filing date, and Anthropic has never filed with the SEC as an issuer, so nothing corroborates the day from a filing.",
+    "Series A and Series B post-money valuations. Neither was disclosed and neither has ever been reported. The FTX estate's '8% for $500M' implies ~$6.3B for the Series B, which contradicts the ~$4.1B reported for the Series C a year later, so the stake percentage cannot be back-solved.",
+    "The Series D close date. Talks reported 2023-12-21, Menlo's $500M SPV Form D filed 2024-01-09 with no sales yet, Forbes detailed it 2024-01-11, retrospectives usually say February 2024, and third-party Series D SPVs kept filing into May 2024. Dated to January 2024 at month precision.",
+    "Conversion prices on every Amazon and Google tranche. Amazon's 10-Qs confirm the notes converted to nonvoting preferred in Q1 2025 and Q1 2026 but never state the price, so ~$13B of hyperscaler money is unplottable.",
+    "The actual size of the April 2026 employee tender. Investors had lined up $5-6B; Bloomberg says employees sold only 'low billions' but no figure was published.",
+    "Whether Google's April 2026 $10B had closed at announcement, and whether it is part of the '$15 billion of previously committed investments from hyperscalers' folded into the Series H. The arithmetic fits ($15B minus Amazon's named $5B) but Anthropic does not name Google."
+  ],
+  "sources": [
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic raises $124 million to build more reliable, general AI systems",
+      "url": "https://www.anthropic.com/news/anthropic-raises-124-million-to-build-more-reliable-general-ai-systems",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Anthropic",
+      "url": "https://en.wikipedia.org/wiki/Anthropic",
+      "type": "reference"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic Raises Series B to build steerable, interpretable, robust AI systems",
+      "url": "https://www.anthropic.com/news/anthropic-raises-series-b-to-build-safe-reliable-ai",
+      "type": "company"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Google is investing $300M in an OpenAI challenger that will take on ChatGPT while focusing on A.I. safety",
+      "url": "https://finance.yahoo.com/news/google-investing-300m-openai-challenger-224953905.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic Raises $450 Million in Series C Funding to Scale Reliable AI Products",
+      "url": "https://www.anthropic.com/news/anthropic-series-c",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Anthropic raises $450M to build next-gen AI assistants",
+      "url": "https://techcrunch.com/2023/05/23/anthropic-raises-350m-to-build-next-gen-ai-assistants/",
+      "type": "press"
+    },
+    {
+      "outlet": "SK Telecom",
+      "title": "SKT Invests USD 100 Million in Anthropic and Joins Forces to Develop a Telco-specific LLM",
+      "url": "https://www.sktelecom.com/en/press/press_detail.do?idx=1576",
+      "type": "company"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Expanding access to safer AI with Amazon",
+      "url": "https://www.anthropic.com/news/anthropic-amazon",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Amazon.com, Inc. Form 10-Q for the quarter ended September 30, 2023",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872423000018/amzn-20230930.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "AI's proxy war heats up as Google reportedly backs Anthropic with $2B",
+      "url": "https://techcrunch.com/2023/10/27/ais-proxy-war-heats-up-as-google-reportedly-backs-anthropic-with-2b/",
+      "type": "press"
+    },
+    {
+      "outlet": "Crunchbase News",
+      "title": "AI Unicorn Anthropic In Talks To Raise $750M At $18.4B Valuation",
+      "url": "https://news.crunchbase.com/ai/unicorn-anthropic-funding-menlo-goog-amzn/",
+      "type": "press"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "Inside AI Unicorn Anthropic's Unusual $750 Million Fundraise",
+      "url": "https://www.forbes.com/sites/alexkonrad/2024/01/11/anthropic-750million-funding-round-menlo-ventures/",
+      "type": "press"
+    },
+    {
+      "outlet": "CoinDesk",
+      "title": "FTX to Sell $884M of Anthropic Shares to Two Dozen Institutional Investors",
+      "url": "https://www.coindesk.com/policy/2024/03/25/ftx-to-sell-884m-of-anthropic-shares-to-two-dozen-institutional-investors",
+      "type": "press"
+    },
+    {
+      "outlet": "Amazon",
+      "title": "Amazon completes $4B Anthropic investment to advance generative AI",
+      "url": "https://www.aboutamazon.com/news/company-news/amazon-anthropic-ai-investment",
+      "type": "company"
+    },
+    {
+      "outlet": "Synthedia",
+      "title": "Amazon Completes $4B Anthropic Investment, Links Up with Accenture",
+      "url": "https://synthedia.substack.com/p/amazon-completes-4b-anthropic-investment",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Powering the next generation of AI development with AWS",
+      "url": "https://www.anthropic.com/news/anthropic-amazon-trainium",
+      "type": "company"
+    },
+    {
+      "outlet": "Amazon",
+      "title": "Amazon and Anthropic deepen strategic collaboration",
+      "url": "https://www.aboutamazon.com/news/aws/amazon-invests-additional-4-billion-anthropic-ai",
+      "type": "company"
+    },
+    {
+      "outlet": "Campus Technology",
+      "title": "Google to Invest $1 Billion in AI Startup Anthropic",
+      "url": "https://campustechnology.com/articles/2025/01/27/google-to-invest-1-billion-in-ai-startup-anthropic.aspx",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic raises Series E at $61.5B post-money valuation",
+      "url": "https://www.anthropic.com/news/anthropic-raises-series-e-at-usd61-5b-post-money-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "Menlo Ventures",
+      "title": "Tripling Down on Anthropic: Why We're Excited to Continue Investing in the Leader in the Future of AI",
+      "url": "https://menlovc.com/perspective/tripling-down-on-anthropic-why-were-excited-to-continue-investing-in-the-leader-in-the-future-of-ai/",
+      "type": "company"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic raises Series F at $183B post-money valuation",
+      "url": "https://www.anthropic.com/news/anthropic-raises-series-f-at-usd183b-post-money-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Microsoft, NVIDIA and Anthropic announce strategic partnerships",
+      "url": "https://www.anthropic.com/news/microsoft-nvidia-anthropic-announce-strategic-partnerships",
+      "type": "company"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic raises $30 billion in Series G funding at $380 billion post-money valuation",
+      "url": "https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Anthropic raises another $30B in Series G, with a new value of $380B",
+      "url": "https://techcrunch.com/2026/02/12/anthropic-raises-another-30-billion-in-series-g-with-a-new-value-of-380-billion/",
+      "type": "press"
+    },
+    {
+      "outlet": "Trending Topics",
+      "title": "Anthropic Said to Plan Tender Offer at $350 Billion Valuation",
+      "url": "https://www.trendingtopics.eu/anthropic-said-to-plan-tender-offer-at-350-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic and Amazon expand collaboration for up to 5 gigawatts of new compute",
+      "url": "https://www.anthropic.com/news/anthropic-amazon-compute",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Amazon.com, Inc. Form 10-Q for the quarter ended March 31, 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Google to invest up to $40B in Anthropic in cash and compute",
+      "url": "https://techcrunch.com/2026/04/24/google-to-invest-up-to-40b-in-anthropic-in-cash-and-compute/",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic raises $65B in Series H funding at $965B post-money valuation",
+      "url": "https://www.anthropic.com/news/series-h",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Anthropic raises $65 billion, nears $1T valuation ahead of IPO",
+      "url": "https://techcrunch.com/2026/05/28/anthropic-raises-65-billion-nears-1t-valuation-ahead-of-ipo/",
+      "type": "press"
+    },
+    {
+      "outlet": "Anthropic",
+      "title": "Anthropic confidentially submits draft S-1 to the SEC",
+      "url": "https://www.anthropic.com/news/confidential-draft-s1-sec",
+      "type": "company"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "Anthropic confidentially files for IPO after raising $65 billion in a funding round at a $965 billion valuation",
+      "url": "https://fortune.com/2026/06/01/anthropic-confidentially-files-ipo-965-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Amazon",
+      "title": "Amazon announces $5B Anthropic investment, up to $20B more",
+      "url": "https://www.aboutamazon.com/news/company-news/amazon-invests-additional-5-billion-anthropic-ai",
+      "type": "company"
+    },
+    {
+      "outlet": "Let's Data Science",
+      "title": "Anthropic Completes Employee Tender Offer at $350B Valuation",
+      "url": "https://letsdatascience.com/news/anthropic-completes-employee-tender-offer-at-350b-valuation-317b8580",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Menlo Inflection AI Partners, L.P. Form D, filed 2024-01-09",
+      "url": "https://www.sec.gov/Archives/edgar/data/2004604/000110465924002628/primary_doc.xml",
+      "type": "filing"
+    }
+  ]
+}

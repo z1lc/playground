@@ -1,0 +1,84 @@
+{
+  "slug": "microsoft",
+  "name": "Microsoft",
+  "cohort": "mega-cap",
+  "colorSlot": 7,
+  "dashSlot": 0,
+  "status": "public",
+  "founded": "1975-04-04",
+  "foundedPrecision": "day",
+  "foundedBasis": "partnership",
+  "foundedNote": "Gates and Allen formed the Micro-Soft partnership on 1975-04-04 in Albuquerque, New Mexico, to sell a BASIC interpreter for the MITS Altair 8800. The company was not an incorporated business until the 1981-06-25 restructuring in Washington state, which Microsoft's own Facts About Microsoft page also gives as the incorporation date. This chart clocks from the earliest formal founding, so t=0 is the 1975 partnership and the 1986-03-13 IPO lands eleven years in — an unusually long private stretch that will look wrong to anyone who dates Microsoft from the 1981 incorporation (five years to IPO) rather than the partnership. The gap is real rather than a data error: Microsoft funded those eleven years out of licensing revenue and took exactly one outside equity cheque, in 1981.",
+  "public": {
+    "ticker": "MSFT",
+    "cik": "0000789019",
+    "cmcSlug": "microsoft",
+    "ipoDate": "1986-03-13",
+    "publicFrom": "1986-03-13",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 3591000000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1981-technology-venture-investors",
+      "date": "1981-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Technology Venture Investors stake",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Technology Venture Investors",
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "Microsoft's only pre-IPO institutional round, and one of the smallest venture footprints of any company of its eventual size. VERIFIED: David Marquardt co-founded Technology Venture Investors in 1980, TVI was Microsoft's sole outside investor, and Marquardt sat on Microsoft's board from 1981 until 2014. NOT VERIFIED: the figure repeated everywhere — roughly $1,000,000 for roughly 5%, implying a post-money near $20,000,000 — is a recalled number. No source I was able to load carries it: it is absent from Microsoft's own Facts About Microsoft page, from the Wikipedia articles on Microsoft, the History of Microsoft, Bill Gates, Paul Allen and David Marquardt, and it cannot be checked against a filing because the 1986 prospectus predates EDGAR, which begins in 1993. Amount and valuation are therefore left null rather than emitted as fact, and the round is recorded but not plotted. Microsoft also sold roughly 5% to Steve Ballmer in 1980, but that was an employment grant to an individual and is below the inclusion floor twice over.",
+      "sourceRefs": [2],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Microsoft is the extreme case of the pattern this chart exists to show: eleven years from founding to IPO with a single institutional cheque in between, so the private half of the line has no vertices at all and the series effectively begins with public market data. The IPO priced 2,795,000 shares at $21.00 on 1986-03-13 and closed the first day at $28.00 per the History of Microsoft article, but no share count I could source from a document I actually read lets me turn that into a market capitalisation, so no IPO-day figure is entered. companiesmarketcap's annual table starts in 1996, which leaves 1986-1995 empty; the Apple shard fills the equivalent gap with hand-entered annualOverrides and Microsoft would need the same treatment. The computed quarterly series tracks Nasdaq Data Link (via stockanalysis.com) almost exactly at 2025-12-31 — $3.591T computed against $3.59T reported — while companiesmarketcap prints $3.625T for the same year, about 0.9% high; its 2024 figure of $3.200T is 2.1% above both the computed $3.133T and Nasdaq's $3.13T. No splits are detected in the SEC share series because XBRL cover-page data begins in 2009 and Microsoft's last split was 2003.",
+  "unresolved": [
+    "The size and implied valuation of the 1981 Technology Venture Investors round. The commonly repeated ~$1M for ~5% is unsourced in everything I could fetch; confirming it needs the 1986 prospectus, which is not on EDGAR, or a paywalled contemporaneous account.",
+    "Microsoft's IPO-day market capitalisation — the $21.00 offer price and $28.00 first-day close are sourced, but the shares outstanding immediately after the offering are not.",
+    "Annual market capitalisation for 1986-1995. companiesmarketcap begins in 1996, so the line jumps from the 1975 origin straight to a $99B point at age 21."
+  ],
+  "sources": [
+    {
+      "outlet": "Wikipedia",
+      "title": "History of Microsoft",
+      "url": "https://en.wikipedia.org/wiki/History_of_Microsoft",
+      "type": "reference"
+    },
+    {
+      "outlet": "Microsoft",
+      "title": "Facts About Microsoft",
+      "url": "https://news.microsoft.com/facts-about-microsoft/",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "David Marquardt",
+      "url": "https://en.wikipedia.org/wiki/David_Marquardt",
+      "type": "reference"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Bill Gates",
+      "url": "https://en.wikipedia.org/wiki/Bill_Gates",
+      "type": "reference"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Microsoft Corp XBRL company facts, CIK 0000789019",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000789019.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Microsoft (MSFT) market cap history",
+      "url": "https://stockanalysis.com/stocks/msft/market-cap/",
+      "type": "database"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "slug": "nvidia",
+  "name": "Nvidia",
+  "cohort": "mega-cap",
+  "colorSlot": 0,
+  "dashSlot": 1,
+  "status": "public",
+  "founded": "1993-04-01",
+  "foundedPrecision": "month",
+  "foundedBasis": "incorporation",
+  "foundedNote": "NVIDIA's IPO prospectus states flatly that the company 'was incorporated in California in April 1993 and reincorporated in Delaware in April 1998.' This chart uses the original California incorporation, not the 1998 Delaware reincorporation, so t=0 is April 1993 and the 1999-01-22 IPO lands at 5.8 years. NVIDIA's own materials and Wikipedia give the specific day as 1993-04-05, and that is very likely right, but the primary filing commits only to the month, so the month is what is recorded here — the four-day difference is 0.01 years on a 33-year axis. Founded by Jen-Hsun (Jensen) Huang, Chris Malachowsky and Curtis Priem.",
+  "public": {
+    "ticker": "NVDA",
+    "cik": "0001045810",
+    "cmcSlug": "nvidia",
+    "ipoDate": "1999-01-22",
+    "publicFrom": "1999-01-22",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2025-12-31", "capUsd": 4532000000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1993-series-a",
+      "date": "1993-04-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "institutional": true,
+      "lead": "Sequoia Capital and Sutter Hill Ventures",
+      "amountRaisedUsd": 2151500,
+      "valuationUsd": 7834150,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "DATE IS A FLOOR, NOT A FACT: the S-1 dates this round only to '1993'. It is recorded at the April 1993 incorporation month because that is the earliest date the round could have closed and because a bare-year date would fall before the founding; the true closing was somewhere between April and December 1993. Amount is 4,303,000 shares at $0.50 from the S-1 preferred-stock note. Post-money is that price against 15,668,300 as-converted shares — the 4,303,000 Series A shares plus the 11,365,300 common shares that the statement of stockholders' equity shows unchanged from the 1994 balance through 1995, which is the assumption doing the work here. Sequoia Capital VI and Sutter Hill Ventures were still the two largest institutional holders at IPO, at 13.2% and 11.9%; Mark Stevens of Sequoia and Tench Coxe of Sutter Hill both sat on the board.",
+      "sourceRefs": [0, 2],
+      "plot": true
+    },
+    {
+      "id": "1994-series-b",
+      "date": "1994-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Sequoia Capital and Sutter Hill Ventures (continuing investors; the S-1 names no round lead)",
+      "amountRaisedUsd": 4303496,
+      "valuationUsd": 32506436,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "2,390,831 shares at $1.80, dated only to '1994' by the S-1. Post-money is $1.80 against the 1994-12-31 balance of 6,693,831 preferred and 11,365,300 common — 18,059,131 as-converted. Because the balance is a year-end snapshot rather than a closing-date one, the figure is good to a few per cent, not exact.",
+      "sourceRefs": [0],
+      "plot": true
+    },
+    {
+      "id": "1995-series-b-second-closing",
+      "date": "1995-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Series B second closing",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Sequoia Capital and Sutter Hill Ventures (continuing investors; the S-1 names no round lead)",
+      "amountRaisedUsd": 750001,
+      "valuationUsd": null,
+      "note": "416,667 further Series B shares at the identical $1.80 price. Recorded but not plotted: it is a second closing at an unchanged price rather than a new mark, and plotting it would put a second near-identical vertex on the same 1995 x-coordinate as the Series C.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "1995-series-c",
+      "date": "1995-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "institutional": true,
+      "lead": "Sequoia Capital and Sutter Hill Ventures (continuing investors; the S-1 names no round lead)",
+      "amountRaisedUsd": 5002500,
+      "valuationUsd": 128328706,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "750,000 shares at $6.67, a 3.7x step up in price per share from the Series B. Post-money is $6.67 against the 1995-12-31 balance of 7,874,386 preferred and 11,365,300 common — 19,239,686 as-converted.",
+      "sourceRefs": [0],
+      "plot": true
+    },
+    {
+      "id": "1997-series-d",
+      "date": "1997-08-19",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Sequoia Capital and Sutter Hill Ventures (continuing investors; the S-1 names no round lead)",
+      "amountRaisedUsd": 7568151,
+      "valuationUsd": 123439955,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "s1-cap-table",
+      "note": "DOWN ROUND. 1,438,812 shares at $5.26 across two closings, 1997-08-19 and 1997-09-12, priced 21% BELOW the Series C's $6.67 — NVIDIA was two failed products into its life and the NV1 had been a commercial failure. The post-money barely moves ($128.3M to $123.4M) only because the share count grew 22% in between, mostly from 2,573,211 common shares issued on option exercises during 1997; per share the round was a real markdown. Post-money uses the 1997-12-31 balance of 9,327,087 preferred and 14,140,585 common, which includes option exercises that happened after August, so treat it as a mild upper bound. Director Harvey C. Jones, Jr. bought 24,334 of these shares for $127,997, which independently confirms the $5.26 price.",
+      "sourceRefs": [0],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "The whole pre-IPO series is reconstructed from the preferred-stock note and statement of stockholders' equity in Amendment No. 6 to the Form S-1, filed 1999-01-13 — no press coverage was used or needed. The five closings total $19.78M of gross proceeds, which is the source of the '$20 million of venture capital funding from Sequoia Capital, Sutter Hill Ventures, and others' that secondary sources repeat, and matching that total is a useful check that no closing is missing. Prices per share ($0.50, $1.80, $6.67, $5.26) are exact and confirmed; the post-money figures are derived by multiplying those prices by as-converted share counts taken from year-end balances, so every valuation here is marked soft. The IPO priced at $12.00 per share on 1999-01-22, confirmed by the $12.00 maximum offering price in the registration fee table of the Rule 462(b) registration statement filed the same month. SPLITS: the pipeline derives split factors from clean N-fold jumps in the SEC cover-page share series and finds exactly two — 4:1 by 2021-08-13 and 10:1 by 2024-08-23. NVIDIA has actually had six (2000, 2001, 2006, 2007 3:2, 2021 4:1, 2024 10:1); the four earliest are invisible to the pipeline because XBRL cover-page data only begins in 2009, and they are correctly absent rather than missed, since the stockanalysis.com closes are already adjusted to today's basis. The cross-check against companiesmarketcap confirms this: worst divergence 2.29% in 2025, and the computed 2025-12-31 figure of $4.532T matches Nasdaq Data Link's $4.53T to 0.04% while companiesmarketcap's $4.638T is the outlier.",
+  "unresolved": [
+    "The closing months of the Series A, B and C. The S-1 gives only calendar years for all three, so the Series A x-position is pinned to the incorporation month as a lower bound.",
+    "Which firm actually led each of the Series B, C and D. The S-1 discloses prices and share counts but never names a lead; Sequoia and Sutter Hill are recorded as the continuing institutional investors on the strength of their IPO holdings and board seats.",
+    "Annual market capitalisation for 1999-2000 at higher resolution — companiesmarketcap has 1999 at $0.96B and 2000 at $2.22B, but the quarterly computation cannot reach back before 2016."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "NVIDIA Corporation, Amendment No. 6 to Form S-1, filed 1999-01-13",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/0001012870-99-000100.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "NVIDIA Corporation, Rule 462(b) registration statement, January 1999 (fee table at $12.00 per share)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/0001012870-99-000186.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Nvidia",
+      "url": "https://en.wikipedia.org/wiki/Nvidia",
+      "type": "reference"
+    },
+    {
+      "outlet": "SEC",
+      "title": "NVIDIA Corp XBRL company facts, CIK 0001045810",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001045810.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "NVIDIA (NVDA) market cap history",
+      "url": "https://stockanalysis.com/stocks/nvda/market-cap/",
+      "type": "database"
+    }
+  ]
+}

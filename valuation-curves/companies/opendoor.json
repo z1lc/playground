@@ -1,0 +1,322 @@
+{
+  "slug": "opendoor",
+  "name": "Opendoor",
+  "cohort": "marketplace",
+  "colorSlot": 3,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "2013-12-30",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Opendoor Labs Inc. was incorporated in Delaware on 2013-12-30. The date is a primary-filing fact repeated verbatim in the S-4/A audited financials ('we ... were incorporated in Delaware on December 30, 2013') and in Note 1 of every Opendoor 10-K from FY2020 through FY2025, and all seven Form D filings by OpenDoor Labs Inc. (CIK 0001609437) report Year of Incorporation 2013, jurisdiction Delaware. Opendoor's own narrative dates the company to 2014 - the same filings say 'In 2014, we founded Opendoor' and 'Since our inception in 2014' - and secondary sources universally repeat 2014, with Wikipedia adding an uncorroborated 'March 2014'. This chart clocks from the earliest formal founding, so t=0 is the incorporation, two days before the 2014 the company claims. Founders: Eric Wu (CEO and an Opendoor Labs director from April 2014), Keith Rabois, JD Ross and Ian Wong (CTO from April 2014). The precise anchors that follow: the first Form D reports a date of first sale of 2014-05-16, and the first market, Phoenix, launched around December 2014.",
+  "public": {
+    "ticker": "OPEN",
+    "cik": "0001801169",
+    "cmcSlug": "opendoor",
+    "ipoDate": "2020-12-18",
+    "publicFrom": "2020-12-18",
+    "sharesTag": "CommonStockSharesOutstanding",
+    "crossCheckTolPct": 3.5,
+    "regressions": [
+      { "date": "2023-12-31", "capUsd": 3036000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "2014-05-16-series-a",
+      "date": "2014-05-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "nameConflict": "TechCrunch used no series letter and called it 'an insane party round' of roughly thirty angels; the audited cap table and every database call it Series A. Aggregators additionally show a phantom 'Seed, Jul 2014' that is a duplicate of this same offering - there was no separate priced seed.",
+      "institutional": true,
+      "lead": "Khosla Ventures",
+      "amountRaisedUsd": 9950000,
+      "valuationUsd": null,
+      "note": "Announced 2014-07-07 at $9.95M; dated here to the Form D date of first sale, 2014-05-16, which is the day money changed hands. The offering was amended upward twice: the initial Form D (filed 2014-05-29) showed $9,000,000 offered and $6,000,000 sold, and the final Form D/A (filed 2014-09-05) shows $10,200,000 offered and $10,060,000 sold. The audited carrying value at 2017-12-31 was $10,037K. Equity-only filing, no debt. Roughly thirty angels participated alongside Khosla, including Max Levchin, Sam Altman, Adam D'Angelo, David Sacks, Naval Ravikant, Jeremy Stoppelman, Aaron Levie, Alexis Ohanian, Thrive Capital, SV Angel and CrunchFund. No valuation was ever disclosed.",
+      "sourceRefs": [3, 4],
+      "plot": false
+    },
+    {
+      "id": "2015-02-13-series-b",
+      "date": "2015-02-13",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "GGV Capital",
+      "amountRaisedUsd": 20000000,
+      "valuationUsd": null,
+      "note": "Announced 2015-02-26 at $20M; dated to the Form D date of first sale, 2015-02-13. The final Form D/A (filed 2015-04-16) shows $20,579,617 offered and fully sold; the audited carrying value was $20,448K. Equity-only filing, no debt. GGV's Glenn Solomon joined the board and first appears as a related person on the February 2015 Form D. Khosla Ventures, the Mack family, Thrive Capital, Caffeinated Capital, Sherpa Ventures, Haystack and Kevin Systrom participated. No valuation disclosed.",
+      "sourceRefs": [5, 6],
+      "plot": false
+    },
+    {
+      "id": "2015-10-21-series-c",
+      "date": "2015-10-21",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "institutional": true,
+      "lead": "No lead designated (Khosla Ventures, Access Technology Ventures, GGV Capital and SVB Capital participated)",
+      "amountRaisedUsd": 80000000,
+      "valuationUsd": null,
+      "note": "The one Opendoor round where the announcement date is soft: trade outlets carried it on 2016-02-04 and 2016-02-05 and no company release survives, so this is dated to the hard primary fact instead - the Form D date of first sale, 2015-10-21, three and a half months before the press coverage. The Form D (filed 2016-01-27) shows $79,999,977 offered and $76,660,160 sold and was never amended, but the audited carrying value of $80,519K shows the balance sold afterwards, which is why the announced $80M is used here rather than the filed figure. Equity-only filing, no debt. No outlet designated a lead. Access is the strongest circumstantial candidate: Pueo Keffer of Access Industries first appears as an Opendoor director on the January 2016 Form D, the same pattern that marks GGV on the Series B and Norwest on the Series D. Press put cumulative financing at 'more than $110 million', which reconciles exactly on an all-equity basis ($10.06M + $20.58M + $80M). Tracxn's $580M valuation is an aggregator estimate with no primary attribution and is not used.",
+      "sourceRefs": [7, 8],
+      "plot": false
+    },
+    {
+      "id": "2016-11-28-series-d",
+      "date": "2016-11-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Norwest Venture Partners",
+      "amountRaisedUsd": 210000000,
+      "valuationUsd": null,
+      "note": "The round most often mis-recorded as blended equity and debt. It was not: the $210M is entirely equity. Opendoor's own release says 'the closing of its $210M Series D led by Jeff Crowe at Norwest Venture Partners' and 'Total financing now more than $320 million', and $10.06M + $20.58M + $80M + $210M = $320M, so the ladder only closes if all four rounds are pure equity. Forbes states it twice - '$210 million in venture capital' and 'now raised $320 million in equity, plus more than $400 million in debt' - where the $400M is a separate cumulative warehouse facility. The Form D (filed 2016-12-12) is equity-only, $213,385,103 offered and $208,374,472 sold, with first sale 2016-11-28; announced 2016-11-30. NEA, Khosla Ventures, GGV Capital, Access Technology Ventures, Fifth Wall, Lakestar, SVB Capital, Caffeinated Capital, Felicis and GV participated. No post-money was disclosed - TechCrunch speculated the company was 'very likely' past $1B and PYMNTS wrote 'over $1 billion', neither being a sourced figure, so this stays null.",
+      "sourceRefs": [9, 10, 11],
+      "plot": false
+    },
+    {
+      "id": "2018-03-convertible-notes",
+      "date": "2018-03-01",
+      "datePrecision": "month",
+      "kind": "convertible_note",
+      "roundName": "2018 convertible notes ($20M)",
+      "charterSeries": "E-1",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 20000000,
+      "valuationUsd": null,
+      "note": "Never announced; visible only in the S-4/A audited financials. $20.0M of notes issued March-April 2018 at 7% cash / 10% PIK with a $2.080 billion valuation cap and an 85%/80% discount, converting into 2,486,560 shares of Series E-1 at $8.1413 (85% of the $9.58 Series E price). The cash flow statement records the conversion as a $23,816K noncash item. A valuation cap is a ceiling negotiated months earlier, not a transacted price, so no valuation is recorded - but the $2.08B cap is the only primary-filing corroboration that exists for the ~$2B figure the press later attached to the June 2018 Series E.",
+      "sourceRefs": [1],
+      "plot": false
+    },
+    {
+      "id": "2018-06-13-series-e",
+      "date": "2018-06-13",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "nameConflict": "Opendoor's newsroom page renders the release as 'Updated June 14, 2018' and a Business Wire reprint carries a June 18 dateline; the Business Wire release ID (20180613005382) and the trade coverage both put it on June 13.",
+      "institutional": true,
+      "lead": "General Atlantic, Access Technology Ventures and Lennar Corporation (co-led)",
+      "amountRaisedUsd": 325000000,
+      "valuationUsd": 2000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "First Opendoor round with any public valuation, and it is a weak one: the company never stated a number. The $2B traces to a single unnamed source in TechCrunch's September 2018 story on the SoftBank round - 'Opendoor was, and continues to be, valued at north of $2 billion, says one source familiar with the deal, who declined to specify further' - so it is a floor rather than a price, and it is plotted hollow. It is corroborated only indirectly, by the $2.080 billion cap on the March 2018 convertible notes. No Form D was filed for the Series E, E-1 or E-2; Opendoor Labs' last Form D is the December 2016 Series D filing. Equity and debt are cleanly separated in the release: 'The $325M Series E round brings the total equity raised by Opendoor to $645M. The company has also raised $1.5B in debt financing alongside the equity capital.' The audited cap table shows Series E issued May through December 2018 at $9.58 per share for $708.2M in total, spanning both this tranche and the SoftBank tranche below. Andreessen Horowitz, Coatue, 10100 Fund and Invitation Homes were new investors.",
+      "sourceRefs": [1, 12, 13],
+      "plot": true
+    },
+    {
+      "id": "2018-09-27-softbank",
+      "date": "2018-09-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "SoftBank Vision Fund $400M investment",
+      "charterSeries": "E",
+      "nameConflict": "The press release and most outlets gave it no series letter; Online Marketplaces called it a Series F. The audited cap table settles it - SVF Excalibur (Cayman) Limited bought 41,762,372 shares of Series E for $399,999,999.03, i.e. more Series E at the same $9.58 price as June, not a new series.",
+      "institutional": true,
+      "lead": "SoftBank Vision Fund",
+      "amountRaisedUsd": 400000000,
+      "valuationUsd": null,
+      "note": "Not plotted, deliberately. It was priced flat to the June round at the identical $9.58 per share, and TechCrunch's source said Opendoor 'was, and continues to be, valued at north of $2 billion' with no big bump - so no new valuation was reported, and the same $2B cannot be reused as a post-money because 41.8M new shares were issued in between. Equity and debt are separate again: TechCrunch notes 'in addition to the substantial amount of equity funding ... it has also now raised more than $2 billion in debt over the years', and quotes Eric Wu that equity funds 'tech and software' while debt 'is used to purchase real estate'. Total equity raised reached $1.045B. Tracxn's $4.4B valuation for this round contradicts the primary reporting and is not used.",
+      "sourceRefs": [1, 13],
+      "plot": false
+    },
+    {
+      "id": "2019-03-20-series-e2",
+      "date": "2019-03-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$300M follow-on round",
+      "charterSeries": "E-2",
+      "nameConflict": "Opendoor's own release says only 'follow-on equity financing' with no letter; Crunchbase News called it a Series E and Wikipedia wrongly calls it a Series C. The charter series is E-2.",
+      "institutional": true,
+      "lead": "General Atlantic",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 3800000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Last private mark before the SPAC. Opendoor announced '$300 million in follow-on equity financing' and stated no valuation; the $3.8B originates with a single TechCrunch report sourced to people familiar and was relayed by PYMNTS ('raised $300 million, giving it a valuation of $3.8 billion') and others, so it is recorded soft and plotted hollow. The audited figure is lower than the announcement: 'In February through May 2019, we issued 21,222,829 shares of Series E-2 at $13.3288 per share to investors in exchange for $282.9 million', with a net carrying value of $282,638K. A separate October 2019 exercise of the Series D warrants brought in $35.0M, which does not cleanly close the gap either; the announced $300M is used here with the audited $282.9M recorded in this note. Equity and debt separate once more: 'brings our total equity raised to $1.3B, along with over $3.0B in debt financing.' SoftBank Vision Fund, Hawk Equity, Access Technology Ventures, Lennar, Fifth Wall, SV Angel, Norwest, NEA, GGV, Khosla and GV participated.",
+      "sourceRefs": [1, 14, 15],
+      "plot": true
+    },
+    {
+      "id": "2019-07-convertible-notes",
+      "date": "2019-07-01",
+      "datePrecision": "month",
+      "kind": "convertible_note",
+      "roundName": "2019 convertible notes ($178.2M)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 178200000,
+      "valuationUsd": null,
+      "note": "Debt, not a priced round, and never announced. 'In July through November 2019, the Company issued Convertible Notes at par for a total of $178.2 million in proceeds, net of $0.5 million in debt issuance costs', maturing July 2026 at 3% PIK interest. On 2020-09-14 the notes were cancelled under a Convertible Notes Exchange Agreement in exchange for rights to roughly 21.5 million post-conversion Opendoor Technologies shares, carried at $212.9M. Recorded so the 2019-2020 capital history is complete; no valuation is recoverable and it is never plotted.",
+      "sourceRefs": [0, 1],
+      "plot": false
+    },
+    {
+      "id": "2020-12-18-despac",
+      "date": "2020-12-18",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "SPAC merger with Social Capital Hedosophia II (IPOB) and $600.1M PIPE",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 600100000,
+      "valuationUsd": null,
+      "note": "Opendoor did not IPO. On 2020-12-18 Social Capital Hedosophia Holdings Corp. II domesticated from the Cayman Islands to Delaware, renamed itself Opendoor Technologies Inc., and consummated the merger of Hestia Merger Sub Inc. into Opendoor Labs Inc.; the stock began trading on Nasdaq as OPEN (and OPENW for the warrants) on 2020-12-21, in lieu of the SCH ordinary shares, warrants and units. The merger agreement was signed 2020-09-15 at a deemed pre-transaction equity value for Opendoor of $5.0 billion (500,000,000 shares at $10.00). The amount recorded is the PIPE - 60,005,000 shares at $10.00 for $600.1M - which is the only priced primary equity in the transaction; total proceeds from the business combination and PIPE together were $970,295K net of costs. No valuation is recorded because the deal price and the market price diverged immediately: OPEN closed 2020-12-31 at $22.73 on 540,714,692 shares, about $12.3B. Recorded but never plotted; the pipeline marks the first public quote as the listing point.",
+      "sourceRefs": [0, 2],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Opendoor is the clearest 'read the filings, not the headlines' case in this dataset, and the trap runs the opposite way to the expected one. Every Opendoor headline round number - $210M in 2016, $325M in June 2018, $400M from SoftBank, $300M in 2019 - is pure equity, and the enormous debt figures that appear in the same press releases ($400M in 2016, $1.5B in 2018, $2B in late 2018, $3B in 2019) are always cumulative company-level warehouse and mezzanine facilities used to buy houses, stated in separate sentences. The proof is arithmetic: Opendoor published a running equity total with almost every round ($110M, $320M, $645M, $1.045B, $1.3B) and the ladder only closes if every headline is all-equity. DATING POLICY: rounds are dated to the Form D date of first sale where a Form D exists (Series A through D) because that is the day money changed hands, and to the announcement date otherwise (Series E, the SoftBank tranche, Series E-2). Opendoor Labs Inc. (CIK 0001609437) filed exactly seven Form Ds, all between 2014-05-29 and 2016-12-12, and none for the Series E, E-1 or E-2 - so the 2018-2019 rounds exist in the public record only through press releases and the S-4/A audited cap table. AMOUNTS are the announced headline figures with the Form D and audited figures recorded in each note; the two disagree most for the Series C (filed $76.7M against an announced $80M, the balance sold after the unamended filing) and the Series E-2 (announced $300M against an audited $282.9M). VALUATIONS: only two of ten events carry one, both soft and both traceable to a single unnamed TechCrunch source - about $2B for June 2018 and $3.8B for March 2019. Series A through D disclosed nothing at all, and the S-4/A cap table cannot rescue them, because reconstructing a post-money needs the fully diluted count at each round date and the filing does not give it retrospectively; the charter also names Series C-1 and D-1 tranches that never appear as separate balance-sheet lines, leaving 2017 activity invisible (Series D carrying value rose to $223,072K by 2017-12-31, above the $213.4M Series D offering). GOING PUBLIC: publicFrom is the de-SPAC completion date 2020-12-18, not the start of the price history. stockanalysis.com's OPEN series reaches back to 2020-06 because the ticker inherited the SPAC shell's quotes - the Q3 2020 point at $18.99 is a blank-cheque vehicle with no operating business, and gating on 2020-12-18 removes it, so the first public point is 2020-12-31. The CIK is the SPAC's, carried forward: EDGAR shows 0001801169 as Social Capital Hedosophia Holdings Corp. II until 2020-12-18 and Opendoor Technologies Inc. after. SHARE COUNT: sharesTag is pinned to the us-gaap balance-sheet instant CommonStockSharesOutstanding rather than the default dei cover-page count. The cover page is printed six to eight weeks after quarter end and Opendoor dilutes fast enough that this matters - the FY2020 cover count of 577,227,618 (as of 2021-02-26, after a wave of warrant exercises) overstates the 2020-12-31 market cap by 6.7% against the balance-sheet 540,714,692, and the FY2025 cover count is 958,325,481 against a 2025-12-31 balance of 957,245,487. CROSS-CHECK CEILING: crossCheckTolPct is raised from the default 3.0 to 3.5 for one specific, documented reason. With the balance-sheet tag the computed series agrees with companiesmarketcap to 0.6% in 2020, 0.6% in 2021, 1.3% in 2022, 1.2% in 2023 and 2.6% in 2025, but reads 3.2% low in 2024 - because companiesmarketcap's $1.19B for 2024 implies about 746M shares against the 719,990,121 Opendoor actually reported on its FY2024 balance sheet and the 723,517,956 on the 10-K cover. This is drift in the oracle's share count on a company that issues stock continuously, not a structural failure: a wrong tag or a missed split lands at 4x or 40%, never at 3.2%. Nor is it fixable by switching tags. The dei cover-page count would pull 2024 in at 2.7% but push 2020 out to 6.1%, because it is printed 57 days after the year end and after a wave of warrant exercises; no available share tag clears 3.0% at both ends. Post-listing the story is a ~95% drawdown and a violent recovery: about $12.3B at the end of 2020, $9.0B end-2021, $739M end-2022 (a 94% fall as the iBuyer model met rising rates and Opendoor wrote down inventory), $3.0B end-2023, $1.15B end-2024, a low of $391M at 2025-06-30, then a meme-driven rally to $6.1B by 2025-09-30 and $5.6B at end-2025, and roughly $3.3B today (2026-08-06: a $3.445 close on 968,626,958 shares). The 2025-06-30 to 2025-09-30 move is a genuine 15.7x quarter, not a missed split - the share series is continuous and Opendoor has never split.",
+  "unresolved": [
+    "The Series C lead investor. No outlet designated one and no company release survives. Access Technology Ventures is strongly implied by Pueo Keffer's appearance as a director on the January 2016 Form D, but VC News Daily lists Khosla Ventures first and neither is a sourced lead designation.",
+    "The Series C announcement day - Venture Capital Journal dated it 2016-02-04 and VC News Daily 2016-02-05. Sidestepped by dating the round to the Form D date of first sale instead.",
+    "2017 activity. The charter names Series C-1 and D-1 tranches that never appear as separate balance-sheet lines, and Series D carrying value rose from the $213.4M Series D offering to $223,072K by 2017-12-31 with no announcement, no Form D and no press coverage. The audited statements begin at 2017-12-31, so whatever happened in 2017 is invisible.",
+    "A company-confirmed post-money for any round. Both plotted valuations (about $2B in 2018, $3.8B in 2019) rest on a single unnamed TechCrunch source; Opendoor never stated a valuation in any release.",
+    "Why companiesmarketcap's 2024 figure is 3.2% off. Its $1.19B implies about 746M shares outstanding at the 2024-12-31 close of $1.60, against the 719,990,121 on Opendoor's FY2024 balance sheet and the 723,517,956 on its 10-K cover; the divergence is in the oracle's share count, not in the SEC data. No share tag satisfies the 3% default at both ends of the series, which is why crossCheckTolPct is raised to 3.5 - see curatorNotes."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Opendoor Technologies Inc. Form 10-K, FY2020",
+      "url": "https://www.sec.gov/Archives/edgar/data/1801169/000180116921000011/open-20201231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Social Capital Hedosophia Holdings Corp. II Form S-4/A, filed 2020-11-06 (Opendoor Labs Inc. audited financials and cap table)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1801169/000110465920122215/tm2030455-4_s4a.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Opendoor Technologies Inc. Form 8-K, filed 2020-12-18 (completion of the business combination)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1801169/000110465920137517/tm2038661d2_8k.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "OpenDoor Labs Inc. Form D/A, filed 2014-09-05 (Series A)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1609437/000160943714000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Keith Rabois' Homebuying Startup OpenDoor Raises $9.95M From Everyone",
+      "url": "https://techcrunch.com/2014/07/07/opendoor/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "OpenDoor Labs Inc. Form D/A, filed 2015-04-16 (Series B)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1609437/000160943715000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Opendoor Gets Another $20 Million To Simplify The Process Of Selling Your Home",
+      "url": "https://techcrunch.com/2015/02/26/opendoor-20-million/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "OpenDoor Labs Inc. Form D, filed 2016-01-27 (Series C)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1609437/000160943716000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "VC News Daily",
+      "title": "Opendoor Grabs $80M in Series C",
+      "url": "https://www.vcnewsdaily.com/opendoor/venture-capital-funding/scmwhqmxxr",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "OpenDoor Labs Inc. Form D, filed 2016-12-12 (Series D)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1609437/000160943716000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Opendoor",
+      "title": "Online real estate company Opendoor raises $210M",
+      "url": "https://www.opendoor.com/articles/series-d-press-release",
+      "type": "company"
+    },
+    {
+      "outlet": "Forbes",
+      "title": "Next Billion-Dollar Startup Opendoor Raises Another $210 Million To Expand Its Homebuying Model",
+      "url": "https://www.forbes.com/sites/amyfeldman/2016/11/30/next-billion-dollar-startup-opendoor-raises-another-210-million-to-expand-its-homebuying-model/",
+      "type": "press"
+    },
+    {
+      "outlet": "Opendoor",
+      "title": "Opendoor announces $325 million in Series E financing",
+      "url": "https://www.opendoor.com/articles/opendoor-announces-325-million-series-e-financing",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Opendoor just raised $400 million in funding from SoftBank's Vision Fund",
+      "url": "https://techcrunch.com/2018/09/27/opendoor-just-raised-400-million-in-funding-from-softbanks-vision-fund/",
+      "type": "press"
+    },
+    {
+      "outlet": "Opendoor",
+      "title": "Furthering Opendoor's growth",
+      "url": "https://www.opendoor.com/articles/furthering-opendoors-growth",
+      "type": "company"
+    },
+    {
+      "outlet": "PYMNTS",
+      "title": "Opendoor Raises $300M, Reaching $3.8B Valuation",
+      "url": "https://www.pymnts.com/news/investment-tracker/2019/opendoor-real-estate-startup-funding-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "EDGAR submissions index for Opendoor Technologies Inc. (CIK 0001801169)",
+      "url": "https://data.sec.gov/submissions/CIK0001801169.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "EDGAR submissions index for OpenDoor Labs Inc. (CIK 0001609437)",
+      "url": "https://data.sec.gov/submissions/CIK0001609437.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Opendoor Technologies Inc. XBRL company concept, us-gaap:CommonStockSharesOutstanding",
+      "url": "https://data.sec.gov/api/xbrl/companyconcept/CIK0001801169/us-gaap/CommonStockSharesOutstanding.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Opendoor Technologies Inc. Form 10-K, FY2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1801169/000180116926000010/open-20251231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Opendoor (OPEN) market capitalization by year",
+      "url": "https://companiesmarketcap.com/opendoor/marketcap/",
+      "type": "database"
+    }
+  ]
+}

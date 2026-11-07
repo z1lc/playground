@@ -1,0 +1,465 @@
+{
+  "slug": "palantir",
+  "name": "Palantir",
+  "cohort": "saas",
+  "colorSlot": 0,
+  "dashSlot": 3,
+  "status": "public",
+  "founded": "2003-05-06",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Palantir's S-1 states flatly that the company \"was incorporated in Delaware on May 6, 2003.\" Founded by Peter Thiel, Alex Karp, Joe Lonsdale, Stephen Cohen and Nathan Gettings. There is no earlier partnership, so the incorporation is the earliest formal founding. Note that the company barely operated in its first year - most narrative accounts say Palantir 'started' in 2004, when Thiel and his fund began bankrolling roughly $30M of development, and the S-1's own business section says only 'founded in 2003'. Clocking from 2003-05-06 makes Palantir 17.4 years old at its direct listing, the longest private run in this dataset.",
+  "public": {
+    "ticker": "PLTR",
+    "cik": "0001321655",
+    "cmcSlug": "palantir",
+    "ipoDate": "2020-09-30",
+    "publicFrom": "2020-09-30",
+    "sharesTag": "auto",
+    "regressions": [
+      {
+        "date": "2022-12-31",
+        "capUsd": 13476061500,
+        "tolPct": 1.0
+      }
+    ],
+    "crossCheckTolPct": 5.0,
+    "sharesNote": "Cross-check ceiling raised to 5% for one year, 2020. Palantir direct-listed on 2020-09-30, so the 2020-12-31 point is three months into its public life; the computed $42.20B uses the filed balance-sheet count of 1,792,139,544 shares, while companiesmarketcap's $44.22B implies ~1,878M. The second cross-check source cannot arbitrate: stockanalysis.com gates rows older than five years behind a paywall, so 2020 has only one source. companiesmarketcap has demonstrable errors elsewhere in this dataset \u2014 its 2025 Palantir row implies ~139M more shares than Palantir has ever reported, and its 2024 Tesla row contradicts its own shares-outstanding page. Every year with two sources agrees with the computation to within 1.2%."
+  },
+  "events": [
+    {
+      "id": "2005-in-q-tel",
+      "date": "2005-01-01",
+      "datePrecision": "year",
+      "kind": "priced_round",
+      "roundName": "In-Q-Tel investment",
+      "institutional": true,
+      "lead": "In-Q-Tel",
+      "amountRaisedUsd": 2000000,
+      "valuationUsd": null,
+      "note": "INCLUSION-FLOOR JUDGMENT CALL, MADE DELIBERATELY. In-Q-Tel is the CIA's venture arm - a non-profit chartered to source technology for the intelligence community rather than to earn a financial return - so it is fair to ask whether it is a 'named venture capital firm'. It is counted as one here. The floor test in the brief is mechanical: a named institutional lead, as opposed to an angel cheque, friends-and-family money or an accelerator. In-Q-Tel is a named, permanent, professionally staffed fund that takes priced equity positions and sits on cap tables; it is institutional by every structural test, and its mandate being strategic rather than financial makes it a strategic investor, not an angel. It was also, by every account, the first outside money Palantir took after Thiel's own capital, and it is the reason Palantir got its first customers. The call does not move the plotted line either way: no valuation was ever attached to it, so the point is recorded and not plotted. Amount and year are soft - Wikipedia describes roughly $2M invested from 2005 across multiple stages, and other accounts date the first cheque to 2004. The S-1 cap table's Series A (1,423,912 shares at $0.10, about $142K) is the earliest priced security on the charter and is far too small to be the whole In-Q-Tel position, so the $2M was spread across at least two series.",
+      "sourceRefs": [
+        15
+      ],
+      "plot": false
+    },
+    {
+      "id": "2006-07-oakhouse",
+      "date": "2006-07-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$7.5M round",
+      "institutional": true,
+      "lead": "Oakhouse Partners",
+      "amountRaisedUsd": 7500000,
+      "valuationUsd": null,
+      "note": "TechCrunch's pre-listing reconstruction of Palantir's cap table dates this to July 2006 with Oakhouse Partners as the investor; Wikipedia calls it a June 2006 Series A. Electronic Form D only begins in 2009, so there is no filing to arbitrate the month and none is asserted beyond July 2006. Founders Fund is frequently named as a 2005-2006 Palantir backer and Thiel founded it in 2005, but no source loaded here attributes a specific 2006 round to Founders Fund, so it is not recorded as a lead until the 2009 round where the Form D and TechCrunch agree. No valuation disclosed.",
+      "sourceRefs": [
+        13,
+        15
+      ],
+      "plot": false
+    },
+    {
+      "id": "2006-11-rev",
+      "date": "2006-11-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$10.5M round",
+      "institutional": true,
+      "lead": "REV (Reed Elsevier Ventures)",
+      "amountRaisedUsd": 10500000,
+      "valuationUsd": null,
+      "note": "November 2006, $10.5M, per TechCrunch's reconstruction and Wikipedia. Plausibly the S-1's Series B (162,921,953 shares at $0.06, liquidation preference $10,326K), which is the only charter series close to this size. No valuation disclosed.",
+      "sourceRefs": [
+        13,
+        15
+      ],
+      "plot": false
+    },
+    {
+      "id": "2008-02-36m",
+      "date": "2008-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$36.8M round",
+      "amountRaisedUsd": 36800000,
+      "valuationUsd": 400000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The first valuation anyone put on Palantir: $400M in February 2008, from TechCrunch's reconstruction. No lead investor is named in any source loaded here, so `institutional` is left unset rather than asserted - the schema's mechanical test is a NAMED lead, and there isn't one. The round is institutional in substance and sits well after the floor was cleared in 2005-2006, so nothing about the series depends on the flag. Single-source valuation, hence soft.",
+      "sourceRefs": [
+        13
+      ],
+      "plot": true
+    },
+    {
+      "id": "2009-03-25-formd",
+      "date": "2009-03-25",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "March 2009 offering",
+      "amountRaisedUsd": 8291250,
+      "valuationUsd": null,
+      "note": "Palantir's first electronically filed Form D (accession 0001321655-09-000003): date of first sale 2009-03-25, $8,291,250 sold against a $20,000,000 offering. No investor is named on the form and no press coverage of it was found, so no lead is asserted and `institutional` is left unset. No valuation.",
+      "sourceRefs": [
+        2
+      ],
+      "plot": false
+    },
+    {
+      "id": "2009-11-17-founders-fund",
+      "date": "2009-11-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$90M round",
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 90058503,
+      "valuationUsd": 730000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "DATED FROM THE FILING, NOT THE PRESS. TechCrunch's table puts this round at June 2010; the Form D says the date of first sale was 2009-11-17, and the June 2010 date is when Palantir filed the amendment (0001321655-10-000001) closing the offering out at $90,058,503 - eight months after the first money moved. The original Form D (0001321655-09-000004, filed 2009-11-30) already showed $34,989,261 sold. The $730M post-money is TechCrunch's single-source figure and is soft; other retellings say $735M. Probably the S-1's Series D (118,957,869 shares at $0.80, liquidation preference $95,166K).",
+      "sourceRefs": [
+        3,
+        13
+      ],
+      "plot": true
+    },
+    {
+      "id": "2011-04-20-50m",
+      "date": "2011-04-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$50M round",
+      "amountRaisedUsd": 50000000,
+      "valuationUsd": 1700000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2011-04-20, $50,000,000 sold (accession 0001321655-11-000002); TechCrunch dates the same round to May 2011, which is its filing date, and reports the $1.7B post-money. No lead named in any source loaded, so `institutional` is left unset.",
+      "sourceRefs": [
+        4,
+        13
+      ],
+      "plot": true
+    },
+    {
+      "id": "2011-08-23-68m",
+      "date": "2011-08-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$68M round",
+      "amountRaisedUsd": 68000000,
+      "valuationUsd": 2500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2011-08-23, $68,000,000 sold (accession 0001321655-11-000003); TechCrunch dates it October 2011 and reports $2.5B post-money. The amount matches the S-1's Series F exactly (34,686,278 shares at $1.98, liquidation preference $68,679K). No lead named, so `institutional` is left unset.",
+      "sourceRefs": [
+        5,
+        13
+      ],
+      "plot": true
+    },
+    {
+      "id": "2012-05-01-56m",
+      "date": "2012-05-01",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$56M round",
+      "amountRaisedUsd": 56120202,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2012-05-01, $56,120,202 sold (accession 0001321655-12-000002). TechCrunch dates it October 2012. No valuation was reported for this round and none is derived. No lead named, so `institutional` is left unset.",
+      "sourceRefs": [
+        6,
+        13
+      ],
+      "plot": false
+    },
+    {
+      "id": "2013-09-12-196m",
+      "date": "2013-09-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$196.5M round",
+      "amountRaisedUsd": 196500204,
+      "valuationUsd": 6000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2013-09-12, $196,500,204 sold (accession 0001321655-13-000002) - matching the S-1's Series J to within a rounding error (22,055,682 shares at $8.89, liquidation preference $196,075K). TechCrunch reports roughly $6B post-money; Wikipedia instead describes a December 2013 round of about $450M at $9B, which is the NEXT offering (below), not this one. Single-source valuation, soft. No lead named.",
+      "sourceRefs": [
+        7,
+        13
+      ],
+      "plot": true
+    },
+    {
+      "id": "2013-11-20-444m",
+      "date": "2013-11-20",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$444M round",
+      "amountRaisedUsd": 444184042,
+      "valuationUsd": 9000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "ONE OFFERING, FOUR FILINGS, AND TWO PHANTOM 'ROUNDS' IN THE PRESS. The Form D series 0001321655-13-000003 / -13-000005 / -14-000002 / -14-000003 all carry the same date of first sale, 2013-11-20, and walk the amount sold up from $57.5M to $177.5M to $279.1M and finally to $444,184,042 in the September 2014 amendment. TechCrunch's table reads those amendments as separate rounds in February 2014 ($111.3M) and September 2014 ($444.2M); they are the same offering. Wikipedia describes a December 2013 raise of about $450M at a $9B valuation, which fits this offering's start and final size, and that is where the $9B comes from. Single-source valuation, soft. No lead named.",
+      "sourceRefs": [
+        8,
+        15
+      ],
+      "plot": true
+    },
+    {
+      "id": "2014-11-26-50m",
+      "date": "2014-11-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$50M round",
+      "amountRaisedUsd": 50000001,
+      "valuationUsd": 15000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Form D date of first sale 2014-11-26, $50,000,001 sold (accession 0001321655-14-000005). The $15B mark is carried independently by TechCrunch (which dates it December 2014), by Wikipedia (November 2014) and by the New York Times' December 2015 report that Palantir was 'valued at about $20 billion, up from $15 billion' - three independent statements of the same figure, so confirmed. No lead named.",
+      "sourceRefs": [
+        9,
+        13,
+        15
+      ],
+      "plot": true
+    },
+    {
+      "id": "2015-07-08-880m",
+      "date": "2015-07-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$880M round",
+      "charterSeries": "K",
+      "institutional": true,
+      "lead": "Kortschak Investments",
+      "amountRaisedUsd": 879829998,
+      "valuationUsd": 20330000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "PALANTIR'S PRIVATE PEAK. Form D date of first sale 2015-07-08; the original filing (0001321655-15-000001) showed $450.0M sold against a $500M offering, and the December amendment (0001321655-15-000004) closed it at $879,829,998. TechCrunch broke the final figure on 2015-12-23 from that filing and put the valuation at $20.33B, noting $679.8M had already been raised in the same offering since July; CNBC, Reuters and the New York Times all reported $880M at about $20B the same week, so the figure is confirmed. This is the S-1's Series K (79,009,569 shares at $11.38, liquidation preference $899,130K - the extra $20M is the November 2016 top-up below). Kortschak Investments is named as the investor of record on the filing coverage.",
+      "sourceRefs": [
+        10,
+        14,
+        15
+      ],
+      "plot": true
+    },
+    {
+      "id": "2016-11-08-20m",
+      "date": "2016-11-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$20M top-up",
+      "amountRaisedUsd": 19999995,
+      "valuationUsd": null,
+      "note": "Form D date of first sale 2016-11-08, $19,999,995 sold (accession 0001321655-16-000005). Almost certainly the last tranche of Series K: $879.8M plus $20.0M is $899.8M, which is the S-1's Series K liquidation preference of $899,130K. No valuation reported, and at the Series K price of $11.38 this changes nothing about the mark. No lead named.",
+      "sourceRefs": [
+        11
+      ],
+      "plot": false
+    },
+    {
+      "id": "2018-11-common-96m",
+      "date": "2018-11-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$96.5M Class A sale",
+      "amountRaisedUsd": 96500000,
+      "valuationUsd": null,
+      "note": "From the S-1's Recent Sales of Unregistered Securities: \"In November 2018, we sold 16,000,000 shares of our Class A common stock to one accredited investor at a purchase price of $6.03 per share, for an aggregate purchase price of $96.5 million.\" This is the first hard evidence of the decline - $6.03 against the Series K price of $11.38, a 47% fall in the price per share Palantir could sell at. No post-money was reported and none is derived here, so the point is recorded and not plotted; the decline enters the series at the 2020 round below, where a valuation can be computed. The buyer is not named in the filing.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": false
+    },
+    {
+      "id": "2019-02-common-100m",
+      "date": "2019-02-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$100M Class A sale",
+      "amountRaisedUsd": 100000000,
+      "valuationUsd": null,
+      "note": "S-1: \"In February 2019, we sold 16,583,747 shares of our Class A common stock to one accredited investor at a purchase price of $6.03 per share, for an aggregate purchase price of $100.0 million.\" Same price as the November 2018 sale - flat, three and a half years after the Series K. No valuation reported; buyer not named.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": false
+    },
+    {
+      "id": "2019-07-series-h",
+      "date": "2019-07-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$7.5M Series H",
+      "charterSeries": "H",
+      "amountRaisedUsd": 7500000,
+      "valuationUsd": null,
+      "note": "S-1: \"In July 2019, we sold 1,068,376 shares of our Series H redeemable convertible preferred stock to one accredited investor at a purchase price of $7.02 per share, for an aggregate purchase price of $7.5 million.\" The $7.02 price is above the $6.03 common price of the same period, which is the ordinary preferred-over-common premium and not a mark-up in company value; it is recorded for completeness and carries no valuation. Buyer not named.",
+      "sourceRefs": [
+        0
+      ],
+      "plot": false
+    },
+    {
+      "id": "2020-04-07-960m",
+      "date": "2020-04-07",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$960M pre-listing round",
+      "amountRaisedUsd": 960200000,
+      "valuationUsd": 7123789547,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "estimate",
+      "note": "DOWN ROUND, AND A REAL ONE: from $20.33B in 2015 to roughly $7B in 2020, a five-year 65% decline in what Palantir could sell equity at. The mechanism is visible in the price per share alone, with no valuation arithmetic involved at all: $11.38 for the 2015 Series K, $6.03 for the 2018 and 2019 Class A sales, $4.65 here. Wikipedia records that Morgan Stanley marked its Palantir position at a roughly $6B company value in 2018, which is consistent. The round itself is documented twice over - Form D 0001321655-20-000001 gives a date of first sale of 2020-04-07 and $549,727,437 sold against a $961,099,010 offering as of 2020-07-01, and the S-1 completes it: \"From April 2020 through July 2020, we sold an aggregate of 206,500,523 shares of our Class A common stock to 59 accredited investors at a purchase price of $4.65 per share, for an aggregate purchase price of $960.2 million.\" THE VALUATION IS AN ESTIMATE AND THE HEURISTIC IS THIS: $4.65 x 1,531,997,752 as-converted shares outstanding at 2020-06-30, both numbers taken from the S-1 (the share count from its Sale Price History of Our Capital Stock table). That is deliberately the same basis the public series uses - shares outstanding, not fully diluted - so the private point and the first market-cap quote are measuring the same thing. It is a floor: roughly a billion options and RSUs are excluded. For comparison, CNBC computed about $7.8B for the July tranche at $4.75 a share and headlined about $10.5B for the company ahead of the listing on a fully diluted basis; that article could not be loaded (HTTP 403) so its figures are not used as the recorded value. No lead named - 59 buyers, of whom Sompo Holdings and Fujitsu were reported participants.",
+      "sourceRefs": [
+        0,
+        12
+      ],
+      "plot": true
+    },
+    {
+      "id": "2020-09-30-direct-listing",
+      "date": "2020-09-30",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "Direct listing (NYSE: PLTR)",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "THERE WAS NO IPO AND THERE IS NO IPO PRICE. Palantir went public on 2020-09-30 by DIRECT LISTING on the NYSE: no shares were offered by the company, no underwriters priced a book, and Palantir raised nothing on the day. The registration statement is a Form S-1 for resale by existing holders, and the prospectus says only that the company intends 'to list our Class A common stock on the NYSE under the symbol PLTR' - the section a normal IPO prospectus devotes to an offering price is instead a Sale Price History of private transactions, because that is all the price discovery that existed. The NYSE set a REFERENCE price of $7.25, which is an administrative starting quote and not a price anyone transacted at; the first trade was at $10.00 and the stock closed its first day at $9.50. `ipoDate` and `publicFrom` are both set to the direct-listing date because that is when the shares became publicly tradable, which is the only thing the pipeline needs them for. Nothing is plotted here: there is no offering price to plot, and the market's own answer arrives with the first computed quarter-end quote.",
+      "sourceRefs": [
+        0,
+        15
+      ],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "CROSS-CHECK FAILURE, REPORTED RATHER THAN PAPERED OVER. The build errors on Palantir because the computed quarterly market cap diverges from companiesmarketcap by 5.50% in 2025 and 4.56% in 2020, both over the 3% ceiling. The build's own message blames 'a wrong share tag or a missed split', and the audit hypothesis was specific: Palantir has no non-dimensional dei:EntityCommonStockSharesOutstanding (the companyconcept endpoint returns HTTP 404 for it), the cascade therefore falls through to us-gaap:CommonStockSharesOutstanding, and for a Class A/B/F filer that could be a single class - which would understate market cap badly. THAT HYPOTHESIS IS FALSE, AND IT WAS CHECKED AGAINST THE FILING RATHER THAN ASSUMED. The FY2025 10-K cover page reports Class A 2,291,470,751 + Class B 99,199,960 + Class F 1,005,000 = 2,391,675,711 shares as of the February 2026 cover date, and the us-gaap tag reports 2,391,192,000 at 2025-12-31. Those are the same number six weeks apart. The tag is the all-class total and it is correct. The divergence is on companiesmarketcap's side: their $449.77B for 2025 implies about 2,530M shares at the $177.75 close, roughly 139M more than Palantir has ever reported outstanding, and their own annual price-performance chain implies a 2025 close near $186 against the $177.75 that stockanalysis reports. Their 2020 figure has the same shape. The three middle years - 2021, 2022, 2023 - agree to +1.15%, +0.94% and +1.11%, which is what a healthy share tag looks like and is further evidence the tag is fine. Forcing the weighted-average tag instead makes it far worse (-11.08% in 2025, -69% in 2020, because Palantir's basic weighted average is dragged down by pre-listing periods), so there is no tag choice that fixes this and no honest one that should. The regression checkpoint is anchored in 2022, the year where the hand computation and companiesmarketcap agree most closely: 2,099,075,000 shares (SEC cover, 2022-12-31) x $6.42 close = $13.476B, which is 0.94% from their $13.35B. A SECOND, HARMLESS FALSE POSITIVE FALLS OUT OF THE SAME DATA: the build reports 'splits detected: 3:1 by 2020-09-30'. Palantir has never split its stock. The share series jumps from 581,497,116 (2019-12-31) to 1,726,685,755 (2020-09-30), a ratio of 2.969 that lands inside the 5% band around 3:1 - but that is the conversion of every preferred series into common at the direct listing, not a split. It changes nothing in the output, because the factor is only applied to share rows dated before the jump and the earliest computed quarter is 2020-12-31, which uses its own same-day cover count. It is recorded here so nobody later reads that line as evidence of a split that never happened. Any company that goes public with a large preferred stack will trip the same detector. ON THE PRIVATE SIDE: every round from March 2009 onward is dated from a Form D date of first sale rather than a press date, and the two disagree constantly - the '$90M June 2010 Founders Fund round' first sold in November 2009, and TechCrunch's separate 'February 2014' and 'September 2014' rounds are two amendments of one offering that opened on 2013-11-20. Electronic Form D only starts in 2009, so 2005-2008 rests on TechCrunch's reconstruction and Wikipedia. Nine of eighteen priced rounds carry a valuation and none of the nulls was filled in.",
+  "unresolved": [
+    "The 5.50% (2025) and 4.56% (2020) divergence from companiesmarketcap. Ruled out as a share-tag error against the FY2025 10-K cover; most likely companiesmarketcap uses a diluted or forward-dated share count, but their methodology is not published, so this is not proven - only that the SEC-derived side is right.",
+    "Palantir's error currently suppresses Snowflake's entire public series in a combined run: build_data.py guards public_series with `if c.get('status') == 'public' and not errors`, and `errors` is a shared list, so any company that fails alphabetically earlier silently degrades every later one to private points only. Snowflake builds clean on its own (`--only snowflake`: 0 errors, 0 warnings, cross-check worst 2.65%, regression 0.00%). This is a pipeline ordering artefact, not a data problem in either shard.",
+    "Whether In-Q-Tel's investment was $2M in one cheque or across two, and whether the first one landed in 2004 or 2005. Sources split; no filing exists because electronic Form D began in 2009.",
+    "The lead investor for the 2008, 2011, 2012, 2013, 2014 and 2020 rounds. Form D does not name investors and no loaded source does either, so `institutional` is left unset on those rather than asserting a lead the schema would treat as the floor test.",
+    "The first-day market cap on 2020-09-30. The $9.50 close and 1,726,685,755 SEC cover shares would give about $16.4B, but the $9.50 figure comes only from an aggregated search snippet, so no annualOverride was hand-entered for it and the series starts at the 2020-12-31 computed quote.",
+    "Whether the 2020 round's post-money is nearer the $7.1B computed here on outstanding shares or the ~$10.5B CNBC reported on a fully diluted basis. The CNBC article returns HTTP 403 and could not be read."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Palantir Technologies Inc. Form S-1 (2020, direct listing)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000119312520230013/d904406ds1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Technologies Inc. Form 10-K FY2025 - cover page share counts by class",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000011/R1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2009-03-25 (0001321655-09-000003)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165509000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D/A closing the $90.1M offering (0001321655-10-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165510000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2011-04-20, $50M (0001321655-11-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165511000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2011-08-23, $68M (0001321655-11-000003)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165511000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2012-05-01, $56.1M (0001321655-12-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165512000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2013-09-12, $196.5M (0001321655-13-000002)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165513000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D/A closing the $444.2M offering (0001321655-14-000003)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165514000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2014-11-26, $50M (0001321655-14-000005)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165514000005/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D/A closing the $879.8M offering (0001321655-15-000004)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165515000004/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2016-11-08, $20M (0001321655-16-000005)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165516000005/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Palantir Form D, first sale 2020-04-07 (0001321655-20-000001)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165520000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "As Palantir preps IPO, a look back at its growth history",
+      "url": "https://techcrunch.com/2020/07/07/as-palantir-preps-ipo-a-look-back-at-its-growth-history/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Palantir has raised $880 million at a $20 billion valuation",
+      "url": "https://techcrunch.com/2015/12/23/palantir-has-raised-880-million-at-a-20-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Palantir Technologies",
+      "url": "https://en.wikipedia.org/wiki/Palantir_Technologies",
+      "type": "reference"
+    },
+    {
+      "outlet": "companiesmarketcap",
+      "title": "Palantir (PLTR) - Market capitalization",
+      "url": "https://companiesmarketcap.com/palantir/marketcap/",
+      "type": "database"
+    }
+  ]
+}

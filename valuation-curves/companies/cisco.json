@@ -1,0 +1,290 @@
+{
+  "slug": "cisco",
+  "name": "Cisco",
+  "cohort": "mega-cap",
+  "colorSlot": 4,
+  "dashSlot": 3,
+  "status": "public",
+  "founded": "1984-12-10",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Cisco Systems, Inc. was organized under the General Corporation Law of the State of California on 1984-12-10, per the company description Nasdaq filed with the SEC as Exhibit C to its 2005 Form 1 exchange application. Cisco's own 10-Ks say only 'December 1984' (FY1995) or '1984' (FY2026). The History of Computer Communications (following Bunnell and Brate's Making the Cisco Connection) and Wikipedia give the same day. No earlier partnership is recorded anywhere I read. Before incorporating, Len Bosack and Sandy Lerner were Stanford staff linking campus networks, which is a team origin and not a formal founding. Cisco reincorporated in Delaware in 2021 (FY2026 10-K). Under the methodology the original California incorporation is the clock start.",
+  "public": {
+    "ticker": "CSCO",
+    "cik": "0000858877",
+    "cmcSlug": "cisco",
+    "ipoDate": "1990-02-16",
+    "publicFrom": "1990-02-16",
+    "sharesTag": "auto",
+    "annualOverrides": [
+      {
+        "date": "1990-02-16",
+        "capUsd": 224000000,
+        "sourceRefs": [
+          6,
+          3,
+          5,
+          9,
+          18,
+          19,
+          21
+        ],
+        "note": "IPO day. This is Cisco's own stated figure ('a market capitalization of $224 million', Cisco Heritage), and Wikipedia repeats it. No share count from a document I read sits behind it, because the 1990 prospectus predates EDGAR. Cisco does not say which price it uses. The $18.00 offer price is the only basis consistent with later filings. $224M / $18.00 is about 12.44M shares, which grows about 21% to the 15.03M (1990-basis) shares on the FY1995 10-K's July 1992 balance. At the $22.25 first-day close, $224M would mean 10.07M shares and 49% growth over the same period. That is implausible against the 2.9%/yr option issuance the same statements show for FY1993-FY1994. So this is the offer-price capitalisation, like google.json's IPO point, and the first-day close would put the day's capitalisation near $277M, about 24% higher. The $22.25 close (0.0772570 split-adjusted x 288) is confirmed by Yahoo's daily bar and by EBSCO. Fool.com (2013) gives 'approximately $150 million', which fits no share count and is rejected."
+      },
+      {
+        "date": "1991-12-31",
+        "capUsd": 1991176875,
+        "sourceRefs": [
+          8,
+          9,
+          7
+        ],
+        "note": "UPPER BOUND, probably 2-5% high. Price: $66.25 close (Yahoo split-adjusted 0.4600690 x 144, the splits still to come after this date; it lands exactly on 66 1/4). Shares: no count exists for 1991. The nearest filed one is the July 26, 1992 balance of 240,444,000 in the FY1995 10-K's statement of shareholders' equity. That figure is stated in the post-March-1994 basis, so it is divided by 8 to give 30,055,500 in the basis in force on 1991-12-31. It is 208 days later, just past the pipeline's own 200-day share-gap limit. It overstates the year-end count by whatever stock was issued from January to July 1992. The FY1993-FY1994 statements show about 7M (post-1994-basis) option shares issued a year and no repurchases before FY1995. Entered because the bias runs one way and is small. A centred estimate would need interpolation."
+      },
+      {
+        "date": "1992-12-31",
+        "capUsd": 4726227375,
+        "sourceRefs": [
+          8,
+          9,
+          16
+        ],
+        "note": "Price $78.625 (Yahoo 1.0920140 x 72, exactly 78 5/8). Shares: the FY1995 10-K's July 26, 1992 balance of 240,444,000 (post-March-1994 basis), divided by 4 to give 60,111,000. That is 158 days earlier and the nearest filed count, so the figure is a slight floor. FY1993 option-plan issuance totalled 6,972,000, so the true count was at most 2.9% higher. Basis check: Cisco's Q1 FY1993 earnings release reports 64,040,000 diluted shares (256,160,000 post-1994-basis), 6.5% above this actual count. That matches the 5.8% gap between FY1993 diluted and average actual shares in the 10-K, so the restated balance is on the basis assumed here."
+      },
+      {
+        "date": "1993-12-31",
+        "capUsd": 8104362750,
+        "sourceRefs": [
+          8,
+          9
+        ],
+        "note": "Price $64.625 (Yahoo 1.7951390 x 36, exactly 64 5/8). Shares: the FY1995 10-K's July 25, 1993 balance of 247,416,000 plus the 3,396,000 shares issued for the Crescendo pooling in September 1993, which is 250,812,000 in the post-March-1994 basis. Divided by 2, that is 125,406,000 before the March 1994 split. Both inputs are filed and both events come before this date. The only gap is August-December 1993 option exercises, at most the 6,885,000 issued over all of FY1994. That makes this figure a floor, at most 2.7% low, against an $8.33B ceiling on the July 31, 1994 balance. No 1993 or 1994 Cisco filing is on EDGAR, whose Cisco record begins 1995-02-13."
+      },
+      {
+        "date": "1994-12-30",
+        "capUsd": 9451891625,
+        "sourceRefs": [
+          8,
+          10
+        ],
+        "note": "Price $35.125 (Yahoo 1.9513890 x 18, exactly 35 1/8). Shares: 269,093,000 issued and outstanding at 1995-01-29, from the balance sheet of the Q2 FY1995 10-Q. This is 30 days later and already includes the 6.8M shares issued for Kalpana on 1994-12-06. The same filing's cover reports 268,659,060 at 1995-03-01, which gives $9.437B (0.16% lower). Last trading day of 1994; Dec 31 fell on a Saturday."
+      },
+      {
+        "date": "1995-12-29",
+        "capUsd": 20615315500,
+        "sourceRefs": [
+          8,
+          11,
+          9,
+          12
+        ],
+        "note": "Price $74.625 (Yahoo 4.1458330 x 18, exactly 74 5/8). Shares: 276,252,134 at 1995-12-04, from the cover of the Q1 FY1996 10-Q, 25 days earlier and the nearest filed count. Cross-checks: the FY1995 10-K cover gives 273,931,124 shares at 1995-10-02 and $16,746,720,000 of non-affiliate stock that day. At that day's $66.00 close, that is a 92.6% non-affiliate fraction of an $18.08B total, a sensible ratio that also confirms the x18 price scaling. The Q2 FY1996 10-Q counts 563,713,000 post-split shares at 1996-01-28 (281.9M pre-split). Last trading day of 1995. companiesmarketcap's first row, $41.71B at 1996-12-31, takes over from here."
+      }
+    ],
+    "regressions": [
+      {
+        "date": "2025-12-31",
+        "capUsd": 304350000000,
+        "tolPct": 0.5,
+        "note": "stockanalysis.com's Dec 31, 2025 figure. It equals the 2025-11-13 dei cover count (3,951,094,563) times the $77.03 quarter-end close. The pipeline instead picks the 2026-02-12 cover (3,949,893,042), which is 43 days away against 48, and computes $304.26B (0.03% low). companiesmarketcap prints $308.81B, 1.5% high."
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "1987-12-sequoia",
+      "date": "1987-12-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "$2.5M Sequoia Capital round",
+      "charterSeries": null,
+      "nameConflict": "Never given a series letter in anything I read. Cisco calls it its 'first and only round of venture capital'.",
+      "institutional": true,
+      "lead": "Sequoia Capital (Don Valentine)",
+      "amountRaisedUsd": 2500000,
+      "valuationUsd": 7812500,
+      "valuationBasis": "post",
+      "valuationConfidence": "soft",
+      "valuationMethod": "estimate",
+      "note": "Cisco's only pre-IPO institutional round. Sources: Cisco Heritage ('$2.5 million in December 1987'), Cisco's Spring 1990 customer newsletter ('In December 1987, cisco received its first and only round of venture capital from Sequoia'), and the FY1995 10-K, where Valentine has been a director 'since December 1987'. HEURISTIC: The History of Computer Communications, citing Bunnell and Brate, says Sequoia invested $2.5M 'for 32 percent of the company' and that the financing closed in December 1987. $2.5M / 0.32 = $7.81M post-money ($5.31M pre). The post-money is that division, not a reported figure. EBSCO says 'one-third', which would give $7.5M. The share price and share count are unrecorded because the 1990 prospectus is not on EDGAR. The same newsletter puts Sequoia's stake at 29% just before the IPO, consistent with later option dilution. The deal also gave Valentine the right to rebuild management; John Morgridge was hired as CEO in 1988.",
+      "sourceRefs": [
+        2,
+        3,
+        4,
+        5,
+        9
+      ],
+      "plot": true
+    },
+    {
+      "id": "1990-02-16-ipo",
+      "date": "1990-02-16",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO on Nasdaq at $18.00 (CSCO)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 224000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Recorded but not plotted here. The same $224M is the IPO-day point in public.annualOverrides, and the pipeline would drop a duplicate vertex on the same date anyway. Co-managed by Morgan Stanley & Co. and Smith Barney, Harris Upham & Co. The offering size conflicts. Cisco's own Spring 1990 newsletter says '3.2 million shares of Common Stock' at $18 ($57.6M), while EBSCO says 2.8 million ($50.4M). No source I read separates primary from secondary shares, so amountRaisedUsd is left null. Per the newsletter, Sequoia sold none of its 29% stake. First-day close $22.25 on about 3.3M shares traded (EBSCO; Yahoo's split-adjusted daily bar gives the same $22.25 and 3.27M shares). The $224M basis is discussed under public.annualOverrides.",
+      "sourceRefs": [
+        3,
+        5,
+        6,
+        21
+      ],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Cisco had a single institutional round. Bosack and Lerner self-financed for three years: home mortgage, credit cards and money from friends, all unquantified and below the floor, so not recorded as events. They were reportedly turned down by dozens of VC firms (76 per EBSCO, '80 to 90' per Bosack) before Sequoia's $2.5M in December 1987. That leaves one private vertex, and it is an estimate. PRE-1996 MARKET CAPS are hand-entered because companiesmarketcap begins at 1996 and Cisco's EDGAR record begins 1995-02-13. Every year-end close comes from Yahoo Finance's split-adjusted series multiplied back by Cisco's own split table: 2:1 in March 1991, 1992, 1993 and 1994, 2:1 February 1996, 3:2 November 1997 and August 1998, 2:1 May 1999 and February 2000, a cumulative 288. Each product lands exactly on a 1/8 NASDAQ tick: 44 7/8, 66 1/4, 78 5/8, 64 5/8, 35 1/8, 74 5/8. That confirms both the full-precision prices and the split arithmetic. The share counts come from the FY1995 10-K's statement of shareholders' equity (balances for July 1992, July 1993 and July 1994, restated only for the 1993 and 1994 splits; the 10-K says prior periods were NOT restated for the Crescendo, Newport or Kalpana poolings) and from 1995 10-Q covers and balance sheets. Each override note states which count it uses, how far away it is, and which way it biases. PEAK CHECK: the Q2 FY2000 10-Q cover gives 3,468,815,049 shares at 2000-02-25, doubled by the 2000-03-22 split to 6,937,630,098. At the 2000-03-27 close of $80.0625 that is $555.4B, the widely cited peak. Cisco Heritage's '$569B' uses that day's $82.00 intraday high. The pipeline cannot show this peak: before 2016 its public series is companiesmarketcap year-ends ($355.1B for 1999, $275.3B for 2000), so March 2000 falls between two annual points. SPLITS: the SEC companyfacts share series begins 2009-11-12, nine years after Cisco's last split, so the pipeline correctly detects none. All nine splits sit inside the hand-entered or companiesmarketcap years and are already reflected in stockanalysis's split-adjusted closes. macrotrends.net was not consulted. StatMuse's Cisco market caps were checked and rejected: it multiplies dividend-adjusted closes by split-adjusted shares, which puts its 1993 figure ($5.2B) about 35% below the filed-count figure.",
+  "unresolved": [
+    "Year-end 1990 market cap, left empty. The only share basis is the ~12.44M shares implied by Cisco's $224M IPO figure at $18, 318 days earlier, and shares grew about 21% between the IPO and July 1992. At the $44.875 1990-12-31 close the figure lies somewhere between about $558M (IPO count) and $674M (July 1992 count), too wide a bracket to enter. Resolving it needs Cisco's FY1990 or FY1991 10-K or the 1990 prospectus, none of which is on EDGAR.",
+    "Shares outstanding after the February 1990 IPO. Neither the $224M market cap nor the offering size (3.2M shares per Cisco's newsletter, 2.8M per EBSCO) is backed by a prospectus I could read.",
+    "The Sequoia round's post-money. $7.81M is $2.5M divided by the 32% stake reported by Bunnell and Brate. EBSCO's 'one-third' gives $7.5M, and no share price or share count has been published.",
+    "1991-12-31 is an upper bound and 1992-12-31 and 1993-12-31 are floors, each within about 3-5% of the truth. They rest on fiscal-year-end balances five to seven months away because no Cisco filing from 1990-1994 is on EDGAR."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "The NASDAQ Stock Market LLC Form 1, Exhibit C, Tab 27: Cisco Systems, Inc. (organized in California on December 10, 1984)",
+      "url": "https://www.sec.gov/rules/other/nasdaqllcf1a4_5/c_ciscosys.pdf",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-K, FY2026 (incorporated in California in 1984, reincorporated in Delaware in 2021)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/000085887726000132/csco-20260725.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "Cisco Heritage",
+      "title": "Secure VC funding (1987)",
+      "url": "https://heritage.cisco.com/1987_sequoia/",
+      "type": "company"
+    },
+    {
+      "outlet": "Cisco",
+      "title": "The Packet, Vol. 2 No. 1, Spring 1990: 'cisco Goes Public'",
+      "url": "https://heritage.cisco.com/wp-content/uploads/2021/01/packet_2-1.pdf",
+      "type": "company"
+    },
+    {
+      "outlet": "The History of Computer Communications",
+      "title": "Section 14.21: cisco Systems",
+      "url": "https://historyofcomputercommunications.info/section/14.21/cisco-Systems/",
+      "type": "reference"
+    },
+    {
+      "outlet": "EBSCO Research Starters",
+      "title": "Cisco Systems Goes Public",
+      "url": "https://www.ebsco.com/research-starters/business-and-management/cisco-systems-goes-public",
+      "type": "reference"
+    },
+    {
+      "outlet": "Cisco Heritage",
+      "title": "IPO (1990)",
+      "url": "https://heritage.cisco.com/1990_ipo/",
+      "type": "company"
+    },
+    {
+      "outlet": "Cisco Investor Relations",
+      "title": "Dividends and stock splits",
+      "url": "https://investor.cisco.com/stock-information/dividends-and-splits/default.aspx",
+      "type": "company"
+    },
+    {
+      "outlet": "Yahoo Finance",
+      "title": "CSCO monthly closes, February 1990 to December 1996 (chart API, split-adjusted)",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSCO?period1=631152000&period2=852076800&interval=1mo",
+      "type": "database"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-K, FY1995 (filed 1995-10-26)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/0000950149-95-000673.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-Q for the quarter ended 1995-01-29 (filed 1995-03-13)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/0000891618-95-000131.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-Q for the quarter ended 1995-10-29 (filed 1995-12-12)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/0000950149-95-000869.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-Q for the quarter ended 1996-01-28 (filed 1996-03-13)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/0000950149-96-000218.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Cisco Systems, Inc. Form 10-Q for the quarter ended 2000-01-29 (filed 2000-03-14)",
+      "url": "https://www.sec.gov/Archives/edgar/data/858877/0000891618-00-001422.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "Cisco Heritage",
+      "title": "Market capitalization (2000)",
+      "url": "https://heritage.cisco.com/2000_marketcap/",
+      "type": "company"
+    },
+    {
+      "outlet": "Yahoo Finance",
+      "title": "CSCO daily bar, 2000-03-27 (chart API)",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSCO?period1=954115200&period2=954201600&interval=1d",
+      "type": "database"
+    },
+    {
+      "outlet": "Cisco Newsroom",
+      "title": "Cisco reports first quarter earnings (November 1992)",
+      "url": "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y1992/m11/cisco-reports-first-quarter-earnings-nov-1992-.html",
+      "type": "company"
+    },
+    {
+      "outlet": "The Motley Fool",
+      "title": "Cisco Stock Split History: Why the Networking Giant Won't Split Anytime Soon",
+      "url": "https://www.fool.com/investing/2018/03/12/cisco-stock-split-history-why-the-networking-giant.aspx",
+      "type": "press"
+    },
+    {
+      "outlet": "The Motley Fool",
+      "title": "Cisco's Big Debut and Ford's Record-Breaking Performance",
+      "url": "https://www.fool.com/investing/general/2013/02/16/ciscos-big-debut-and-fords-record-breaking-perform.aspx",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Cisco",
+      "url": "https://en.wikipedia.org/wiki/Cisco",
+      "type": "reference"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Cisco Systems (CSCO) market cap history",
+      "url": "https://stockanalysis.com/stocks/csco/market-cap/",
+      "type": "database"
+    },
+    {
+      "outlet": "Yahoo Finance",
+      "title": "CSCO daily bar, 1990-02-16 IPO day (chart API)",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSCO?period1=635126400&period2=635212800&interval=1d",
+      "type": "database"
+    },
+    {
+      "outlet": "StatMuse Money",
+      "title": "Cisco market cap end of 1993 (checked and rejected)",
+      "url": "https://www.statmuse.com/money/ask/cisco-market-cap-end-of-1993",
+      "type": "database"
+    }
+  ]
+}

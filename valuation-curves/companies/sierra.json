@@ -1,0 +1,143 @@
+{
+  "slug": "sierra",
+  "name": "Sierra",
+  "cohort": "ai",
+  "colorSlot": 2,
+  "dashSlot": 0,
+  "status": "private",
+  "founded": "2023-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Founded in 2023 by Bret Taylor and Clay Bavor. No state incorporation filing is publicly retrievable — Sierra appears never to have filed a Form D, California's registry is behind bot protection, and Delaware's is captcha-gated. Forbes and Sequoia both say only '2023'; Contrary says March 2023 and Sacra says June 2023, neither citing a filing. Dated to the year rather than inventing a month. Anchors that are precise: Taylor's Salesforce resignation was announced 2022-11-30, Bavor's Google departure 2023-02-08, and the company launched publicly 2024-02-13.",
+  "events": [
+    {
+      "id": "2024-02-13-seed",
+      "date": "2024-02-13",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$110M launch round",
+      "charterSeries": null,
+      "nameConflict": "Reported as both a seed and a Series A. Sierra has never used a series letter publicly.",
+      "institutional": true,
+      "lead": "Sequoia Capital and Benchmark (co-led)",
+      "amountRaisedUsd": 110000000,
+      "valuationUsd": 1000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Sierra never confirmed a valuation for this round. The ~$1B figure traces to a January 2024 Bloomberg report that the company was SEEKING funds at almost $1B, not to a closed price. Plotted hollow.",
+      "sourceRefs": [0],
+      "plot": true
+    },
+    {
+      "id": "2024-10-28-greenoaks",
+      "date": "2024-10-28",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$175M round",
+      "charterSeries": null,
+      "nameConflict": "Widely called Series B.",
+      "institutional": true,
+      "lead": "Greenoaks",
+      "amountRaisedUsd": 175000000,
+      "valuationUsd": 4500000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Crunchbase records Sequoia as the lead; TechCrunch and SiliconANGLE both name Greenoaks alone, with ICONIQ and Thrive participating.",
+      "sourceRefs": [1, 2],
+      "plot": true
+    },
+    {
+      "id": "2025-09-04-greenoaks-2",
+      "date": "2025-09-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$350M round",
+      "charterSeries": null,
+      "nameConflict": "Widely called Series C.",
+      "institutional": true,
+      "lead": "Greenoaks",
+      "amountRaisedUsd": 350000000,
+      "valuationUsd": 10000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "sourceRefs": [3, 4],
+      "plot": true
+    },
+    {
+      "id": "2026-05-04-tiger-gv",
+      "date": "2026-05-04",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$950M round",
+      "charterSeries": null,
+      "nameConflict": "Called Series D by some outlets and Series E by others.",
+      "institutional": true,
+      "lead": "Tiger Global and GV (co-led)",
+      "amountRaisedUsd": 950000000,
+      "valuationUsd": 15800000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Sierra said only 'over $15 billion'. Axios Pro, Quartz and Sacra independently report $15.8B post-money, so the specific multi-source figure is used. The sierra/ timeline tool in this repo deliberately records the conservative $15B floor instead — a difference in sourcing policy, not an error.",
+      "sourceRefs": [5, 6, 7],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "No inter-round valuation marks exist. Sierra has never run a reported tender offer or company-sponsored secondary. Hiive ($67.27/share, 2026-08-04) and Notice.co ($54.03/share) publish indicative secondary prices, but these are platform estimates with no disclosed share count and cannot be converted to a company valuation — excluded. SoftBank Vision Fund 2 made a strategic investment announced 2025-12-04 alongside the Japan expansion, with amount and valuation undisclosed — excluded. ARR for context: ~$26M end-2024, $100M Nov 2025, $150M Feb 2026, ~$200M May 2026.",
+  "unresolved": [
+    "Legal incorporation date — no state filing or Form D is publicly retrievable."
+  ],
+  "sources": [
+    {
+      "outlet": "Fortune",
+      "title": "Bret Taylor and Clay Bavor's AI startup Sierra raises $110 million",
+      "url": "https://fortune.com/2024/02/13/bret-taylor-clay-bavor-ai-startup-sierra-110-million-funding-sequoia-benchmark/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Bret Taylor's customer service AI startup just raised $175M",
+      "url": "https://techcrunch.com/2024/10/28/bret-taylors-customer-service-ai-startup-just-raised-175m/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Sierra Technologies raises $175M at $4.5B valuation",
+      "url": "https://siliconangle.com/2024/10/28/generative-ai-agent-startup-sierra-technologies-raises-175m-4-5b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Sierra",
+      "title": "There's an agent for that, and it runs on Sierra",
+      "url": "https://sierra.ai/blog/theres-an-agent-for-that-and-it-runs-on-sierra",
+      "type": "company"
+    },
+    {
+      "outlet": "Bloomberg",
+      "title": "Bret Taylor's AI startup Sierra reaches $10 billion valuation",
+      "url": "https://www.bloomberg.com/news/articles/2025-09-04/bret-taylor-s-ai-startup-sierra-reaches-10-billion-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "Sierra",
+      "title": "Better customer experiences, built on Sierra",
+      "url": "https://sierra.ai/blog/better-customer-experiences-built-on-sierra",
+      "type": "company"
+    },
+    {
+      "outlet": "Axios Pro",
+      "title": "Sierra AI valuation, agentic enterprise",
+      "url": "https://www.axios.com/pro/enterprise-software-deals/2026/05/04/sierra-ai-valuation-agentic-enterprise",
+      "type": "press"
+    },
+    {
+      "outlet": "Sacra",
+      "title": "Sierra company profile",
+      "url": "https://sacra.com/c/sierra/",
+      "type": "database"
+    }
+  ]
+}

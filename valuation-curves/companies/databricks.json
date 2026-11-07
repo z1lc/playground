@@ -1,0 +1,490 @@
+{
+  "slug": "databricks",
+  "name": "Databricks",
+  "cohort": "ai",
+  "colorSlot": 5,
+  "dashSlot": 1,
+  "status": "private",
+  "founded": "2013-01-01",
+  "foundedPrecision": "year",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Databricks, Inc. is a Delaware corporation founded in 2013 by seven people out of UC Berkeley's AMPLab, the creators of Apache Spark: Ali Ghodsi, Ion Stoica, Matei Zaharia, Patrick Wendell, Reynold Xin, Andy Konwinski and Arsalan Tavakoli-Shiraji. The company's first SEC Form D, filed 2013-09-25, states 'Year of Incorporation/Organization: 2013' and 'Within Last Five Years' — a primary filing that pins the year but not the month. No month is sourceable: Wikipedia says only '2013'; Contrary Research says July 2013 and stacksync.com says 10 June 2013, neither citing a filing, and they disagree with each other. Delaware's registry is not publicly queryable. Dated to the year rather than inventing a month. The precise anchors that do exist: the Form D reports the first sale of Series A stock on 2013-09-11, and Databricks emerged from stealth in September 2013.",
+  "events": [
+    {
+      "id": "2013-09-11-series-a",
+      "date": "2013-09-11",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Andreessen Horowitz",
+      "amountRaisedUsd": 13939324,
+      "valuationUsd": null,
+      "note": "Amount is the exact figure from the Form D (total sold $13,939,324 against a $15,000,000 offering), not the '$13.9M' or '$14M' of press accounts; TechCrunch's later Series B story says $13.7M. Dated to the Form D date of first sale (2013-09-11); the press coverage ran 2013-09-25/26. Ben Horowitz joined the board and appears as a related person on the filing. No valuation was ever disclosed, so this round is recorded but not plotted.",
+      "sourceRefs": [0, 1],
+      "plot": false
+    },
+    {
+      "id": "2014-06-06-series-b",
+      "date": "2014-06-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "New Enterprise Associates",
+      "amountRaisedUsd": 33418713,
+      "valuationUsd": null,
+      "note": "Exact Form D figure ($33,418,713 sold against a $33,700,000 offering); press rounded it to $33M. Andreessen Horowitz participated; NEA's Pete Sonsini joined the board. Dated to the Form D date of first sale; TechCrunch announced it 2014-06-30. No valuation disclosed.",
+      "sourceRefs": [1, 2],
+      "plot": false
+    },
+    {
+      "id": "2016-12-15-series-c",
+      "date": "2016-12-15",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "New Enterprise Associates",
+      "amountRaisedUsd": 60000000,
+      "valuationUsd": null,
+      "note": "The only Databricks institutional round with no Form D on EDGAR — there is a filing gap between 2014-07-17 and 2017-08-22 — so this is the one round dated to the announcement rather than to a filed date of first sale. Andreessen Horowitz participated. Databricks put cumulative capital raised at $107.5M. No valuation disclosed.",
+      "sourceRefs": [3, 4],
+      "plot": false
+    },
+    {
+      "id": "2017-08-03-series-d",
+      "date": "2017-08-03",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Andreessen Horowitz",
+      "amountRaisedUsd": 139999945,
+      "valuationUsd": null,
+      "note": "Exact Form D figure ($139,999,945, fully sold); press said $140M. NEA and Battery Ventures participated. Dated to the Form D date of first sale; announced 2017-08-22. Databricks put cumulative capital raised at $247M. Neither the press release nor TechCrunch carried a valuation, and no later filing exposes one, so this is the last Databricks round with an honest gap.",
+      "sourceRefs": [5, 6],
+      "plot": false
+    },
+    {
+      "id": "2019-01-11-series-e",
+      "date": "2019-01-11",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Andreessen Horowitz",
+      "amountRaisedUsd": 249999989,
+      "valuationUsd": 2750000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "First Databricks round with a public valuation. Exact Form D figure ($249,999,989, fully sold); press said $250M. Dated to the Form D date of first sale; announced 2019-02-05. TechCrunch reports 'the company's valuation is now $2.75 billion' without labelling it pre- or post-money, and Databricks' own release did not label it either, so the basis is recorded as unspecified.",
+      "sourceRefs": [7, 8],
+      "plot": true
+    },
+    {
+      "id": "2019-10-22-series-f",
+      "date": "2019-10-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series F",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Andreessen Horowitz (Late Stage Venture Fund)",
+      "amountRaisedUsd": 400000181,
+      "valuationUsd": 6200000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Company-announced valuation of $6.2B, with the pre-/post-money basis unstated. The Form D date of first sale (2019-10-22) and the press release date coincide exactly. Exact Form D figure $400,000,181.",
+      "sourceRefs": [9, 10],
+      "plot": true
+    },
+    {
+      "id": "2021-02-01-series-g",
+      "date": "2021-02-01",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series G",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Franklin Templeton",
+      "amountRaisedUsd": 1000000044,
+      "valuationUsd": 28000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Databricks' own release says explicitly '$28 billion post-money valuation' — one of only two rounds where the company labels the basis. AWS, CapitalG, Salesforce Ventures and Microsoft all invested strategically. Exact Form D figure $1,000,000,044; date of first sale matches the announcement date.",
+      "sourceRefs": [11, 12],
+      "plot": true
+    },
+    {
+      "id": "2021-08-31-series-h",
+      "date": "2021-08-31",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series H",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Counterpoint Global (Morgan Stanley)",
+      "amountRaisedUsd": 1599999871,
+      "valuationUsd": 38000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Explicitly post-money in the company release headline and body. Baillie Gifford, ClearBridge and UC Investments were new investors. Exact Form D figure $1,599,999,871; date of first sale matches the announcement date.",
+      "sourceRefs": [13, 14],
+      "plot": true
+    },
+    {
+      "id": "2022-09-30-unnamed-offering",
+      "date": "2022-09-30",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Undisclosed Reg D equity offering ($673.8M)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 673757396,
+      "valuationUsd": null,
+      "note": "Exists only on EDGAR: a Form D filed 2023-09-29, a full year after the 2022-09-30 date of first sale, reporting $673,757,396 of equity sold with the offering closed. Databricks never announced it and no outlet covered it. It carries no named lead, so it fails the institutional inclusion floor, and no valuation is recoverable. Most plausibly stock consideration for an acquisition (MosaicML closed July 2023 at a reported $1.3B in stock) rather than a financing, but that is inference — the filing itself says only 'equity'. Recorded, never plotted.",
+      "sourceRefs": [15],
+      "plot": false
+    },
+    {
+      "id": "2023-09-14-series-i",
+      "date": "2023-09-14",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series I",
+      "charterSeries": null,
+      "nameConflict": "Wikipedia credits the lead to Capital One Ventures and Nvidia; Databricks' own release names T. Rowe Price Associates as lead with Capital One Ventures and NVIDIA among the new investors.",
+      "institutional": true,
+      "lead": "T. Rowe Price Associates",
+      "amountRaisedUsd": 684559082,
+      "valuationUsd": 43000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Databricks announced 'over $500 million' at a $43B valuation and, unusually, published the price per share ($73.50). The amount here is the final Form D/A figure of $684,559,082 sold against a $1,000,000,000 offering (the original Form D showed $503,709,318 against a $550M offering), which is why press coverage ranges from $500M to $685M. Date of first sale matches the announcement date.",
+      "sourceRefs": [16, 17, 32],
+      "plot": true
+    },
+    {
+      "id": "2023-11-03-unnamed-offering",
+      "date": "2023-11-03",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Undisclosed Reg D equity offering ($1.57B)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 1567882333,
+      "valuationUsd": null,
+      "note": "A second unannounced offering visible only on EDGAR: Form D filed 2025-01-02, fourteen months after the 2023-11-03 date of first sale, reporting $1,567,882,333 of equity fully sold. Separate from the Series I, which had its own Form D and D/A. No named lead, no valuation, no press coverage — recorded so the research survives, never plotted.",
+      "sourceRefs": [18],
+      "plot": false
+    },
+    {
+      "id": "2024-12-17-series-j",
+      "date": "2024-12-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series J",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Thrive Capital",
+      "amountRaisedUsd": 10000000000,
+      "valuationUsd": 62000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Announced 2024-12-17 as 'raising $10 billion ... has completed $8.6 billion to date' at a $62B valuation; the Form D filed 2025-01-02 corroborates the interim figure exactly ($8,589,661,278 of a $10,000,000,000 offering). Databricks announced the final close on 2025-01-22 at the full $10B of equity, plus a separate $5.25B credit facility for a $15.3B headline. Only the $10B of equity is recorded here — debt is not a priced round. Co-led by Andreessen Horowitz, DST Global, GIC, Insight Partners and WCM; Meta joined as a strategic investor at the final close. Part of the proceeds funded employee liquidity and the related taxes.",
+      "sourceRefs": [19, 20, 21],
+      "plot": true
+    },
+    {
+      "id": "2025-05-27-unnamed-offering",
+      "date": "2025-05-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Undisclosed Reg D equity offering ($665.7M)",
+      "charterSeries": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 665723223,
+      "valuationUsd": null,
+      "note": "Third unannounced offering on EDGAR: Form D filed 2025-09-23 reporting $665,723,223 of equity fully sold from a 2025-05-27 date of first sale. The timing coincides with Databricks' acquisition of Neon (announced May 2025 at a reported ~$1B), so this is plausibly stock consideration rather than a financing — but the filing does not say, and no source confirms it. No lead, no valuation, not plotted.",
+      "sourceRefs": [22],
+      "plot": false
+    },
+    {
+      "id": "2025-09-08-series-k",
+      "date": "2025-09-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series K",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Andreessen Horowitz, Insight Partners, MGX, Thrive Capital and WCM Investment Management (co-led)",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": 100000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Databricks only ever said '>$100 billion' and never published a specific number, and no outlet produced one either — so $100B is a floor, not a price, and the confidence is soft. Term sheet announced 2025-08-19; close announced 2025-09-08, matching the Form D date of first sale. The company said '$1 billion of capital'; the Form D reports $954,996,900 sold against a $1,074,999,900 offering, so the true figure is a little under the round number.",
+      "sourceRefs": [23, 24, 25],
+      "plot": true
+    },
+    {
+      "id": "2025-12-16-series-l",
+      "date": "2025-12-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series L",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Insight Partners, Fidelity Management & Research Company and J.P. Morgan Asset Management (co-led)",
+      "amountRaisedUsd": 5000000000,
+      "valuationUsd": 134000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Announced 2025-12-16 as '>$4 billion ... valuing the company at $134 billion'; the Form D filed 2025-12-31 shows $4,082,050,250 sold against a $5,000,000,000 offering from a 2025-12-16 date of first sale. Databricks announced completion on 2026-02-09 at '~$5B of equity financing at a $134 billion valuation' plus ~$2B of additional debt capacity, so $5B is the closed equity figure and the debt is excluded. No Form D/A has been filed for the final $5B. Neither release labels the $134B pre- or post-money; some secondary coverage calls it pre-money, which is why the basis is unspecified here. Revenue run-rate was $4.8B at announcement and $5.4B at close.",
+      "sourceRefs": [26, 27, 28],
+      "plot": true
+    },
+    {
+      "id": "2026-07-16-coatue-strategic",
+      "date": "2026-07-16",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Coatue-led strategic round",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Coatue",
+      "amountRaisedUsd": 3000000000,
+      "valuationUsd": 188000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "NOT PLOTTED because it has not closed. Databricks announced on 2026-07-16 only that it 'has signed a term sheet for this round, which it expects to close later this summer', and TechCrunch reports the company saying the money is not yet in its hands. No Form D has been filed — the newest Databricks Form D on EDGAR remains the 2025-12-31 Series L filing. The inclusion rule is that a vertex requires money to have changed hands at a stated price, and here it has not, so the last plotted point stays at $134B. The amount is not a company figure: Databricks disclosed none, and 'roughly $3 billion' comes from secondary reporting (WSJ/Reuters, relayed by TechCrunch). Databricks has closed at its announced term-sheet valuation on both prior occasions (Series K and Series L), so this is likely to become a real vertex once a Form D or a close announcement appears.",
+      "sourceRefs": [29, 30],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Databricks is the best-documented private company in this dataset on both axes at once: it has published a valuation with every round since the Series E, and it has filed a Form D for every round since the Series D. Where the two disagree, the Form D wins on amount (it reports dollars actually sold) and the press release wins on valuation (a Form D never carries one). Round dates here are Form D dates of first sale rather than announcement dates, because that is the day money changed hands; the Series C is the sole exception, since EDGAR has no filing for it. Rounds are recorded at the exact Form D figure where the round is closed and unamended, and at the company's announced final figure where a later close superseded the filing (Series J, Series L). Only the Series G and Series H are explicitly labelled post-money by the company; everything else says merely 'values the company at', so the basis is recorded as unspecified rather than assumed. Series A through D disclosed no valuation at all and are plot:false — four of sixteen events. EDGAR also exposes four offerings Databricks never announced: $673,757,396 (first sale 2022-09-30), $1,567,882,333 (2023-11-03), $665,723,223 (2025-05-27) and a small $23,017,200 (first sale 2025-09-30, Form D filed 2025-12-31). The first three are recorded as unplotted events; the $23M one is below the materiality line used here and appears only in this note. All four are more likely acquisition stock than financings — Databricks bought MosaicML, Arcion, Tabular, Neon, Tecton and others over this window — but no source confirms that, so none is called a round. IPO status as of 2026-08-06: Databricks has not filed an S-1 and has not gone public. Ali Ghodsi told Bloomberg Television that 2026 is 'a terrible year to go public', pointing at 2027 at the earliest, and the July 2026 Coatue round is the company choosing more private capital over a listing. Two marks deliberately excluded: an October 2022 internal 409A/share-price trim that implied roughly $31B (an internal mark, not a transaction) and the various secondary-platform prices, which publish no share count. Revenue run-rate for context: ~$200M (2019), $3B (Q4 FY2025), $4B (Q2 2025), $4.8B (Q3 2025), $5.4B (Q4 2025), with >$1B of that from AI products and positive free cash flow.",
+  "unresolved": [
+    "The founding month. Only the year is sourceable from a filing; Contrary Research (July 2013) and stacksync.com (10 June 2013) disagree and neither cites a document.",
+    "Series A through D valuations. None was disclosed, Databricks has never filed an S-1 to expose the cap table, and no secondary source carries a figure with primary attribution.",
+    "Whether the Coatue-led round at $188B has closed. Announced 2026-07-16 as a signed term sheet expected to close 'later this summer'; no Form D and no close announcement as of 2026-08-06. If it closes it becomes the newest vertex at $188B.",
+    "The nature of the four unannounced Reg D offerings on EDGAR (2022-09-30, 2023-11-03, 2025-05-27, 2025-09-30) totalling ~$2.93B. Acquisition consideration is the leading hypothesis but is unconfirmed.",
+    "Whether Databricks' post-Series-E valuations are pre- or post-money. Only the Series G and H say post-money; the rest use unlabelled 'values the company at' language."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2013-09-25 (Series A)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746813000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Databricks Snags $33M In Series B And Debuts Cloud Platform For Processing Big Data",
+      "url": "https://techcrunch.com/2014/06/30/databricks-snags-33m-in-series-b-and-debuts-cloud-platform-for-processing-big-data/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2014-07-03 (Series B)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746814000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Raises $60 Million in Series C Funding to Advance Data Science and Engineering at Scale",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raises-60-million-series-c-funding-advance-data-science-engineering-scale",
+      "type": "company"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Big Data software startup Databricks pockets $60 million in Series C funding",
+      "url": "https://siliconangle.com/2016/12/15/databricks-pockets-60-million-series-c-funding-round/",
+      "type": "press"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Secures $140 Million to Accelerate Analytics and Artificial Intelligence in the Enterprise",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-secures-140-million-accelerate-analytics-artificial-intelligence-enterprise",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2017-08-22 (Series D)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746817000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Databricks raises $250M at a $2.75B valuation for its analytics platform",
+      "url": "https://techcrunch.com/2019/02/05/databricks-raises-250m-series-e-for-its-analytics-platform/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2019-02-07 (Series E)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746819000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Growth Draws $400 Million Series F Investment and $6.2 Billion Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-growth-draws-400-million-series-f-investment-and-6-2-billion-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2019-11-05 (Series F)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746819000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Raises $1 Billion Series G Investment at $28 Billion Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raises-1-billion-series-g-investment-at-28-billion-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2021-02-02 (Series G)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746821000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Raises $1.6 Billion Series H Investment at $38 Billion Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raises-1-6-billion-series-h-investment-at-38-billion-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2021-09-15 (Series H)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746821000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2023-09-29 (undisclosed offering, first sale 2022-09-30)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746823000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Raises Series I Investment at $43B Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raises-series-i-investment-43b-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D/A, filed 2023-11-13 (Series I, amended)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746823000003/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2025-01-02 (undisclosed offering, first sale 2023-11-03)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746825000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks is Raising $10B Series J Investment at $62B Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raising-10b-series-j-investment-62b-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Databricks closes $15.3B financing at $62B valuation, Meta joins as strategic investor",
+      "url": "https://techcrunch.com/2025/01/22/databricks-closes-15-3b-financing-at-62b-valuation-meta-joins-as-strategic-investor",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2025-01-02 (Series J)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746825000002/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2025-09-23 (undisclosed offering, first sale 2025-05-27)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746825000007/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks is raising a Series K Investment at >$100 billion valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raising-series-k-investment-100-billion-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Surpasses $4B Revenue Run-Rate, Exceeding $1B AI Revenue Run-Rate",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-surpasses-4b-revenue-run-rate-exceeding-1b-ai-revenue",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2025-09-23 (Series K)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746825000008/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Grows >55% YoY, Surpasses $4.8B Revenue Run-Rate, and is Raising >$4B Series L at $134B Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-surpasses-4-8b-revenue-run-rate-growing-55-year-over-year",
+      "type": "company"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks Grows >65% YoY and Surpasses $5.4 Billion Revenue Run-Rate",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-grows-65-yoy-surpasses-5-4-billion-revenue-run-rate",
+      "type": "company"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Databricks, Inc. Form D, filed 2025-12-31 (Series L)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1587468/000158746825000010/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "Databricks",
+      "title": "Databricks is Raising a Strategic Round of Funding at a $188 Billion Valuation",
+      "url": "https://www.databricks.com/company/newsroom/press-releases/databricks-raising-strategic-round-funding-188-billion-valuation",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Databricks hits $188B valuation, extending its run as AI's favorite second act",
+      "url": "https://techcrunch.com/2026/07/17/databricks-hits-188b-valuation-extending-its-run-as-ais-favorite-second-act/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "EDGAR submissions index for Databricks, Inc. (CIK 0001587468)",
+      "url": "https://data.sec.gov/submissions/CIK0001587468.json",
+      "type": "filing"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Databricks",
+      "url": "https://en.wikipedia.org/wiki/Databricks",
+      "type": "reference"
+    }
+  ]
+}

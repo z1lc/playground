@@ -1,0 +1,318 @@
+{
+  "slug": "xai",
+  "name": "xAI",
+  "cohort": "ai",
+  "colorSlot": 1,
+  "dashSlot": 4,
+  "status": "private",
+  "founded": "2023-03-09",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "X.AI Corp. was incorporated in Nevada on 2023-03-09: the Nevada Secretary of State record shows a domestic corporation filed that day, with Elon Musk as director and Jared Birchall as secretary (KTNV). The company's Form D filings give Nevada and 2023, and SpaceX's S-1 says 'X.AI Corp began operations in March 2023'. Wikipedia, citing The Information, says it was incorporated as a benefit corporation and, citing CNBC, that it dropped that status by May 2024. The commonly cited founding date is the public launch on 2023-07-12, four months after incorporation. X.AI Holdings Corp. was a second Nevada corporation, formed in 2025 as the parent for the X merger, and it is now X.AI Holdings LLC, a SpaceX subsidiary. The rule is to use the original incorporation, so t=0 is X.AI Corp.",
+  "events": [
+    {
+      "id": "2023-11-29-series-a",
+      "date": "2023-11-29",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": null,
+      "note": "Below the inclusion floor because no investor has ever been named, so it fails the named-lead test. It is not known to be an angel round. Form D (first sale 2023-11-29, filed 2023-12-05): a $1,000,000,000 equity offering, of which $134,679,312 had been sold to 4 investors, with a $2M minimum investment. SpaceX's S-1 shows the series was later fully issued: 1,000.0M shares of xAI Series A at $1.00, with 250.0M of them held by X. That is the basis for the $1B amount, though the S-1 does not say whether X paid cash for its shares. The S-1 also classes Series A as 'xAI High Vote Stock', which converted into SpaceX's 10-vote Class B. No valuation was disclosed. Yahoo Finance/Forge list $673M with no primary attribution, so that figure is not used. S&P Capital IQ treats the $134.7M as the first tranche of the $6B Series B. The S-1 contradicts that: Series A is a separate series priced at $1.00, against $11.97 for Series B.",
+      "sourceRefs": [2, 8],
+      "plot": false
+    },
+    {
+      "id": "2024-05-26-series-b",
+      "date": "2024-05-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "No lead designated (Valor Equity Partners, Vy Capital, Andreessen Horowitz, Sequoia Capital, Fidelity, Prince Alwaleed Bin Talal and Kingdom Holding named)",
+      "amountRaisedUsd": 7001000000,
+      "valuationUsd": 25000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "xAI announced $6B on 2024-05-26 and named no lead. The Form D shows first sale on 2024-05-10 and a $7,002,450,000 offering, with $5.02B sold to 139 investors by 2024-05-28. The S-1 cap table shows the series closed at 584.9M shares at $11.97, which is $7,001M. That final size is the amount recorded here. There are two valuation figures. At announcement, Musk said on X that the pre-money was $18B, and Reuters, Fox Business, SiliconANGLE and Capital IQ all reported $24B post-money, which is $18B plus the announced $6B. In December 2024, Kingdom Holding's Tadawul disclosure gave the Series B valuation as $25B (SAR 93.75B). The rule for well-sourced conflicts is to take the higher figure, so $25B is used and $24B is rejected. The two are consistent rather than contradictory: $25B is Musk's $18B pre-money plus the $7.0B final close the S-1 shows, so both figures reflect the same $11.97 price at different closes. Kingdom never says whether its figure is pre- or post-money, so the basis is unspecified and the point is soft.",
+      "sourceRefs": [3, 8, 9, 10, 11, 12, 13, 16, 17],
+      "plot": true
+    },
+    {
+      "id": "2024-12-23-series-c",
+      "date": "2024-12-23",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "No lead designated (Andreessen Horowitz, BlackRock, Fidelity, Kingdom Holding, Lightspeed, MGX, Morgan Stanley, OIA, QIA, Sequoia Capital, Valor Equity Partners and Vy Capital named; NVIDIA and AMD strategic)",
+      "amountRaisedUsd": 6000000000,
+      "valuationUsd": 50000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "xAI announced that the round had closed and named no lead or valuation. The Form D shows first sale on 2024-11-22, with $5,999,999,466 sold to 97 investors. The S-1 shows 277.1M shares at $21.65, which is $6,000M. On 2024-11-20, before close, the Wall Street Journal reported that xAI had told investors it raised money at $50B. At close, Kingdom Holding's Tadawul disclosure, carried by TechCrunch and Argaam, said xAI was 'currently valued at USD 45 billion'. The rule for well-sourced conflicts is to take the higher figure, so $50B is used and $45B is rejected. A consistency check, not a derivation: the S-1 price rose 1.81x from Series B ($11.97) to Series C ($21.65). Applied to the $25B Series B, that gives about $45B before the new money and about $51B after it, ignoring option-pool changes. So Kingdom's $45B reads like a pre-money and the WSJ's $50B like a post-money. Neither source labels its basis. Wikipedia's $44B pre / $50B post comes from Yahoo Finance/Forge and is unverified.",
+      "sourceRefs": [4, 8, 14, 15, 16, 17, 18, 19],
+      "plot": true
+    },
+    {
+      "id": "2025-06-02-tender",
+      "date": "2025-06-02",
+      "datePrecision": "day",
+      "kind": "tender_offer",
+      "roundName": "Reported $300M employee tender offer",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": null,
+      "valuationUsd": 113000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "tender",
+      "note": "On 2025-06-02 TechCrunch, following the Financial Times, reported that xAI was launching a $300M share sale that let staff sell to new investors at a $113B valuation. Not plotted, for three reasons. First, no completion, final size or final price was ever reported. Second, $113B is simply the combined X.AI Holdings value from the March 2025 X merger (xAI $80B plus X $33B), not a new price. Third, it is a mark for xAI plus X, while every earlier vertex is xAI alone. No money reached the company.",
+      "sourceRefs": [21, 20],
+      "plot": false
+    },
+    {
+      "id": "2025-06-30-series-d",
+      "date": "2025-06-30",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$5B strategic equity raise",
+      "charterSeries": "D",
+      "nameConflict": "Never publicly called Series D. Press coverage used Morgan Stanley's term, 'strategic equity investment'. The series letter comes from SpaceX's S-1.",
+      "institutional": true,
+      "lead": "No lead disclosed (SpaceX, ~$2B, is the only identified investor; Morgan Stanley arranged the financing)",
+      "amountRaisedUsd": 6390016247,
+      "valuationUsd": null,
+      "note": "The first round raised by X.AI Holdings Corp., after the X merger, so it is equity in the combined xAI-and-X company. Morgan Stanley announced $5B of equity alongside $5B of debt on Monday 2025-06-30 (Reuters). The Form D shows first sale on 2025-06-18 and a $6,390,016,247 offering, of which $5,318,549,402 had been sold to 7 investors by 2025-08-06. The S-1 shows about 175M Series D shares at $36.56, matching the Form D total, which is the amount recorded. Of those, 54.9M were held by SpaceX (about $2.0B at $36.56). No post-money was ever reported for the closed round. At the time, Reuters said xAI had been in talks to raise about $20B at more than $120B, with some investors floating up to $200B. Those were talks, not this round's price. The S-1 price is 1.69x the Series C price, but there is no share count to convert it, so the valuation is left null. The debt was $3.0B of 12.5% senior secured notes and $2.0B of term loans (S-1). It is not equity and is not recorded.",
+      "sourceRefs": [6, 8, 22, 23],
+      "plot": false
+    },
+    {
+      "id": "2026-01-06-series-e",
+      "date": "2026-01-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E",
+      "charterSeries": "E",
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "No lead designated (Valor Equity Partners, StepStone Group, Fidelity, Qatar Investment Authority, MGX and Baron Capital named; NVIDIA and Cisco Investments strategic)",
+      "amountRaisedUsd": 20000000000,
+      "valuationUsd": 230000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "xAI announced $20B, upsized from a $15B target, and disclosed no valuation. The Form D for X.AI Holdings shows first sale on 2025-12-19 and a $19,999,999,972 offering, with $16.6B sold to 131 investors by 2026-01-06. The S-1 shows 265.0M shares authorized at $75.46. Tesla's $2B commitment (agreement January 2026, letter agreement 2026-01-16) was still waiting on regulatory approval at the merger, and SpaceX settled it with 3.8M of its own Class A shares on 2026-03-12. Valuation: on 2025-11-19 Reuters, citing the WSJ, reported advanced talks to raise $15B at $230B. CNBC's David Faber then reported $230B as the pre-money. Reuters' merger story says xAI was 'last valued at $230 billion'. The company never confirmed a figure, so the point is soft, plotted as a pre-money and never converted to post. Four weeks later, SpaceX acquired xAI at $250B (Reuters). The S-1 shows the merger's cash alternative was $75.46 per xAI share, exactly the Series E issue price. So $250B is effectively this round's price applied to the post-round share count. It is noted here rather than used, because no source states it as the Series E post-money.",
+      "sourceRefs": [7, 8, 26, 27, 28, 29, 30],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Corporate lineage: X.AI Corp. (Nevada, incorporated 2023-03-09), then X.AI Holdings Corp. (Nevada, 2025), which became the parent at the X merger on 2025-03-28, then a wholly owned SpaceX subsidiary from 2026-02-02. SpaceX's S-1 now calls the entity X.AI Holdings LLC. Everything from the X merger onward (the June 2025 tender, the Series D, the Series E) values the combined xAI-and-X company. So the jump between the Series C and the Series E includes X's equity, much as an acquirer's market cap absorbs a stock acquisition.\n\nThe two mergers are deliberately NOT events. The schema has no acquisition kind, and neither merger is a transaction where outside money changed hands at a new price. (1) X merger, 2025-03-28: Musk announced on X that 'xAI has acquired X in an all-stock transaction', valuing xAI at $80B and X at $33B ($45B less $12B debt), $113B combined (TechCrunch). Per the S-1, each X Holdings common share became 2.776 xAI Holdings shares, and X.AI Corp. common and preferred converted 1:1. The deal was accounted for as a reorganization of entities under common control, because Musk held majority voting control of both sides. The $80B is therefore an exchange ratio set by a controlling holder on both sides, not a price an outside investor paid. The June 2025 tender that reportedly reused the $113B is recorded as an unplotted tender_offer. (2) SpaceX merger, closed 2026-02-02 (merger agreement dated 2026-01-31): Reuters reported xAI at $250B and SpaceX at $1T, with combined shares expected to price at about $527. Per the S-1, each xAI share, common or preferred, became 0.1433 SpaceX shares (before SpaceX's 2026 5-for-1 split), or $75.46 in cash for eligible service providers who chose cash. SpaceX issued 321.7M Class A and 121.7M Class B shares (pre-split) and paid $2,947M in cash. This was also accounted for as a common-control reorganization. The key fact: $75.46 is exactly xAI's Series E issue price, so the merger did not reprice xAI. The line ends at the Series E, the last priced round before the merger, and SpaceX's own shard carries the story from there.\n\nPrice per share from the S-1 preferred-stock table: Series A $1.00, B $11.97, C $21.65, D $36.56, E $75.46. The table gives no fully diluted share count at any round, so no valuation here is computed from it. It is used only to cross-check the reported figures.\n\nExcluded because they were reports of talks, not closed rounds: CNBC's 2025-09-19 report of $10B at $200B, which Musk called 'Fake news. xAI is not raising any capital right now'; and CNBC's November 2025 report of a $15B Series E on top of a $10B round at $200B, which Musk called 'false'. Also excluded: a 2025-02-10 X.AI Corp. Form D for $27.7M sold of $37.65M to 28 investors, which cannot be tied to a series and is immaterial, and the June 2025 $5B of secured notes and term loans, which is debt.\n\nKingdom Holding's figures ($25B at Series B, $45B at Series C) come from its regulatory disclosures. Under the take-the-higher rule they were kept for Series B and rejected for Series C. Every plotted point is soft: xAI itself never published a post-money valuation.",
+  "unresolved": [
+    "Series A investors and valuation. The Form D shows only '4 investors' and the S-1 gives only the $1.00 price. Whether X paid cash for its 250.0M Series A shares is also undisclosed, which affects the $1B amount.",
+    "Series D (mid-2025) valuation. The S-1 gives $36.56 per share but no share count, and no outlet reported a closed price for the round.",
+    "Whether the June 2025 $300M employee tender ever completed, and at what size and price.",
+    "Series E post-money. Only $230B is reported: pre-money per CNBC, basis unstated per WSJ/Reuters. The $250B SpaceX merger value at the same $75.46 per-share price points to roughly $250B post, but no source says so.",
+    "The basis of Kingdom Holding's $25B (Series B) and $45B (Series C) figures. Kingdom labels neither as pre- or post-money, so the $24B-vs-$25B and $45B-vs-$50B conflicts may be basis differences rather than price differences."
+  ],
+  "sources": [
+    {
+      "outlet": "KTNV",
+      "title": "Elon Musk files Nevada business formation for 'X.AI'",
+      "url": "https://www.ktnv.com/news/elon-musk-files-nevada-business-formation-for-x-ai",
+      "type": "press"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "xAI (company)",
+      "url": "https://en.wikipedia.org/wiki/XAI_(company)",
+      "type": "reference"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Corp. Form D (filed 2023-12-05)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2002695/000200269523000002/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Corp. Form D (filed 2024-05-28)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2002695/000200269524000001/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Corp. Form D (filed 2024-12-05)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2002695/000200269524000003/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Corp. Form D (filed 2025-02-25)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2002695/000200269525000001/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Holdings Corp. Form D (filed 2025-08-06)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2079267/000089183625000046/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "X.AI Holdings Corp. Form D (filed 2026-01-06)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2079267/000089183626000001/xslFormDX01/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Space Exploration Technologies Corp. Form S-1 (filed 2026-05-20): Note 1 (Mergers) and the xAI redeemable convertible preferred stock table",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "xAI",
+      "title": "Series B funding round",
+      "url": "https://x.ai/news/series-b",
+      "type": "company"
+    },
+    {
+      "outlet": "NBC News (Reuters)",
+      "title": "Elon Musk's AI startup now valued at $24 billion after fresh funding",
+      "url": "https://www.nbcnews.com/business/business-news/elon-musks-ai-startup-now-valued-24-billion-fresh-funding-rcna154171",
+      "type": "press"
+    },
+    {
+      "outlet": "Fox Business",
+      "title": "Elon Musk's xAI gets $6B in new funding and announces valuation",
+      "url": "https://foxbusiness.com/technology/elon-musks-xai-gets-6-billion-new-funding-announces-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Elon Musk's xAI raises $6B at $24B valuation to build new AI services",
+      "url": "https://siliconangle.com/2024/05/27/elon-musks-xai-raises-6b-build-new-ai-services",
+      "type": "press"
+    },
+    {
+      "outlet": "MarketScreener (S&P Capital IQ)",
+      "title": "X.AI Corp announced that it has received $6 billion in funding from a group of investors",
+      "url": "https://marketscreener.com/quote/stock/KINGDOM-HOLDING-COMPANY-6500784/news/X-AI-Corp-announced-that-it-has-received-6-billion-in-funding-from-a-group-of-investors-46830883",
+      "type": "database"
+    },
+    {
+      "outlet": "xAI",
+      "title": "xAI raises $6B Series C",
+      "url": "https://x.ai/news/series-c",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Elon Musk's xAI lands $6B in new cash to fuel AI ambitions",
+      "url": "https://techcrunch.com/2024/12/23/elon-musks-xai-lands-billions-in-new-cash-to-fuel-ai-ambitions/",
+      "type": "press"
+    },
+    {
+      "outlet": "Kingdom Holding Company",
+      "title": "Kingdom Holding Company increases investment in xAI to USD 800 million in Series C financing round",
+      "url": "https://kingdom.com.sa/news/kingdom-holding-company-increases-investment-in-xai-to-usd-800-million-in-series-c-financing-round",
+      "type": "press"
+    },
+    {
+      "outlet": "Argaam",
+      "title": "KHC acquires stake in xAI for SAR 1.5B",
+      "url": "https://www.argaam.com/en/article/articledetail/id/1778248",
+      "type": "press"
+    },
+    {
+      "outlet": "The Wall Street Journal (NetChoice repost)",
+      "title": "Elon Musk's xAI Startup Is Valued at $50 Billion in New Funding Round",
+      "url": "https://techcompetition.netchoice.org/?p=636",
+      "type": "press"
+    },
+    {
+      "outlet": "PYMNTS",
+      "title": "Report: Elon Musk's xAI Raises $5 Billion and Doubles Valuation",
+      "url": "https://www.pymnts.com/?p=2295906",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Elon Musk says xAI acquired X",
+      "url": "https://techcrunch.com/2025/03/28/elon-musk-says-xai-acquired-x/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Elon Musk's xAI reportedly looks to raise $300M in tender offer",
+      "url": "https://techcrunch.com/2025/06/02/elon-musks-xai-reportedly-looks-to-raise-300m-in-tender-offer",
+      "type": "press"
+    },
+    {
+      "outlet": "Yahoo Finance (Reuters)",
+      "title": "Musk's xAI raises $5 billion each in fresh debt and equity, Morgan Stanley says",
+      "url": "https://finance.yahoo.com/news/musks-xai-raises-5-billion-014546355.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Crunchbase News",
+      "title": "As The Generative AI Wars Heat Up, Elon Musk's xAI Secures $10B In Debt, Equity",
+      "url": "https://news.crunchbase.com/ai/generative-ai-elon-musk-xai-debt-equity/",
+      "type": "press"
+    },
+    {
+      "outlet": "The Financial Express (Reuters)",
+      "title": "Musk says xAI is not raising capital after CNBC report on $10b funding",
+      "url": "https://today.thefinancialexpress.com.bd/print/musk-says-xai-is-not-raising-capital-after-cnbc-report-on-10b-funding-1758390110",
+      "type": "press"
+    },
+    {
+      "outlet": "The Star (Reuters)",
+      "title": "Elon Musk says report on xAI's $15 billion fundraise is 'false'",
+      "url": "https://www.thestar.com.my/tech/tech-news/2025/11/13/elon-musk039s-xai-raises-15-billion-in-series-e-round-cnbc-reports",
+      "type": "press"
+    },
+    {
+      "outlet": "DealStreetAsia (Reuters)",
+      "title": "Musk's xAI in advanced talks to raise $15b at a valuation of $230b",
+      "url": "https://media.dealstreetasia.com/stories/musks-xai-in-advanced-talks-to-raise-15b-at-a-valuation-of-230b-463861",
+      "type": "press"
+    },
+    {
+      "outlet": "Stocktwits",
+      "title": "Elon Musk-Backed xAI's $15 Billion Series E Deadline Reportedly Extended By A Week",
+      "url": "https://stocktwits.com/news-articles/markets/equity/elon-musk-s-x-ai-15-billion-series-e-deadline-reportedly-extended-by-a-week/cL52k11REgT",
+      "type": "press"
+    },
+    {
+      "outlet": "xAI",
+      "title": "xAI Raises $20B Series E",
+      "url": "https://x.ai/news/series-e",
+      "type": "company"
+    },
+    {
+      "outlet": "The Star (Reuters)",
+      "title": "Musk's xAI raises $20 billion in upsized Series E funding round",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/01/07/musk039s-xai-raises-20-billion-in-upsized-series-e-funding-round",
+      "type": "press"
+    },
+    {
+      "outlet": "KSL (Reuters)",
+      "title": "SpaceX acquires xAI in record-setting deal as Musk looks to unify AI and space ambitions",
+      "url": "https://www.ksl.com/article/51442147/spacex-acquires-xai-in-record-setting-deal-as-musk-looks-to-unify-ai-and-space-ambitions",
+      "type": "press"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "slug": "thinking-machines",
+  "name": "Thinking Machines",
+  "cohort": "ai",
+  "colorSlot": 0,
+  "dashSlot": 4,
+  "status": "private",
+  "founded": "2025-02-01",
+  "foundedPrecision": "month",
+  "foundedBasis": "team-founding",
+  "foundedNote": "Dated to February 2025, the month Mira Murati publicly launched the company (2025-02-18, per SiliconANGLE's launch-day report). Wikipedia (citing Reuters), SiliconANGLE's July 2025 seed story ('founded by its Chief Executive Murati in February') and Tech Funding News ('founded in San Francisco in February 2025') all give the same month. This is a team-founding and launch date, not a filing. No incorporation record could be retrieved. The entity is Thinking Machines Lab Inc., a public benefit corporation. It has never filed a Form D under its own name, OpenCorporates is behind a bot wall, and Delaware's registry is captcha-gated. Two signals suggest the formal founding is earlier. National CIO Review (2025-02-19) says Murati founded the company as a public benefit corporation in December 2024, and cites nothing for it. Reuters reported on 2024-10-18, relayed by TechCrunch, that Murati was raising more than $100M for an unnamed startup after leaving OpenAI in late September 2024. If the company was really formed in December 2024, every t value here is about two months short. Month precision is kept because February is consistent across independent sources, while the December claim rests on one uncited outlet.",
+  "events": [
+    {
+      "id": "2025-07-14-a16z-seed",
+      "date": "2025-07-14",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$2B seed round",
+      "charterSeries": null,
+      "nameConflict": "TechCrunch, SiliconANGLE and the company's spokesperson call it a seed round. Wikipedia, citing Reuters, calls it an early-stage round. No series letter has been used publicly.",
+      "institutional": true,
+      "lead": "Andreessen Horowitz",
+      "amountRaisedUsd": 2000000000,
+      "valuationUsd": 12000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "A company spokesperson told TechCrunch the round 'officially closed' on Monday 2025-07-14 and 'values the startup at $12 billion'. Murati announced it on X the next day, 2025-07-15. SiliconANGLE and Reuters carry the same $2B at $12B. Nvidia, Accel, ServiceNow, Cisco, AMD and Jane Street participated. Wikipedia adds a $10M investment by the government of Albania. No source read here says whether $12B is pre- or post-money, so the basis is left unspecified. Search snippets from secondary write-ups describe it as $10B pre-money, which would make it $12B post-money. None of these was verified, so that reading is not adopted. The price rose during the raise: June 2025 reports had the round near a $10B valuation. Reuters reported in October 2024 that Murati was raising more than $100M for the unnamed venture. No separate earlier round was ever reported closing, so this is treated as the first institutional round.",
+      "sourceRefs": [0, 1, 2],
+      "plot": true
+    },
+    {
+      "id": "2026-03-10-nvidia-strategic",
+      "date": "2026-03-10",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "NVIDIA strategic investment",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "NVIDIA",
+      "amountRaisedUsd": null,
+      "valuationUsd": null,
+      "note": "The company's announcement of a multi-year partnership to deploy at least one gigawatt of NVIDIA Vera Rubin systems, targeted for early 2027, states that 'NVIDIA has also made a significant investment in Thinking Machines Lab'. It gives no amount, stake or valuation. Tech Funding News (November 2026) still describes it as 'Nvidia's undisclosed March investment'. This is a real financing with no disclosed terms, so it is recorded but not plotted.",
+      "sourceRefs": [3, 7],
+      "plot": false
+    },
+    {
+      "id": "2026-11-06-accel-pending",
+      "date": "2026-11-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$5B Accel-led round (not closed)",
+      "charterSeries": null,
+      "nameConflict": null,
+      "institutional": true,
+      "lead": "Accel",
+      "amountRaisedUsd": 5000000000,
+      "valuationUsd": 40000000000,
+      "valuationBasis": "pre",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "NOT PLOTTED because it has not closed. On 2026-11-06 Business Insider reported, citing 'multiple sources familiar with the matter', that the company is 'set to close' a $5B round led by Accel at a $40B PRE-money valuation 'as soon as this week'. Thinking Machines declined to comment and Accel did not respond. Dataconomy, Tech Funding News and SiliconANGLE relayed the report the same day. As of 2026-11-07 no close has been announced, and the company's news page lists no funding announcement. Tech Funding News computes an implied ~$45B post-money. That figure is arithmetic, not a reported price, so it is not recorded here, and the pre-money is not converted. The round grew out of talks that The Information reported on 2026-09-03, relayed by TechCrunch, for $1B at 'at least $40 billion', with Accel in talks to lead. The confidence is soft because every report is anonymously sourced and traces back to one outlet. If the round closes, it becomes a vertex at whatever price is then reported.",
+      "sourceRefs": [5, 6, 7, 14, 4, 8],
+      "plot": false
+    }
+  ],
+  "curatorNotes": "Only one point is plotted: the July 2025 seed. The line is a single vertex until another round closes. Between the seed and the pending Accel round, the company tried and failed to raise at a higher price. On 2025-11-13 Bloomberg reported early talks at about $50B, with some sources saying $55-60B (relayed by Reuters). Business Insider and Dataconomy later said those talks were abandoned. These were unconsummated talks, not an announced deal, so they are not recorded as a terminated_deal or a round. The pending round's $40B pre-money is below that ask. No tender offer or company-run secondary has been reported. A Sydecar-administered SPV, 'Thinking Machines Lab Jun 2025 a Series of CGF2021 LLC', filed a Form D on 2025-06-27 reporting $595,030 sold to 14 investors, with a first sale on 2025-06-11. That is an investor vehicle buying into the company, not a company round, so it is not an event. EDGAR full-text search finds no Form D filed by the company itself. Several co-founders have left, per Wikipedia: Andrew Tulloch to Meta in October 2025, and Barret Zoph and Luke Metz to OpenAI in January 2026.",
+  "unresolved": [
+    "Legal incorporation date and state. Thinking Machines Lab Inc. is a public benefit corporation but has filed no Form D. OpenCorporates is behind a bot wall and Delaware's registry is captcha-gated. One uncited outlet says the company was formed in December 2024, and Reuters reported fundraising for the unnamed venture in October 2024, so the formal founding may predate the February 2025 date used here.",
+    "Whether the July 2025 $12B valuation is pre- or post-money. No source read here says.",
+    "Whether and when the $5B Accel-led round closes, and at what post-money. As of 2026-11-07 it is reported as nearing close but has not been announced.",
+    "The amount of NVIDIA's March 2026 investment and the valuation it implies."
+  ],
+  "sources": [
+    {
+      "outlet": "TechCrunch",
+      "title": "Mira Murati's Thinking Machines Lab is worth $12B in seed round",
+      "url": "https://techcrunch.com/2025/07/15/mira-muratis-thinking-machines-lab-is-worth-12b-in-seed-round/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Thinking Machines, led by former OpenAI CTO Mira Murati, raises $2B in seed funding",
+      "url": "https://siliconangle.com/2025/07/15/thinking-machines-led-former-openai-cto-mira-murati-raises-2b-seed-funding/",
+      "type": "press"
+    },
+    {
+      "outlet": "Reuters (via Yahoo Finance)",
+      "title": "Mira Murati's Thinking Machines seeks $50 billion valuation in funding talks, Bloomberg News reports",
+      "url": "https://finance.yahoo.com/news/mira-muratis-thinking-machines-seeks-212328387.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Thinking Machines Lab",
+      "title": "Thinking Machines Lab and NVIDIA Announce Long-Term Gigawatt-Scale Strategic Partnership",
+      "url": "https://thinkingmachines.ai/news/nvidia-partnership/",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Accel reportedly in talks to lead $1B round for Thinking Machines at $40B valuation",
+      "url": "https://techcrunch.com/2026/09/03/accel-reportedly-in-talks-to-lead-1b-round-for-thinking-machines-at-40b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Business Insider (republished by DNYUZ)",
+      "title": "Thinking Machines Lab is closing in on a new $5 billion funding round at a $40 billion valuation",
+      "url": "https://dnyuz.com/2026/11/06/thinking-machines-lab-is-closing-in-on-a-new-5-billion-funding-round-at-a-40-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Dataconomy",
+      "title": "Thinking Machines Lab Nears $5B Accel-led Round At $40B Valuation",
+      "url": "https://dataconomy.com/2026/11/06/thinking-machines-lab-nears-5b-accel-led-round-at-40b/",
+      "type": "press"
+    },
+    {
+      "outlet": "Tech Funding News",
+      "title": "Report: Accel is to lead a $5B round for Thinking Machines Lab at $40B valuation",
+      "url": "https://techfundingnews.com/accel-thinking-machines-lab-5b-round-40b-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "Thinking Machines Lab",
+      "title": "News",
+      "url": "https://thinkingmachines.ai/news/",
+      "type": "company"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Thinking Machines Lab",
+      "url": "https://en.wikipedia.org/wiki/Thinking_Machines_Lab",
+      "type": "reference"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Former OpenAI CTO Mira Murati launches Thinking Machines Lab",
+      "url": "https://siliconangle.com/2025/02/18/former-openai-cto-mira-murati-launches-thinking-machines-lab/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Former OpenAI CTO Mira Murati is reportedly fundraising for a new AI startup",
+      "url": "https://techcrunch.com/2024/10/19/former-openai-cto-mira-murati-is-reportedly-fundraising-for-a-new-ai-startup",
+      "type": "press"
+    },
+    {
+      "outlet": "National CIO Review",
+      "title": "The AI Rebellion Has a New Leader and Her Name is Mira Murati",
+      "url": "https://nationalcioreview.com/articles-insights/technology/artificial-intelligence/the-ai-rebellion-has-a-new-leader-and-her-name-is-mira-murati/",
+      "type": "press"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Thinking Machines Lab Jun 2025 a Series of CGF2021 LLC, Form D (filed 2025-06-27)",
+      "url": "https://www.sec.gov/Archives/edgar/data/2074935/000207493525000001/primary_doc.xml",
+      "type": "filing"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Thinking Machines debuts Inkling 2 Small amid reported $5B fundraising push",
+      "url": "https://siliconangle.com/2026/11/06/thinking-machines-debuts-inkling-2-small-amid-reported-5b-fundraising-push",
+      "type": "press"
+    }
+  ]
+}

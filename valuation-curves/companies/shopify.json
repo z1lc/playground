@@ -1,0 +1,133 @@
+{
+  "slug": "shopify",
+  "name": "Shopify",
+  "cohort": "saas",
+  "colorSlot": 4,
+  "dashSlot": 2,
+  "status": "public",
+  "founded": "2004-09-28",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Shopify's F-1 gives the date three times, twice in audited notes: 'We were incorporated under the CBCA on September 28, 2004 under the name 4261607 Canada Ltd.' It filed articles of amendment on 2006-01-19 to become Jaded Pixel Technologies Inc. and again on 2011-11-30 to become Shopify Inc. The F-1 also says Tobias Lutke 'co-founded Shopify in September 2004', so the numbered-company incorporation and the team founding are the same month. The business began as an online snowboard shop that Lutke and Scott Lake set out to run — the letter from Tobi in the F-1 puts it as 'In 2004, we took something we loved, snowboarding, and built a business around it' — and when the available store software proved 'incredibly expensive, unnecessarily complex, and infuriatingly inflexible' they built their own and shifted the business onto it, launching under the name Shopify in 2006. The snowboard shop was called Snowdevil; that name appears in secondary accounts and never in the F-1, which describes the business without naming it.",
+  "public": {
+    "ticker": "SHOP",
+    "cik": "0001594805",
+    "cmcSlug": "shopify",
+    "ipoDate": "2015-05-21",
+    "publicFrom": "2015-05-21",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2026-06-30", "capUsd": 146909000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "2010-10-series-a-bessemer",
+      "date": "2010-10-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series A",
+      "charterSeries": "A",
+      "nameConflict": "Press coverage at the time put the round at $7 million; the F-1's audited note records $5,500,000 of gross proceeds. The filing is used.",
+      "institutional": true,
+      "lead": "Bessemer Venture Partners",
+      "amountRaisedUsd": 5500000,
+      "valuationUsd": null,
+      "note": "13,025,765 Series A shares for gross proceeds of $5,500,000 with $154,000 of issuance costs, in two closings in October and December 2010; dated to the month of the first. The issue price of $0.42224 is stated in the liquidation-preference clause. Both the share count and the price are on the basis of the 5-for-1 split Shopify effected on 2013-04-12, so the shares actually issued in 2010 were 2,605,153 at $2.1112. Bessemer's three funds hold 10,065,365 of the Series A — 77% of the series — and Trevor Oelschig joined the board in October 2010, which is what identifies the lead; FirstMark Capital took 2,368,320. First round with a named venture capital firm, so the inclusion floor is met here. No post-money is recoverable.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "2011-09-series-b",
+      "date": "2011-09-01",
+      "datePrecision": "month",
+      "kind": "priced_round",
+      "roundName": "Series B",
+      "charterSeries": "B",
+      "nameConflict": "Reported at the time as $15 million; the F-1 records $12,000,000 of gross proceeds.",
+      "institutional": true,
+      "lead": "Bessemer Venture Partners",
+      "amountRaisedUsd": 12000000,
+      "valuationUsd": null,
+      "note": "7,247,070 Series B shares in September 2011 for gross proceeds of $12,000,000 with $48,000 of issuance costs, at $1.65584 per share (again on the post-2013-split basis). Bessemer took 5,072,135 of the series and FirstMark Capital 2,103,895 — between them effectively the whole round. Jeremy Levine of Bessemer joined the board in February 2011. No post-money is recoverable.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "2013-10-22-series-c-omers",
+      "date": "2013-10-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C",
+      "charterSeries": "C",
+      "nameConflict": "Announced in December 2013 as a $100 million round; the F-1's Item 7 records two closings totalling $70,000,000 of primary issuance. The $30 million gap is not explained in the filing and is most likely secondary purchases from existing holders, which are not primary capital.",
+      "institutional": true,
+      "lead": "OMERS Ventures",
+      "amountRaisedUsd": 70000000,
+      "valuationUsd": null,
+      "note": "Two identical closings, 2013-10-22 and 2013-11-26, of 3,443,221 Series C shares each at $10.1649 for approximately $35,000,000 apiece — 6,886,442 shares and $70,000,000 in total, with $242,000 of issuance costs. Dated to the first closing. OMERS Ventures II holds 2,001,764 of the series, the largest single block disclosed; Bessemer took 1,350,557, Georgian Partners 235,008 and FirstMark 100,000, leaving roughly 3.2 million shares with holders who never crossed 5% and are therefore unnamed in the F-1 — Insight Venture Partners is widely reported as a co-lead but does not appear in the filing. No post-money is recoverable.",
+      "sourceRefs": [0],
+      "plot": false
+    },
+    {
+      "id": "2015-05-21-ipo",
+      "date": "2015-05-21",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO on the NYSE and TSX at $17.00",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 130900000,
+      "valuationUsd": 1265436089,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "7,700,000 Class A subordinate voting shares at $17.00, priced above the range. The final prospectus states 74,437,417 total Class A and Class B shares outstanding immediately after the offering, which at the offer price is $1,265,436,089. Dual-listed on the NYSE under SHOP and the TSX under SH; all Series A, B and C preferred converted into Class B multiple voting shares at closing.",
+      "sourceRefs": [1],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Filing status, verified: Shopify is a Canadian issuer but does NOT file on foreign private issuer forms any more. It registered the IPO on Form F-1, filed a 20-F for fiscal 2015, then eight consecutive 40-Fs under the MJDS for fiscal 2016 through 2023, and switched to domestic forms with the fiscal 2024 10-K filed 2025-02-11 — its first 10-Q followed on 2025-05-08. Everything from fiscal 2024 onward is therefore US GAAP on domestic forms with domestic XBRL tagging. It also moved its US listing from the NYSE to Nasdaq during 2025: the fiscal 2024 10-K cover (filed 2025-02-11) still says NYSE and the Q1 2025 10-Q cover (filed 2025-05-08) says NASDAQ, so the transfer falls between those two filings; the exact date is not established here. Share-count risk, confirmed as flagged: dei:EntityCommonStockSharesOutstanding is genuinely absent from Shopify's companyfacts, because the cover page tags it twice under a share-class axis (1,226,037,779 Class A and 78,073,594 Class B as of 2026-02-06) and the API exposes only non-dimensional facts. The cascade therefore lands on WeightedAverageNumberOfSharesOutstandingBasic. The BasicAndDiluted tag, which covers 2013-2019, is annual-only and is filtered out by the pipeline's 100-day span rule, so it contributes nothing. Worse, the surviving quarterly weighted-average facts only exist from 2024Q1, and because Shopify's first 10-Qs carry year-old comparatives that had never been filed before, the pipeline reads a fact's FILING date as its as-of date and ends up pairing 2024 share counts with 2025 quarter-ends. The practical effect is that Shopify computes quarterly only from late 2024 onward and runs about 1% under period-end, exactly as anticipated, and those points are marked soft. All years before that come from companiesmarketcap. Round sourcing: every date, share count and price above is from the F-1's audited share-capital note and its Item 7, not from press coverage, and the press figures disagree with the filing in all three rounds — $7M vs $5.5M, $15M vs $12M, $100M vs $70M. Total primary capital raised before the IPO was $87,500,000; the F-1 balance sheet carries the preferred at $87,056,000, the difference being issuance costs. No round discloses a post-money and none is reconstructible, so the line starts at the IPO. One split, 10:1 in June 2022, derived by the pipeline from the cover-page share series. Reference-data caveat, worth carrying: companiesmarketcap's Shopify year-end rows for 2024 and 2025 are wrong by roughly 3% and 6%. It reports $222.39B for 2025-12-31, which against its own published share count of 1.30B implies $171.07 a share, whereas SHOP closed 2025 at $160.97 and the 1,304,111,373 shares on the fiscal 2025 10-K cover give $209.9B — within 0.3% of the computed point and of the $209.56B stockanalysis reports. The two sources agree exactly for 2022, 2023 and 2026, so the 2024 and 2025 rows read like snapshots taken before year end. The price series behind that judgement is anchored in a primary filing: the fiscal 2025 10-K's Entity Public Float of $140,315,345,495, divided by the 2025-06-30 close of $115.35, gives 1,216,432,556 non-affiliate shares against a Class A count of 1,220,418,767 on the next cover page — a 0.33% gap that is exactly the affiliate holdings, where companiesmarketcap's implied price would require an impossible 820 million. The cross-check passes at 0.14% only because it takes the smaller of the two reference gaps; against companiesmarketcap alone Shopify sits at 5.9%.",
+  "unresolved": [
+    "The exact date Shopify moved its US listing from the NYSE to Nasdaq — bracketed to between 2025-02-11 and 2025-05-08 by the cover pages of consecutive filings.",
+    "Post-money valuation for all three pre-IPO rounds, and the $30 million gap between the announced $100 million Series C and the $70 million of primary issuance the F-1 records."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Shopify Inc. Form F-1, filed 2015-04-14",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000119312515129273/d863202df1.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Shopify Inc. Form 424B4 IPO prospectus, filed 2015-05-21",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000119312515195802/d925168d424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Shopify Inc. Form 10-K for fiscal 2025 (multi-class cover-page share counts)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000007/shop-20251231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Shopify Inc. Form 10-Q for the quarter ended 2026-06-30 (cover-page share counts)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1594805/000159480526000047/shop-20260630.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Shopify market cap history",
+      "url": "https://stockanalysis.com/stocks/shop/market-cap/",
+      "type": "database"
+    },
+    {
+      "outlet": "companiesmarketcap.com",
+      "title": "Shopify shares outstanding by year",
+      "url": "https://companiesmarketcap.com/shopify/shares-outstanding/",
+      "type": "database"
+    }
+  ]
+}

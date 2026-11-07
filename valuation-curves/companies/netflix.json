@@ -1,0 +1,170 @@
+{
+  "slug": "netflix",
+  "name": "Netflix",
+  "cohort": "mega-cap",
+  "colorSlot": 2,
+  "dashSlot": 1,
+  "status": "public",
+  "founded": "1997-08-29",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Note 1 to the audited financial statements in Netflix's 2002 S-1 states it plainly: 'Netflix, Inc. (the Company), was incorporated on August 29, 1997 (inception) and began operations on April 14, 1998.' Founded by Reed Hastings and Marc Randolph; the company was originally NetFlix.com, Inc. and renamed Netflix, Inc. in 2002 (EDGAR records the filing-system rename as 2002-03-06). There is no earlier partnership to date from — the first equity event on the record is 1997-09-01, three days after incorporation, when the company issued 3,200,000 common shares to its two founding officers and directors in exchange for a business plan carried at a stated value of $160,000.",
+  "public": {
+    "ticker": "NFLX",
+    "cik": "0001065280",
+    "cmcSlug": "netflix",
+    "ipoDate": "2002-05-23",
+    "publicFrom": "2002-05-23",
+    "sharesTag": "auto",
+    "regressions": [
+      { "date": "2024-12-31", "capUsd": 381268000000, "tolPct": 1.0 }
+    ]
+  },
+  "events": [
+    {
+      "id": "1997-10-17-series-a",
+      "date": "1997-10-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A Preferred (first closing)",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 1992000,
+      "valuationUsd": null,
+      "note": "3,990,000 shares of Series A Preferred at $0.50 to five investors. Below the inclusion floor: Reed Hastings alone put in $1,900,000 of the $1,992,000, so this is founder capital rather than a venture round. The filing's own arithmetic is off by $3,000 (3,990,000 x $0.50 = $1,995,000); the stated aggregate is used. No valuation is recoverable — the fully-diluted count at the time is not in any filing.",
+      "sourceRefs": [1],
+      "plot": false
+    },
+    {
+      "id": "1998-01-26-series-a-2",
+      "date": "1998-01-26",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series A Preferred (second closing)",
+      "charterSeries": "A",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 250000,
+      "valuationUsd": null,
+      "note": "454,545 shares to a single investor at $0.55 — a higher price than the October 1997 closing, which is why it is recorded separately rather than folded into the first tranche. Series A totalled 4,444,545 shares, matching the 2002 S-1 balance sheet exactly.",
+      "sourceRefs": [1],
+      "plot": false
+    },
+    {
+      "id": "1998-06-12-series-b-ivp",
+      "date": "1998-06-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series B Preferred",
+      "charterSeries": "B",
+      "institutional": true,
+      "lead": "Institutional Venture Partners",
+      "amountRaisedUsd": 5999997,
+      "valuationUsd": null,
+      "note": "5,684,024 shares at $1.08 to 19 investors. This — not 1999 — is Netflix's first institutional round: entities affiliated with Institutional Venture Partners bought 3,703,703 shares for $3,999,999, two thirds of the round. Reed Hastings took $1,675,000, of which 798,611 shares came from converting a promissory note at $0.939. Cash raised ($5,999,997, per the S-1's own tally) is below shares x price ($6,138,746, the liquidation value carried in note 6) because of that discounted conversion. No post-money is recoverable.",
+      "sourceRefs": [1, 0],
+      "plot": false
+    },
+    {
+      "id": "1999-02-17-series-c",
+      "date": "1999-02-17",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series C Preferred",
+      "charterSeries": "C",
+      "nameConflict": "The 2000 S-1 records a single closing on 1999-02-17; the 2002 S-1 describes the same 4,650,269 shares as sold 'In February 1999 and June 1999'. The earlier filing is used for the date.",
+      "institutional": true,
+      "lead": "Foundation Capital and Technology Crossover Ventures (co-led)",
+      "amountRaisedUsd": 15150000,
+      "valuationUsd": null,
+      "note": "4,650,269 shares at $3.27 to 28 investors. Foundation Capital and TCV each took $6,000,002 / $5,999,999; Institutional Venture Partners added $2,000,001; Reed Hastings and family took roughly $920,000. The $15,150,000 aggregate reconciles once Comdisco's 58,526-share warrant exercise at $2.31 (1999-02-26) is counted at its own strike. No post-money is recoverable.",
+      "sourceRefs": [1, 0],
+      "plot": false
+    },
+    {
+      "id": "1999-06-22-series-d",
+      "date": "1999-06-22",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series D Preferred",
+      "charterSeries": "D",
+      "institutional": true,
+      "lead": "Forum Holding Amsterdam B.V. (Europ@web / Groupe Arnault)",
+      "amountRaisedUsd": 30317524,
+      "valuationUsd": null,
+      "note": "4,649,927 shares at $6.52 to ten investors, in two closings on 1999-06-22 and 1999-10-31; recorded at the first closing. Forum Holding Amsterdam B.V. took $26,608,889 of it — 88% of the round — with TCV at $2,391,112 and Foundation Capital at $999,998. The Forum stake was later transferred to Finanzas, B.V., an Europ@web affiliate. No post-money is recoverable.",
+      "sourceRefs": [1, 0],
+      "plot": false
+    },
+    {
+      "id": "2000-04-13-series-e-tcv",
+      "date": "2000-04-13",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "Series E Preferred",
+      "charterSeries": "E",
+      "institutional": true,
+      "lead": "Technology Crossover Ventures",
+      "amountRaisedUsd": 50025952,
+      "valuationUsd": null,
+      "note": "5,332,689 shares of non-voting Series E at $9.38 plus warrants at $0.01 per underlying share, to 16 investors, closing 2000-04-13 and 2000-04-17. TCV entities took $40,899,997 — 82% of the round; Foundation Capital, Institutional Venture Partners and Europ@web each took $3,000,316. Netflix filed its first S-1 five days later, on 2000-04-18, and withdrew that offering; the company did not reach the market for another two years. No post-money is recoverable.",
+      "sourceRefs": [1, 0],
+      "plot": false
+    },
+    {
+      "id": "2002-05-23-ipo",
+      "date": "2002-05-23",
+      "datePrecision": "day",
+      "kind": "ipo",
+      "roundName": "IPO on Nasdaq at $15.00",
+      "institutional": false,
+      "lead": null,
+      "amountRaisedUsd": 82500000,
+      "valuationUsd": 309721110,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "s1-cap-table",
+      "note": "5,500,000 shares at $15.00. The final prospectus states 20,648,074 shares of common stock outstanding after the offering, which at the offer price is $309,721,110. All preferred converted at closing, and the figure is after the one-for-three reverse stock split Netflix effected in May 2002 — the reason the 44,849,633 pro-forma common shares in the March 2002 S-1 became 15,148,074 by 2002-05-22.",
+      "sourceRefs": [2],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "Every pre-IPO figure here comes from Netflix's own registration statements rather than from press coverage, and the 2000 S-1 (filed for the offering Netflix withdrew) is the better of the two: its Item 15 gives an exact date, share count, price and investor count for every private issuance from inception, including the two 1997-98 Series A tranches that the 2002 S-1 omits because its related-party section only reaches back to 1999. Note that the brief's 'Institutional Venture Partners 1999' is a year late — IVP led the Series B on 1998-06-12. Not one of the six pre-IPO rounds discloses a post-money valuation, and none is reconstructible: the filings give the price per share for every series but never the contemporaneous fully-diluted share count, so any post-money would be an invention. All six are recorded with amounts and plotted nowhere. Netflix has had three splits, not two: 2:1 in 2004, 7:1 in 2015, and 10:1 effective November 2025 — the pipeline derives all of them from clean jumps in the SEC cover-page share series, and the 2024-12-31 regression checkpoint below is placed specifically to exercise the 10:1 factor. Also excluded: the October 1998 and December 1998 Comdisco warrants (venture debt sweeteners), the 2001 subordinated promissory note and warrant financing, and the Series F shares issued under a subscriber-referral programme for no cash consideration.",
+  "unresolved": [
+    "Post-money valuation for all six pre-IPO rounds. The share price is known for each; the fully-diluted count at each closing is not published in any filing.",
+    "Whether the Series C had a second closing in June 1999. The 2000 S-1 records one closing on 1999-02-17; the 2002 S-1 says February and June 1999 for the same total share count."
+  ],
+  "sources": [
+    {
+      "outlet": "SEC",
+      "title": "Netflix, Inc. Form S-1, filed 2002-03-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1065280/000101287002001044/ds1.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "NetFlix.com, Inc. Form S-1, filed 2000-04-18 (offering later withdrawn)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1065280/000101287000002191/0001012870-00-002191.txt",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Netflix, Inc. Form 424B4 IPO prospectus, filed 2002-05-23",
+      "url": "https://www.sec.gov/Archives/edgar/data/1065280/000101287002002475/d424b4.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "SEC",
+      "title": "Netflix, Inc. Form 10-K for fiscal 2024 (cover-page share count)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1065280/000106528025000044/nflx-20241231.htm",
+      "type": "filing"
+    },
+    {
+      "outlet": "stockanalysis.com",
+      "title": "Netflix market cap history",
+      "url": "https://stockanalysis.com/stocks/nflx/market-cap/",
+      "type": "database"
+    }
+  ]
+}

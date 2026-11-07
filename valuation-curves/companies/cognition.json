@@ -1,0 +1,280 @@
+{
+  "slug": "cognition",
+  "name": "Cognition",
+  "cohort": "ai",
+  "colorSlot": 5,
+  "dashSlot": 3,
+  "status": "private",
+  "founded": "2024-01-03",
+  "foundedPrecision": "day",
+  "foundedBasis": "incorporation",
+  "foundedNote": "Cognition AI, Inc. is a Delaware corporation (registry no. 2875752). Its GLEIF LEI record (2549006YNL27Z5N5OA23) gives a legal-entity creation date of 2024-01-03 and is marked FULLY_CORROBORATED against the Delaware Division of Corporations. The Delaware registry itself is captcha-gated, so the certificate of incorporation was not read directly. Cognition's own blog agrees on the year: 'We started Cognition in 2024' (Series E post) and 'We founded Cognition last year' (September 2025 post). The commonly cited dates are the team founding, not a filing, and they disagree with each other. Wikipedia's body says August 2023 and its infobox says November 2023. Fortune (2024-03-31) says 'Founded in November', and Maginative says November 2023, after a pivot from crypto to AI. No filing for an earlier entity was found, so t=0 is the 2024-01-03 incorporation. That is about two to five months after the team-founding dates.",
+  "events": [
+    {
+      "id": "2024-03-12-founders-fund-series-a",
+      "date": "2024-03-12",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$21M Series A",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 21000000,
+      "valuationUsd": 350000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Cognition's Devin launch post (2024-03-12) confirms 'a $21 million Series A led by Founders Fund' but gives no valuation. The $350M figure comes from a single original source: a Wall Street Journal report (2024-03-30), relayed by Fortune, that Cognition 'raised $21 million in a deal valuing it at $350 million' earlier in 2024. The WSJ itself could not be read. Dated to the public announcement because the close date was never disclosed. No priced round before this one has been reported; the angels thanked in the launch post (the Collisons, Elad Gil, Sarah Guo and others) are not tied to a separate round.",
+      "sourceRefs": [4, 2],
+      "plot": true
+    },
+    {
+      "id": "2024-04-24-founders-fund",
+      "date": "2024-04-24",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$175M round",
+      "charterSeries": null,
+      "nameConflict": "Cognition never announced this round. Aggregators label it a Series A extension, a Series A-2, or a Series B.",
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 175000000,
+      "valuationUsd": 2000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "The company never confirmed a valuation. The Information (Kate Clark, 2024-04-24) is headlined 'Six-Month-Old AI Coding Startup Valued at $2 Billion by Founders Fund', but only the headline is readable past the paywall. TechCrunch's 2024 roundup says the $175M round led by Founders Fund 'closed on April 24' and the company is 'valued at nearly $2 billion'. Maginative attributes $2B to 'an investor who reviewed the deal terms'. Bloomberg's March 2025 report says the 8VC round 'doubles the previous valuation', which is consistent. Marked soft because the figure has no company confirmation and its original report could not be read in full.",
+      "sourceRefs": [5, 6, 3],
+      "plot": true
+    },
+    {
+      "id": "2025-03-18-8vc",
+      "date": "2025-03-18",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "~$300M round",
+      "charterSeries": null,
+      "nameConflict": "Never announced by Cognition and never given a series letter in press coverage.",
+      "institutional": true,
+      "lead": "8VC and Lux Capital (co-led)",
+      "amountRaisedUsd": 300000000,
+      "valuationUsd": 4000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Bloomberg (Kate Clark and Katie Roof, 2025-03-18, citing people familiar) reported 'hundreds of millions of dollars at a valuation close to $4 billion' in a round 'being led by' 8VC. 8VC declined to comment. Cognition's September 2025 post later said its previous round was jointly led by 8VC and Lux Capital, so both are named as leads. The $300M amount is from a WSJ report quoted by PYMNTS and could not be read at the WSJ. Bloomberg (2025-09-08) and SiliconANGLE later give the prior valuation as a flat $4B. Dated to the Bloomberg report because the close date was never disclosed. Soft because Bloomberg's original figure is hedged ('close to') and the company has never stated it.",
+      "sourceRefs": [7, 8, 9, 10, 11, 12],
+      "plot": true
+    },
+    {
+      "id": "2025-09-08-founders-fund",
+      "date": "2025-09-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$400M round",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "Founders Fund",
+      "amountRaisedUsd": 400000000,
+      "valuationUsd": 10200000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Cognition's post says 'over $400M' at a '$10.2B post-money valuation', led by Founders Fund. Bloomberg and SiliconANGLE report the same figures. Amount recorded at the $400M floor. While the round was still being raised, the WSJ reported about $500M at $9.8B (relayed by Built In, 2025-08-18). $9.8B matches the pre-money implied by $10.2B post minus $400M, but the company's final figures are used. The round came eight weeks after the Windsurf acquisition agreement of 2025-07-14 (see curatorNotes).",
+      "sourceRefs": [10, 11, 12, 13],
+      "plot": true
+    },
+    {
+      "id": "2026-05-27-series-d",
+      "date": "2026-05-27",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$1B Series D",
+      "charterSeries": null,
+      "nameConflict": "Cognition's post ('More Devins in More Places') never names a series, though its URL slug is series-d.",
+      "institutional": true,
+      "lead": "Lux Capital, General Catalyst and 8VC (co-led)",
+      "amountRaisedUsd": 1000000000,
+      "valuationUsd": 26000000000,
+      "valuationBasis": "post",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Cognition's post says 'over $1B at a $26B valuation' without giving the basis. TechCrunch (Julie Bort) reports a $25B pre-money valuation, which makes $26B the post-money. Amount recorded at the $1B floor. Run-rate revenue was $492M at announcement. Ribbit Capital, Atreides and Layer Global joined as new investors.",
+      "sourceRefs": [14, 15],
+      "plot": true
+    },
+    {
+      "id": "2026-09-08-series-e",
+      "date": "2026-09-08",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$2B Series E",
+      "charterSeries": null,
+      "nameConflict": "TechCrunch says the round 'was led by Andreessen Horowitz, Accel, Founders Fund, General Catalyst, and Avenir'. Cognition names only a16z and Accel as leads and calls the other three returning existing investors. The company's wording is used.",
+      "institutional": true,
+      "lead": "Andreessen Horowitz and Accel (co-led)",
+      "amountRaisedUsd": 2000000000,
+      "valuationUsd": 48000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "confirmed",
+      "valuationMethod": "reported",
+      "note": "Cognition's Series E post says 'over $2B at a $48B valuation'. Reuters, TechCrunch and SiliconANGLE report the same figures. No source says whether $48B is pre- or post-money. Amount recorded at the $2B floor. On 2026-09-02, Bloomberg reported (relayed by The Edge Malaysia) that Cognition was set to raise about $1B at about $47B, with nearly $10B of investor interest and terms still subject to change. The round closed larger, at the announced $48B, and the $47B figure is not recorded separately. Run-rate revenue was almost $900M, up from $492M in May.",
+      "sourceRefs": [16, 19, 17, 18, 20],
+      "plot": true
+    }
+  ],
+  "curatorNotes": "The Windsurf acquisition is not recorded as an event. The schema has no acquisition kind, and it was not a financing. Cognition signed a definitive agreement on 2025-07-14 to acquire Windsurf's IP, product, brand, business and team after Google hired Windsurf's CEO and senior staff. Windsurf had $82M of ARR at signing, the price and form of consideration were never disclosed, and Windsurf was renamed Devin Desktop on 2026-06-02 per Wikipedia. Several reports of talks between rounds are deliberately excluded because nobody transacted at those prices: Bloomberg's August 2026 report of early talks at ≥$40B (per Wikipedia), the 2026-09-02 Bloomberg ~$47B report (folded into the Series E note), and a 2026-10-28 Business Insider report, read only via FourWeekMBA's relay, that investors had offered $70–80B, with talks described as early. No company-run tender offer or employee secondary has been reported. Sacra lists five Delaware certificate-of-incorporation filings, on 2025-01-27, 2025-02-24, 2025-08-11, 2025-10-22 and 2026-05-22. These are presumably charter amendments, and three line up with the March 2025, September 2025 and May 2026 rounds, but their contents are paywalled. Revenue context from Cognition's posts: Devin ARR went from $1M (September 2024) to $73M (June 2025), and Windsurf more than doubled it. Run-rate revenue was $492M in May 2026 and almost $900M in September 2026. Cognition says its total net burn across its history was under $20M as of September 2025.",
+  "unresolved": [
+    "Incorporation date rests on the GLEIF LEI record's entity creation date (2024-01-03), which GLEIF marks as corroborated against Delaware. The Delaware certificate itself was not read because the registry is captcha-gated. Press dates the team founding to August 2023 (Wikipedia body) or November 2023 (Wikipedia infobox, Fortune, Maginative). Whether any formal predecessor entity existed in 2023, for example from the reported crypto-era project, is unknown.",
+    "Close dates for the Series A (announced 2024-03-12) and the 8VC/Lux round (first reported 2025-03-18) were never disclosed. Both are dated to first public report.",
+    "Valuation basis (pre vs post) is undisclosed for the $350M, $2B, $4B and $48B marks.",
+    "Amount of the March 2025 round: $300M per the WSJ as quoted by PYMNTS, versus 'hundreds of millions' per Bloomberg. The WSJ original was not readable.",
+    "Charter series letters. The five Delaware charter filings listed by Sacra are paywalled, so charterSeries is null throughout."
+  ],
+  "sources": [
+    {
+      "outlet": "GLEIF",
+      "title": "LEI record 2549006YNL27Z5N5OA23 — Cognition AI, Inc. (Delaware, registry no. 2875752)",
+      "url": "https://api.gleif.org/api/v1/lei-records/2549006YNL27Z5N5OA23",
+      "type": "database"
+    },
+    {
+      "outlet": "Wikipedia",
+      "title": "Cognition AI",
+      "url": "https://en.wikipedia.org/wiki/Cognition_AI",
+      "type": "reference"
+    },
+    {
+      "outlet": "Fortune",
+      "title": "AI startup Cognition Labs, founded in November, seeks $2B valuation amid investor frenzy, warnings of bubble",
+      "url": "https://fortune.com/2024/03/31/cognition-labs-ai-startup-seeks-2-billion-valuation-investor-frenzy-warnings-bubble/",
+      "type": "press"
+    },
+    {
+      "outlet": "Maginative",
+      "title": "Cognition AI Raises $175M at $2B Valuation, One Month After Series A",
+      "url": "https://www.maginative.com/article/cognition-ai-raises-175m-at-2b-valuation-one-month-after-series-a/",
+      "type": "press"
+    },
+    {
+      "outlet": "Cognition",
+      "title": "Introducing Devin",
+      "url": "https://cognition.com/blog/introducing-devin",
+      "type": "company"
+    },
+    {
+      "outlet": "The Information",
+      "title": "Six-Month-Old AI Coding Startup Valued at $2 Billion by Founders Fund",
+      "url": "https://www.theinformation.com/articles/six-month-old-ai-coding-startup-valued-at-2-billion-by-founders-fund",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Here's the full list of 49 US AI startups that have raised $100M or more in 2024",
+      "url": "https://techcrunch.com/2024/12/20/heres-the-full-list-of-49-us-ai-startups-that-have-raised-100m-or-more-in-2024/",
+      "type": "press"
+    },
+    {
+      "outlet": "Bloomberg (via Bloomberg Law)",
+      "title": "Cognition AI Hits $4 Billion Value in Deal Led by Lonsdale Firm",
+      "url": "https://news.bloomberglaw.com/private-equity/cognition-ai-hits-4-billion-value-in-deal-led-by-lonsdale-firm",
+      "type": "press"
+    },
+    {
+      "outlet": "The Decoder",
+      "title": "AI coding startup Cognition AI behind Devin hits $4 billion valuation",
+      "url": "https://the-decoder.com/ai-coding-startup-cognition-ai-behind-devin-hits-4-billion-valuation/",
+      "type": "press"
+    },
+    {
+      "outlet": "PYMNTS",
+      "title": "Cognition Raises $400 Million to Bolster AI Agent Efforts",
+      "url": "https://www.pymnts.com/?p=3009221",
+      "type": "press"
+    },
+    {
+      "outlet": "Cognition",
+      "title": "Funding, growth, and the next frontier of AI coding agents",
+      "url": "https://cognition.com/blog/funding-growth-and-the-next-frontier-of-ai-coding-agents",
+      "type": "company"
+    },
+    {
+      "outlet": "Bloomberg (via Bloomberg Law)",
+      "title": "Cognition AI Reaches $10 Billion Valuation With New Funding",
+      "url": "https://news.bloomberglaw.com/private-equity/cognition-ai-cinches-10-billion-valuation-with-new-funding",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "Cognition raises more than $400M, now worth $10.2B (2025-09-08)",
+      "url": "https://siliconangle.com/?p=710462",
+      "type": "press"
+    },
+    {
+      "outlet": "Built In",
+      "title": "Cognition Secures $500M at $9.8B Valuation",
+      "url": "https://builtin.com/articles/cognition-raises-500m-9b-valuation-20250818",
+      "type": "press"
+    },
+    {
+      "outlet": "Cognition",
+      "title": "More Devins in More Places",
+      "url": "https://cognition.com/blog/series-d",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch (via Yahoo Finance)",
+      "title": "AI coding startup Cognition raises $1B at $25B pre-money valuation",
+      "url": "https://finance.yahoo.com/sectors/technology/articles/ai-coding-startup-cognition-raises-160000229.html",
+      "type": "press"
+    },
+    {
+      "outlet": "Cognition",
+      "title": "Do it all with Devin: Announcing our Series E",
+      "url": "https://cognition.com/blog/series-e",
+      "type": "company"
+    },
+    {
+      "outlet": "TechCrunch",
+      "title": "Cognition hits $48B valuation, signaling investors believe AI coding is far from a winner-take-all market",
+      "url": "https://techcrunch.com/2026/09/08/cognition-hits-48b-valuation-signaling-investors-believe-ai-coding-is-far-from-a-winner-take-all-market/",
+      "type": "press"
+    },
+    {
+      "outlet": "SiliconANGLE",
+      "title": "AI coding startup Cognition raises $2B at $48B valuation as revenue nears $900M",
+      "url": "https://siliconangle.com/2026/09/08/ai-coding-startup-cognition-raises-2b-at-48b-valuation-as-revenue-nears-900m/",
+      "type": "press"
+    },
+    {
+      "outlet": "Reuters (via The Star)",
+      "title": "Cognition AI raises $2 billion at $48 billion valuation",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/09/09/cognition-ai-raises-2-billion-at-48-billion-valuation",
+      "type": "press"
+    },
+    {
+      "outlet": "Bloomberg (via The Edge Malaysia)",
+      "title": "AI startup Cognition set to raise around US$1 bil at a US$47 bil value",
+      "url": "https://theedgemalaysia.com/node/816527",
+      "type": "press"
+    },
+    {
+      "outlet": "Sacra",
+      "title": "Cognition filings",
+      "url": "https://sacra.com/c/cognition/filings/",
+      "type": "database"
+    },
+    {
+      "outlet": "FourWeekMBA (relaying Business Insider)",
+      "title": "Cognition Gets $70B-$80B Offers Weeks After a $48B Round",
+      "url": "https://fourweekmba.com/ai-cognition-gets-70b-80b-offers-weeks-after-a-48b-round/",
+      "type": "press"
+    },
+    {
+      "outlet": "Cognition",
+      "title": "Cognition's acquisition of Windsurf",
+      "url": "https://cognition.com/blog/windsurf",
+      "type": "company"
+    }
+  ]
+}

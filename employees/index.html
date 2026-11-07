@@ -207,11 +207,14 @@
       { year: 2023, microsoft: 221000, google: 182502, apple: 161000, oracle: 164000, tesla: 140473, meta: 67317, salesforce: 79390, nvidia: 26196, netflix: 13000, fedRate: 5.03, t10y: 3.96, vc: 170.6, adGrowth: 7.3, revPerEmp: 1210, capex: 119.2 },
       { year: 2024, microsoft: 228000, google: 183323, apple: 164000, oracle: 159000, tesla: 125665, meta: 74067, salesforce: 72682, nvidia: 29600, netflix: 14000, fedRate: 5.15, t10y: 4.21, vc: 213.2, adGrowth: 14.9, revPerEmp: 1367, capex: 164.2 },
       { year: 2025, microsoft: 228000, google: 190820, apple: 166000, oracle: 162000, tesla: 134785, meta: 78865, salesforce: 76453, nvidia: 36000, netflix: 16000, fedRate: 4.21, t10y: 4.29, vc: 339.4, adGrowth: 13.9, revPerEmp: 1531, capex: 272.8 },
-      // Provisional: only MSFT, ORCL, CRM, NVDA have filed FY2026 10-Ks. vc, adGrowth, revPerEmp are left blank.
-      // capex: FY2026 actuals (MSFT 116.0, ORCL 55.7, CRM 0.6, NVDA 6.0) + 2026 guidance midpoints (GOOG 200, META 140,
-      // TSLA 20) + trailing 12 months (AAPL 10.0 through Jun, NFLX 0.9 through Sep).
-      { year: 2026, microsoft: 223000, google: 198933, apple: 166000, oracle: 141000, tesla: 134785, meta: 66775, salesforce: 83334, nvidia: 42000, netflix: 16000, fedRate: 3.65, t10y: 4.52, capex: 549.2,
-        provisional: { google: 'as of Jun 30 (Q2)', meta: 'as of Sep 30 (Q3)', apple: '2025 carried forward', tesla: '2025 carried forward', netflix: '2025 carried forward' } },
+      // Provisional: MSFT, ORCL, CRM, NVDA, AAPL have filed FY2026 10-Ks; GOOG and META are Sep 30 10-Q headcounts;
+      // TSLA and NFLX repeat 2025. Rates are averages through Nov 5. adGrowth is left blank.
+      // capex: FY2026 actuals (MSFT 116.0, ORCL 55.7, CRM 0.6, NVDA 6.0, AAPL 9.0) + 2026 guidance midpoints (GOOG 200,
+      // META 140, TSLA 20) + trailing 12 months (NFLX 0.9 through Sep).
+      // vc: Q1–Q3 only (Q3 2026 Venture Monitor). revPerEmp: $2,001.5B revenue / 1,078,651 headcount — FY2026 revenue for
+      // MSFT, AAPL, ORCL, CRM, NVDA; trailing 12 months through Sep 30 for GOOG, META, TSLA, NFLX (XBRL companyfacts).
+      { year: 2026, microsoft: 223000, google: 204757, apple: 167000, oracle: 141000, tesla: 134785, meta: 66775, salesforce: 83334, nvidia: 42000, netflix: 16000, fedRate: 3.67, t10y: 4.54, vc: 515.8, revPerEmp: 1856, capex: 548.2,
+        provisional: { google: 'as of Sep 30 (Q3)', meta: 'as of Sep 30 (Q3)', tesla: '2025 carried forward', netflix: '2025 carried forward' } },
     ];
 
     const COMPANIES = [
@@ -270,20 +273,20 @@
         label: 'US VC Investment',
         legendName: 'US VC Investment ($B/yr)',
         tooltipLabel: 'US VC investment',
-        domain: [0, 360],
+        domain: [0, 600],
         axisFormat: (v) => '$' + v + 'B',
         tooltipFormat: (v) => '$' + v.toFixed(1) + 'B',
-        description: 'Yellow line is total annual U.S. venture capital investment, in billions of dollars (PitchBook–NVCA Venture Monitor).',
+        description: 'Yellow line is total annual U.S. venture capital investment, in billions of dollars (PitchBook–NVCA Venture Monitor). 2026 counts January–September only ($515.8B, Q3 2026 Venture Monitor) and is already the largest year on record, with AI companies taking 83% of the dollars.',
       },
       {
         key: 'revPerEmp',
         label: 'Revenue per Employee',
         legendName: 'Revenue per Employee (combined)',
         tooltipLabel: 'Revenue per employee',
-        domain: [800, 1600],
+        domain: [800, 2000],
         axisFormat: (v) => '$' + (v / 1000).toFixed(1) + 'M',
         tooltipFormat: (v) => '$' + (v / 1000).toFixed(2) + 'M',
-        description: 'Yellow line is combined annual revenue divided by combined year-end headcount across all 9 companies (sourced from each company\'s 10-K). Rising sharply post-2022 — the empirical signature of deliberate efficiency, not an under-hiring slump.',
+        description: 'Yellow line is combined annual revenue divided by combined year-end headcount across all 9 companies (sourced from each company\'s 10-K). Rising sharply post-2022 — the empirical signature of deliberate efficiency, not an under-hiring slump. 2026 is provisional: FY2026 revenue for MSFT, AAPL, ORCL, CRM, and NVDA, and trailing 12 months through Sep 30 for GOOG, META, TSLA, and NFLX, divided by the 2026 headcounts in the chart.',
       },
       {
         key: 'capex',
@@ -293,7 +296,7 @@
         domain: [0, 600],
         axisFormat: (v) => '$' + v + 'B',
         tooltipFormat: (v) => '$' + v.toFixed(0) + 'B',
-        description: 'Yellow line is combined annual capital expenditures across all 9 companies, in billions of dollars (cash-flow-statement capex from each 10-K). The post-2022 vertical climb is overwhelmingly AI/data-center spending at MSFT, GOOG, META, and ORCL. 2026 is provisional: FY2026 actuals for MSFT, ORCL, CRM, and NVDA; full-year guidance midpoints for GOOG ($195–205B), META ($135–145B, incl. finance leases), and TSLA (>$20B); trailing 12 months for AAPL and NFLX.',
+        description: 'Yellow line is combined annual capital expenditures across all 9 companies, in billions of dollars (cash-flow-statement capex from each 10-K). The post-2022 vertical climb is overwhelmingly AI/data-center spending at MSFT, GOOG, META, and ORCL. 2026 is provisional: FY2026 actuals for MSFT, ORCL, CRM, NVDA, and AAPL; full-year guidance midpoints for GOOG ($195–205B, reaffirmed in Q3), META ($135–145B, incl. finance leases), and TSLA (>$20B); trailing 12 months for NFLX.',
       },
       {
         key: 'adGrowth',
@@ -552,10 +555,11 @@
               <//>
             <//>
             <p class="footnote">
-              * 2026 is provisional. Microsoft, Oracle, Salesforce, and Nvidia are from FY2026 10-Ks; faded segments are
-              stand-ins: Alphabet (Q2) and Meta (Q3) use the latest quarterly headcount, and Apple, Tesla, and Netflix repeat
-              their 2025 values until their FY2026 10-Ks are filed. Rates are year-to-date averages, and combined capex mixes
-              FY2026 actuals with company guidance; the other comparison lines end at 2025.
+              * 2026 is provisional. Microsoft, Oracle, Salesforce, Nvidia, and Apple are from FY2026 10-Ks; faded segments
+              are stand-ins: Alphabet and Meta use their Sep 30 (Q3) headcount, and Tesla and Netflix repeat their 2025 values
+              until their FY2026 10-Ks are filed. Rates are year-to-date averages, VC investment covers January–September only,
+              revenue per employee uses trailing-12-month revenue where the fiscal year isn't over, and combined capex mixes
+              FY2026 actuals with company guidance; digital ad spending ends at 2025.
             </p>
           </div>
         </div>

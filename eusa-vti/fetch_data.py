@@ -37,17 +37,16 @@ import argparse
 import json
 import re
 import sys
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
-import httpx
 import pandas as pd
 
 HERE = Path(__file__).parent
 RAW = HERE / "raw_responses"
 DATA_JSON = HERE / "data.json"
 INDEX_HTML = HERE / "index.html"
-TODAY = date(2026, 5, 2)
+TODAY = date(2026, 11, 8)
 
 ETFS = ["EUSA", "VTI", "VT"]
 PRICE_START = "2010-05-07"  # EUSA inception
@@ -67,6 +66,7 @@ USER_AGENT = "playground-eusa-vti/1.0 (rsanek@gmail.com)"
 # Stage 1: prices, drawdown, cumulative return
 # -----------------------------------------------------------------------------
 
+
 def fetch_prices(offline: bool, snapshot: bool) -> pd.DataFrame:
     """Return a DataFrame indexed by date with one column per ETF (adjusted close).
 
@@ -81,6 +81,7 @@ def fetch_prices(offline: bool, snapshot: bool) -> pd.DataFrame:
         sys.exit(f"--offline given but {cache} does not exist")
 
     import yfinance as yf
+
     print(f"yfinance: downloading {ETFS} from {PRICE_START} ...")
     raw = yf.download(ETFS, start=PRICE_START, auto_adjust=True, progress=False)
     if raw is None or raw.empty:
@@ -108,8 +109,8 @@ def compute_drawdown_and_return(prices: pd.DataFrame) -> tuple[pd.DataFrame, pd.
 # Filings come from the trust's CIK; each filing covers one series.
 EUSA_SERIES_ID = "S000038205"  # iShares MSCI USA Equal Weighted ETF
 EUSA_TRUST_CIK = "0001100663"  # iShares Trust
-VTI_SERIES_ID = "S000003091"   # Vanguard Total Stock Market Index Fund
-VTI_TRUST_CIK = "0000036405"   # Vanguard Index Funds
+VTI_SERIES_ID = "S000003091"  # Vanguard Total Stock Market Index Fund
+VTI_TRUST_CIK = "0000036405"  # Vanguard Index Funds
 
 
 def fetch_holdings_snapshots(offline: bool, snapshot: bool) -> dict:
@@ -119,14 +120,15 @@ def fetch_holdings_snapshots(offline: bool, snapshot: bool) -> dict:
     (the report-period date is the as-of date for those holdings).
     """
     from holdings import fetch_all_holdings
+
     headers = {"User-Agent": USER_AGENT, "Accept-Encoding": "gzip, deflate"}
     return fetch_all_holdings(RAW, headers, offline)
-
 
 
 # -----------------------------------------------------------------------------
 # Assembly
 # -----------------------------------------------------------------------------
+
 
 def series_to_pairs(s: pd.Series) -> list[list]:
     """Convert a date-indexed series to [[YYYY-MM-DD, rounded_value], ...].
@@ -147,24 +149,28 @@ def build_payload(prices, drawdown, cum_return, holdings) -> dict:
     metrics = []
 
     # 1. Drawdown
-    metrics.append({
-        "id": "drawdown",
-        "label": "Drawdown from peak",
-        "unit": "%",
-        "format": "percent",
-        "axisDomain": [-50, 0],
-        "series": {etf: series_to_pairs(drawdown[etf]) for etf in ETFS},
-    })
+    metrics.append(
+        {
+            "id": "drawdown",
+            "label": "Drawdown from peak",
+            "unit": "%",
+            "format": "percent",
+            "axisDomain": [-50, 0],
+            "series": {etf: series_to_pairs(drawdown[etf]) for etf in ETFS},
+        }
+    )
 
     # 2. Cumulative total return
-    metrics.append({
-        "id": "cumReturn",
-        "label": "Cumulative total return (start = 100)",
-        "unit": "",
-        "format": "index",
-        "axisDomain": None,
-        "series": {etf: series_to_pairs(cum_return[etf]) for etf in ETFS},
-    })
+    metrics.append(
+        {
+            "id": "cumReturn",
+            "label": "Cumulative total return (start = 100)",
+            "unit": "",
+            "format": "index",
+            "axisDomain": None,
+            "series": {etf: series_to_pairs(cum_return[etf]) for etf in ETFS},
+        }
+    )
 
     # 3-5. Holdings-derived metrics. Each ETF entry in `holdings` is a list of
     # monthly observations with {date, mag7Pct, aiBasketPct, techBroadPct}.
@@ -176,36 +182,40 @@ def build_payload(prices, drawdown, cum_return, holdings) -> dict:
         for etf in ETFS:
             obs = holdings.get(etf, [])
             out[etf] = [
-                [o["date"], round(o[field], 4)]
-                for o in obs
-                if o.get(field) is not None and o["date"] >= PRICE_START
+                [o["date"], round(o[field], 4)] for o in obs if o.get(field) is not None and o["date"] >= PRICE_START
             ]
         return out
 
-    metrics.append({
-        "id": "mag7",
-        "label": "Mag 7 weight",
-        "unit": "%",
-        "format": "percent",
-        "axisDomain": None,
-        "series": holdings_series("mag7Pct"),
-    })
-    metrics.append({
-        "id": "aiBasket",
-        "label": "Broader AI basket weight",
-        "unit": "%",
-        "format": "percent",
-        "axisDomain": None,
-        "series": holdings_series("aiBasketPct"),
-    })
-    metrics.append({
-        "id": "techSector",
-        "label": "Tech & Communication Services weight",
-        "unit": "%",
-        "format": "percent",
-        "axisDomain": None,
-        "series": holdings_series("techBroadPct"),
-    })
+    metrics.append(
+        {
+            "id": "mag7",
+            "label": "Mag 7 weight",
+            "unit": "%",
+            "format": "percent",
+            "axisDomain": None,
+            "series": holdings_series("mag7Pct"),
+        }
+    )
+    metrics.append(
+        {
+            "id": "aiBasket",
+            "label": "Broader AI basket weight",
+            "unit": "%",
+            "format": "percent",
+            "axisDomain": None,
+            "series": holdings_series("aiBasketPct"),
+        }
+    )
+    metrics.append(
+        {
+            "id": "techSector",
+            "label": "Tech & Communication Services weight",
+            "unit": "%",
+            "format": "percent",
+            "axisDomain": None,
+            "series": holdings_series("techBroadPct"),
+        }
+    )
 
     return {
         "generatedAt": TODAY.isoformat(),
@@ -254,7 +264,7 @@ def main():
         max_dd = drawdown[etf].min()
         cagr_years = (prices.index[-1] - prices.index[0]).days / 365.25
         cagr = (cum_return[etf].iloc[-1] / 100) ** (1 / cagr_years) - 1
-        print(f"  {etf}: {len(prices)} daily obs, max DD {max_dd:.2f}%, CAGR {cagr*100:.2f}%")
+        print(f"  {etf}: {len(prices)} daily obs, max DD {max_dd:.2f}%, CAGR {cagr * 100:.2f}%")
 
     print("Stage 2: holdings")
     if args.skip_holdings:

@@ -24,6 +24,17 @@
       font-weight: 700;
       margin-bottom: 32px;
     }
+    .section + .section {
+      margin-top: 56px;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 16px;
+    }
     .tools {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -65,198 +76,211 @@
 <body>
   <div class="container">
     <h1>Playground</h1>
-    <div class="tools">
-      <a href="monroe-safe-street/" class="card">
-        <span class="emoji">🚸</span>
-        <h2>Monroe Dr Safe Streets</h2>
-        <p class="description">An OpenStreetMap of the City of Atlanta's Monroe Dr NE road-diet redesign — every new signal, beacon, roundabout, crossing, and lane change from the April 2026 project Q&amp;A, mapped to its real location with source-cited details.</p>
-      </a>
-      <a href="manacher/" class="card">
-        <span class="emoji">🪞</span>
-        <h2>Manacher's Algorithm Visualizer</h2>
-        <p class="description">Step through Manacher's linear-time algorithm for finding the longest palindromic substring, with an interactive visualization of each phase.</p>
-      </a>
-      <a href="sunrise-sunset/" class="card">
-        <span class="emoji">🌅</span>
-        <h2>Sunrise & Sunset Comparison</h2>
-        <p class="description">Compare sunrise and sunset times across different cities throughout the year with interactive charts.</p>
-      </a>
-      <a href="mortgage/" class="card">
-        <span class="emoji">🏠</span>
-        <h2>Mortgage Calculator & ROI Projection</h2>
-        <p class="description">Project mortgage payments, equity buildup, and investment returns across different scenarios.</p>
-      </a>
-      <a href="buy-vs-rent/" class="card">
-        <span class="emoji">🔑</span>
-        <h2>Atlanta Buy vs. Rent Break-even</h2>
-        <p class="description">Compare a cash-funded home purchase—with a margin loan above $1 million—with renting, and see when buying and selling comes out ahead.</p>
-      </a>
-      <a href="slotted-page/" class="card">
-        <span class="emoji">📄</span>
-        <h2>Slotted Page Visualizer</h2>
-        <p class="description">Explore how B-Tree storage organizes cells within slotted pages, with interactive visualization of cell layouts, offset pointers, and free space management.</p>
-      </a>
-      <a href="area-comparison/" class="card">
-        <span class="emoji">📊</span>
-        <h2>Area Comparison</h2>
-        <p class="description">Compare demographic and statistical data across states, cities, and neighborhoods in California, New York, and Georgia.</p>
-      </a>
-      <a href="margin/" class="card">
-        <span class="emoji">📉</span>
-        <h2>Margin Drawdown Calculator</h2>
-        <p class="description">Visualize how much you can borrow on margin without facing a margin call during market drawdowns, with historical crash scenarios.</p>
-      </a>
-      <a href="employees/" class="card">
-        <span class="emoji">👥</span>
-        <h2>Big Tech Employment</h2>
-        <p class="description">Stacked bar chart showing employee headcount trends across major tech companies from 2011 to 2026.</p>
-      </a>
-      <a href="python-kata/" class="card">
-        <span class="emoji">🐍</span>
-        <h2>Python Kata Practice</h2>
-        <p class="description">Practice Python coding challenges with an in-browser editor and automated test validation, powered by Pyodide.</p>
-      </a>
-      <a href="sliding-window/" class="card">
-        <span class="emoji">🪟</span>
-        <h2>Sliding Window Maximum Visualizer</h2>
-        <p class="description">Step through the monotonic deque approach to the sliding window maximum problem, with interactive visualization of each phase.</p>
-      </a>
-      <a href="rome/" class="card">
-        <span class="emoji">🏛️</span>
-        <h2>Stages of Rome</h2>
-        <p class="description">Explore the five eras of Roman civilization from Kingdom to Byzantine Empire, with an interactive timeline, territorial maps, and historical summaries.</p>
-      </a>
-      <a href="free-models/" class="card">
-        <span class="emoji">🤖</span>
-        <h2>Free Model Ranker</h2>
-        <p class="description">See which free models on OpenRouter are actually good, ranked by ArtificialAnalysis intelligence index.</p>
-      </a>
-      <a href="fde-jobs/" class="card">
-        <span class="emoji">🧭</span>
-        <h2>FDE Jobs</h2>
-        <p class="description">Compare Forward Deployed Engineer roles across prestigious smaller tech companies — skills, role focus, target industry, and more.</p>
-      </a>
-      <a href="mergers/" class="card">
-        <span class="emoji">🤝</span>
-        <h2>Mega Mergers by Presidential Term</h2>
-        <p class="description">The 10 largest US M&amp;A deals announced during each presidential term from Clinton I through Trump II, sized as a share of US GDP for each deal's year.</p>
-      </a>
-      <a href="eusa-vti/" class="card">
-        <span class="emoji">⚖️</span>
-        <h2>EUSA vs VTI vs VT</h2>
-        <p class="description">US equal-weighted vs US cap-weighted vs World cap-weighted ETFs over time — AI concentration, drawdowns, and total return with selectable metric pairs.</p>
-      </a>
-      <a href="tech-ipo-sp500/" class="card">
-        <span class="emoji">📈</span>
-        <h2>Biggest Tech IPOs vs S&amp;P 500</h2>
-        <p class="description">Each year's biggest tech IPO from 1990&ndash;2025, sized as parts per million of the S&amp;P 500's total market cap on the IPO date.</p>
-      </a>
-      <a href="ipo-index-exposure/" class="card">
-        <span class="emoji">🚀</span>
-        <h2>IPO Index Fund Exposure</h2>
-        <p class="description">If SpaceX, OpenAI, or Anthropic IPOs, how much of it does a $200k index-fund position actually buy? Compare VT, VTI, VOO, and equal-weighted EUSA &mdash; and see why equal-weighting ignores valuation entirely.</p>
-      </a>
-      <a href="country-freedom/" class="card">
-        <span class="emoji">🗽</span>
-        <h2>Country Freedom</h2>
-        <p class="description">Filter the world's countries by compound percentile of government and economic freedom — combining Freedom House, EIU, Heritage, and Fraser indices.</p>
-      </a>
-      <a href="exe-vs-hetzner/" class="card">
-        <span class="emoji">☁️</span>
-        <h2>exe.dev vs Hetzner vs AWS</h2>
-        <p class="description">Side-by-side cost comparison of exe.dev's Personal &amp; Cloud Pool plans against Hetzner Cloud CCX and AWS EC2 m7a, matched 1-to-1 by vCPU and RAM, with a non-linear transfer slider.</p>
-      </a>
-      <a href="firecracker/" class="card">
-        <span class="emoji">🔥</span>
-        <h2>Firecracker: An Engineering Doc</h2>
-        <p class="description">A staff engineer's design doc for AWS's microVM monitor — architecture, threat model, snapshots, and how it compares to QEMU, gVisor, and containers.</p>
-      </a>
-      <a href="vllm/" class="card">
-        <span class="emoji">⚡</span>
-        <h2>vLLM: An Engineering Doc</h2>
-        <p class="description">A staff engineer's design doc for the open-source LLM inference engine — PagedAttention, continuous batching, prefix caching, and the V1 rewrite.</p>
-      </a>
-      <a href="clickhouse/" class="card">
-        <span class="emoji">🐘</span>
-        <h2>ClickHouse: An Engineering Doc</h2>
-        <p class="description">A staff engineer's design doc for the OLAP database — parts and granules, vectorized SIMD execution, distributed two-stage aggregation, ClickHouse Cloud's SharedMergeTree, and how it compares to Snowflake, BigQuery, and Druid.</p>
-      </a>
-      <a href="hypothesis/" class="card">
-        <span class="emoji">🧪</span>
-        <h2>Hypothesis: Property-Based Testing</h2>
-        <p class="description">A working Python developer's guide to property-based testing with Hypothesis — strategies, the @given decorator, automatic shrinking to minimal counterexamples, stateful testing, and the properties worth asserting.</p>
-      </a>
-      <a href="iceberg/" class="card">
-        <span class="emoji">🧊</span>
-        <h2>Apache Iceberg: An Engineering Doc</h2>
-        <p class="description">A staff engineer's design doc for the open table format — the metadata tree, snapshots and ACID commits, hidden partitioning, schema evolution, merge-on-read deletion vectors, and how Dremio, Snowflake, and Databricks build on it.</p>
-      </a>
-      <a href="durable-execution/" class="card">
-        <span class="emoji">♾️</span>
-        <h2>Durable Execution: An Engineering Doc</h2>
-        <p class="description">A staff engineer's design doc for Temporal &amp; Cadence — workflows as code, event-sourced history and deterministic replay, the durable toolkit (signals, timers, sagas), the server's Frontend/History/Matching services, versioning long-running workflows, the Cadence→Temporal fork, and what Hacker News makes of it all.</p>
-      </a>
-      <a href="metrics-pipeline/" class="card">
-        <span class="emoji">📡</span>
-        <h2>The Metrics Pipeline: An Engineering Doc</h2>
-        <p class="description">How services collect, store, and query time-series — instrument → collect → store → query → visualize → alert. Pull vs push, the cardinality problem, an interactive comparison of Prometheus, InfluxDB, TimescaleDB &amp; VictoriaMetrics, the Prometheus scaling tier (Thanos/Mimir), and OpenTelemetry.</p>
-      </a>
-      <a href="asyncio/" class="card">
-        <span class="emoji">🔄</span>
-        <h2>Python asyncio: An Interview Guide</h2>
-        <p class="description">A staff interview guide to Python's asyncio — the event loop and cooperative concurrency, coroutine vs task vs future, structured concurrency and cancellation with TaskGroup, why one blocking call freezes everything, bounded concurrency, and asyncio vs threads vs processes.</p>
-      </a>
-      <a href="workflow-orchestration/" class="card">
-        <span class="emoji">🔀</span>
-        <h2>Workflow Orchestration: A Comparison</h2>
-        <p class="description">An exhaustive, primary-source comparison of Temporal, Apache Airflow, and AWS Step Functions — three machines that share the word "workflow." Execution &amp; durability models, the same workflow coded three ways, architecture, scaling, pricing, and an interactive filter/highlight comparison matrix. Companion to the Durable Execution doc.</p>
-      </a>
-      <a href="llm-inference/" class="card">
-        <span class="emoji">🚦</span>
-        <h2>LLM Inference Serving: An Engineering Doc</h2>
-        <p class="description">A system-design walkthrough of serving LLMs at scale — the prefill/decode asymmetry, KV-cache capacity math with an interactive calculator, speculative decoding, disaggregated prefill/decode serving, cache-aware routing, and how vLLM, TensorRT-LLM, and SGLang compare.</p>
-      </a>
-      <a href="living-wage/" class="card">
-        <span class="emoji">💵</span>
-        <h2>Living Wage Expenses</h2>
-        <p class="description">Break down MIT's Living Wage “typical expenses” as a pie chart &mdash; pick a city and family size and see where a household's budget goes.</p>
-      </a>
-      <a href="ebike-breakeven/" class="card">
-        <span class="emoji">🚲</span>
-        <h2>E-bike vs. Rental Breakeven</h2>
-        <p class="description">Set your weekly NYC riding habits and a bike price to see how many months until buying an e-bike beats renting Citi Bike, LimePrime, or LimePass.</p>
-      </a>
-      <a href="screen-sizes/" class="card">
-        <span class="emoji">🎬</span>
-        <h2>Georgia's Biggest Movie Screens</h2>
-        <p class="description">Georgia's IMAX screens drawn to true scale as nested rectangles on a shared floor, with a person for scale — Royal Cinemas 14 in Savannah (billed as the world's tallest IMAX), Regal Mall of Georgia, and Regal Atlantic Station. Hover to isolate a screen; toggle any of them.</p>
-      </a>
-      <a href="main-metro-dominance/" class="card">
-        <span class="emoji">🏙️</span>
-        <h2>Main Metro Dominance</h2>
-        <p class="description">All 50 states ranked by how much of the state lives in its single biggest metro &mdash; from Rhode Island, which is entirely Providence, to West Virginia, where Charleston holds barely a ninth. Switch between metro and combined-area definitions, or view it as a tile map.</p>
-      </a>
-      <a href="valuation-curves/" class="card">
-        <span class="emoji">📈</span>
-        <h2>Valuation Curves</h2>
-        <p class="description">Thirty-three companies on one logarithmic chart, every clock starting at zero &mdash; so Sierra&rsquo;s three years sit next to Apple&rsquo;s fifty. Private funding rounds and quarterly public market caps join into a single line, with the IPO marked. Public market caps are computed from SEC share counts rather than looked up; hollow dots mark the numbers nobody confirmed.</p>
-      </a>
-      <a href="token-usage/" class="card">
-        <span class="emoji">🎟️</span>
-        <h2>AI Token Usage by Week</h2>
-        <p class="description">Fifteen weeks of AI token usage as stacked columns &mdash; input and output tokens against the left axis, prompt count as a line on the right. Output is under 1% of every column: the tokens are almost entirely context being re-read. Hover or arrow-key any week for exact numbers, or open the table view.</p>
-      </a>
-      <a href="monitor-sizes/" class="card">
-        <span class="emoji">🖥️</span>
-        <h2>Monitor Sizes</h2>
-        <p class="description">Nine displays &mdash; from a 27-inch Dell to Samsung&rsquo;s 57-inch Odyssey Neo G9, plus side-by-side pairs of 27- and 32-inch Dells &mdash; drawn to true scale two ways: their active screen areas nested from the front (curved panels unrolled, as a tape measure would read them), then the same screens seen from above on one horizontal scale, so an 800R curve&rsquo;s real desk width and depth sit against a flat panel&rsquo;s. Resolution, PPI and manufacturer-manual sources for each; hover to isolate, click rows to hide.</p>
-      </a>
-      <a href="housing-squeeze/" class="card">
-        <span class="emoji">🏠</span>
-        <h2>Housing Squeeze</h2>
-        <p class="description">Czechia and the United States against 20 other rich countries. Czech real house prices are up 57% since 2015, second only to Portugal, while official rents are flat and fewer young adults live with their parents. In the US, real rents are up 17%, second only to Ireland, even though homes were added faster than the population grew. Switch between the two to compare housing stock, population and migration, young adults at home, completions and permit times, built from Eurostat, OECD, Census Bureau, Hypostat and national statistics.</p>
-      </a>
-    </div>
+    <section class="section">
+      <h2 class="section-title">Active</h2>
+      <div class="tools">
+        <a href="eusa-vti/" class="card">
+          <span class="emoji">⚖️</span>
+          <h2>EUSA vs VTI vs VT</h2>
+          <p class="description">US equal-weighted vs US cap-weighted vs World cap-weighted ETFs over time — AI concentration, drawdowns, and total return with selectable metric pairs.</p>
+        </a>
+        <a href="employees/" class="card">
+          <span class="emoji">👥</span>
+          <h2>Big Tech Employment</h2>
+          <p class="description">Stacked bar chart showing employee headcount trends across major tech companies from 2011 to 2026.</p>
+        </a>
+        <a href="valuation-curves/" class="card">
+          <span class="emoji">📈</span>
+          <h2>Valuation Curves</h2>
+          <p class="description">Thirty-three companies on one logarithmic chart, every clock starting at zero &mdash; so Sierra&rsquo;s three years sit next to Apple&rsquo;s fifty. Private funding rounds and public market caps join into one line.</p>
+        </a>
+        <a href="area-comparison/" class="card">
+          <span class="emoji">📊</span>
+          <h2>Area Comparison</h2>
+          <p class="description">Compare demographic and statistical data across states, cities, and neighborhoods in California, New York, and Georgia.</p>
+        </a>
+        <a href="ipo-index-exposure/" class="card">
+          <span class="emoji">🚀</span>
+          <h2>IPO Index Fund Exposure</h2>
+          <p class="description">If SpaceX, OpenAI, or Anthropic IPOs, how much of it does a $200k index-fund position actually buy? Compare VT, VTI, VOO, and equal-weighted EUSA &mdash; and see why equal-weighting ignores valuation entirely.</p>
+        </a>
+        <a href="country-freedom/" class="card">
+          <span class="emoji">🗽</span>
+          <h2>Country Freedom</h2>
+          <p class="description">Filter the world's countries by compound percentile of government and economic freedom — combining Freedom House, EIU, Heritage, and Fraser indices.</p>
+        </a>
+        <a href="mortgage/" class="card">
+          <span class="emoji">🏠</span>
+          <h2>Mortgage Calculator & ROI Projection</h2>
+          <p class="description">Project mortgage payments, equity buildup, and investment returns across different scenarios.</p>
+        </a>
+      </div>
+    </section>
+    <section class="section">
+      <h2 class="section-title">Archive</h2>
+      <div class="tools">
+        <a href="housing-squeeze/" class="card">
+          <span class="emoji">🏠</span>
+          <h2>Housing Squeeze</h2>
+          <p class="description">Czechia and the United States against 20 other rich countries. Czech real house prices are up 57% since 2015, second only to Portugal, while official rents are flat and fewer young adults live with their parents. In the US, real rents are up 17%, second only to Ireland, even though homes were added faster than the population grew. Switch between the two to compare housing stock, population and migration, young adults at home, completions and permit times, built from Eurostat, OECD, Census Bureau, Hypostat and national statistics.</p>
+        </a>
+        <a href="monitor-sizes/" class="card">
+          <span class="emoji">🖥️</span>
+          <h2>Monitor Sizes</h2>
+          <p class="description">Nine displays &mdash; from a 27-inch Dell to Samsung&rsquo;s 57-inch Odyssey Neo G9, plus side-by-side pairs of 27- and 32-inch Dells &mdash; drawn to true scale two ways: their active screen areas nested from the front (curved panels unrolled, as a tape measure would read them), then the same screens seen from above on one horizontal scale, so an 800R curve&rsquo;s real desk width and depth sit against a flat panel&rsquo;s. Resolution, PPI and manufacturer-manual sources for each; hover to isolate, click rows to hide.</p>
+        </a>
+        <a href="token-usage/" class="card">
+          <span class="emoji">🎟️</span>
+          <h2>AI Token Usage by Week</h2>
+          <p class="description">Fifteen weeks of AI token usage as stacked columns &mdash; input and output tokens against the left axis, prompt count as a line on the right. Output is under 1% of every column: the tokens are almost entirely context being re-read. Hover or arrow-key any week for exact numbers, or open the table view.</p>
+        </a>
+        <a href="monroe-safe-street/" class="card">
+          <span class="emoji">🚸</span>
+          <h2>Monroe Dr Safe Streets</h2>
+          <p class="description">An OpenStreetMap of the City of Atlanta's Monroe Dr NE road-diet redesign — every new signal, beacon, roundabout, crossing, and lane change from the April 2026 project Q&amp;A, mapped to its real location with source-cited details.</p>
+        </a>
+        <a href="main-metro-dominance/" class="card">
+          <span class="emoji">🏙️</span>
+          <h2>Main Metro Dominance</h2>
+          <p class="description">All 50 states ranked by how much of the state lives in its single biggest metro &mdash; from Rhode Island, which is entirely Providence, to West Virginia, where Charleston holds barely a ninth. Switch between metro and combined-area definitions, or view it as a tile map.</p>
+        </a>
+        <a href="screen-sizes/" class="card">
+          <span class="emoji">🎬</span>
+          <h2>Georgia's Biggest Movie Screens</h2>
+          <p class="description">Georgia's IMAX screens drawn to true scale as nested rectangles on a shared floor, with a person for scale — Royal Cinemas 14 in Savannah (billed as the world's tallest IMAX), Regal Mall of Georgia, and Regal Atlantic Station. Hover to isolate a screen; toggle any of them.</p>
+        </a>
+        <a href="buy-vs-rent/" class="card">
+          <span class="emoji">🔑</span>
+          <h2>Atlanta Buy vs. Rent Break-even</h2>
+          <p class="description">Compare a cash-funded home purchase—with a margin loan above $1 million—with renting, and see when buying and selling comes out ahead.</p>
+        </a>
+        <a href="living-wage/" class="card">
+          <span class="emoji">💵</span>
+          <h2>Living Wage Expenses</h2>
+          <p class="description">Break down MIT's Living Wage “typical expenses” as a pie chart &mdash; pick a city and family size and see where a household's budget goes.</p>
+        </a>
+        <a href="ebike-breakeven/" class="card">
+          <span class="emoji">🚲</span>
+          <h2>E-bike vs. Rental Breakeven</h2>
+          <p class="description">Set your weekly NYC riding habits and a bike price to see how many months until buying an e-bike beats renting Citi Bike, LimePrime, or LimePass.</p>
+        </a>
+        <a href="tech-ipo-sp500/" class="card">
+          <span class="emoji">📈</span>
+          <h2>Biggest Tech IPOs vs S&amp;P 500</h2>
+          <p class="description">Each year's biggest tech IPO from 1990&ndash;2025, sized as parts per million of the S&amp;P 500's total market cap on the IPO date.</p>
+        </a>
+        <a href="exe-vs-hetzner/" class="card">
+          <span class="emoji">☁️</span>
+          <h2>exe.dev vs Hetzner vs AWS</h2>
+          <p class="description">Side-by-side cost comparison of exe.dev's Personal &amp; Cloud Pool plans against Hetzner Cloud CCX and AWS EC2 m7a, matched 1-to-1 by vCPU and RAM, with a non-linear transfer slider.</p>
+        </a>
+        <a href="free-models/" class="card">
+          <span class="emoji">🤖</span>
+          <h2>Free Model Ranker</h2>
+          <p class="description">See which free models on OpenRouter are actually good, ranked by ArtificialAnalysis intelligence index.</p>
+        </a>
+        <a href="fde-jobs/" class="card">
+          <span class="emoji">🧭</span>
+          <h2>FDE Jobs</h2>
+          <p class="description">Compare Forward Deployed Engineer roles across prestigious smaller tech companies — skills, role focus, target industry, and more.</p>
+        </a>
+        <a href="mergers/" class="card">
+          <span class="emoji">🤝</span>
+          <h2>Mega Mergers by Presidential Term</h2>
+          <p class="description">The 10 largest US M&amp;A deals announced during each presidential term from Clinton I through Trump II, sized as a share of US GDP for each deal's year.</p>
+        </a>
+        <a href="rome/" class="card">
+          <span class="emoji">🏛️</span>
+          <h2>Stages of Rome</h2>
+          <p class="description">Explore the five eras of Roman civilization from Kingdom to Byzantine Empire, with an interactive timeline, territorial maps, and historical summaries.</p>
+        </a>
+        <a href="python-kata/" class="card">
+          <span class="emoji">🐍</span>
+          <h2>Python Kata Practice</h2>
+          <p class="description">Practice Python coding challenges with an in-browser editor and automated test validation, powered by Pyodide.</p>
+        </a>
+        <a href="sliding-window/" class="card">
+          <span class="emoji">🪟</span>
+          <h2>Sliding Window Maximum Visualizer</h2>
+          <p class="description">Step through the monotonic deque approach to the sliding window maximum problem, with interactive visualization of each phase.</p>
+        </a>
+        <a href="sunrise-sunset/" class="card">
+          <span class="emoji">🌅</span>
+          <h2>Sunrise & Sunset Comparison</h2>
+          <p class="description">Compare sunrise and sunset times across different cities throughout the year with interactive charts.</p>
+        </a>
+        <a href="margin/" class="card">
+          <span class="emoji">📉</span>
+          <h2>Margin Drawdown Calculator</h2>
+          <p class="description">Visualize how much you can borrow on margin without facing a margin call during market drawdowns, with historical crash scenarios.</p>
+        </a>
+        <a href="slotted-page/" class="card">
+          <span class="emoji">📄</span>
+          <h2>Slotted Page Visualizer</h2>
+          <p class="description">Explore how B-Tree storage organizes cells within slotted pages, with interactive visualization of cell layouts, offset pointers, and free space management.</p>
+        </a>
+        <a href="manacher/" class="card">
+          <span class="emoji">🪞</span>
+          <h2>Manacher's Algorithm Visualizer</h2>
+          <p class="description">Step through Manacher's linear-time algorithm for finding the longest palindromic substring, with an interactive visualization of each phase.</p>
+        </a>
+      </div>
+    </section>
+    <section class="section">
+      <h2 class="section-title">Eng Docs</h2>
+      <div class="tools">
+        <a href="asyncio/" class="card">
+          <span class="emoji">🔄</span>
+          <h2>Python asyncio: An Interview Guide</h2>
+          <p class="description">A staff interview guide to Python's asyncio — the event loop and cooperative concurrency, coroutine vs task vs future, structured concurrency and cancellation with TaskGroup, why one blocking call freezes everything, bounded concurrency, and asyncio vs threads vs processes.</p>
+        </a>
+        <a href="firecracker/" class="card">
+          <span class="emoji">🔥</span>
+          <h2>Firecracker: An Engineering Doc</h2>
+          <p class="description">A staff engineer's design doc for AWS's microVM monitor — architecture, threat model, snapshots, and how it compares to QEMU, gVisor, and containers.</p>
+        </a>
+        <a href="clickhouse/" class="card">
+          <span class="emoji">🐘</span>
+          <h2>ClickHouse: An Engineering Doc</h2>
+          <p class="description">A staff engineer's design doc for the OLAP database — parts and granules, vectorized SIMD execution, distributed two-stage aggregation, ClickHouse Cloud's SharedMergeTree, and how it compares to Snowflake, BigQuery, and Druid.</p>
+        </a>
+        <a href="iceberg/" class="card">
+          <span class="emoji">🧊</span>
+          <h2>Apache Iceberg: An Engineering Doc</h2>
+          <p class="description">A staff engineer's design doc for the open table format — the metadata tree, snapshots and ACID commits, hidden partitioning, schema evolution, merge-on-read deletion vectors, and how Dremio, Snowflake, and Databricks build on it.</p>
+        </a>
+        <a href="durable-execution/" class="card">
+          <span class="emoji">♾️</span>
+          <h2>Durable Execution: An Engineering Doc</h2>
+          <p class="description">A staff engineer's design doc for Temporal &amp; Cadence — workflows as code, event-sourced history and deterministic replay, the durable toolkit (signals, timers, sagas), the server's Frontend/History/Matching services, versioning long-running workflows, the Cadence→Temporal fork, and what Hacker News makes of it all.</p>
+        </a>
+        <a href="llm-inference/" class="card">
+          <span class="emoji">🚦</span>
+          <h2>LLM Inference Serving: An Engineering Doc</h2>
+          <p class="description">A system-design walkthrough of serving LLMs at scale — the prefill/decode asymmetry, KV-cache capacity math with an interactive calculator, speculative decoding, disaggregated prefill/decode serving, cache-aware routing, and how vLLM, TensorRT-LLM, and SGLang compare.</p>
+        </a>
+        <a href="metrics-pipeline/" class="card">
+          <span class="emoji">📡</span>
+          <h2>The Metrics Pipeline: An Engineering Doc</h2>
+          <p class="description">How services collect, store, and query time-series — instrument → collect → store → query → visualize → alert. Pull vs push, the cardinality problem, an interactive comparison of Prometheus, InfluxDB, TimescaleDB &amp; VictoriaMetrics, the Prometheus scaling tier (Thanos/Mimir), and OpenTelemetry.</p>
+        </a>
+        <a href="workflow-orchestration/" class="card">
+          <span class="emoji">🔀</span>
+          <h2>Workflow Orchestration: A Comparison</h2>
+          <p class="description">An exhaustive, primary-source comparison of Temporal, Apache Airflow, and AWS Step Functions — three machines that share the word "workflow." Execution &amp; durability models, the same workflow coded three ways, architecture, scaling, pricing, and an interactive filter/highlight comparison matrix. Companion to the Durable Execution doc.</p>
+        </a>
+        <a href="vllm/" class="card">
+          <span class="emoji">⚡</span>
+          <h2>vLLM: An Engineering Doc</h2>
+          <p class="description">A staff engineer's design doc for the open-source LLM inference engine — PagedAttention, continuous batching, prefix caching, and the V1 rewrite.</p>
+        </a>
+        <a href="hypothesis/" class="card">
+          <span class="emoji">🧪</span>
+          <h2>Hypothesis: Property-Based Testing</h2>
+          <p class="description">A working Python developer's guide to property-based testing with Hypothesis — strategies, the @given decorator, automatic shrinking to minimal counterexamples, stateful testing, and the properties worth asserting.</p>
+        </a>
+      </div>
+    </section>
   </div>
 </body>
 </html>

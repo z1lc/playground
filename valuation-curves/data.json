@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-11-07",
+    "generated": "2026-11-08",
     "gdpBase": "2026-07-01",
     "gdpBaseLabel": "Q3 2026",
     "gdpSourceUrl": "https://fred.stlouisfed.org/series/GDP",
@@ -361,17 +361,17 @@
       "openai"
     ],
     "domain": {
-      "tMax": 51.596,
+      "tMax": 51.599,
       "vMin": 5200000,
       "vMax": 5503958000000
     },
     "counts": {
       "companies": 33,
-      "points": 974
+      "points": 975
     },
     "disclosure": {
-      "rounds": 182,
-      "valued": 115,
+      "rounds": 183,
+      "valued": 116,
       "byDecade": {
         "1990s": {
           "rounds": 10,
@@ -386,8 +386,8 @@
           "valued": 40
         },
         "2020s": {
-          "rounds": 76,
-          "valued": 58
+          "rounds": 77,
+          "valued": 59
         }
       }
     }
@@ -407,12 +407,12 @@
       "foundedNote": "Gates and Allen formed the Micro-Soft partnership on 1975-04-04 in Albuquerque, New Mexico, to sell a BASIC interpreter for the MITS Altair 8800. The company was not an incorporated business until the 1981-06-25 restructuring in Washington state, which Microsoft's own Facts About Microsoft page also gives as the incorporation date. This chart clocks from the earliest formal founding, so t=0 is the 1975 partnership and the 1986-03-13 IPO lands eleven years in \u2014 an unusually long private stretch that will look wrong to anyone who dates Microsoft from the 1981 incorporation (five years to IPO) rather than the partnership. The gap is real rather than a data error: Microsoft funded those eleven years out of licensing revenue and took exactly one outside equity cheque, in 1981.",
       "ticker": "MSFT",
       "ipoDate": "1986-03-13",
-      "ageYears": 51.596,
+      "ageYears": 51.599,
       "latest": {
-        "t": 51.596,
+        "t": 51.599,
         "vNom": 3940000000000,
         "vGdp": 3940000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -476,7 +476,7 @@
         50.991,
         51.24,
         51.492,
-        51.596
+        51.599
       ],
       "vNom": [
         99410000000,
@@ -791,7 +791,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": null,
       "labels": {},
@@ -859,12 +859,12 @@
       "foundedNote": "The Apple Computer Company partnership was formed 1976-04-01 by Steve Jobs, Steve Wozniak and Ronald Wayne. Apple Computer, Inc. was incorporated in Cupertino, California on 1977-01-03. This chart clocks from the earliest formal founding, so t=0 is the 1976 partnership \u2014 nine months before the incorporation.",
       "ticker": "AAPL",
       "ipoDate": "1980-12-12",
-      "ageYears": 50.602,
+      "ageYears": 50.605,
       "latest": {
-        "t": 50.602,
+        "t": 50.605,
         "vNom": 4975000000000,
         "vGdp": 4975000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -942,7 +942,7 @@
         49.997,
         50.246,
         50.498,
-        50.602
+        50.605
       ],
       "vNom": [
         5200000,
@@ -1327,7 +1327,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 1,
       "labels": {
@@ -1413,12 +1413,12 @@
       "foundedNote": "Cisco Systems, Inc. was organized under the General Corporation Law of the State of California on 1984-12-10, per the company description Nasdaq filed with the SEC as Exhibit C to its 2005 Form 1 exchange application. Cisco's own 10-Ks say only 'December 1984' (FY1995) or '1984' (FY2026). The History of Computer Communications (following Bunnell and Brate's Making the Cisco Connection) and Wikipedia give the same day. No earlier partnership is recorded anywhere I read. Before incorporating, Len Bosack and Sandy Lerner were Stanford staff linking campus networks, which is a team origin and not a formal founding. Cisco reincorporated in Delaware in 2021 (FY2026 10-K). Under the methodology the original California incorporation is the clock start.",
       "ticker": "CSCO",
       "ipoDate": "1990-02-16",
-      "ageYears": 41.909,
+      "ageYears": 41.912,
       "latest": {
-        "t": 41.909,
+        "t": 41.912,
         "vNom": 370010000000,
         "vGdp": 370010000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -1489,7 +1489,7 @@
         41.304,
         41.553,
         41.805,
-        41.909
+        41.912
       ],
       "vNom": [
         7812500,
@@ -1839,7 +1839,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 1,
       "labels": {
@@ -2022,12 +2022,12 @@
       "foundedNote": "NVIDIA's IPO prospectus states flatly that the company 'was incorporated in California in April 1993 and reincorporated in Delaware in April 1998.' This chart uses the original California incorporation, not the 1998 Delaware reincorporation, so t=0 is April 1993 and the 1999-01-22 IPO lands at 5.8 years. NVIDIA's own materials and Wikipedia give the specific day as 1993-04-05, and that is very likely right, but the primary filing commits only to the month, so the month is what is recorded here \u2014 the four-day difference is 0.01 years on a 33-year axis. Founded by Jen-Hsun (Jensen) Huang, Chris Malachowsky and Curtis Priem.",
       "ticker": "NVDA",
       "ipoDate": "1999-01-22",
-      "ageYears": 33.602,
+      "ageYears": 33.605,
       "latest": {
-        "t": 33.602,
+        "t": 33.605,
         "vNom": 4506000000000,
         "vGdp": 4506000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -2092,7 +2092,7 @@
         32.997,
         33.246,
         33.498,
-        33.602
+        33.605
       ],
       "vNom": [
         7834150,
@@ -2412,7 +2412,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 4,
       "labels": {
@@ -2504,12 +2504,12 @@
       "foundedNote": "Jeff Bezos filed articles of incorporation in Washington State on 1994-07-05 under the name Cadabra, Inc., and renamed it Amazon.com, Inc. within a few months after a lawyer misheard 'Cadabra' as 'cadaver'. The filings corroborate the month but not the day: the IPO prospectus says only 'The Company was incorporated in Washington in July 1994', and records Bezos buying 10,200,000 founder shares for $10,000 in July 1994. The 1994-07-05 date and the Cadabra name come from Wikipedia rather than from a filing. Amazon reincorporated in Delaware on 1996-05-28 through a Washington-into-Delaware merger (S-1 Exhibit 2.1, 'Agreement and Plan of Merger dated May 28, 1996'), five weeks before the Kleiner Perkins round; per the brief this chart clocks from the original Washington incorporation, so t=0 is 22 months before the Delaware entity existed.",
       "ticker": "AMZN",
       "ipoDate": "1997-05-15",
-      "ageYears": 32.343,
+      "ageYears": 32.346,
       "latest": {
-        "t": 32.343,
+        "t": 32.346,
         "vNom": 2803000000000,
         "vGdp": 2803000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -2574,7 +2574,7 @@
         31.738,
         31.987,
         32.239,
-        32.343
+        32.346
       ],
       "vNom": [
         44400000,
@@ -2894,7 +2894,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 1,
       "labels": {
@@ -2980,12 +2980,12 @@
       "foundedNote": "Note 1 to the audited financial statements in Netflix's 2002 S-1 states it plainly: 'Netflix, Inc. (the Company), was incorporated on August 29, 1997 (inception) and began operations on April 14, 1998.' Founded by Reed Hastings and Marc Randolph; the company was originally NetFlix.com, Inc. and renamed Netflix, Inc. in 2002 (EDGAR records the filing-system rename as 2002-03-06). There is no earlier partnership to date from \u2014 the first equity event on the record is 1997-09-01, three days after incorporation, when the company issued 3,200,000 common shares to its two founding officers and directors in exchange for a business plan carried at a stated value of $160,000.",
       "ticker": "NFLX",
       "ipoDate": "2002-05-23",
-      "ageYears": 29.192,
+      "ageYears": 29.194,
       "latest": {
-        "t": 29.192,
+        "t": 29.194,
         "vNom": 260380000000,
         "vGdp": 260380000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -3044,7 +3044,7 @@
         28.586,
         28.836,
         29.088,
-        29.192
+        29.194
       ],
       "vNom": [
         309721110,
@@ -3334,7 +3334,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 0,
       "labels": {
@@ -3405,12 +3405,12 @@
       "foundedNote": "Google Inc. was incorporated in California on September 4, 1998. The S-1 states only 'We were incorporated in California in September 1998. In August 2003, we reincorporated in Delaware'; the day comes from Wikipedia's history of the company. This chart clocks from that original California incorporation, so t=0 is 1998-09-04 rather than the 2003 Delaware reincorporation. On 2015-08-10 Larry Page announced a reorganisation under a new Delaware holding company, Alphabet Inc., completed 2015-10-02: every Google share converted one-for-one into an Alphabet share and Alphabet took over the listing. The ticker and CIK in the public block are therefore Alphabet's (CIK 0001652044), a legal entity seventeen years younger than t=0; Google Inc. filed under CIK 0001288776 until the reorganisation and became Google LLC in 2017.",
       "ticker": "GOOGL",
       "ipoDate": "2004-08-19",
-      "ageYears": 28.176,
+      "ageYears": 28.179,
       "latest": {
-        "t": 28.176,
+        "t": 28.179,
         "vNom": 3490000000000,
         "vGdp": 3490000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -3467,7 +3467,7 @@
         27.571,
         27.82,
         28.072,
-        28.176
+        28.179
       ],
       "vNom": [
         23053669655,
@@ -3747,7 +3747,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 0,
       "labels": {},
@@ -3828,12 +3828,12 @@
       "foundedNote": "Exhibit 3.1 to the 2003 S-1 \u2014 the Eighth Amended and Restated Certificate of Incorporation \u2014 states that 'the date of filing of its original Certificate of Incorporation with the Secretary of State of the State of Delaware was February 3, 1999.' The prospectus body says only 'We were incorporated in Delaware in February 1999' and 'We were founded in February 1999'; the exhibit supplies the day, which is exactly the case RESEARCH.md makes for reading the exhibits. Popular accounts date the founding to March 1999, when Marc Benioff, Parker Harris, Dave Moellenhoff and Frank Dominguez started work in a rented apartment on Telegraph Hill in San Francisco; that is a team-founding date a month after the charter. This chart clocks from the earliest formal founding, so t=0 is the Delaware filing.",
       "ticker": "CRM",
       "ipoDate": "2004-06-23",
-      "ageYears": 27.76,
+      "ageYears": 27.762,
       "latest": {
-        "t": 27.76,
+        "t": 27.762,
         "vNom": 175830000000,
         "vGdp": 175830000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -3890,7 +3890,7 @@
         27.155,
         27.404,
         27.656,
-        27.76
+        27.762
       ],
       "vNom": [
         1113825680,
@@ -4170,7 +4170,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 0,
       "labels": {
@@ -4242,12 +4242,12 @@
       "foundedNote": "The IPO prospectus states it twice. The business section says 'We were founded and incorporated as Space Exploration Technologies Corp., a Delaware corporation, on March 14, 2002 and reincorporated as a Texas corporation on February 14, 2024', and Note 1 says 'SpaceX was incorporated in the state of Delaware on March 14, 2002 and converted into a corporation organized under the laws of the State of Texas on February 14, 2024.' No earlier partnership exists, and the 2024 Texas conversion is a change of domicile, not a new founding, so the original Delaware incorporation is used. The widely repeated date of 2002-05-06 is a de facto team-founding date: Wikipedia's History of SpaceX says the 'de facto founding date might instead be May 6' or around June, while 'According to filings, SpaceX was incorporated on March 14, 2002'. Later anchors from S-1 Exhibit 4.2: Musk's founding Class B shares were issued 2002-07-08 and the Series A purchase agreement is dated 2002-08-05.",
       "ticker": "SPCX",
       "ipoDate": "2026-06-12",
-      "ageYears": 24.652,
+      "ageYears": 24.655,
       "latest": {
-        "t": 24.652,
+        "t": 24.655,
         "vNom": 1823000000000,
         "vGdp": 1823000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -4269,7 +4269,7 @@
         23.338,
         23.749,
         24.247,
-        24.652
+        24.655
       ],
       "vNom": [
         12000000000,
@@ -4374,7 +4374,7 @@
         "2025-07-15",
         "2025-12-12",
         "2026-06-12",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 17,
       "labels": {
@@ -4838,12 +4838,12 @@
       "foundedNote": "Palantir's S-1 states flatly that the company \"was incorporated in Delaware on May 6, 2003.\" Founded by Peter Thiel, Alex Karp, Joe Lonsdale, Stephen Cohen and Nathan Gettings. There is no earlier partnership, so the incorporation is the earliest formal founding. Note that the company barely operated in its first year - most narrative accounts say Palantir 'started' in 2004, when Thiel and his fund began bankrolling roughly $30M of development, and the S-1's own business section says only 'founded in 2003'. Clocking from 2003-05-06 makes Palantir 17.4 years old at its direct listing, the longest private run in this dataset.",
       "ticker": "PLTR",
       "ipoDate": "2020-09-30",
-      "ageYears": 23.508,
+      "ageYears": 23.51,
       "latest": {
-        "t": 23.508,
+        "t": 23.51,
         "vNom": 386430000000,
         "vGdp": 386430000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -4880,7 +4880,7 @@
         22.903,
         23.152,
         23.404,
-        23.508
+        23.51
       ],
       "vNom": [
         400000000,
@@ -5060,7 +5060,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 9,
       "labels": {
@@ -5250,12 +5250,12 @@
       "foundedNote": "Tesla Motors, Inc. was incorporated in Delaware on 2003-07-01 by Martin Eberhard and Marc Tarpenning. The S-1 says only 'We were incorporated in Delaware in 2003'; the day comes from Wikipedia. There is no earlier partnership to date from \u2014 unlike Apple and Microsoft, the incorporation IS the founding. Elon Musk arrived seven months later with the Series A and became chairman and largest shareholder; a 2009 settlement lets five people call themselves founders, but the filing date is unaffected by that.",
       "ticker": "TSLA",
       "ipoDate": "2010-06-29",
-      "ageYears": 23.354,
+      "ageYears": 23.357,
       "latest": {
-        "t": 23.354,
+        "t": 23.357,
         "vNom": 1415000000000,
         "vGdp": 1415000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -5309,7 +5309,7 @@
         22.749,
         22.998,
         23.25,
-        23.354
+        23.357
       ],
       "vNom": [
         86400000,
@@ -5574,7 +5574,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 4,
       "labels": {
@@ -5667,12 +5667,12 @@
       "foundedNote": "TheFacebook launched at thefacebook.com on 2004-02-04 from Mark Zuckerberg's Harvard dorm room, and this chart clocks from that launch as the earliest formal founding. No entity existed on that date. Wikipedia, citing David Kirkpatrick's The Facebook Effect (pp. 37-38), says the company 'was initially incorporated as a Florida LLC' during 2004 but gives no filing date, and no Florida filing is cited by any source retrieved here \u2014 the frequently repeated 'April 2004' could not be tied to a document. The Delaware entity is precisely dated by a primary source: the restated certificate of incorporation filed as Exhibit 3.3 to the S-1 states 'The date of filing its original Certificate of Incorporation with the Secretary of State was July 29, 2004, under the name TheFacebook, Inc.' The S-1 and every 10-K say only 'We were incorporated in Delaware in July 2004.' The entity became Facebook, Inc. in 2005 and Meta Platforms, Inc. on 2021-10-28, announced by Zuckerberg at Connect; EDGAR records the former name 'Facebook Inc' with a date of 2021-10-27, which is a filing-system date rather than a charter date. The rebrand renamed the parent only, not the Facebook service, and did not change the corporate structure. The stock ticker did not move with the name: the October 2021 announcement said the company intended to trade as MVRS from December 1, but it in fact became META later, in 2022.",
       "ticker": "META",
       "ipoDate": "2012-05-18",
-      "ageYears": 22.757,
+      "ageYears": 22.76,
       "latest": {
-        "t": 22.757,
+        "t": 22.76,
         "vNom": 1560000000000,
         "vGdp": 1560000000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -5726,7 +5726,7 @@
         22.152,
         22.402,
         22.653,
-        22.757
+        22.76
       ],
       "vNom": [
         98000000,
@@ -5991,7 +5991,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 5,
       "labels": {
@@ -6133,12 +6133,12 @@
       "foundedNote": "Shopify's F-1 gives the date three times, twice in audited notes: 'We were incorporated under the CBCA on September 28, 2004 under the name 4261607 Canada Ltd.' It filed articles of amendment on 2006-01-19 to become Jaded Pixel Technologies Inc. and again on 2011-11-30 to become Shopify Inc. The F-1 also says Tobias Lutke 'co-founded Shopify in September 2004', so the numbered-company incorporation and the team founding are the same month. The business began as an online snowboard shop that Lutke and Scott Lake set out to run \u2014 the letter from Tobi in the F-1 puts it as 'In 2004, we took something we loved, snowboarding, and built a business around it' \u2014 and when the available store software proved 'incredibly expensive, unnecessarily complex, and infuriatingly inflexible' they built their own and shifted the business onto it, launching under the name Shopify in 2006. The snowboard shop was called Snowdevil; that name appears in secondary accounts and never in the F-1, which describes the business without naming it.",
       "ticker": "SHOP",
       "ipoDate": "2015-05-21",
-      "ageYears": 22.109,
+      "ageYears": 22.111,
       "latest": {
-        "t": 22.109,
+        "t": 22.111,
         "vNom": 191570000000,
         "vGdp": 191570000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -6163,7 +6163,7 @@
         21.504,
         21.753,
         22.005,
-        22.109
+        22.111
       ],
       "vNom": [
         1265436089,
@@ -6283,7 +6283,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 0,
       "labels": {
@@ -6360,12 +6360,12 @@
       "foundedNote": "Two separate S-1 exhibits certify the same charter date: Exhibit 3.1 (Restated Certificate, dated 2022-09-22) and Exhibit 3.2 (post-IPO Amended and Restated Certificate) both open 'The date of the filing of its original Certificate of Incorporation with the Secretary of State of the State of Delaware was January 5, 2007 ... originally incorporated under the name of MAJ I, Inc.' The S-1 body agrees: 'We were incorporated in the State of Delaware in January 2007 as MAJ I, Inc. We changed our name to Kaching Group Inc. in January 2008 and then to Wealthfront Inc. in October 2010. In August 2018, we changed our name to Wealthfront Corporation.' Two dates in circulation are wrong for this purpose. EDGAR's former-name metadata records the Wealthfront Inc. rename as 2011-06-30, which is the date the name first reached the filing system, not the charter date (the S-1 says October 2010). And every secondary source dates the company to the team founding: Forbes says 'Cofounded in 2008 by Andy Rachleff', VatorNews says January 2008 with Daniel Carroll, and both are describing kaChing, the mutual-fund marketplace that preceded the robo-advisor. Because MAJ I, Inc. is the same continuously existing Delaware corporation that trades today as WLTH \u2014 never dissolved, never reincorporated \u2014 the earliest-formal-founding rule puts t=0 at 2007-01-05, roughly a year before the founding date every profile of the company prints.",
       "ticker": "WLTH",
       "ipoDate": "2025-12-12",
-      "ageYears": 19.839,
+      "ageYears": 19.842,
       "latest": {
-        "t": 19.839,
+        "t": 19.842,
         "vNom": 1660000000,
         "vGdp": 1660000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -6376,7 +6376,7 @@
         17.906,
         18.935,
         18.987,
-        19.839
+        19.842
       ],
       "vNom": [
         700000000,
@@ -6426,7 +6426,7 @@
         "2024-12-01",
         "2025-12-12",
         "2025-12-31",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 5,
       "labels": {
@@ -6608,12 +6608,12 @@
       "foundedNote": "The S-1 states it plainly: \"We were incorporated in May 2007 as Evenflow, Inc., a Delaware corporation, and changed our name to Dropbox, Inc. in October 2009.\" The 2009 Form D filed under the Evenflow name independently gives jurisdiction Delaware and year of incorporation 2007. No source fixes the day \u2014 Delaware's registry is captcha-gated and the S-1 gives only the month \u2014 so this is dated to the month rather than inventing a date. There is no earlier partnership: Drew Houston conceived Dropbox in early 2007, applied to Y Combinator alone in April 2007, and recruited Arash Ferdowsi as co-founder before the Summer 2007 batch, so the Delaware incorporation is the earliest formal founding.",
       "ticker": "DBX",
       "ipoDate": "2018-03-23",
-      "ageYears": 19.521,
+      "ageYears": 19.524,
       "latest": {
-        "t": 19.521,
+        "t": 19.524,
         "vNom": 7530000000,
         "vGdp": 7530000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -6652,7 +6652,7 @@
         18.916,
         19.165,
         19.417,
-        19.521
+        19.524
       ],
       "vNom": [
         4000000000,
@@ -6842,7 +6842,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 2,
       "labels": {
@@ -6967,12 +6967,12 @@
       "foundedNote": "Airbnb, Inc. \"was incorporated in Delaware in June 2008\", stated verbatim in the audited financial statements of the S-1/A. The commonly told founding story starts earlier \u2014 Brian Chesky and Joe Gebbia rented air mattresses during a San Francisco design conference in October 2007, and AirBed & Breakfast launched in August 2008 \u2014 but no day-level incorporation date is given in the filing, so this is dated to the month.",
       "ticker": "ABNB",
       "ipoDate": "2020-12-10",
-      "ageYears": 18.434,
+      "ageYears": 18.437,
       "latest": {
-        "t": 18.434,
+        "t": 18.437,
         "vNom": 113760000000,
         "vGdp": 113760000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -7002,7 +7002,7 @@
         17.829,
         18.078,
         18.33,
-        18.434
+        18.437
       ],
       "vNom": [
         10000000000,
@@ -7147,7 +7147,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 2,
       "labels": {
@@ -7210,12 +7210,12 @@
       "foundedNote": "The S-1 states it plainly: 'We were founded in 2009 and incorporated as Ubercab, Inc., a Delaware corporation, in July 2010. In February 2011, we changed our name to Uber Technologies, Inc.' The 2009 founding is the idea and the founding team (Garrett Camp and Travis Kalanick, in Paris in late 2008 by Kalanick's own telling); the July 2010 Delaware incorporation is corroborated by every Uber Form D, each of which answers 'Year of Incorporation/Organization: 2010'. This chart clocks from the earliest formal founding, so t=0 is 2009 \u2014 eighteen months before the incorporation. No month is sourceable for 2009: the S-1 gives only the year, and the commonly repeated 'March 2009' traces to no filing. Dated to the year rather than inventing a month.",
       "ticker": "UBER",
       "ipoDate": "2019-05-10",
-      "ageYears": 17.848,
+      "ageYears": 17.851,
       "latest": {
-        "t": 17.848,
+        "t": 17.851,
         "vNom": 140050000000,
         "vGdp": 140050000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -7256,7 +7256,7 @@
         17.243,
         17.492,
         17.744,
-        17.848
+        17.851
       ],
       "vNom": [
         60000000,
@@ -7456,7 +7456,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 8,
       "labels": {
@@ -7644,12 +7644,12 @@
       "foundedNote": "Exhibit 3.1 to the S-1 \u2014 the Restated Certificate of Incorporation signed by Jack Dorsey \u2014 states that the certificate 'was originally filed with the Secretary of State of Delaware on June 17, 2009, under the name of Seashell, Inc.' That is the earliest formal founding on record and is what t=0 clocks from. The company's own prospectus separately says 'We started Square in February 2009' and 'Square was incorporated in Delaware in June 2009'; Wikipedia dates the founding to 2009-02-14 and adds Tristan O'Tierney as a third co-founder. No partnership agreement or other formal entity predating the Delaware filing is retrievable, so the February date is a team founding rather than a formal one and is not used. Dorsey and McKelvey both joined the board in July 2009. Two later renames matter for identification but not for the timeline: Square, Inc. became Block, Inc. \u2014 announced 2021-12-01, legally effective 'on or about December 10, 2021', with the press release stating explicitly that 'the company's NYSE ticker symbol \u201cSQ\u201d will not change at this time' \u2014 and the ticker itself changed only three years later, announced 2025-01-09 and effective 2025-01-21 on the NYSE (2025-01-22 on the ASX), when SQ and SQ2 became XYZ.",
       "ticker": "XYZ",
       "ipoDate": "2015-11-19",
-      "ageYears": 17.391,
+      "ageYears": 17.394,
       "latest": {
-        "t": 17.391,
+        "t": 17.394,
         "vNom": 51670000000,
         "vGdp": 51670000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -7700,7 +7700,7 @@
         16.786,
         17.035,
         17.287,
-        17.391
+        17.394
       ],
       "vNom": [
         45000000,
@@ -7950,7 +7950,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 5,
       "labels": {
@@ -8593,12 +8593,12 @@
       "foundedNote": "PLACEHOLDER - research in progress.",
       "ticker": "COIN",
       "ipoDate": "2021-04-14",
-      "ageYears": 14.85,
+      "ageYears": 14.853,
       "latest": {
-        "t": 14.85,
+        "t": 14.853,
         "vNom": 35670000000,
         "vGdp": 35670000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -8623,7 +8623,7 @@
         14.245,
         14.494,
         14.746,
-        14.85
+        14.853
       ],
       "vNom": [
         47680717920,
@@ -8743,7 +8743,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 0,
       "labels": {},
@@ -8777,12 +8777,12 @@
       "foundedNote": "Snowflake's own S-1 states the company \"was incorporated in the state of Delaware on July 23, 2012 and is headquartered in San Mateo, California\"; the business section separately says \"incorporated in Delaware in July 2012 under the name Snowflake Computing, Inc.\" There is no earlier partnership on record, so the incorporation IS the earliest formal founding here. Founded by Benoit Dageville, Thierry Cruanes and Marcin Zukowski, with Mike Speiser of Sutter Hill Ventures acting as founding CEO. The company operated in stealth for just over two years and only announced itself on 2014-10-21, so secondary sources that date Snowflake to 2014 are dating the launch, not the founding.",
       "ticker": "SNOW",
       "ipoDate": "2020-09-16",
-      "ageYears": 14.292,
+      "ageYears": 14.295,
       "latest": {
-        "t": 14.292,
+        "t": 14.295,
         "vNom": 97330000000,
         "vGdp": 97330000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -8814,7 +8814,7 @@
         13.687,
         13.936,
         14.188,
-        14.292
+        14.295
       ],
       "vNom": [
         1500000000,
@@ -8969,7 +8969,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 3,
       "labels": {
@@ -9472,12 +9472,12 @@
       "foundedNote": "Opendoor Labs Inc. was incorporated in Delaware on 2013-12-30. The date is a primary-filing fact repeated verbatim in the S-4/A audited financials ('we ... were incorporated in Delaware on December 30, 2013') and in Note 1 of every Opendoor 10-K from FY2020 through FY2025, and all seven Form D filings by OpenDoor Labs Inc. (CIK 0001609437) report Year of Incorporation 2013, jurisdiction Delaware. Opendoor's own narrative dates the company to 2014 - the same filings say 'In 2014, we founded Opendoor' and 'Since our inception in 2014' - and secondary sources universally repeat 2014, with Wikipedia adding an uncorroborated 'March 2014'. This chart clocks from the earliest formal founding, so t=0 is the incorporation, two days before the 2014 the company claims. Founders: Eric Wu (CEO and an Opendoor Labs director from April 2014), Keith Rabois, JD Ross and Ian Wong (CTO from April 2014). The precise anchors that follow: the first Form D reports a date of first sale of 2014-05-16, and the first market, Phoenix, launched around December 2014.",
       "ticker": "OPEN",
       "ipoDate": "2020-12-18",
-      "ageYears": 12.854,
+      "ageYears": 12.857,
       "latest": {
-        "t": 12.854,
+        "t": 12.857,
         "vNom": 1350000000,
         "vGdp": 1350000000,
-        "dateDisplay": "Nov 7, 2026",
+        "dateDisplay": "Nov 8, 2026",
         "kind": 1
       },
       "t": [
@@ -9507,7 +9507,7 @@
         12.249,
         12.499,
         12.75,
-        12.854
+        12.857
       ],
       "vNom": [
         2000000000,
@@ -9652,7 +9652,7 @@
         "2026-03-31",
         "2026-06-30",
         "2026-09-30",
-        "2026-11-07"
+        "2026-11-08"
       ],
       "ipoIndex": 2,
       "labels": {
@@ -9830,12 +9830,12 @@
       "foundedNote": "OpenAI, Inc. was incorporated in Delaware as a non-stock, non-profit corporation on 2015-12-08 \u2014 the Certificate of Incorporation is reproduced as an exhibit to Musk v. Altman and is signed 'Executed on December 8, 2015'. The commonly cited founding date is 2015-12-11, the day the lab was announced publicly with roughly $1B in pledged donations from Elon Musk, Sam Altman, Greg Brockman, Reid Hoffman, Peter Thiel, Jessica Livingston, Amazon Web Services, Infosys and YC Research; the incorporation is three days earlier and is a filing, so it is used here. The non-profit had no equity and no valuation. In March 2019 OpenAI created OpenAI LP, a 'capped-profit' partnership controlled by the non-profit board, whose investors' returns were contractually capped (100x for the first round, lower thereafter) \u2014 that is the entity every pre-2025 'valuation' below is priced against. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with ordinary equity, still controlled by the renamed OpenAI Foundation; Delaware's Attorney General completed her review the same day and did not object.",
       "ticker": null,
       "ipoDate": null,
-      "ageYears": 10.311,
+      "ageYears": 10.913,
       "latest": {
-        "t": 10.311,
-        "vNom": 852000000000,
-        "vGdp": 881473990727,
-        "dateDisplay": "Mar 31, 2026",
+        "t": 10.913,
+        "vNom": 1250000000000,
+        "vGdp": 1250000000000,
+        "dateDisplay": "Nov 6, 2026",
         "kind": 0
       },
       "t": [
@@ -9845,7 +9845,8 @@
         8.819,
         9.312,
         9.818,
-        10.311
+        10.311,
+        10.913
       ],
       "vNom": [
         14000000000,
@@ -9854,7 +9855,8 @@
         157000000000,
         300000000000,
         500000000000,
-        852000000000
+        852000000000,
+        1250000000000
       ],
       "vGdp": [
         20354442989,
@@ -9863,9 +9865,11 @@
         173159145583,
         328218801955,
         524592957787,
-        881473990727
+        881473990727,
+        1250000000000
       ],
       "kind": [
+        0,
         0,
         0,
         0,
@@ -9881,7 +9885,8 @@
         0,
         0,
         1,
-        0
+        0,
+        1
       ],
       "dates": [
         "2021-01-01",
@@ -9890,7 +9895,8 @@
         "2024-10-02",
         "2025-03-31",
         "2025-10-02",
-        "2026-03-31"
+        "2026-03-31",
+        "2026-11-06"
       ],
       "ipoIndex": null,
       "labels": {
@@ -9900,14 +9906,16 @@
         "3": "$6.6B round",
         "4": "$40B round",
         "5": "$6.6B employee tender offer",
-        "6": "$122B round"
+        "6": "$122B round",
+        "7": "$11B first close"
       },
       "amounts": {
         "1": 300000000,
         "3": 6600000000,
         "4": 40000000000,
         "5": 6600000000,
-        "6": 122000000000
+        "6": 122000000000,
+        "7": 11000000000
       },
       "basis": {
         "0": "unspecified",
@@ -9916,7 +9924,8 @@
         "3": "post",
         "4": "post",
         "5": "unspecified",
-        "6": "post"
+        "6": "post",
+        "7": "unspecified"
       },
       "method": {
         "0": "tender",
@@ -9925,7 +9934,8 @@
         "3": "reported",
         "4": "reported",
         "5": "tender",
-        "6": "reported"
+        "6": "reported",
+        "7": "reported"
       },
       "leads": {
         "0": "Sequoia Capital and Tiger Global Management (reported buyers)",
@@ -9934,7 +9944,8 @@
         "3": "Thrive Capital",
         "4": "SoftBank",
         "5": "SoftBank, Thrive Capital, Dragoneer, MGX and T. Rowe Price (buyers)",
-        "6": "SoftBank (co-led with a16z, D. E. Shaw Ventures, MGX, TPG and T. Rowe Price-advised accounts)"
+        "6": "SoftBank (co-led with a16z, D. E. Shaw Ventures, MGX, TPG and T. Rowe Price-advised accounts)",
+        "7": "No lead reported (SoftBank and MGX named as participants)"
       },
       "notes": {
         "0": "A secondary tender in which existing holders sold to outside funds \u2014 proceeds went to selling shareholders, not to OpenAI, and the size was never reported. The $14B figure comes from WSJ reporting relayed by Crunchbase News in January 2023: 'the $14 billion valuation set during OpenAI's most recent tender offer, in 2021'. OpenAI never confirmed it and no month was ever published, so this is dated to the year. First point on the line: everything earlier is a real event with no disclosed price.",
@@ -9943,7 +9954,8 @@
         "3": "OpenAI stated the post-money itself: 'We've raised $6.6B in new funding at a $157B post-money valuation.' Microsoft, Nvidia, SoftBank, Khosla Ventures, Altimeter, Fidelity and MGX participated; Thrive took an option to invest up to $1B more at the same price. A $4B revolving credit facility announced the same week is debt and is excluded from amountRaisedUsd.",
         "4": "OpenAI's own wording: 'new funding \u2014 $40 billion at a $300 billion post-money valuation'. Largest private round on record at the time. Funded in tranches at a flat price: roughly $10B at signing, a further $8.3B in August 2025, and SoftBank's remaining ~$22.5B approved in December 2025 once the for-profit recapitalisation had completed. SoftBank had disclosed it could cut its total to $20B if OpenAI failed to restructure by 2025-12-31; it did restructure, on 2025-10-28. Microsoft, Coatue, Altimeter and Thrive also participated.",
         "5": "A secondary sale: current and former employees were offered the chance to sell up to $10.3B of stock and tendered about $6.6B of it, roughly two-thirds of what was available. Money went to sellers, not to OpenAI. The $500B price is carried by WSJ, Bloomberg, Reuters and CNBC alike and made OpenAI the most valuable private company in the world, ahead of SpaceX \u2014 but it is still a tender price, not a primary round, so it is marked soft.",
-        "6": "OpenAI's own words: 'we closed our latest funding round with $122 billion in committed capital at a post money valuation of $852 billion'. Anchored by strategic partners Amazon, NVIDIA and SoftBank with continued Microsoft participation, plus over $3B raised from individual investors through bank channels \u2014 the first time OpenAI opened a round that way. The largest private funding round ever recorded. A separate ~$4.7B revolving credit facility, undrawn at close, is debt and excluded. This is the first OpenAI round priced against ordinary PBC equity rather than capped-profit units, and it is still the latest mark as of 2026-08-06."
+        "6": "OpenAI's own words: 'we closed our latest funding round with $122 billion in committed capital at a post money valuation of $852 billion'. Anchored by strategic partners Amazon, NVIDIA and SoftBank with continued Microsoft participation, plus over $3B raised from individual investors through bank channels \u2014 the first time OpenAI opened a round that way. The largest private funding round ever recorded. A separate ~$4.7B revolving credit facility, undrawn at close, is debt and excluded. This is the first OpenAI round priced against ordinary PBC equity rather than capped-profit units. It was the latest mark until the November 2026 first close.",
+        "7": "Bloomberg, citing a source familiar with the matter, reported on 2026-11-06 that OpenAI 'has closed on $11 billion in new funding, the first part of a round valuing the company at $1.25 trillion', and that further investment could lift the round to about $20B in the coming weeks. SoftBank and MGX are named as participants. OpenAI has not confirmed the figures and no outlet says whether $1.25T is pre- or post-money, so the point is soft. The round fell short of its targets: Bloomberg reported in September that OpenAI sought up to $30B at a $1.4T valuation, and two investors told Reuters it had aimed for about $1.5T. Plotted because $11B has closed at a stated price. When the round finalises, plot the final close and set this event to plot: false, as was done with the February 2026 first close. Bloomberg and Reuters block scripted reads, so both are cited through outlets that relay them."
       },
       "unresolved": [
         "Total size of the March 2019 OpenAI LP round. Only Khosla Ventures' $50M is public; Reid Hoffman's foundation also participated at an undisclosed amount, and no valuation was ever attached.",
@@ -9952,7 +9964,7 @@
         "Size of the February 2024 Thrive-led tender offer was never reported, and its price is $80B+ (NYT) versus $86B (Bloomberg).",
         "Exact date OpenAI's confidential draft registration statement reached the SEC: CNBC reported a filing as soon as 2026-05-22, while the company's own confirmation and most coverage date it 2026-06-08."
       ],
-      "curatorNotes": "OpenAI is the hardest 'post-money' in this dataset, because for most of its life it had no ordinary equity. From March 2019 to October 2025 investors bought capped-profit units in OpenAI LP (later OpenAI Global, LLC) whose returns were contractually capped \u2014 100x for the 2019 cohort, lower for later ones \u2014 and Microsoft's three investments in particular were structured as a profit waterfall (reportedly 75% of profits until recoupment, then a 49% economic interest) rather than as preferred stock. None of Microsoft's investments in 2019, 2021 or January 2023 ever carried a disclosed post-money, and the widely repeated '$29 billion valuation' attached to the January 2023 deal is a report of what Microsoft was 'looking to' pay, not a priced round; all three are therefore recorded with valuationUsd: null and left off the line. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with real equity, controlled by the OpenAI Foundation (26%); Microsoft's converted stake was ~27%, worth about $135B, with employees and other investors holding ~47%. Delaware's Attorney General completed her review and declined to object the same day. Four of the seven plotted points are tender-offer prices rather than primary rounds (2021, April 2023, February 2024, October 2025); all are marked tender/soft and render hollow, because a price at which employees sold to funds is not a negotiated primary post-money. IPO status as of 2026-08-06: OpenAI has confidentially filed a draft registration statement with the SEC \u2014 it confirmed the filing in early June 2026, with Goldman Sachs, Morgan Stanley and JPMorgan leading \u2014 but has not publicly filed an S-1, has not priced, and has not listed. Reuters reported in late June that a 2027 listing is under consideration after a weak SpaceX debut, with Altman holding out for a $1T price. The company remains private and status is 'private'. Two large announced deals are deliberately absent from the line: NVIDIA's headline $100B systems partnership (2025-09-22) was still at letter-of-intent stage per NVIDIA's own CFO in December 2025 and never priced, and Disney's $1B equity investment was cancelled in March 2026. A reported July 2026 discussion of a ~5% US government stake (~$42.6B, implying the same $852B) is preliminary and not a transaction. Context: revenue ~$13.1B in 2025 and ~$2B per month as of March 2026, still unprofitable. Sourcing note \u2014 openai.com returns HTTP 403 to every scripted request, so the four OpenAI blog posts cited here were read verbatim through the Internet Archive; the URLs given are the canonical ones.",
+      "curatorNotes": "OpenAI is the hardest 'post-money' in this dataset, because for most of its life it had no ordinary equity. From March 2019 to October 2025 investors bought capped-profit units in OpenAI LP (later OpenAI Global, LLC) whose returns were contractually capped \u2014 100x for the 2019 cohort, lower for later ones \u2014 and Microsoft's three investments in particular were structured as a profit waterfall (reportedly 75% of profits until recoupment, then a 49% economic interest) rather than as preferred stock. None of Microsoft's investments in 2019, 2021 or January 2023 ever carried a disclosed post-money, and the widely repeated '$29 billion valuation' attached to the January 2023 deal is a report of what Microsoft was 'looking to' pay, not a priced round; all three are therefore recorded with valuationUsd: null and left off the line. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with real equity, controlled by the OpenAI Foundation (26%); Microsoft's converted stake was ~27%, worth about $135B, with employees and other investors holding ~47%. Delaware's Attorney General completed her review and declined to object the same day. Four of the eight plotted points are tender-offer prices rather than primary rounds (2021, April 2023, February 2024, October 2025); all are marked tender/soft and render hollow, because a price at which employees sold to funds is not a negotiated primary post-money. IPO status as of 2026-08-06: OpenAI has confidentially filed a draft registration statement with the SEC \u2014 it confirmed the filing in early June 2026, with Goldman Sachs, Morgan Stanley and JPMorgan leading \u2014 but has not publicly filed an S-1, has not priced, and has not listed. Reuters reported in late June that a 2027 listing is under consideration after a weak SpaceX debut, with Altman holding out for a $1T price. The company remains private and status is 'private'. Two large announced deals are deliberately absent from the line: NVIDIA's headline $100B systems partnership (2025-09-22) was still at letter-of-intent stage per NVIDIA's own CFO in December 2025 and never priced, and Disney's $1B equity investment was cancelled in March 2026. A reported July 2026 discussion of a ~5% US government stake (~$42.6B, implying the same $852B) is preliminary and not a transaction. Context: revenue ~$13.1B in 2025 and ~$2B per month as of March 2026, still unprofitable. Sourcing note \u2014 openai.com returns HTTP 403 to every scripted request, so the four OpenAI blog posts cited here were read verbatim through the Internet Archive; the URLs given are the canonical ones.",
       "sources": [
         {
           "outlet": "OpenAI",
@@ -10096,6 +10108,18 @@
           "outlet": "Forbes",
           "title": "OpenAI Considers Delaying IPO To 2027 After SpaceX's Rocky Debut, Report Says",
           "url": "https://www.forbes.com/sites/aliciapark/2026/06/25/openai-considers-delaying-ipo-to-2027-after-spacexs-rocky-debut-report-says/",
+          "type": "press"
+        },
+        {
+          "outlet": "TechCrunch (via Yahoo Finance)",
+          "title": "OpenAI reportedly raises an additional $11B at a $1.25 trillion valuation",
+          "url": "https://finance.yahoo.com/technology/ai/articles/openai-reportedly-raises-additional-11-225346372.html",
+          "type": "press"
+        },
+        {
+          "outlet": "The Daily Star (relaying Bloomberg and Reuters)",
+          "title": "OpenAI raises $11 billion at $1.25 trillion valuation: report",
+          "url": "https://www.thedailystar.net/news/technology/news/openai-raises-11-billion-125-trillion-valuation-report-4318321",
           "type": "press"
         }
       ]

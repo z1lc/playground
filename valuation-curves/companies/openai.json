@@ -263,12 +263,30 @@
       "valuationBasis": "post",
       "valuationConfidence": "confirmed",
       "valuationMethod": "reported",
-      "note": "OpenAI's own words: 'we closed our latest funding round with $122 billion in committed capital at a post money valuation of $852 billion'. Anchored by strategic partners Amazon, NVIDIA and SoftBank with continued Microsoft participation, plus over $3B raised from individual investors through bank channels — the first time OpenAI opened a round that way. The largest private funding round ever recorded. A separate ~$4.7B revolving credit facility, undrawn at close, is debt and excluded. This is the first OpenAI round priced against ordinary PBC equity rather than capped-profit units, and it is still the latest mark as of 2026-08-06.",
+      "note": "OpenAI's own words: 'we closed our latest funding round with $122 billion in committed capital at a post money valuation of $852 billion'. Anchored by strategic partners Amazon, NVIDIA and SoftBank with continued Microsoft participation, plus over $3B raised from individual investors through bank channels — the first time OpenAI opened a round that way. The largest private funding round ever recorded. A separate ~$4.7B revolving credit facility, undrawn at close, is debt and excluded. This is the first OpenAI round priced against ordinary PBC equity rather than capped-profit units. It was the latest mark until the November 2026 first close.",
       "sourceRefs": [18, 19],
+      "plot": true
+    },
+    {
+      "id": "2026-11-06-round-first-close",
+      "date": "2026-11-06",
+      "datePrecision": "day",
+      "kind": "priced_round",
+      "roundName": "$11B first close",
+      "charterSeries": null,
+      "institutional": true,
+      "lead": "No lead reported (SoftBank and MGX named as participants)",
+      "amountRaisedUsd": 11000000000,
+      "valuationUsd": 1250000000000,
+      "valuationBasis": "unspecified",
+      "valuationConfidence": "soft",
+      "valuationMethod": "reported",
+      "note": "Bloomberg, citing a source familiar with the matter, reported on 2026-11-06 that OpenAI 'has closed on $11 billion in new funding, the first part of a round valuing the company at $1.25 trillion', and that further investment could lift the round to about $20B in the coming weeks. SoftBank and MGX are named as participants. OpenAI has not confirmed the figures and no outlet says whether $1.25T is pre- or post-money, so the point is soft. The round fell short of its targets: Bloomberg reported in September that OpenAI sought up to $30B at a $1.4T valuation, and two investors told Reuters it had aimed for about $1.5T. Plotted because $11B has closed at a stated price. When the round finalises, plot the final close and set this event to plot: false, as was done with the February 2026 first close. Bloomberg and Reuters block scripted reads, so both are cited through outlets that relay them.",
+      "sourceRefs": [24, 25],
       "plot": true
     }
   ],
-  "curatorNotes": "OpenAI is the hardest 'post-money' in this dataset, because for most of its life it had no ordinary equity. From March 2019 to October 2025 investors bought capped-profit units in OpenAI LP (later OpenAI Global, LLC) whose returns were contractually capped — 100x for the 2019 cohort, lower for later ones — and Microsoft's three investments in particular were structured as a profit waterfall (reportedly 75% of profits until recoupment, then a 49% economic interest) rather than as preferred stock. None of Microsoft's investments in 2019, 2021 or January 2023 ever carried a disclosed post-money, and the widely repeated '$29 billion valuation' attached to the January 2023 deal is a report of what Microsoft was 'looking to' pay, not a priced round; all three are therefore recorded with valuationUsd: null and left off the line. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with real equity, controlled by the OpenAI Foundation (26%); Microsoft's converted stake was ~27%, worth about $135B, with employees and other investors holding ~47%. Delaware's Attorney General completed her review and declined to object the same day. Four of the seven plotted points are tender-offer prices rather than primary rounds (2021, April 2023, February 2024, October 2025); all are marked tender/soft and render hollow, because a price at which employees sold to funds is not a negotiated primary post-money. IPO status as of 2026-08-06: OpenAI has confidentially filed a draft registration statement with the SEC — it confirmed the filing in early June 2026, with Goldman Sachs, Morgan Stanley and JPMorgan leading — but has not publicly filed an S-1, has not priced, and has not listed. Reuters reported in late June that a 2027 listing is under consideration after a weak SpaceX debut, with Altman holding out for a $1T price. The company remains private and status is 'private'. Two large announced deals are deliberately absent from the line: NVIDIA's headline $100B systems partnership (2025-09-22) was still at letter-of-intent stage per NVIDIA's own CFO in December 2025 and never priced, and Disney's $1B equity investment was cancelled in March 2026. A reported July 2026 discussion of a ~5% US government stake (~$42.6B, implying the same $852B) is preliminary and not a transaction. Context: revenue ~$13.1B in 2025 and ~$2B per month as of March 2026, still unprofitable. Sourcing note — openai.com returns HTTP 403 to every scripted request, so the four OpenAI blog posts cited here were read verbatim through the Internet Archive; the URLs given are the canonical ones.",
+  "curatorNotes": "OpenAI is the hardest 'post-money' in this dataset, because for most of its life it had no ordinary equity. From March 2019 to October 2025 investors bought capped-profit units in OpenAI LP (later OpenAI Global, LLC) whose returns were contractually capped — 100x for the 2019 cohort, lower for later ones — and Microsoft's three investments in particular were structured as a profit waterfall (reportedly 75% of profits until recoupment, then a 49% economic interest) rather than as preferred stock. None of Microsoft's investments in 2019, 2021 or January 2023 ever carried a disclosed post-money, and the widely repeated '$29 billion valuation' attached to the January 2023 deal is a report of what Microsoft was 'looking to' pay, not a priced round; all three are therefore recorded with valuationUsd: null and left off the line. On 2025-10-28 the capped-profit arm was recapitalised into OpenAI Group PBC, a Delaware public benefit corporation with real equity, controlled by the OpenAI Foundation (26%); Microsoft's converted stake was ~27%, worth about $135B, with employees and other investors holding ~47%. Delaware's Attorney General completed her review and declined to object the same day. Four of the eight plotted points are tender-offer prices rather than primary rounds (2021, April 2023, February 2024, October 2025); all are marked tender/soft and render hollow, because a price at which employees sold to funds is not a negotiated primary post-money. IPO status as of 2026-08-06: OpenAI has confidentially filed a draft registration statement with the SEC — it confirmed the filing in early June 2026, with Goldman Sachs, Morgan Stanley and JPMorgan leading — but has not publicly filed an S-1, has not priced, and has not listed. Reuters reported in late June that a 2027 listing is under consideration after a weak SpaceX debut, with Altman holding out for a $1T price. The company remains private and status is 'private'. Two large announced deals are deliberately absent from the line: NVIDIA's headline $100B systems partnership (2025-09-22) was still at letter-of-intent stage per NVIDIA's own CFO in December 2025 and never priced, and Disney's $1B equity investment was cancelled in March 2026. A reported July 2026 discussion of a ~5% US government stake (~$42.6B, implying the same $852B) is preliminary and not a transaction. Context: revenue ~$13.1B in 2025 and ~$2B per month as of March 2026, still unprofitable. Sourcing note — openai.com returns HTTP 403 to every scripted request, so the four OpenAI blog posts cited here were read verbatim through the Internet Archive; the URLs given are the canonical ones.",
   "unresolved": [
     "Total size of the March 2019 OpenAI LP round. Only Khosla Ventures' $50M is public; Reid Hoffman's foundation also participated at an undisclosed amount, and no valuation was ever attached.",
     "Month of the 2021 Microsoft follow-on. Reporting I could read says only '2021' or 'between 2019 and early 2023'; Epoch AI and the UK CMA record place it in March 2021, but the CMA's underlying figure is redacted.",
@@ -419,6 +437,18 @@
       "outlet": "Forbes",
       "title": "OpenAI Considers Delaying IPO To 2027 After SpaceX's Rocky Debut, Report Says",
       "url": "https://www.forbes.com/sites/aliciapark/2026/06/25/openai-considers-delaying-ipo-to-2027-after-spacexs-rocky-debut-report-says/",
+      "type": "press"
+    },
+    {
+      "outlet": "TechCrunch (via Yahoo Finance)",
+      "title": "OpenAI reportedly raises an additional $11B at a $1.25 trillion valuation",
+      "url": "https://finance.yahoo.com/technology/ai/articles/openai-reportedly-raises-additional-11-225346372.html",
+      "type": "press"
+    },
+    {
+      "outlet": "The Daily Star (relaying Bloomberg and Reuters)",
+      "title": "OpenAI raises $11 billion at $1.25 trillion valuation: report",
+      "url": "https://www.thedailystar.net/news/technology/news/openai-raises-11-billion-125-trillion-valuation-report-4318321",
       "type": "press"
     }
   ]

@@ -251,7 +251,7 @@
     // ---- Storage ------------------------------------------------------------
     const STATE_KEY = 'ipo-index-exposure:state';
     const DEFAULT_STATE = {
-      pos: { spacex: posFromB(800), openai: posFromB(850), anthropic: posFromB(950) },
+      pos: { spacex: posFromB(800), openai: posFromB(1250), anthropic: posFromB(950) },
       floatMode: 'realistic', // 'realistic' | 'full'
       investedIdx: 2,         // $200k
     };
@@ -494,7 +494,7 @@
             <p style=${{ marginBottom: 8 }}><strong>Free float.</strong> Cap-weighted indexes only count publicly floated shares, so insider-heavy IPOs are weighted far below their headline valuation. Assumed public floats: SpaceX ~4% (Musk control + lockups), OpenAI ~12%, Anthropic ~12% — these are assumptions; the <em>Full float</em> toggle sets them to 100% to show the naive view (which inflates the cap-weighted slices ~8–25×).</p>
             <p style=${{ marginBottom: 8 }}><strong>These are steady-state "if/once included" figures, not day-one.</strong> FTSE phases large IPOs in over its quarterly reviews (≥5% free float to qualify); MSCI adds names at its semi-annual review if they pass size/liquidity/float screens; the <strong>S&P 500 additionally requires positive GAAP earnings</strong> (most recent quarter and trailing four) plus ≥10% float — so currently-unprofitable OpenAI and Anthropic likely would not enter VOO for years, and SpaceX's tiny float could delay inclusion everywhere.</p>
             <p style=${{ color: T.textTertiary, fontSize: 12, marginTop: 12 }}>
-              Default valuations ≈ latest reported private rounds (mid-2026): SpaceX ~$800B, OpenAI ~$850B, Anthropic ~$950B — private valuations are approximate, adjust freely. Index totals from <a href="https://research.ftserussell.com/Analytics/FactSheets/Home/AnalyticsForFactSheet" target="_blank" rel="noopener" style=${linkStyle}>FTSE Russell</a>, <a href="https://www.spglobal.com/spdji/en/indices/equity/sp-500/" target="_blank" rel="noopener" style=${linkStyle}>S&P Dow Jones</a> and <a href="https://www.msci.com/indexes/index/129858" target="_blank" rel="noopener" style=${linkStyle}>MSCI</a> factsheets; fund weights from <a href="https://investor.vanguard.com/investment-products/etfs/profile/vt" target="_blank" rel="noopener" style=${linkStyle}>Vanguard</a> holdings, all ~Apr–May 2026. Verify before relying on these numbers.
+              Default valuations ≈ latest reported private rounds: SpaceX ~$800B and Anthropic ~$950B (mid-2026), OpenAI ~$1.25T (Nov 2026 first close) — private valuations are approximate, adjust freely. Index totals from <a href="https://research.ftserussell.com/Analytics/FactSheets/Home/AnalyticsForFactSheet" target="_blank" rel="noopener" style=${linkStyle}>FTSE Russell</a>, <a href="https://www.spglobal.com/spdji/en/indices/equity/sp-500/" target="_blank" rel="noopener" style=${linkStyle}>S&P Dow Jones</a> and <a href="https://www.msci.com/indexes/index/129858" target="_blank" rel="noopener" style=${linkStyle}>MSCI</a> factsheets; fund weights from <a href="https://investor.vanguard.com/investment-products/etfs/profile/vt" target="_blank" rel="noopener" style=${linkStyle}>Vanguard</a> holdings, all ~Apr–May 2026. Verify before relying on these numbers.
             </p>
           </div>
 

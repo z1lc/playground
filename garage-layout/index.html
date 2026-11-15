@@ -1,0 +1,2963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1D1D1B" media="(prefers-color-scheme: dark)" />
+  <title>Garage Gym Layout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    /* Tokens shared with garage-floor/ so the two garage tools read as one family. */
+    :root {
+      color-scheme: light dark;
+      --ground:      #F5F4F1;
+      --surface:     #FFFFFF;
+      --ink:         #1C1D1F;
+      --ink-2:       #45474B;
+      --muted:       #5E6166;
+      --line:        #DEDCD6;
+      --line-2:      #EEEDE9;
+      --control:     #C9C6BE;
+      --accent:      #1F6F8B;
+      --accent-ink:  #16566C;
+      --accent-tint: #EEF5F8;
+      --accent-fill: #1F6F8B;
+      --on-accent:   #FFFFFF;
+      --warn:        #B04E0A;
+      --warn-tint:   #FBF1EA;
+      --bad:         #C62828;
+      --bad-tint:    #FCEDED;
+      --cur:         #D32F2F;
+      --ok:          #1E7A52;
+      --shadow:      rgba(0,0,0,0.18);
+      /* floor plan */
+      --grid:        #ECEAE5;
+      --grid-5:      #D6D3CC;
+      --wall:        #1C1D1F;
+      --hatch:       #C9C6BE;
+      --door-fill:   rgba(94,97,102,0.08);
+      --landing:     #E2DFD8;
+      --mat:         #F1EFEA;
+      --mat-dot:     #DEDAD2;
+      --mat-edge:    #45474B;
+      --on-mat-edge: #FFFFFF;
+      --strength-fill: #DCEBF1; --strength-line: #1F6F8B; --strength-zone: rgba(31,111,139,0.07);
+      --cardio-fill:   #DCEFE5; --cardio-line:   #1E7A52; --cardio-zone:   rgba(30,122,82,0.07);
+      --recovery-fill: #EAE3F4; --recovery-line: #6B4C9A; --recovery-zone: rgba(107,76,154,0.07);
+      --other-fill:    #E9E8E5; --other-line:    #45474B; --other-zone:    rgba(69,71,75,0.06);
+      --bad-zone:    rgba(198,40,40,0.13);
+      --warn-zone:   rgba(176,78,10,0.13);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ground:      #141413;
+        --surface:     #1D1D1B;
+        --ink:         #ECEBE7;
+        --ink-2:       #C8C6BF;
+        --muted:       #9C9A93;
+        --line:        #393833;
+        --line-2:      #2A2A27;
+        --control:     #56544E;
+        --accent:      #6CB6D2;
+        --accent-ink:  #92CBE0;
+        --accent-tint: #18323C;
+        --accent-fill: #1F6F8B;
+        --on-accent:   #FFFFFF;
+        --warn:        #F0905A;
+        --warn-tint:   #2D1E14;
+        --bad:         #F26D6D;
+        --bad-tint:    #331A1A;
+        --cur:         #FF8A80;
+        --ok:          #5FC498;
+        --shadow:      rgba(0,0,0,0.5);
+        --grid:        #2A2A27;
+        --grid-5:      #3D3C37;
+        --wall:        #ECEBE7;
+        --hatch:       #4E4C46;
+        --door-fill:   rgba(255,255,255,0.05);
+        --landing:     #3B3A35;
+        --mat:         #232321;
+        --mat-dot:     #31302C;
+        --mat-edge:    #C8C6BF;
+        --on-mat-edge: #1D1D1B;
+        --strength-fill: #1D3A46; --strength-line: #6CB6D2; --strength-zone: rgba(108,182,210,0.09);
+        --cardio-fill:   #1B3A2C; --cardio-line:   #5FC498; --cardio-zone:   rgba(95,196,152,0.09);
+        --recovery-fill: #2F2742; --recovery-line: #B9A0E0; --recovery-zone: rgba(185,160,224,0.09);
+        --other-fill:    #30302D; --other-line:    #C8C6BF; --other-zone:    rgba(200,198,191,0.08);
+        --bad-zone:    rgba(242,109,109,0.17);
+        --warn-zone:   rgba(240,144,90,0.17);
+      }
+    }
+    html, body { overflow-x: clip; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-family: 'Space Grotesk', Inter, system-ui, sans-serif; }
+    a { color: var(--accent); }
+    a:hover { color: var(--accent-ink); }
+    button, input { font: inherit; color: inherit; }
+    .wrap { padding: 0 24px; }
+    @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+    .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding-top: 14px; padding-bottom: 14px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+    .brand:hover { color: var(--ink); }
+    .facts { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); }
+
+    main.wrap { padding-top: 28px; padding-bottom: 48px; }
+    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+    .intro { margin-bottom: 22px; }
+    .intro h1 { margin: 6px 0; font-size: clamp(26px, 4.2vw, 36px); line-height: 1.12; font-weight: 700; }
+    .intro p { margin: 0; max-width: 78ch; color: var(--muted); }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+    .muted { color: var(--muted); }
+    .foot { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+
+    .layout { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+    .main-col { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .plan-card { min-width: 0; padding: 16px 16px 14px; }
+    .presets-card { padding: 16px 18px; }
+    .presets-card > h2 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px; }
+    .preset { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
+    .preset.current { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .preset h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 15px; font-weight: 700; }
+    .preset .tag { font-size: 11.5px; font-weight: 700; color: var(--accent-ink); background: var(--accent-tint); padding: 1px 8px; border-radius: 999px; }
+    .preset p { margin: 0; flex: 1; font-size: 13px; color: var(--ink-2); }
+    .preset .btn { align-self: flex-start; }
+    .preset-stat { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+    .preset .btn-row { margin-top: 0; }
+    #saved { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    #saved > .hint { grid-column: 1 / -1; }
+    .save-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 10px; margin-top: 12px; }
+    .save-row .field { flex: 1 1 220px; max-width: 340px; }
+    .save-row .field input { width: 100%; font-weight: 500; }
+    .saved-name { flex: 1 1 140px; min-width: 0; margin-left: -6px; padding: 2px 6px; border: 1px solid transparent; border-radius: 6px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: var(--ink); }
+    .saved-name:hover { border-color: var(--line); }
+    .saved-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; background: var(--surface); }
+    .preset .btn[disabled] { opacity: 0.6; cursor: default; border-color: var(--control); }
+    .preset-status { margin: 10px 0 0; font-size: 13.5px; }
+    .preset-status:empty { display: none; }
+    .mini { display: block; width: 100%; height: auto; }
+    .mini .mp-floor { fill: var(--surface); }
+    .mini .mp-mats { fill: var(--mat); }
+    .mini .mp-landing { fill: var(--landing); stroke: var(--ink-2); stroke-width: 1.5; }
+    .mini .mp-it { stroke-width: 2; }
+    .mini .mp-it.g-strength { fill: var(--strength-fill); stroke: var(--strength-line); }
+    .mini .mp-it.g-cardio   { fill: var(--cardio-fill);   stroke: var(--cardio-line); }
+    .mini .mp-it.g-recovery { fill: var(--recovery-fill); stroke: var(--recovery-line); }
+    .mini .mp-it.g-other    { fill: var(--other-fill);    stroke: var(--other-line); }
+    .mini .mp-wall { fill: none; stroke: var(--wall); stroke-width: 6; }
+    .mini .mp-gap { stroke: var(--surface); stroke-width: 7; }
+    .mini .mp-door { stroke: var(--muted); stroke-width: 3; stroke-dasharray: 8 5; }
+    .side { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    @media (max-width: 600px) { .plan-card { padding: 10px 8px 12px; } }
+    .side-card { padding: 16px 18px; }
+    .side-card > h2 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .hint { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+    .btn { appearance: none; min-height: 36px; padding: 6px 14px; border: 1px solid var(--control); border-radius: 8px; background: var(--surface); font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn:hover { border-color: var(--accent); }
+    .btn:focus-visible, .linkbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn.primary { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--on-accent); }
+    .btn.danger { color: var(--bad); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .linkbtn { appearance: none; border: 0; background: none; padding: 4px 0; color: var(--accent); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---- Plan ---------------------------------------------------------- */
+    .plan-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 4px 8px; }
+    .plan-head .tip { font-size: 13px; color: var(--muted); }
+    .plan-checks { display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; }
+    .cur-ctl { display: inline-flex; gap: 6px; }
+    .cur-ctl[hidden] { display: none; }
+    .btn.sm { min-height: 30px; padding: 3px 10px; font-size: 13px; }
+    .check { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; min-height: 36px; }
+    .check input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+    #plan { display: block; width: 100%; height: auto; max-height: max(320px, calc(100vh - 150px)); user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #plan text { font-family: Inter, system-ui, sans-serif; }
+    #plan .floor { fill: var(--surface); }
+    #plan .mats { fill: url(#mat-dots); }
+    #plan .mat-bg { fill: var(--mat); }
+    #plan .mat-dot { fill: var(--mat-dot); }
+    #plan .mat-line { stroke: var(--mat-edge); stroke-width: 2px; vector-effect: non-scaling-stroke; stroke-dasharray: 7 4; pointer-events: none; }
+    #plan .mat-hit { stroke: transparent; stroke-width: 14px; vector-effect: non-scaling-stroke; cursor: ew-resize; touch-action: none; }
+    #plan .mat-handle { cursor: ew-resize; outline: none; touch-action: none; }
+    #plan .mat-tick { stroke: var(--mat-edge); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+    #plan .mat-pill { fill: var(--mat-edge); }
+    #plan .mat-handle:focus-visible .mat-pill { stroke: var(--accent); stroke-width: 3px; vector-effect: non-scaling-stroke; paint-order: stroke; }
+    #plan .mat-pill-t { fill: var(--on-mat-edge); font-weight: 700; pointer-events: none; }
+    #plan .g1, #plan .g5 { stroke-width: 1px; vector-effect: non-scaling-stroke; }
+    #plan .g1 { stroke: var(--grid); }
+    #plan .g5 { stroke: var(--grid-5); }
+    #plan .ax { fill: var(--muted); font-variant-numeric: tabular-nums; }
+    #plan .wall { stroke: var(--wall); stroke-width: 4; stroke-linecap: square; }
+    #plan .gdoor { stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 5 3; }
+    #plan .door-t { fill: var(--muted); font-weight: 600; }
+    #plan .overhead { fill: url(#hatch); stroke: var(--hatch); stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-dasharray: 3 3; }
+    #plan .hatch-line { stroke: var(--hatch); stroke-width: 1.2; }
+    #plan .overhead-t { fill: var(--muted); font-weight: 600; }
+    #plan .doorzone { fill: var(--door-fill); stroke: var(--muted); stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-dasharray: 2 3; }
+    #plan .doorzone.bad { fill: var(--bad-zone); stroke: var(--bad); }
+    #plan .panel, .mini .mp-panel, .sw-panel { fill: var(--ink-2); }
+    #plan .leaf { stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 3 2; }
+    #plan .landing { fill: var(--landing); stroke: var(--ink-2); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+    #plan .tread { stroke: var(--ink-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+    #plan .landing-t { fill: var(--ink-2); font-weight: 600; }
+    #plan .cur-sq { fill: var(--cur); fill-opacity: 0.09; }
+    #plan .cur-fill { fill: url(#cur-check); cursor: move; touch-action: none; outline: none; }
+    #plan .cur-fill:focus-visible { stroke: var(--accent); stroke-width: 3px; vector-effect: non-scaling-stroke; }
+    #plan .cur-line { fill: none; stroke: var(--cur); stroke-opacity: 0.75; stroke-width: 2px; stroke-dasharray: 0.5 5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; pointer-events: none; }
+    #plan .cur-t { fill: var(--cur); font-weight: 600; stroke: var(--surface); paint-order: stroke; pointer-events: none; }
+    #plan .zone { stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-dasharray: 4 3; pointer-events: none; }
+    #plan .zone.g-strength { fill: var(--strength-zone); stroke: var(--strength-line); }
+    #plan .zone.g-cardio   { fill: var(--cardio-zone);   stroke: var(--cardio-line); }
+    #plan .zone.g-recovery { fill: var(--recovery-zone); stroke: var(--recovery-line); }
+    #plan .zone.g-other    { fill: var(--other-zone);    stroke: var(--other-line); }
+    #plan .view { fill: var(--other-line); fill-opacity: 0.07; stroke: var(--other-line); stroke-opacity: 0.6; stroke-width: 1px; vector-effect: non-scaling-stroke; stroke-dasharray: 5 4; pointer-events: none; }
+    #plan .it .hit { fill: transparent; }
+    #plan .zone.warn { fill: var(--warn-zone); stroke: var(--warn); }
+    #plan .zone.bad  { fill: var(--bad-zone);  stroke: var(--bad); }
+    #plan .it { cursor: grab; outline: none; touch-action: none; }
+    #plan .it.dragging { cursor: grabbing; }
+    #plan .it .body { stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+    #plan .it.g-strength .body { fill: var(--strength-fill); stroke: var(--strength-line); }
+    #plan .it.g-cardio   .body { fill: var(--cardio-fill);   stroke: var(--cardio-line); }
+    #plan .it.g-recovery .body { fill: var(--recovery-fill); stroke: var(--recovery-line); }
+    #plan .it.g-other    .body { fill: var(--other-fill);    stroke: var(--other-line); }
+    #plan .it .front { stroke-width: 4px; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+    #plan .it.g-strength .front { stroke: var(--strength-line); }
+    #plan .it.g-cardio   .front { stroke: var(--cardio-line); }
+    #plan .it.g-recovery .front { stroke: var(--recovery-line); }
+    #plan .it.g-other    .front { stroke: var(--other-line); }
+    #plan .it.warn .body { stroke: var(--warn); stroke-width: 3px; }
+    #plan .it.bad  .body { stroke: var(--bad);  stroke-width: 3px; }
+    #plan .it .halo { fill: none; stroke: none; }
+    #plan .it.sel .halo, #plan .it:focus-visible .halo { stroke: var(--accent); stroke-width: 2px; vector-effect: non-scaling-stroke; stroke-dasharray: 5 3; }
+    #plan .lbl { fill: var(--ink); font-weight: 600; pointer-events: none; paint-order: stroke; stroke-linejoin: round; }
+    #plan .it.g-strength { color: var(--strength-line); }
+    #plan .it.g-cardio   { color: var(--cardio-line); }
+    #plan .it.g-recovery { color: var(--recovery-line); }
+    #plan .it.g-other    { color: var(--other-line); }
+    #plan .it.g-strength .lbl { stroke: var(--strength-fill); }
+    #plan .it.g-cardio   .lbl { stroke: var(--cardio-fill); }
+    #plan .it.g-recovery .lbl { stroke: var(--recovery-fill); }
+    #plan .it.g-other    .lbl { stroke: var(--other-fill); }
+    /* Top-down drawing inside each item, in the item's group color */
+    #plan .art { pointer-events: none; }
+    #plan .art .o { fill: none; stroke: currentColor; stroke-opacity: 0.75; stroke-width: 1.25px; vector-effect: non-scaling-stroke; }
+    #plan .art .b { fill: none; stroke: currentColor; stroke-width: 2.5px; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+    #plan .art .s { fill: currentColor; fill-opacity: 0.1; }
+    #plan .art .m { fill: currentColor; fill-opacity: 0.3; }
+    #plan .art .k { fill: currentColor; }
+    #plan .lbl .sub { font-weight: 500; fill: var(--ink-2); }
+    #plan .lbl-out { fill: var(--ink); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-linejoin: round; pointer-events: none; }
+    #plan .dim { stroke: var(--accent); stroke-width: 1.25px; vector-effect: non-scaling-stroke; pointer-events: none; }
+    #plan .dim-t { fill: var(--accent-ink); font-weight: 700; paint-order: stroke; stroke: var(--surface); stroke-linejoin: round; pointer-events: none; font-variant-numeric: tabular-nums; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 4px 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink-2); }
+    .legend li { display: inline-flex; align-items: center; gap: 6px; }
+    .legend svg { flex: none; }
+    .sw-strength { fill: var(--strength-fill); stroke: var(--strength-line); }
+    .sw-cardio { fill: var(--cardio-fill); stroke: var(--cardio-line); }
+    .sw-recovery { fill: var(--recovery-fill); stroke: var(--recovery-line); }
+    .sw-zone { fill: var(--strength-zone); stroke: var(--muted); stroke-dasharray: 3 2; }
+    .sw-mat { fill: var(--mat); stroke: var(--mat-edge); stroke-dasharray: 3 2; }
+    .sw-front { stroke: var(--ink-2); }
+    .sw-hatch { fill: url(#hatch-legend); stroke: var(--hatch); }
+    .sw-bad { fill: var(--surface); stroke: var(--bad); }
+    .sw-warn { fill: var(--surface); stroke: var(--warn); }
+
+    /* ---- Side panel ---------------------------------------------------- */
+    .sel-name { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; line-height: 1.2; }
+    .sel-sub { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; }
+    .stat { background: var(--ground); border-radius: 8px; padding: 7px 10px; }
+    .stat .k { font-size: 11.5px; color: var(--muted); }
+    .stat .v { font-weight: 700; font-size: 14px; font-variant-numeric: tabular-nums; }
+    .needs { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+    .size-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; margin-top: 12px; }
+    .field { display: flex; flex-direction: column; gap: 3px; font-size: 12px; font-weight: 600; color: var(--muted); }
+    .field input { width: 92px; min-height: 36px; padding: 4px 8px; border: 1px solid var(--control); border-radius: 8px; background: var(--surface); font-size: 14px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .size-row[hidden] { display: none; }
+    .size-hint { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--muted); }
+    .note { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); }
+    .srcs { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; }
+    .srcs li + li { margin-top: 2px; }
+
+    .issues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .issues button { appearance: none; width: 100%; display: flex; gap: 8px; align-items: flex-start; padding: 7px 10px; border: 0; border-radius: 8px; text-align: left; font-size: 13.5px; line-height: 1.4; cursor: pointer; }
+    .issues .bad button { background: var(--bad-tint); }
+    .issues .warn button { background: var(--warn-tint); }
+    .issues button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .issues .ic { flex: none; margin-top: 2px; }
+    .issues .bad .ic { color: var(--bad); }
+    .issues .warn .ic { color: var(--warn); }
+    .ok { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: 13.5px; font-weight: 600; color: var(--ok); }
+    .ok .ic { flex: none; margin-top: 2px; }
+
+    .cat-group { margin: 12px 0 4px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .cat-group:first-of-type { margin-top: 0; }
+    .cat-hint { margin: -4px 0 10px; font-size: 12.5px; }
+    .cat-row { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 0; border-top: 1px solid var(--line-2); cursor: pointer; }
+    .cat-row input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+    .cat-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .cat-row .state { color: var(--muted); }
+    .cat-row.on .state { color: var(--accent-ink); font-weight: 600; }
+    .cat-row:first-of-type { border-top: 0; }
+    .cat-sw { flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; }
+    .cat-sw.g-strength { background: var(--strength-fill); border-color: var(--strength-line); }
+    .cat-sw.g-cardio { background: var(--cardio-fill); border-color: var(--cardio-line); }
+    .cat-sw.g-recovery { background: var(--recovery-fill); border-color: var(--recovery-line); }
+    .cat-sw.g-other { background: var(--other-fill); border-color: var(--other-line); }
+    .cat-txt { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.3; }
+    .cat-txt b { font-weight: 600; }
+    .cat-txt > span { display: block; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    .settings { display: flex; flex-direction: column; gap: 10px; }
+    .settings .size-row { margin-top: 0; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin: 0 0 20px; border-bottom: 1px solid var(--line); }
+    .tab { appearance: none; border: 0; background: none; margin-bottom: -1px; padding: 10px 14px; border-bottom: 2px solid transparent; font-size: 14.5px; font-weight: 600; color: var(--muted); cursor: pointer; }
+    .tab:hover { color: var(--ink); }
+    .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+    .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px 6px 0 0; }
+    .layout[hidden], .elec[hidden] { display: none; }
+
+    /* Electrician tab */
+    .elec { display: flex; flex-direction: column; gap: 16px; }
+    .elec .card { min-width: 0; padding: 16px 18px; }
+    .elec h2 { margin-bottom: 8px; font-size: 15px; font-weight: 700; }
+    .elec h3 { margin: 16px 0 6px; font-size: 13.5px; font-weight: 700; }
+    .elec-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 24px; }
+    .elec-figs { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+    .elec-fig .k { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .elec-fig .v { font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-size: 26px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .elec-choices { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 14px; }
+    .field select { min-height: 36px; padding: 4px 8px; border: 1px solid var(--control); border-radius: 8px; background: var(--surface); font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); }
+    .field select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .elec-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; align-items: start; }
+    @media (max-width: 900px) { .elec-grid { grid-template-columns: minmax(0, 1fr); } }
+    .eplan { display: block; width: 100%; height: auto; margin-top: 4px; }
+    .eplan .e-floor { fill: var(--surface); }
+    .eplan .e-landing { fill: var(--landing); stroke: var(--ink-2); stroke-width: 1; }
+    .eplan .e-it { fill: var(--line-2); stroke: var(--control); stroke-width: 1; }
+    .eplan .e-wallit { fill: var(--muted); }
+    .eplan .e-lbl { fill: var(--muted); font-size: 8.5px; font-weight: 600; }
+    .eplan .e-space { fill: var(--door-fill); stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; }
+    .eplan .e-panel { fill: var(--ink); }
+    .eplan .e-panel-t { fill: var(--ink); font-size: 10px; font-weight: 700; }
+    .eplan .e-wall { fill: none; stroke: var(--wall); stroke-width: 5; }
+    .eplan .e-gap { stroke: var(--surface); stroke-width: 6; }
+    .eplan .e-door { stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 6 4; }
+    .eplan .e-run { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 3; fill: none; }
+    .eplan .e-out { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
+    .eplan .e-mark { fill: var(--accent-fill); stroke: var(--surface); stroke-width: 1.5; }
+    .eplan .e-mark-t { fill: var(--on-accent); font-size: 11px; font-weight: 700; }
+    .tbl-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+    .elec table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .elec th { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .elec td { padding: 8px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+    .sched { min-width: 760px; }
+    .sched .hook { min-width: 240px; color: var(--ink-2); }
+    .sched .hook .where { display: block; margin-top: 2px; color: var(--ink); font-weight: 600; }
+    .num, .elec th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .nowrap { white-space: nowrap; }
+    .badge-n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-size: 12px; font-weight: 700; }
+    .gfci-ask { color: var(--warn); font-weight: 600; }
+    .elec .notes { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); }
+    .elec .notes li + li { margin-top: 6px; }
+    .costs .num { width: 7.5em; }
+    .costs tr.sub td { border-top: 1px solid var(--line); font-weight: 700; }
+    .costs tr.sub.strong td { font-weight: 800; }
+    .costs tr.grp th { padding-top: 16px; border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); white-space: normal; }
+    .cost-detail { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); }
+    .costs tr.total td { border-bottom: 0; font-size: 15px; font-weight: 800; }
+    .costs tr.cont td { color: var(--ink-2); }
+    .elec .hint { margin: 8px 0 0; font-size: 12.5px; color: var(--muted); }
+
+    @media print {
+      :root {
+        color-scheme: light;
+        --ground: #FFFFFF; --surface: #FFFFFF; --ink: #1C1D1F; --ink-2: #45474B; --muted: #5E6166; --line: #DEDCD6; --line-2: #EEEDE9;
+        --control: #C9C6BE; --accent: #1F6F8B; --accent-fill: #1F6F8B; --on-accent: #FFFFFF; --warn: #B04E0A; --wall: #1C1D1F;
+        --landing: #E2DFD8; --door-fill: rgba(94,97,102,0.08);
+      }
+      .topbar .facts, .tabs, .no-print { display: none !important; }
+      main.wrap { padding-top: 12px; }
+      .elec { gap: 12px; }
+      .eplan { max-width: 470px; margin: 0 auto; }
+      .elec-grid > .card:first-child, .elec tr { break-inside: avoid; }
+      .sched { min-width: 0; }
+      .sched .hook { min-width: 0; }
+      .tbl-wrap { overflow: visible; }
+      .elec td, .elec th { padding: 6px; }
+      .elec-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="./">
+        <svg class="icon" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" style="color:var(--accent)" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="22" height="20" rx="1.5"/><rect x="6.5" y="7.5" width="6" height="8"/><rect x="15.5" y="7.5" width="6" height="4"/><path d="M9 24v-3h10v3"/></svg>
+        Garage Gym Layout
+      </a>
+      <div class="facts"><span>28 × 22 ft · 616 sq ft</span><a href="../garage-floor/">Garage Floor Compare →</a></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="intro">
+      <div class="eyebrow" id="intro-eyebrow">Layout</div>
+      <h1 id="intro-title">What fits in the garage gym?</h1>
+      <p id="intro-text">Drag each piece around the 28′ × 22′ garage and turn it to try layouts. Dashed outlines show the open space each piece needs to be used safely. Red means two things collide; amber means a piece is short on room. Sizes come from the makers’ spec pages; select an item to see its sources.</p>
+    </div>
+
+    <div class="tabs" id="tabs" role="tablist" aria-label="View">
+      <button type="button" class="tab" role="tab" id="tab-layout" aria-controls="panel-layout">Layout</button>
+      <button type="button" class="tab" role="tab" id="tab-elec" aria-controls="panel-elec">Electrician</button>
+      <button type="button" class="tab" role="tab" id="tab-costs" aria-controls="panel-costs">Costs</button>
+    </div>
+
+    <section class="elec" id="panel-elec" role="tabpanel" aria-labelledby="tab-elec" hidden></section>
+    <section class="elec" id="panel-costs" role="tabpanel" aria-labelledby="tab-costs" hidden></section>
+
+    <div class="layout" id="panel-layout" role="tabpanel" aria-labelledby="tab-layout">
+      <div class="main-col">
+      <section class="card plan-card" aria-label="Floor plan">
+        <div class="plan-head">
+          <span class="tip">Drag to move · double-click (double-tap) or <kbd>R</kbd> to turn · arrow keys nudge 1″</span>
+          <div class="plan-checks">
+            <label class="check"><input type="checkbox" id="show-clear" />Show clearance zones</label>
+            <label class="check"><input type="checkbox" id="show-cur" />Show current garage</label>
+            <span class="cur-ctl" id="cur-ctl" hidden><button type="button" class="btn sm" id="cur-turn">Turn</button><button type="button" class="btn sm" id="cur-flip">Flip</button></span>
+          </div>
+        </div>
+        <svg id="plan" viewBox="-30 -28 378 326" role="group" aria-label="Garage floor plan, 28 feet wide by 22 feet deep. The garage door is on the bottom wall, ending 2 feet from the right wall. The landing and steps up to the house door are on the left wall.">
+          <defs>
+            <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch-line" x1="0" y1="0" x2="0" y2="7" /></pattern>
+            <pattern id="mat-dots" width="6" height="6" patternUnits="userSpaceOnUse"><rect class="mat-bg" width="6" height="6" /><circle class="mat-dot" cx="1.5" cy="1.5" r="0.65" /><circle class="mat-dot" cx="4.5" cy="4.5" r="0.65" /></pattern>
+            <pattern id="cur-check" width="12" height="12" patternUnits="userSpaceOnUse"><rect class="cur-sq" width="6" height="6" /><rect class="cur-sq" x="6" y="6" width="6" height="6" /></pattern>
+            <clipPath id="room-clip"><rect x="0" y="0" width="336" height="264" /></clipPath>
+          </defs>
+          <g id="plan-content"></g>
+        </svg>
+        <ul class="legend" aria-label="Legend">
+          <li><svg width="14" height="14" aria-hidden="true"><rect class="sw-strength" x="1" y="1" width="12" height="12" rx="2" stroke-width="1.5"/></svg>Strength</li>
+          <li><svg width="14" height="14" aria-hidden="true"><rect class="sw-cardio" x="1" y="1" width="12" height="12" rx="2" stroke-width="1.5"/></svg>Cardio</li>
+          <li><svg width="14" height="14" aria-hidden="true"><rect class="sw-recovery" x="1" y="1" width="12" height="12" rx="2" stroke-width="1.5"/></svg>Recovery</li>
+          <li><svg width="18" height="14" aria-hidden="true"><line class="sw-front" x1="3" y1="11" x2="15" y2="11" stroke-width="3.5" stroke-linecap="round"/><rect x="1" y="1" width="16" height="12" rx="2" fill="none" stroke="var(--muted)" stroke-width="1"/></svg>Side you use it from</li>
+          <li><svg width="18" height="14" aria-hidden="true"><rect class="sw-zone" x="1" y="1" width="16" height="12" stroke-width="1"/></svg>Clearance zone</li>
+          <li><svg width="18" height="14" aria-hidden="true"><rect class="sw-mat" x="1" y="1" width="16" height="12" stroke-width="1"/></svg>Gym mats (drag <b>◂ Mats ▸</b> to move the edge); the rest is sealed concrete</li>
+          <li><svg width="18" height="14" aria-hidden="true"><defs><pattern id="hatch-legend" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="var(--hatch)" stroke-width="1.5"/></pattern></defs><rect class="sw-hatch" x="1" y="1" width="16" height="12" stroke-width="1" stroke-dasharray="2 2"/></svg>Open garage door overhead, about 7′ up</li>
+          <li><svg width="18" height="14" aria-hidden="true"><rect x="1" y="1" width="16" height="12" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 2"/><rect class="sw-panel" x="5" y="1" width="8" height="3"/></svg>Electrical panel and the clear floor in front of it</li>
+          <li><svg width="14" height="14" aria-hidden="true"><rect class="sw-bad" x="1.5" y="1.5" width="11" height="11" rx="2" stroke-width="2.5"/></svg>Collision</li>
+          <li><svg width="14" height="14" aria-hidden="true"><rect class="sw-warn" x="1.5" y="1.5" width="11" height="11" rx="2" stroke-width="2.5"/></svg>Short on room</li>
+        </ul>
+      </section>
+      <section class="card presets-card" aria-labelledby="saved-title">
+        <h2 id="saved-title">My layouts</h2>
+        <p class="hint">Save the plan as it is now to come back to it later. Saved layouts keep the equipment and the mat edge, and stay in this browser.</p>
+        <form id="save-form" class="save-row">
+          <label class="field">Name<input type="text" id="save-name" maxlength="60" autocomplete="off" placeholder="e.g. Recovery corner, TV left" /></label>
+          <button type="submit" class="btn primary">Save current layout</button>
+        </form>
+        <div id="saved" class="presets"></div>
+        <p id="saved-status" class="preset-status" aria-live="polite"></p>
+      </section>
+      <section class="card presets-card" aria-labelledby="presets-title">
+        <h2 id="presets-title">Starting layouts</h2>
+        <p class="hint">Different ways to arrange the must-haves, each fitting with everything’s clearance. Using one replaces the equipment and the mat edge; your garage measurements stay.</p>
+        <div id="presets" class="presets"></div>
+        <p id="preset-status" class="preset-status" aria-live="polite"></p>
+      </section>
+      </div>
+
+      <div class="side">
+        <section class="card side-card" id="sel" aria-live="polite"></section>
+        <section class="card side-card" aria-labelledby="issues-title">
+          <h2 id="issues-title">Layout check</h2>
+          <div id="issues" aria-live="polite"></div>
+        </section>
+        <section class="card side-card" aria-labelledby="cat-title">
+          <h2 id="cat-title">Equipment</h2>
+          <p class="hint cat-hint">Check a piece to put it on the plan; uncheck to take it off.</p>
+          <div id="catalog"></div>
+        </section>
+        <section class="card side-card" aria-labelledby="set-title">
+          <h2 id="set-title">Garage</h2>
+          <div class="settings">
+            <h3 class="cat-group">Garage door</h3>
+            <div class="size-row">
+              <label class="field">Width (ft)<input type="number" id="door-w" min="2" max="28" step="0.5" inputmode="decimal" /></label>
+              <label class="field">From right wall (ft)<input type="number" id="door-r" min="0" max="26" step="0.5" inputmode="decimal" /></label>
+            </div>
+            <h3 class="cat-group">Landing and steps to the house</h3>
+            <div class="size-row">
+              <label class="field">From door wall (in)<input type="number" id="land-from" min="0" max="252" step="1" inputmode="decimal" /></label>
+              <label class="field">Along wall (in)<input type="number" id="land-len" min="12" max="264" step="1" inputmode="decimal" /></label>
+              <label class="field">Out from wall (in)<input type="number" id="land-depth" min="12" max="120" step="1" inputmode="decimal" /></label>
+              <p class="size-hint">Measured: the landing starts 52″ (132 cm) from the garage door wall, and the door ends 2′ from the right wall. The door width and the landing’s size are estimates from a video; replace them with your measurements.</p>
+            </div>
+            <h3 class="cat-group">Electrical panel</h3>
+            <div class="size-row">
+              <label class="field">Center from left wall (ft)<input type="number" id="panel-x" min="1" max="27" step="0.5" inputmode="decimal" /></label>
+              <p class="size-hint">On the back wall, estimated at the 20′ mark. Code (NEC 110.26) wants clear floor 30″ wide and 36″ deep in front of it; the 30″ only has to include the panel, so the plan slides it sideways around nearby equipment.</p>
+            </div>
+            <h3 class="cat-group">Gym mats</h3>
+            <div class="size-row">
+              <label class="field">Mats start (ft from left wall)<input type="number" id="mat-x" min="0" max="28" step="0.5" inputmode="decimal" /></label>
+              <p class="size-hint" id="mat-area"></p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <p class="foot">Sizes are the makers’ assembled dimensions, checked November 2026. The open-door zone assumes a standard 7′ sectional door on overhead tracks. Your layout is saved in this browser.</p>
+  </main>
+
+  <script id="layout-core">
+    // Pure data, geometry and conflict rules. No DOM access here, so
+    // garage-layout.test.js can evaluate this block in a bare `node:vm` context.
+    // All lengths are inches. x grows to the right, y grows toward the garage door.
+    (function () {
+      'use strict';
+
+      const ROOM = { w: 336, d: 264 }; // 28' wide × 22' deep
+      const SNAP = 3; // edges within this many inches snap together
+      const EPS = 0.01;
+      const ROTS = [0, 90, 180, 270];
+      const STORE_KEY = 'garage-layout-v1';
+      // Bump when the garage's default door or landing changes. A saved layout from an older
+      // version keeps its equipment but takes the new garage defaults, so a stale saved
+      // door can't hide a corrected one.
+      const GARAGE_VERSION = 2;
+      // Raised landing outside the house door, against the left wall, with steps running
+      // down toward the back wall. `from` (measured, 132 cm) is the gap between the landing
+      // and the garage door wall; `len` covers landing plus steps; `depth` is how far it
+      // sticks out from the wall. The floor at the foot of the steps stays clear.
+      const DEFAULT_LANDING = { from: 52, len: 72, depth: 42 };
+      // Gym mats cover the floor from this many inches from the left wall to the right wall;
+      // the rest stays sealed concrete.
+      const DEFAULT_MAT = 100;
+      const STEPS_RUN = 30; // drawn treads at the back-wall end
+      const STEP_CLEAR = 36;
+      // Garage door on the bottom wall. When open, a 7' sectional door hangs on its
+      // tracks about 7' up and reaches roughly 8.5' into the garage.
+      const GARAGE = { reach: 102, headroom: 84 };
+      // 18' door (estimated); its right edge is 2' from the right wall (measured).
+      const DEFAULT_DOOR = { x: 96, w: 216 };
+      // Electrical panel on the back wall; `x` is its center in inches from the left wall
+      // (estimated at the 20' mark). Code (NEC 110.26) wants clear floor in front of it: 30"
+      // wide, which only has to include the panel (not be centered on it), and 36" deep from
+      // its face. Box size is a typical surface-mounted 200 A load center.
+      const DEFAULT_PANEL = { x: 240 };
+      const PANEL = { w: 14.5, d: 4, spaceW: 30, spaceD: 36 };
+      const WALLS = { top: 'back wall', bottom: 'garage door wall', left: 'left wall', right: 'right wall' };
+      // The wall a wall-mounted item hangs on, by its rotation (it always faces into the room).
+      const WALL_OF = { 0: 'top', 90: 'right', 180: 'bottom', 270: 'left' };
+      // What's on the other side of the side walls: neither faces outdoors, so anything that has
+      // to go straight outside (the mini-split's lines and outdoor unit) belongs on the back wall
+      // or beside the garage door.
+      const BEHIND = { left: 'the house', right: 'another building' };
+      const GROUPS = [
+        { id: 'strength', name: 'Strength' },
+        { id: 'cardio', name: 'Cardio' },
+        { id: 'recovery', name: 'Recovery' },
+        { id: 'other', name: 'Other' },
+      ];
+
+      // How close an e-bike may park to the landing and steps up to the house door.
+      const EXIT_CLEAR = 36;
+
+      // Each type is described in its "canonical" orientation (rot 0): the side that can
+      // go against a wall faces up, the side you use it from faces down. `clear` is the open
+      // space each side needs, in that same frame; it turns with the item.
+      const TYPES = [
+        {
+          id: 'mikolo', group: 'strength', name: 'Mikolo Anubis 2.0 Ultimate', short: 'Mikolo trainer', abbr: 'Mikolo',
+          w: 79.2, d: 69.8, h: 91.6, clear: { left: 24, right: 24, bottom: 36 }, zoneName: 'workout space',
+          power: 'None: weight stacks, no motor.',
+          needs: '36″ in front for cable work and the Smith bar, and 24″ each side to reach the pulleys, pins and plates (NSCA’s minimum between stations; 36″ is its ideal).',
+          note: 'Mikolo lists 79.2″ L × 69.8″ W × 91.6″ H but doesn’t say which side you train from; the long side is assumed. It also lists a 51.2″ × 43.3″ “compact configuration”, so the overall size likely includes the add-on arms. The drawing is schematic: two four-post towers with a weight stack each, Smith bar between them.',
+          sources: [
+            { label: 'Mikolo: ANUBIS 2.0 Ultimate spec', url: 'https://gym-mikolo.com/pages/anubis%e2%84%a2-2-0-ultimate-spec' },
+            { label: 'NSCA safety checklist: 2′ between stations minimum, 3′ optimal', url: 'https://dxpprod.nsca.com/contentassets/2a0a87ccabbe4a149dd915168b20d603/nsca-safety-checklist.pdf' },
+          ],
+          art: [
+            ['r', 3, 8, 18, 54, 'o s'], ['r', 58.2, 8, 18, 54, 'o s'],
+            ['r', 3, 8, 3, 3, 'k'], ['r', 18, 8, 3, 3, 'k'], ['r', 3, 59, 3, 3, 'k'], ['r', 18, 59, 3, 3, 'k'],
+            ['r', 58.2, 8, 3, 3, 'k'], ['r', 73.2, 8, 3, 3, 'k'], ['r', 58.2, 59, 3, 3, 'k'], ['r', 73.2, 59, 3, 3, 'k'],
+            ['r', 7, 25, 10, 20, 'm'], ['r', 62.2, 25, 10, 20, 'm'],
+            ['l', 21, 9.5, 58.2, 9.5, 'o'], ['l', 21, 60.5, 58.2, 60.5, 'o'],
+            ['l', 21, 35, 58.2, 35, 'b'], ['r', 21, 33, 4, 4, 'm'], ['r', 54.2, 33, 4, 4, 'm'],
+          ],
+        },
+        {
+          id: 'rogue', group: 'strength', name: 'Rogue FM-6 Functional Trainer', short: 'Rogue FM-6', abbr: 'FM-6',
+          w: 55.1, d: 76.8, h: 91.5, clear: { left: 24, right: 24, bottom: 36 }, zoneName: 'workout space',
+          power: 'None: weight stacks, no motor.',
+          needs: '36″ in front for cable work, and 24″ each side to reach the pulleys and pins (NSCA’s minimum between stations; 36″ is its ideal). With weight-storage horns, keep the 24″ beyond the horns.',
+          note: 'Weight-stack version with the 24″ rack depth and 90″ uprights. The 30″ and 43″ depths add 6″ and 19″; weight storage widens it to 75⅝″. Rogue says it must be bolted to the floor. The drawing is schematic: six uprights, the rack bay in front and the two stacks in the rear bay.',
+          sources: [
+            { label: 'Rogue: FM-6 Functional Trainer (Gear Specs)', url: 'https://www.roguefitness.com/rogue-fm-6-functional-trainer' },
+            { label: 'NSCA safety checklist: 2′ between stations minimum, 3′ optimal', url: 'https://dxpprod.nsca.com/contentassets/2a0a87ccabbe4a149dd915168b20d603/nsca-safety-checklist.pdf' },
+          ],
+          art: [
+            ['l', 3.5, 4.5, 3.5, 72.3, 'o'], ['l', 51.6, 4.5, 51.6, 72.3, 'o'],
+            ['l', 3.5, 4.5, 51.6, 4.5, 'o'], ['l', 3.5, 47.5, 51.6, 47.5, 'o'], ['l', 3.5, 72.3, 51.6, 72.3, 'b'],
+            ['r', 2, 3, 3, 3, 'k'], ['r', 50.1, 3, 3, 3, 'k'], ['r', 2, 46, 3, 3, 'k'],
+            ['r', 50.1, 46, 3, 3, 'k'], ['r', 2, 70.8, 3, 3, 'k'], ['r', 50.1, 70.8, 3, 3, 'k'],
+            ['r', 7, 14, 11, 22, 'm'], ['r', 37.1, 14, 11, 22, 'm'],
+          ],
+        },
+        {
+          id: 'bench', group: 'strength', name: 'Adjustable bench', short: 'Bench', abbr: 'Bench',
+          w: 26, d: 56, h: 18, clear: { top: 12, right: 24, bottom: 12, left: 24 }, zoneName: 'side clearance',
+          art: [
+            ['r', 1, 1, 24, 3, 'k'], ['r', 1, 52, 24, 3, 'k'], ['l', 13, 4, 13, 52, 'b'],
+            ['r', 4, 5, 18, 27, 'm', 3], ['r', 4, 34, 18, 15, 'm', 3],
+          ],
+          power: 'None.',
+          needs: '24″ each side for dumbbell presses and getting on, 12″ at each end.',
+          note: 'A typical flat/incline/decline bench. Change the size below to match yours.',
+          sources: [],
+        },
+        {
+          id: 'dumbbells', group: 'strength', name: 'REP × Pépin dumbbells on stand', short: 'Dumbbells', abbr: 'DBs',
+          w: 31, d: 22.3, h: 21, clear: { bottom: 24 }, zoneName: 'pick-up space',
+          art: [
+            ['r', 1, 2, 13.5, 18.3, 'o s'], ['r', 16.5, 2, 13.5, 18.3, 'o s'],
+            ['r', 4, 4, 7.5, 4.5, 'm'], ['r', 4, 13.8, 7.5, 4.5, 'm'], ['l', 7.75, 8.5, 7.75, 13.8, 'b'],
+            ['r', 19.5, 4, 7.5, 4.5, 'm'], ['r', 19.5, 13.8, 7.5, 4.5, 'm'], ['l', 23.25, 8.5, 23.25, 13.8, 'b'],
+          ],
+          power: 'None.',
+          needs: '24″ in front to step between the trays and lift.',
+          note: '125 lb pair on the REP Adjustable Dumbbell Stand (31″ × 22.3″, 18–21″ tall), a $299.99 add-on. Without it the two cradles sit on the floor.',
+          sources: [
+            { label: 'REP: Pépin FAST Series adjustable dumbbell', url: 'https://repfitness.com/products/rep-x-pepin-fast-series-adjustable-dumbbell?variant=43428954964126' },
+            { label: 'REP: Adjustable Dumbbell Stand (tech specs)', url: 'https://repfitness.com/products/rep-adjustable-dumbbell-stand' },
+          ],
+        },
+        {
+          id: 'treadmill', group: 'cardio', name: 'NordicTrack X16 Treadmill', short: 'Treadmill', abbr: 'Tread',
+          w: 38.1, d: 69.9, h: 73.3, clear: { bottom: 24 }, zoneName: 'step-off space',
+          art: [
+            ['r', 0, 0, 38.1, 9, 'm', 2], ['r', 2, 9, 34.1, 60, 'o'], ['r', 8, 9, 22.1, 59, 'o s'],
+            ['l', 3, 1, 3, 24, 'b'], ['l', 35.1, 1, 35.1, 24, 'b'],
+          ],
+          power: 'Its own 120 V circuit of 15 A or more (a 20 A circuit is fine), with nothing else on it but a phone charger, plus a surge suppressor (UL 1449, 450 J or more). Standard plug; garage outlets must be GFCI.',
+          needs: '24″ behind the belt to step off, like the stair climber. ASTM F2115 recommends more, 2 m (79″) behind and 0.5 m (20″) each side, so this is a deliberate trade-off.',
+          note: 'Model NTL29225, console end toward the wall. At full incline the front of the deck rises, so you stand well above the floor.',
+          sources: [
+            { label: 'Costco: NordicTrack X16 Treadmill', url: 'https://www.costco.com/nordictrack-x16-treadmill.product.4000359878.html' },
+            { label: 'BodyCraft: treadmill clearance per ASTM F2115', url: 'https://www.bodycraft.com/pdfs/Footprints/t400-dims.pdf' },
+            { label: 'NordicTrack X24 US manual (same lineup): 120 V, 15 A+ circuit, surge suppressor', url: 'https://pdf.lowes.com/productdocuments/b94d922f-8a12-4edf-9364-c9fa136e6859/67968282.pdf' },
+            { label: 'NordicTrack X16 manual (international edition)', url: 'https://resources.fitshop.com/pdf/nordictrack/x16tread/NTL29225-Manual_EN.pdf' },
+          ],
+        },
+        {
+          id: 'stair', group: 'cardio', name: 'FED SC2 Stair Climber Ultra', short: 'Stair climber', abbr: 'Stair',
+          w: 28.2, d: 57.9, h: 75.4, clear: { bottom: 24 }, zoneName: 'step-off space',
+          art: [
+            ['r', 1, 1, 26.2, 55.9, 'o'], ['r', 4, 1.5, 20.2, 7, 'm', 1.5],
+            ['l', 3, 2, 3, 24, 'b'], ['l', 25.2, 2, 25.2, 24, 'b'],
+            ['r', 5, 16, 18.2, 4.5, 'm'], ['r', 5, 23, 18.2, 4.5, 'm'], ['r', 5, 30, 18.2, 4.5, 'm'],
+            ['r', 5, 37, 18.2, 4.5, 'm'], ['r', 5, 44, 18.2, 4.5, 'm'],
+          ],
+          power: 'A grounded standard outlet. FED lists no amp rating, and it appears to have no drive motor (your stepping turns the stairs; a magnetic brake sets the speed), so a shared garage circuit should do.',
+          needs: '24″ behind the steps to get on and off.',
+          note: '57.87″ L × 28.19″ W × 75.39″ H with 7″ steps. Standing on the top step puts your head 7′+ up.',
+          sources: [
+            { label: 'Garage Gym Reviews: FED SC2 specs', url: 'https://www.garagegymreviews.com/equipment/fed-fitness-sc2-stair-climber-machine-ultra' },
+            { label: 'FED Fitness: SC2 Stair Climber Ultra', url: 'https://www.fedfitness.com/products/stair-climber-machine-ultra' },
+            { label: 'FED SC2 Ultra user manual', url: 'https://cdn.shopify.com/s/files/1/0939/5657/1425/files/FED_Fitness_SC2_Stair_Climber_Machine_Ultra_User_Manual.pdf' },
+          ],
+        },
+        {
+          id: 'bag-hanging', group: 'cardio', name: 'Hanging heavy bag, 100 lb', short: 'Heavy bag', abbr: 'Bag',
+          w: 14, d: 14, h: null, round: true, hangs: true, clearRadius: 60, zoneName: 'footwork space',
+          art: [['c', 7, 7, 4.5, 'o'], ['c', 7, 7, 1.8, 'k']],
+          power: 'None.',
+          needs: 'About 5′ of open floor in every direction from the bag’s center for footwork and swing (home guides say 5–6′).',
+          note: '100 lb bags run about 14–15″ across and 3½–4′ long. It hangs from a ceiling joist or mount, so it can’t go where the open garage door covers the ceiling, and with its chain it needs roughly 7–8′ of height. Set your bag’s diameter below.',
+          sources: [
+            { label: 'Ringside: leather 100 lb heavy bag (14″ × 42″)', url: 'https://www.dickssportinggoods.com/p/ringside-leather-100-lbheavy-bag-25rinaboxirngsdltheys/25rinaboxirngsdltheys' },
+            { label: 'Torque: 100 lb heavy bag (15″ × 48″)', url: 'https://www.johnsonfitness.com/Torque-Heavy-Bag-100-Lb-P36714.aspx' },
+            { label: 'Gymdesk: boxing gym planning (5′ movement radius)', url: 'https://gymdesk.com/blog/boxing-gym-equipment' },
+          ],
+        },
+        {
+          id: 'bag-standing', group: 'cardio', name: 'Century Wavemaster XXL (free-standing)', short: 'Free-standing bag', abbr: 'Bag',
+          w: 28, d: 28, h: 69, round: true, clearRadius: 60, zoneName: 'footwork space',
+          art: [['c', 14, 14, 9, 'm'], ['c', 14, 14, 9, 'o'], ['c', 14, 14, 2.5, 'k']],
+          power: 'None.',
+          needs: 'About 5′ of open floor in every direction from the bag’s center for footwork.',
+          note: '28″ base with an 18″ × 52″ bag, 69″ tall. Filled with sand or water the base weighs up to 270 lb, so it needs no ceiling mount and can stand under the garage door.',
+          sources: [
+            { label: 'Century: XXL Wavemaster', url: 'https://centurymartialarts.com/products/xxl-wavemaster-red' },
+            { label: 'Gymdesk: boxing gym planning (5′ movement radius)', url: 'https://gymdesk.com/blog/boxing-gym-equipment' },
+          ],
+        },
+        {
+          id: 'sauna', group: 'recovery', name: 'Sauna, 5′ × 7′', short: 'Sauna', abbr: 'Sauna',
+          w: 84, d: 60, h: null, clear: { bottom: 24 }, zoneName: 'door swing',
+          art: [
+            ['r', 2.5, 2.5, 79, 55, 'o'], ['r', 5, 5, 74, 15, 'm'], ['r', 5, 20, 74, 9, 's'],
+            ['r', 66, 40, 11, 13, 'k', 1],
+          ],
+          power: 'Traditional with a 6 kW heater (the right size for 5×7): its own 240 V, 30 A two-pole circuit on 10 AWG copper, hardwired (40 A on 8 AWG with NM cable or a stricter inspector), plus a neutral or a 120 V circuit for the lights on some models. Infrared: usually 240 V, 20 A. Georgia’s garage GFCI rule likely calls for a 2-pole GFCI breaker, which heater makers warn can nuisance-trip; confirm with the inspector before buying.',
+          needs: '24″ in front for the door to swing open.',
+          note: 'The door is assumed to be on a 7′ side.',
+          sources: [
+            { label: 'Finnleo NorthStar 5×7: 6 kW heater, 240 V / 30 A', url: 'https://finnleo.com/products/northstar-indoor-sauna-5-x-7-9630-2265' },
+            { label: 'SaunaKits: how to wire a sauna heater (6 kW → 30 A, 8 kW → 40 A)', url: 'https://saunakits.com/blogs/news/how-to-wire-a-sauna-heater' },
+            { label: 'Georgia 2026 NEC amendments (garage GFCI rules)', url: 'https://dca.georgia.gov/document/document/nec-2026-amendment-packet/download' },
+          ],
+        },
+        {
+          id: 'plunge', group: 'recovery', name: 'Plunge All-In', short: 'Cold plunge', abbr: 'Plunge',
+          w: 77, d: 31.5, h: 29, clear: { right: 16, bottom: 12 }, zoneName: 'fan and drain clearance',
+          art: [['r', 3, 3, 56, 25.5, 'o s', 8], ['r', 62, 2.5, 12.5, 26.5, 'm', 2], ['c', 68.25, 15.75, 4.5, 'o']],
+          power: 'Its own 120 V, 20 A circuit. Plug straight in (no extension cord); the cord has its own GFCI, and the outlet has to be at least 6′ from the tub.',
+          needs: '16″ on the fan side for airflow and 12″ on the front to reach the drain.',
+          note: '77″ × 31.5″ × 29″. Plunge doesn’t publish which end the fan is on; the right end is assumed. Filled, it weighs about 1,150 lb.',
+          sources: [
+            { label: 'Plunge: All-In', url: 'https://plunge.com/products/plunge-all-in' },
+            { label: 'Garage Gym Reviews: Plunge All-In review', url: 'https://www.garagegymreviews.com/plunge-all-in-review' },
+            { label: 'Plunge: electrical requirements (dedicated 20 A)', url: 'https://help.plunge.com/hc/en-us/articles/52253785919636-Electrical-Requirements-for-Plunge-Cold-Plunge-Models-Outlet-Circuit-GFCI-and-Extension-Cords' },
+            { label: 'Plunge: All-In setup guide (6′ from outlets, clearances)', url: 'https://help.plunge.com/hc/en-us/articles/20215800204948' },
+          ],
+        },
+        {
+          id: 'yoga', group: 'recovery', name: 'Yoga mat', short: 'Yoga mat', abbr: 'Yoga',
+          w: 24, d: 72, h: null, clear: { top: 12, right: 24, bottom: 12, left: 24 }, zoneName: 'stretching space',
+          art: [['r', 1, 1, 22, 70, 'o s', 2], ['l', 12, 5, 12, 67, 'o'], ['l', 5, 6, 19, 6, 'o'], ['l', 5, 66, 19, 66, 'o']],
+          power: 'None.',
+          needs: '24″ each side so you can reach your arms out (an adult’s arm span is about their height), and 12″ past each end for reaching overhead.',
+          note: 'A 72″ × 24″ mat, the common size for adults up to about 6′; older standard mats are 68″ long, and wide mats run 26–30″. Set your mat’s size below.',
+          sources: [{ label: 'Yoga Design Lab: standard yoga mat sizes', url: 'https://yogadesignlab.com/blogs/yoga-gear/what-is-standard-yoga-mat-size-a-guide-to-finding-your-fit' }],
+        },
+        {
+          id: 'tv', group: 'other', name: '50″ 4K TV, wall-mounted', short: 'TV', abbr: 'TV',
+          w: 43.6, d: 3, h: null, faceName: 'Screen', faceH: 24.5, wallMount: true, viewAngle: 30, clear: {}, zoneName: 'viewing angle',
+          art: [['r', 0, 0, 43.6, 3, 'k']],
+          power: 'About 90–110 W: any outlet behind it.',
+          needs: 'A stretch of wall, anywhere but the garage door. It hangs above whatever stands there; to watch from the treadmill, mount it above the console, which stands 6′ 1″.',
+          note: 'A 50″ 16:9 screen is about 43.6″ wide and 24.5″ tall, and a flat mount holds it about 3″ off the wall. Drag it along any wall; it turns to face the room on its own. Selected, it shows ±30°: past that, typical LCD (VA panel) TVs start to wash out, while OLEDs hold up to about 45°.',
+          sources: [
+            { label: 'RTINGS: viewing angle of TVs', url: 'https://www.rtings.com/tv/tests/picture-quality/viewing-angle' },
+            { label: 'RTINGS: LG B8 OLED vs Samsung Q70R (48° vs 28° washout)', url: 'https://www.rtings.com/tv/tools/compare/lg-b8-oled-samsung-q70r/647/782' },
+          ],
+        },
+        {
+          // Indoor head of a single-zone ductless heat pump; the outdoor unit sits outside.
+          // `airflow`: depth of open air it needs in front, and the height of its underside;
+          // anything taller (or hanging from the ceiling) standing in that strip blocks it.
+          id: 'minisplit', group: 'other', name: 'Mini-split heat pump, indoor unit', short: 'Mini-split', abbr: 'Split',
+          w: 40, d: 10, h: null, faceName: 'Indoor unit', faceH: 13, wallMount: true, airflow: { depth: 48, height: 84 }, clear: {}, zoneName: 'airflow',
+          art: [['r', 1.5, 1, 37, 5, 's'], ['l', 3, 8, 37, 8, 'b']],
+          power: 'Its own 208/230 V circuit sized from the nameplate (18k units call for a 15–25 A breaker; some 12k units run on 120 V), a disconnect within sight of the outdoor unit, and a 120 V service outlet within 25′ of it. No GFCI needed in Georgia.',
+          needs: 'High on the back wall, the one wall that faces outdoors (the left wall backs onto the house, the right onto another building; beside the garage door also works), so the refrigerant lines and condensate drain go straight out through a 3″ hole to the outdoor unit and drain by gravity. In this 11½′ garage, mount it with its underside about 7–8′ up, not near the ceiling, or the air stays overhead. Keep it off the wall above the electrical panel, and keep anything taller than 7′ out of the 4′ in front of it.',
+          note: 'Sized as a typical 18,000 BTU indoor unit: 18k models run about 36–45″ wide, 12–13½″ tall and 9–11″ deep (40″ × 13″ × 10″ here). Makers want at least 2–6″ to the ceiling, 2–7″ each side, the unit 6′ or more off the floor (Mitsubishi recommends 5.9–7.5′), and 4–5′ of open air in front (Gree 48″, Fujitsu 60″). 18k suits this garage once it’s insulated; uninsulated it would need far more. Drag it along any wall; it turns to face the room on its own.',
+          sources: [
+            { label: 'Mitsubishi MSZ-GS18NA install manual (clearances, 5.9–7.5′ mounting height)', url: 'https://meiersupply.com/customer/docs/skudocs/Document_Links/Vendors/106835%20-%20Mitsubishi/MITSU%20GS%20DOCS/MITSU%20GS18NA/GS18NAINSTALL.pdf' },
+            { label: 'Gree Livo submittal (48″ clear in front)', url: 'https://s3.amazonaws.com/s3.supplyhouse.com/product_files/Gree_LIV12HP230V__-Submittal-Sheet.pdf' },
+            { label: 'Mitsubishi MSZ-GX18NL submittal (electrical)', url: 'https://gotductless.com/cdn/shop/files/ME_SUBMITTAL_MSZ-GX18NL_MUZ-GX18NL.pdf' },
+            { label: 'Georgia 2026 NEC amendments (no GFCI needed for listed HVAC)', url: 'https://dca.georgia.gov/document/document/nec-2026-amendment-packet/download' },
+          ],
+        },
+        {
+          // Two bikes parked side by side, one turned around so each handlebar clears the other's
+          // saddle. No floor is reserved around them. `battery`: keep it away from the house door
+          // (Specialized: not by an exit door). `rollsOut`: placed starting from the garage door,
+          // since they leave that way. `noFront`: either side works, so no use-side edge is drawn.
+          id: 'ebikes', group: 'other', name: 'Two e-bikes (Specialized Turbo Vado 4.0 Step-Through)', short: 'E-bikes', abbr: 'Bikes',
+          w: 84, d: 48, h: 44, clear: {}, zoneName: 'clearance', battery: true, rollsOut: true, noFront: true, outlet: 'e-bike chargers',
+          art: [
+            ['r', 1, 11.8, 27.6, 2.4, 'm', 1.2], ['r', 48.4, 11.8, 27.6, 2.4, 'm', 1.2], ['l', 24, 13, 45, 13, 'b'], ['l', 45, 13, 63, 13, 'b'],
+            ['r', 55, 10, 17, 6, 'o'], ['r', 49, 10.5, 10, 5, 'k', 2], ['l', 26.5, 0.5, 23.5, 13, 'b'], ['l', 23.5, 13, 26.5, 25.5, 'b'],
+            ['r', 55.4, 33.8, 27.6, 2.4, 'm', 1.2], ['r', 8, 33.8, 27.6, 2.4, 'm', 1.2], ['l', 39, 35, 60, 35, 'b'], ['l', 21, 35, 39, 35, 'b'],
+            ['r', 12, 32, 17, 6, 'o'], ['r', 25, 32.5, 10, 5, 'k', 2], ['l', 57.5, 22.5, 60.5, 35, 'b'], ['l', 60.5, 35, 57.5, 47.5, 'b'],
+          ],
+          power: 'A standard outlet within reach of the chargers; Specialized says never to use an extension cord. Each 42 V, 4 A charger puts out about 170 W, so both can share an existing garage circuit, and a full 710 Wh charge takes roughly 4–5 hours.',
+          needs: 'Just the 4′ × 7′ the pair takes, with no extra floor kept clear. Specialized says not to charge or store an e-bike by an exit door, so keep them away from the steps to the house door, and to charge in a room with a smoke detector.',
+          note: 'Two bikes sized for the XL frame, the largest of the four sizes: the 1,239 mm wheelbase plus 27.5 × 2.3″ tires makes each about 77″ long with the fenders, and the bars are 680 mm (26.8″) wide. Parked side by side with one turned around and staggered a few inches, the pair takes about 4′ across and 7′ end to end. The bars and saddles stand about 3½–4′ up. S–L frames are up to 3″ shorter. Each weighs 58 lb (size M) with the rack, fenders and kickstand, so they park on their wheels rather than hanging. The charger works from 32°F to 104°F, which an unconditioned Atlanta garage tops on summer afternoons.',
+          sources: [
+            { label: 'Specialized: Turbo Vado 2 4.0 Step-Through (specs and geometry)', url: 'https://www.specialized.com/us/en/turbo-vado-40-step-through/p/4277442?color=5440990-4277442' },
+            { label: 'Specialized: e-bike battery manual (not by an exit door, smoke detector)', url: 'https://media.specialized.com/support/collateral/NEW_YORK_EBIKE_BATTERY_OPERATING_MANUAL_ENGLISH.pdf' },
+            { label: 'Specialized: charger manual (SBC-C04, 32–104°F, no extension cords)', url: 'https://media.specialized.com/support/collateral/0000163505.pdf' },
+          ],
+        },
+      ];
+      const BY_ID = {};
+      for (const t of TYPES) BY_ID[t.id] = t;
+
+      // Starting layouts. Each has one trainer, the bench, dumbbells, treadmill, stair climber,
+      // sauna and plunge, and fits the default garage with zero conflicts (asserted in the tests).
+      const P = (type, x, y, rot = 0) => ({ uid: `d-${type}`, type, x, y, rot });
+      const PRESETS = [
+        {
+          id: 'back-wall', name: 'Along the back wall', mat: 100,
+          blurb: 'Everything lines the back and right walls: cardio on the left, the trainer in the middle with the bench and dumbbells in front, sauna and plunge in the far corner. The garage-door half stays open.',
+          items: [
+            P('stair', 0, 0), P('treadmill', 62, 0), P('mikolo', 125, 0), P('sauna', 252, 0),
+            P('plunge', 304.5, 84, 90), P('bench', 152, 112), P('dumbbells', 100, 152, 270),
+          ],
+        },
+        {
+          id: 'wet-corner', name: 'Recovery by the house door', mat: 230,
+          blurb: 'Sauna and plunge flank the steps from the house, on sealed concrete that shrugs off water; the plunge sits beside the garage door so it can drain outside. Cardio takes the middle of the back wall, short of the electrical panel, and strength lines the right wall, the only strip on mats.',
+          items: [
+            P('sauna', 0, 0, 270), P('plunge', 16, 232.5, 180), P('stair', 84, 0), P('treadmill', 133, 0),
+            P('mikolo', 266.2, 24, 90), P('bench', 268, 127.2, 90), P('dumbbells', 313.7, 178, 90),
+          ],
+        },
+        {
+          id: 'open-floor', name: 'Open floor with the Rogue', mat: 100,
+          blurb: 'The narrower Rogue FM-6 leaves the middle open: room for a free-standing bag and a yoga mat on the gym mats. Uncheck either extra if you don’t want it.',
+          items: [
+            P('stair', 0, 0), P('treadmill', 62, 0), P('rogue', 125, 0), P('sauna', 252, 0),
+            P('plunge', 304.5, 84, 90), P('bench', 147, 116), P('dumbbells', 100, 152, 270),
+            P('bag-standing', 226, 126), P('yoga', 200, 215, 90),
+          ],
+        },
+        {
+          id: 'steps-nook', name: 'Recovery nook by the steps', mat: 230,
+          blurb: 'Plunge and sauna share the back-left corner beside the steps from the house, so a sauna-and-plunge session never crosses the gym. All the strength gear packs into one strip along the right wall, with the trainer facing into the room, so only that strip needs mats.',
+          items: [
+            P('plunge', 0, 16, 270), P('sauna', 43.5, 0), P('stair', 127.5, 0), P('treadmill', 175.7, 0),
+            P('mikolo', 266.2, 24, 90), P('bench', 268, 127.2, 90), P('dumbbells', 313.7, 178, 90),
+          ],
+        },
+        {
+          id: 'between-doors', name: 'Recovery between the doors', mat: 230,
+          blurb: 'The sauna opens right at the foot of the steps, and the plunge sits between the steps and the garage door, where it can drain outside and you can cool off by the open door. The same right-wall strength strip keeps the mats small.',
+          items: [
+            P('stair', 0, 0), P('sauna', 42, 78), P('plunge', 16, 232.5, 180), P('treadmill', 146, 0),
+            P('mikolo', 266.2, 24, 90), P('bench', 268, 127.2, 90), P('dumbbells', 313.7, 178, 90),
+          ],
+        },
+      ];
+      const DEFAULT_ITEMS = PRESETS[0].items;
+
+      const round1 = v => Math.round(v * 10) / 10;
+      const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+      const typeOf = it => BY_ID[it.type];
+
+      function fmtLen(inches) {
+        const n = Math.round(Math.abs(inches));
+        const ft = Math.floor(n / 12), inch = n % 12;
+        if (!ft) return `${inch}″`;
+        return inch ? `${ft}′ ${inch}″` : `${ft}′`;
+      }
+      // "a", "a and b", "a, b and c".
+      function listJoin(xs) {
+        return xs.length < 3 ? xs.join(' and ') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
+      }
+      function fmtIn(inches) {
+        return `${round1(inches)}″`;
+      }
+
+      // Size before rotation: the type's, unless the user overrode it.
+      function size(it) {
+        const t = typeOf(it);
+        return { w: it.w ?? t.w, d: it.d ?? t.d };
+      }
+
+      // The rectangle the item covers on the floor, after rotation.
+      function footprint(it) {
+        const s = size(it);
+        const turned = it.rot === 90 || it.rot === 270;
+        return { x: it.x, y: it.y, w: turned ? s.d : s.w, d: turned ? s.w : s.d };
+      }
+
+      // Turning clockwise by 90° moves what was on top to the right, right to bottom, etc.
+      function rotateSides(c, rot) {
+        let r = { top: c.top || 0, right: c.right || 0, bottom: c.bottom || 0, left: c.left || 0 };
+        for (let k = 0; k < rot / 90; k++) r = { top: r.left, right: r.top, bottom: r.right, left: r.bottom };
+        return r;
+      }
+
+      // Which side of the floor plan the item's "use" side faces.
+      function useSide(rot) {
+        return ['bottom', 'left', 'top', 'right'][rot / 90];
+      }
+
+      // Footprint grown by the clearance on each side, or null if it needs none. Round items
+      // (bags) get a circle of `clearRadius` around their center instead; the x/y/w/d box is
+      // its bounding square, used for snapping and wall checks.
+      function zoneOf(it) {
+        const t = typeOf(it);
+        if (t.clearRadius) {
+          const f = footprint(it);
+          const cx = f.x + f.w / 2, cy = f.y + f.d / 2, r = t.clearRadius;
+          return { x: cx - r, y: cy - r, w: 2 * r, d: 2 * r, round: true, cx, cy, r };
+        }
+        const c = rotateSides(t.clear, it.rot);
+        if (!c.top && !c.right && !c.bottom && !c.left) return null;
+        const f = footprint(it);
+        return { x: f.x - c.left, y: f.y - c.top, w: f.w + c.left + c.right, d: f.d + c.top + c.bottom };
+      }
+
+      // True when two rectangles share area. Touching edges don't count.
+      function overlaps(a, b) {
+        return a.x < b.x + b.w - EPS && b.x < a.x + a.w - EPS && a.y < b.y + b.d - EPS && b.y < a.y + a.d - EPS;
+      }
+
+      // Does a clearance zone share area with a rectangle? Circles test the nearest point.
+      function hits(z, r) {
+        if (!overlaps(z, r)) return false;
+        if (!z.round) return true;
+        const nx = clamp(z.cx, r.x, r.x + r.w), ny = clamp(z.cy, r.y, r.y + r.d);
+        return Math.hypot(nx - z.cx, ny - z.cy) < z.r - EPS;
+      }
+
+      function clampItem(it) {
+        const f = footprint(it);
+        return { ...it, x: clamp(it.x, 0, Math.max(ROOM.w - f.w, 0)), y: clamp(it.y, 0, Math.max(ROOM.d - f.d, 0)) };
+      }
+
+      function normDoor(door) {
+        const raw = door || {};
+        const w = Number.isFinite(raw.w) ? clamp(Math.round(raw.w), 24, ROOM.w) : DEFAULT_DOOR.w;
+        const x = Number.isFinite(raw.x) ? clamp(Math.round(raw.x), 0, ROOM.w - w) : clamp(DEFAULT_DOOR.x, 0, ROOM.w - w);
+        return { x, w };
+      }
+      function normLanding(landing) {
+        const raw = landing || {};
+        const pick = (v, lo, hi, dflt) => (Number.isFinite(v) ? clamp(Math.round(v), lo, hi) : dflt);
+        const from = pick(raw.from, 0, ROOM.d - 12, DEFAULT_LANDING.from);
+        const len = pick(raw.len, 12, ROOM.d - from, Math.min(DEFAULT_LANDING.len, ROOM.d - from));
+        const depth = pick(raw.depth, 12, 120, DEFAULT_LANDING.depth);
+        return { from, len, depth };
+      }
+      // The landing-and-steps block, the clear floor at the foot of the steps, and how much
+      // of the block (at the back-wall end) is drawn as treads.
+      function landingRects(landing) {
+        const l = normLanding(landing);
+        const box = { x: 0, y: ROOM.d - l.from - l.len, w: l.depth, d: l.len };
+        const footD = Math.min(STEP_CLEAR, box.y);
+        const foot = { x: 0, y: box.y - footD, w: l.depth, d: footD };
+        return { box, foot, run: Math.min(STEPS_RUN, l.len / 2) };
+      }
+      function normOpts(opts) {
+        const o = opts || {};
+        return { clearance: o.clearance !== false, door: normDoor(o.door), landing: normLanding(o.landing), panel: normPanel(o.panel) };
+      }
+
+      // The user's current garage, drawn over the plan to compare sizes: 117″ × 221″, with 2′
+      // more width for about half its length. Laid out like an item (rot 0: the wider half at
+      // the top, the extra 2′ on the right; `flip` mirrors it left to right before turning).
+      const CURRENT_GARAGE = { w: 117, d: 221, extra: 24, at: 110.5 };
+      const DEFAULT_OVERLAY = { on: false, x: 0, y: 0, rot: 0, flip: false };
+      function overlayBox(o) {
+        const c = CURRENT_GARAGE, turned = o.rot === 90 || o.rot === 270;
+        return { x: o.x, y: o.y, w: turned ? c.d : c.w + c.extra, d: turned ? c.w + c.extra : c.d };
+      }
+      function normOverlay(o) {
+        const r = o && typeof o === 'object' ? o : {};
+        const out = { on: r.on === true, x: 0, y: 0, rot: ROTS.includes(r.rot) ? r.rot : 0, flip: r.flip === true };
+        const b = overlayBox(out);
+        out.x = clamp(Math.round(Number.isFinite(r.x) ? r.x : 0), 0, ROOM.w - b.w);
+        out.y = clamp(Math.round(Number.isFinite(r.y) ? r.y : 0), 0, ROOM.d - b.d);
+        return out;
+      }
+      // Turned 90° clockwise about its center, then kept inside the room.
+      function turnOverlay(overlay) {
+        const o = normOverlay(overlay), b = overlayBox(o), rot = (o.rot + 90) % 360, nb = overlayBox({ ...o, rot });
+        return normOverlay({ ...o, rot, x: b.x + (b.w - nb.w) / 2, y: b.y + (b.d - nb.d) / 2 });
+      }
+      // Outline corners in plan inches, clockwise from the top-left of the unturned shape.
+      function overlayPoints(overlay) {
+        const o = normOverlay(overlay), c = CURRENT_GARAGE, W0 = c.w + c.extra, D0 = c.d;
+        const pts = [[0, 0], [W0, 0], [W0, c.at], [c.w, c.at], [c.w, D0], [0, D0]];
+        const turn = ([x, y]) => ({ 0: [x, y], 90: [D0 - y, x], 180: [W0 - x, D0 - y], 270: [y, W0 - x] }[o.rot]);
+        return pts.map(([x, y]) => turn([o.flip ? W0 - x : x, y])).map(([x, y]) => [round1(o.x + x), round1(o.y + y)]);
+      }
+
+      // The floor area under the open garage door.
+      function overheadZone(door) {
+        const d = normDoor(door);
+        return { x: d.x, y: ROOM.d - GARAGE.reach, w: d.w, d: GARAGE.reach };
+      }
+
+      function normPanel(panel) {
+        const raw = panel || {};
+        const half = PANEL.w / 2;
+        return { x: Number.isFinite(raw.x) ? clamp(Math.round(raw.x), Math.ceil(half), Math.floor(ROOM.w - half)) : DEFAULT_PANEL.x };
+      }
+      // The panel box on the back wall and the working space in front of it. The space starts
+      // centered on the panel and slides sideways (keeping the panel inside it) to the spot
+      // that blocks the fewest pieces of equipment, nearest the center on a tie. So it only
+      // reports a conflict when no spot is clear, and then only for the pieces truly in the way.
+      function panelRects(panel, items) {
+        const p = normPanel(panel);
+        const box = { x: p.x - PANEL.w / 2, y: 0, w: PANEL.w, d: PANEL.d };
+        const sw = PANEL.spaceW;
+        const rect = x => ({ x, y: 0, w: sw, d: PANEL.d + PANEL.spaceD });
+        const lo = Math.max(0, box.x + box.w - sw), hi = Math.min(ROOM.w - sw, box.x);
+        const mid = clamp(p.x - sw / 2, lo, hi);
+        const fps = (items || []).filter(it => !isWall(it)).map(footprint);
+        const blocked = x => fps.filter(f => overlaps(f, rect(x))).length;
+        let best = mid, bestN = blocked(mid);
+        for (const x of [lo, hi, ...fps.flatMap(f => [f.x + f.w, f.x - sw])]) {
+          if (x < lo - EPS || x > hi + EPS) continue;
+          const v = clamp(x, lo, hi), n = blocked(v);
+          if (n < bestN || (n === bestN && Math.abs(v - mid) < Math.abs(best - mid))) {
+            best = v;
+            bestN = n;
+          }
+        }
+        return { box, space: rect(best) };
+      }
+
+      // Wall-mounted items (the TV) hang above the floor: they sit flush on a wall, face the room,
+      // and don't collide with floor equipment.
+      const isWall = it => !!typeOf(it).wallMount;
+      // Put a wall item on the wall nearest the point (px, py), centered there along the wall.
+      function onWall(it, px, py) {
+        const s = size(it);
+        const dist = { top: py, right: ROOM.w - px, bottom: ROOM.d - py, left: px };
+        const wall = Object.keys(dist).reduce((a, b) => (dist[b] < dist[a] ? b : a));
+        const rot = { top: 0, right: 90, bottom: 180, left: 270 }[wall];
+        if (wall === 'top' || wall === 'bottom') {
+          const x = clamp(Math.round(px - s.w / 2), 0, ROOM.w - s.w);
+          return { ...it, rot, x: round1(x), y: wall === 'top' ? 0 : round1(ROOM.d - s.d) };
+        }
+        const y = clamp(Math.round(py - s.w / 2), 0, ROOM.d - s.w);
+        return { ...it, rot, x: wall === 'left' ? 0 : round1(ROOM.w - s.d), y: round1(y) };
+      }
+
+      // The strip of air in front of a mini-split that tall things mustn't stand in; null for
+      // anything without an `airflow` need.
+      function airflowZone(it) {
+        const t = typeOf(it);
+        if (!t.airflow || !isWall(it)) return null;
+        const f = footprint(it), a = t.airflow.depth;
+        return {
+          0: { x: f.x, y: f.y + f.d, w: f.w, d: a },
+          90: { x: f.x - a, y: f.y, w: a, d: f.d },
+          180: { x: f.x, y: f.y - a, w: f.w, d: a },
+          270: { x: f.x + f.w, y: f.y, w: a, d: f.d },
+        }[it.rot];
+      }
+
+      // Turn 90° clockwise about the center, then pull back inside the walls.
+      function rotateItem(it) {
+        if (typeOf(it).round || isWall(it)) return it;
+        const f = footprint(it);
+        const cx = f.x + f.w / 2, cy = f.y + f.d / 2;
+        const next = { ...it, rot: (it.rot + 90) % 360 };
+        const g = footprint(next);
+        return clampItem({ ...next, x: round1(cx - g.w / 2), y: round1(cy - g.d / 2) });
+      }
+
+      // Smallest shift (within SNAP) that lines a source edge up with a target edge.
+      function snapAxis(sources, targets) {
+        let best = 0;
+        for (const s of sources) {
+          for (const t of targets) {
+            const d = t - s;
+            if (Math.abs(d) <= SNAP && (best === 0 || Math.abs(d) < Math.abs(best))) best = d;
+          }
+        }
+        return best;
+      }
+      const closer = (a, b) => (!a ? b : !b ? a : Math.abs(a) <= Math.abs(b) ? a : b);
+
+      // Drag target: round to the 1" grid, snap edges to walls and to other items'
+      // footprints and clearance zones, snap this item's own zone to the walls, then clamp.
+      function moveItem(it, x, y, items, opts) {
+        if (isWall(it)) {
+          const f = footprint(it);
+          return onWall(it, x + f.w / 2, y + f.d / 2);
+        }
+        const o = normOpts(opts);
+        const next = clampItem({ ...it, x: Math.round(x), y: Math.round(y) });
+        const f = footprint(next);
+        const z = o.clearance ? zoneOf(next) : null;
+        const lr = landingRects(o.landing);
+        const xs = [0, ROOM.w, lr.box.w], ys = [0, ROOM.d, lr.box.y, lr.box.y + lr.box.d, lr.foot.y];
+        for (const other of items) {
+          if (other.uid === it.uid || isWall(other)) continue;
+          const g = footprint(other);
+          xs.push(g.x, g.x + g.w);
+          ys.push(g.y, g.y + g.d);
+          const oz = o.clearance ? zoneOf(other) : null;
+          if (oz) {
+            xs.push(oz.x, oz.x + oz.w);
+            ys.push(oz.y, oz.y + oz.d);
+          }
+        }
+        let dx = snapAxis([f.x, f.x + f.w], xs);
+        let dy = snapAxis([f.y, f.y + f.d], ys);
+        if (z) {
+          dx = closer(dx, snapAxis([z.x, z.x + z.w], [0, ROOM.w]));
+          dy = closer(dy, snapAxis([z.y, z.y + z.d], [0, ROOM.d]));
+        }
+        return clampItem({ ...next, x: round1(next.x + dx), y: round1(next.y + dy) });
+      }
+
+      // Display names by uid. Each type is on the plan at most once, so the short name is enough.
+      function names(items) {
+        const out = {};
+        for (const it of items) out[it.uid] = typeOf(it).short;
+        return out;
+      }
+
+      // Every rule from the plan:
+      //  1. footprints overlap → bad
+      //  2. a footprint sits in another item’s clearance zone, on the landing and steps, on
+      //     the clear floor at the foot of the steps, or in front of the electrical panel → bad
+      //  3. a clearance zone runs past a wall or into the landing and steps → warn
+      //  4. a tall item sits under the open garage door, or an e-bike parks by the house door → warn
+      // Zones may overlap each other (shared aisle space). With clearance off, rules
+      // that involve zones are skipped.
+      function analyze(allItems, opts) {
+        const o = normOpts(opts);
+        const nm = names(allItems);
+        const items = allItems.filter(it => !isWall(it));
+        const issues = [], item = {}, zone = {};
+        const flag = (map, uid, level) => {
+          if (map[uid] !== 'bad') map[uid] = level;
+        };
+        const add = (level, uids, text) => {
+          issues.push({ level, uid: uids[0], text });
+          for (const u of uids) flag(item, u, level);
+        };
+        const fps = items.map(footprint);
+        const zones = items.map(it => (o.clearance ? zoneOf(it) : null));
+        const hit = new Set();
+
+        for (let i = 0; i < items.length; i++) {
+          for (let j = i + 1; j < items.length; j++) {
+            if (overlaps(fps[i], fps[j])) {
+              hit.add(`${i},${j}`);
+              add('bad', [items[i].uid, items[j].uid], `${nm[items[i].uid]} and ${nm[items[j].uid]} overlap.`);
+            }
+          }
+        }
+        for (let i = 0; i < items.length; i++) {
+          if (!zones[i]) continue;
+          for (let j = 0; j < items.length; j++) {
+            if (i === j || hit.has(i < j ? `${i},${j}` : `${j},${i}`)) continue;
+            if (hits(zones[i], fps[j])) {
+              add('bad', [items[j].uid], `${nm[items[j].uid]} is in the ${nm[items[i].uid]}’s ${typeOf(items[i]).zoneName}.`);
+              flag(zone, items[i].uid, 'bad');
+            }
+          }
+        }
+        const lr = landingRects(o.landing);
+        const onLanding = new Set();
+        for (let i = 0; i < items.length; i++) {
+          if (overlaps(fps[i], lr.box)) {
+            onLanding.add(i);
+            add('bad', [items[i].uid], `${nm[items[i].uid]} is on the landing and steps.`);
+          } else if (overlaps(fps[i], lr.foot)) {
+            add('bad', [items[i].uid], `${nm[items[i].uid]} blocks the bottom of the steps.`);
+          }
+        }
+        const g = EXIT_CLEAR;
+        const nearDoor = { x: lr.foot.x - g, y: lr.foot.y - g, w: lr.box.w + 2 * g, d: lr.box.y + lr.box.d - lr.foot.y + 2 * g };
+        for (let i = 0; i < items.length; i++) {
+          if (typeOf(items[i]).battery && !overlaps(fps[i], lr.box) && !overlaps(fps[i], lr.foot) && overlaps(fps[i], nearDoor)) {
+            add('warn', [items[i].uid], `${nm[items[i].uid]} parked within ${fmtLen(g)} of the steps to the house door: Specialized says not to charge or store an e-bike by an exit door, since a battery fire there would block the way out.`);
+          }
+        }
+        const ps = panelRects(o.panel, items).space;
+        let panel = null;
+        for (let i = 0; i < items.length; i++) {
+          if (overlaps(fps[i], ps)) {
+            panel = 'bad';
+            add('bad', [items[i].uid], `${nm[items[i].uid]} blocks the electrical panel, which needs ${fmtLen(PANEL.spaceW)} wide × ${fmtLen(PANEL.spaceD)} deep of clear floor in front of it.`);
+          }
+        }
+        for (let i = 0; i < items.length; i++) {
+          if (zones[i] && !onLanding.has(i) && hits(zones[i], lr.box)) {
+            add('warn', [items[i].uid], `${nm[items[i].uid]}’s ${typeOf(items[i]).zoneName} runs into the landing and steps.`);
+            flag(zone, items[i].uid, 'warn');
+          }
+        }
+        for (let i = 0; i < items.length; i++) {
+          const z = zones[i];
+          if (!z) continue;
+          const past = { top: -z.y, right: z.x + z.w - ROOM.w, bottom: z.y + z.d - ROOM.d, left: -z.x };
+          const parts = Object.keys(past)
+            .filter(side => past[side] > 0.5)
+            .sort((a, b) => past[b] - past[a])
+            .map(side => `${fmtLen(past[side])} past the ${WALLS[side]}`);
+          if (parts.length) {
+            add('warn', [items[i].uid], `${nm[items[i].uid]}’s ${typeOf(items[i]).zoneName} runs ${parts.join(' and ')}.`);
+            flag(zone, items[i].uid, 'warn');
+          }
+        }
+        const over = overheadZone(o.door);
+        for (let i = 0; i < items.length; i++) {
+          const t = typeOf(items[i]);
+          if (!overlaps(fps[i], over)) continue;
+          if (t.hangs) {
+            add('warn', [items[i].uid], `${nm[items[i].uid]} hangs from the ceiling, but the open garage door covers the ceiling there.`);
+          } else if (t.h && t.h > GARAGE.headroom) {
+            add('warn', [items[i].uid], `${nm[items[i].uid]} (${fmtLen(t.h)} tall) is under the open garage door, which hangs about ${fmtLen(GARAGE.headroom)} up.`);
+          }
+        }
+        // Wall-mounted items: the garage door opening has no wall to hang on; code keeps the wall
+        // above the electrical panel clear (NEC 110.26(E)); two shouldn't share a stretch of wall;
+        // and nothing tall may stand in a mini-split's airflow.
+        const walls = allItems.filter(isWall);
+        const pbox = panelRects(o.panel).box;
+        const span = it => {
+          const f = footprint(it);
+          return it.rot % 180 === 0 ? [f.x, f.x + f.w] : [f.y, f.y + f.d];
+        };
+        const cross = (a, b) => a[0] < b[1] - EPS && b[0] < a[1] - EPS;
+        walls.forEach((it, k) => {
+          const sp = span(it), t = typeOf(it);
+          if (it.rot === 180 && cross(sp, [o.door.x, o.door.x + o.door.w])) {
+            add('bad', [it.uid], `${nm[it.uid]} can’t hang over the garage door opening.`);
+          }
+          if (it.rot === 0 && cross(sp, [pbox.x, pbox.x + pbox.w])) {
+            add('bad', [it.uid], `${nm[it.uid]} can’t hang above the electrical panel; code keeps that wall clear.`);
+          }
+          for (const other of walls.slice(k + 1)) {
+            if (other.rot === it.rot && cross(sp, span(other))) {
+              add('warn', [it.uid, other.uid], `${nm[it.uid]} and ${nm[other.uid]} share a stretch of the ${WALLS[WALL_OF[it.rot]]}; one has to go well above the other.`);
+            }
+          }
+          if (t.airflow && BEHIND[WALL_OF[it.rot]]) {
+            add('warn', [it.uid], `${nm[it.uid]} is on the ${WALLS[WALL_OF[it.rot]]}, which backs onto ${BEHIND[WALL_OF[it.rot]]}, so its refrigerant lines and drain can’t go straight outside. Put it on the back wall.`);
+          }
+          const strip = airflowZone(it);
+          if (!strip) return;
+          for (let i = 0; i < items.length; i++) {
+            const ti = typeOf(items[i]);
+            const tall = ti.hangs || (ti.h && ti.h > t.airflow.height);
+            if (tall && overlaps(fps[i], strip)) {
+              const what = ti.hangs ? 'hangs' : `(${fmtLen(ti.h)} tall) stands`;
+              add('warn', [items[i].uid, it.uid], `${nm[items[i].uid]} ${what} right in front of the ${nm[it.uid]} and would block its airflow.`);
+              flag(zone, it.uid, 'warn');
+            }
+          }
+        });
+        issues.sort((a, b) => (a.level === b.level ? 0 : a.level === 'bad' ? -1 : 1));
+        return { issues, item, zone, panel };
+      }
+
+      // First spot (scanning from the back-left corner) where a new item has no issues; failing
+      // that, the first where it is only short on room (amber), never colliding (red). The
+      // room's center is the last resort.
+      function placeNew(typeId, items, opts, uid) {
+        if (BY_ID[typeId].wallMount) {
+          // The TV goes on the wall the treadmill (or stair climber) faces, centered on it; the
+          // mini-split on the back wall (the side walls back onto other buildings), clear of the
+          // panel and of tall gear. Otherwise the first wall spot with no issues, else the first tried.
+          const probe = { uid, type: typeId, x: 0, y: 0, rot: 0 };
+          const pts = [];
+          const cardio = items.find(i => i.type === 'treadmill') || items.find(i => i.type === 'stair');
+          if (typeId === 'tv' && cardio) {
+            const f = footprint(cardio), cx = f.x + f.w / 2, cy = f.y + f.d / 2;
+            pts.push({ 0: [cx, 0], 90: [ROOM.w, cy], 180: [cx, ROOM.d], 270: [0, cy] }[cardio.rot]);
+          }
+          if (typeId !== 'tv') pts.push([ROOM.w / 4, 0], [ROOM.w / 8, 0], [ROOM.w * 0.85, 0], [48, ROOM.d]);
+          pts.push([ROOM.w / 2, 0], [ROOM.w / 4, 0], [ROOM.w, ROOM.d / 4], [0, ROOM.d / 4]);
+          const cands = pts.map(([px, py]) => onWall(probe, px, py));
+          return cands.find(c => !analyze(items.concat([c]), opts).item[uid]) || cands[0];
+        }
+        const t = BY_ID[typeId];
+        // Bikes roll out the garage door, so their search starts there, flush with that wall.
+        const rots = t.rollsOut ? [180, 90, 270, 0] : [0, 90];
+        const rows = rot => {
+          const last = ROOM.d - footprint({ type: typeId, x: 0, y: 0, rot }).d, ys = [];
+          for (let y = 0; y <= last; y += 6) ys.push(y);
+          if (t.rollsOut && ys[ys.length - 1] !== last) ys.push(last);
+          return t.rollsOut ? ys.reverse() : ys;
+        };
+        for (const strict of [true, false]) {
+          for (const rot of rots) {
+            for (const y of rows(rot)) {
+              for (let x = 0; x <= ROOM.w; x += 6) {
+                const cand = { uid, type: typeId, x, y, rot };
+                const f = footprint(cand);
+                if (x + f.w > ROOM.w || y + f.d > ROOM.d) continue;
+                const res = analyze(items.concat([cand]), opts);
+                const ok = strict ? !res.item[uid] && !res.zone[uid] : res.item[uid] !== 'bad' && res.zone[uid] !== 'bad';
+                if (ok) return cand;
+              }
+            }
+          }
+        }
+        const c = { uid, type: typeId, x: 0, y: 0, rot: 0 };
+        const f = footprint(c);
+        return clampItem({ ...c, x: round1((ROOM.w - f.w) / 2), y: round1((ROOM.d - f.d) / 2) });
+      }
+
+      // Square feet covered by equipment footprints.
+      function coverage(items) {
+        let sq = 0;
+        for (const it of items) {
+          if (isWall(it)) continue;
+          const f = footprint(it);
+          sq += f.w * f.d;
+        }
+        return sq / 144;
+      }
+
+      function normMat(x) {
+        return Number.isFinite(x) ? round1(clamp(x, 0, ROOM.w)) : DEFAULT_MAT;
+      }
+      // Drag target for the mat edge: whole inches, snapped to the walls, equipment edges and the landing.
+      function snapMat(x, items, landing) {
+        const v = clamp(Math.round(x), 0, ROOM.w);
+        const targets = [0, ROOM.w, landingRects(landing).box.w];
+        for (const it of items) {
+          if (isWall(it)) continue;
+          const f = footprint(it);
+          targets.push(f.x, f.x + f.w);
+        }
+        return normMat(v + snapAxis([v], targets));
+      }
+      // Square feet of mats: everything right of the edge, minus any of the landing inside it.
+      function matArea(x, landing) {
+        const m = normMat(x), box = landingRects(landing).box;
+        return ((ROOM.w - m) * ROOM.d - Math.max(0, box.w - m) * box.d) / 144;
+      }
+
+      // Swap in a starting layout's equipment and mat edge; the garage measurements stay.
+      function applyPreset(state, id) {
+        return applyLayout(state, PRESETS.find(x => x.id === id));
+      }
+      // Swap in any layout's equipment and mat edge (a starting layout or a saved one).
+      function applyLayout(state, layout) {
+        return { ...state, items: layout.items.map(it => ({ ...it })), mat: normMat(layout.mat) };
+      }
+      // True when the plan is exactly that starting layout (same pieces, spots and mat edge).
+      function matchesPreset(state, id) {
+        return sameLayout(state, PRESETS.find(x => x.id === id));
+      }
+      // Same pieces in the same spots, turned the same way, same sizes, same mat edge.
+      function sameLayout(state, layout) {
+        const key = it => `${it.type}@${it.x},${it.y},${it.rot},${it.w ?? ''},${it.d ?? ''}`;
+        const a = state.items.map(key).sort().join('|'), b = layout.items.map(key).sort().join('|');
+        return a === b && normMat(state.mat) === normMat(layout.mat);
+      }
+
+      // ---- Saved layouts: the equipment and mat edge, by name (the garage stays shared) ----
+      const SAVED_KEY = 'garage-layout-saved-v1';
+      function cleanName(name, fallback) {
+        const s = typeof name === 'string' ? name.trim().slice(0, 60) : '';
+        return s || fallback;
+      }
+      function uniqueName(name, list) {
+        let n = name, k = 2;
+        while (list.some(l => l.name === n)) n = `${name} (${k++})`;
+        return n;
+      }
+      function snapshot(state, name, list, now) {
+        return {
+          id: `s${now.toString(36)}${list.length}`,
+          name: uniqueName(cleanName(name, `Layout ${list.length + 1}`), list),
+          savedAt: new Date(now).toISOString(),
+          items: state.items.map(it => ({ ...it })),
+          mat: normMat(state.mat),
+        };
+      }
+      function serializeSaved(list) {
+        return JSON.stringify({ v: 1, layouts: list });
+      }
+      // Saved layouts from storage; anything unreadable is skipped rather than failing the lot.
+      function parseSaved(text) {
+        let raw;
+        try {
+          raw = JSON.parse(text);
+        } catch (e) {
+          return [];
+        }
+        if (!raw || typeof raw !== 'object' || raw.v !== 1 || !Array.isArray(raw.layouts)) return [];
+        const out = [], ids = new Set();
+        raw.layouts.forEach((l, k) => {
+          if (!l || typeof l !== 'object' || !Array.isArray(l.items)) return;
+          let id = typeof l.id === 'string' && l.id && l.id.length <= 40 ? l.id : `s${k}`;
+          while (ids.has(id)) id += 'x';
+          ids.add(id);
+          const savedAt = typeof l.savedAt === 'string' && !Number.isNaN(Date.parse(l.savedAt)) ? l.savedAt : null;
+          out.push({ id, name: cleanName(l.name, `Layout ${k + 1}`), savedAt, items: cleanItems(l.items), mat: normMat(l.mat) });
+        });
+        return out;
+      }
+
+      // ---- Electrical: the circuit each powered item needs, where it lands, and rough costs ----
+      // Low–high USD, Atlanta, late 2026 (sources in COST_SOURCES). An electrician's bill is a
+      // fixed part paid once per visit (trip, panel work and load calculation, permit) plus an
+      // incremental part per circuit: labor hours × the hourly rate, wire for its run, and parts.
+      // The rate, wire, breakers, devices, permits and units are published prices; labor hours,
+      // boxes and covers are estimates for short runs from a panel in the same garage.
+      // Permits run from Cobb's $95 to Atlanta's $175+ per trade.
+      const COSTS = {
+        rate: [50, 150], serviceCall: [75, 200], panelHours: [1, 2], permit: [95, 250], permitMech: [95, 250],
+        wire: { '12/2': [1.0, 1.38], '10/2': [2.74, 2.97], '8/2': [2.26, 3.66] }, // per foot, copper NM-B
+        breaker1: [6, 15], breaker2: [18, 41], gfci2: [85, 200], gfciRecept: [9, 28], recept620: [5, 14],
+        box: [5, 20], disconnect: [40, 99], serviceRecept: [20, 45],
+        unit: {
+          pro: { '12k': [3200, 5500], '18k': [4000, 7000], '24k': [6000, 8000] },
+          diy: { '12k': [2050, 2400], '18k': [2600, 2950], '24k': [3000, 3350] },
+        },
+        panelUpgrade: [1500, 5000], subpanel: [500, 1700],
+      };
+      const COST_SOURCES = [
+        { label: 'HomeGuide: Atlanta electricians, $50–$150 an hour plus a $75–$200 service call', url: 'https://homeguide.com/ga/atlanta/electrical-repair/' },
+        { label: 'HomeGuide: dedicated circuit, $250–$900 installed (2026), as a cross-check', url: 'https://homeguide.com/costs/cost-to-install-a-dedicated-circuit' },
+        { label: 'Angi: dedicated circuit, $570–$1,000 (2026), as a cross-check', url: 'https://www.angi.com/articles/cost-to-install-dedicated-circuit.htm' },
+        { label: 'Home Depot: 12/2 NM-B copper wire, about $1.00–$1.38 a foot', url: 'https://www.homedepot.com/p/Southwire-50-ft-12-2-Solid-Romex-SIMpull-CU-NM-B-W-G-Wire-28828222/202316374' },
+        { label: 'Home Depot: 10/2 NM-B copper wire, about $2.74–$2.97 a foot', url: 'https://www.homedepot.com/p/Southwire-50-ft-10-2-Solid-Romex-Simpull-CU-NM-B-W-G-Wire-28829022/202316205' },
+        { label: 'Home Depot: 8/2 NM-B copper wire, about $2.26–$3.66 a foot', url: 'https://www.homedepot.com/p/Southwire-50-ft-8-2-Stranded-Romex-SIMpull-CU-NM-B-W-G-Wire-28893622/205357742' },
+        { label: 'Home Depot: Square D 30 A 2-pole breaker, $18–$41', url: 'https://www.homedepot.com/p/Square-D-Homeline-30-Amp-2-Pole-Circuit-Breaker-HOM230CP-HOM230CP/202353325' },
+        { label: 'Home Depot: Square D 30 A 2-pole GFCI breaker, $93–$198', url: 'https://www.homedepot.com/p/Square-D-Homeline-30-Amp-2-Pole-GFCI-Circuit-Breaker-HOM230GFIC/204355352' },
+        { label: 'Home Depot: 20 A GFCI receptacles', url: 'https://www.homedepot.com/b/Electrical-Wiring-Devices-Light-Controls-Electrical-Outlets-Receptacles/20-amp/GFCI/N-5yc1vZc33aZ1z17lfhZ1z17vh7' },
+        { label: 'Zoro: Leviton NEMA 6-20 receptacle', url: 'https://zoro.com/leviton-receptacle-20-a-amps-250vac-single-outlet-6-20r-white-5821-w/i/G304256056' },
+        { label: 'GotDuctless: mini-split disconnect and whip kit', url: 'https://gotductless.com/products/electric-non-fused-60a-disconnect-box-and-6-1-2-whip-kit' },
+        { label: 'Angi: mini-split installed in Atlanta, 12k $3,200–$5,500, 18k $4,000–$7,000 (2026)', url: 'https://www.angi.com/articles/how-much-does-it-cost-install-ductless-mini-split-ac/ga/atlanta' },
+        { label: 'HomeGuide: mini-split installed by size (2026)', url: 'https://homeguide.com/costs/ductless-mini-split-ac-cost' },
+        { label: 'HVAC Pros Sales: MRCOOL DIY 5th Gen kit prices', url: 'https://hvacprosales.com/mrcool-diy-5th-gen-single-zone-mini-split-all-sizes-comparison/' },
+        { label: 'City of Atlanta permit fees ($150 minimum + $25 per trade)', url: 'https://permitcalculator.com/cities/atlanta-ga/' },
+        { label: 'DeKalb County 2026 fee schedule ($120 per trade)', url: 'https://dekalbcountyga.gov/sites/default/files/2026-09/2026%20-%20Fee%20Schedule%20Revised%20Updated-%20final.1.pdf' },
+        { label: 'Cobb County fee schedule ($95 per trade)', url: 'https://assets.cobbcounty.gov/files/2024-06/2024%20Fee%20Schedule%20Update_Final.pdf' },
+        { label: 'Recommended: 200 A panel upgrade in Atlanta, $1,500–$5,000 (May 2026)', url: 'https://www.recommended.app/atlanta/electrical' },
+        { label: 'HomeGuide: subpanel, $500–$1,700 (2026)', url: 'https://homeguide.com/costs/cost-to-install-a-subpanel' },
+      ];
+      // Choices the plan can't show: which kind of sauna, how big a mini-split, who installs it.
+      const TABS = ['layout', 'elec', 'costs'];
+      const ELEC_DEFAULT = { sauna: 'trad6', split: '18k', install: 'pro' };
+      const ELEC_CHOICES = {
+        sauna: { trad6: 'Traditional, 6 kW heater', trad8: 'Traditional, 8 kW heater', ir: 'Infrared' },
+        split: { '12k': '12,000 BTU, 120 V', '18k': '18,000 BTU, 230 V', '24k': '24,000 BTU, 230 V' },
+        install: { pro: 'Installed by an HVAC pro', diy: 'DIY pre-charged kit' },
+      };
+      function normElec(e) {
+        const raw = e || {}, out = {};
+        for (const k in ELEC_DEFAULT) out[k] = Object.prototype.hasOwnProperty.call(ELEC_CHOICES[k], raw[k]) ? raw[k] : ELEC_DEFAULT[k];
+        return out;
+      }
+      // One new dedicated circuit per powered item; the sauna and mini-split depend on the choice.
+      // `gfci`: 'yes' (garage receptacle, NEC 210.8(A)(2)), 'no' (listed HVAC, Georgia 210.8(F)
+      // Ex. 2), or 'ask' (hardwired in a garage: Georgia's 210.8(F) reads as yes, heater makers
+      // say no). `hours`, `cable` and `parts` price the circuit's incremental cost (see COSTS).
+      const CIRCUIT_SPECS = {
+        'sauna:trad6': {
+          volts: 240, amps: 30, poles: 2, wire: '10 AWG copper', gfci: 'ask',
+          connection: 'Hardwired to the heater; a neutral too if the controller runs 120 V lights. Breaker lockable or a disconnect in sight (NEC 424.19). Use 8 AWG on a 40 A breaker instead with NM cable, or if the inspector sizes the breaker at 125%.', hours: [3, 4], cable: '10/2', parts: [['2-pole GFCI breaker (likely required)', 'gfci2'], ['box, connector and breaker lock', 'box']],
+        },
+        'sauna:trad8': {
+          volts: 240, amps: 40, poles: 2, wire: '8 AWG copper', gfci: 'ask',
+          connection: 'Hardwired to the heater; a neutral too if the controller runs 120 V lights. Breaker lockable or a disconnect in sight (NEC 424.19).', hours: [3, 4], cable: '8/2', parts: [['2-pole GFCI breaker (likely required)', 'gfci2'], ['box, connector and breaker lock', 'box']],
+        },
+        'sauna:ir': {
+          volts: 240, amps: 20, poles: 2, wire: '12 AWG copper', gfci: 'yes',
+          connection: 'NEMA 6-20 receptacle where the sauna’s cord reaches (check the model; a few run on 120 V).', hours: [2, 3], cable: '12/2', parts: [['2-pole GFCI breaker', 'gfci2'], ['6-20 receptacle', 'recept620'], ['box and cover', 'box']],
+        },
+        'minisplit:12k': {
+          volts: 120, amps: 20, poles: 1, wire: '12 AWG copper', gfci: 'no',
+          connection: 'To the outdoor unit: disconnect within sight of it (NEC 440.14), plus a 120 V GFCI service receptacle within 25′ (210.63). Breaker per the nameplate MOCP.', hours: [3, 5], cable: '12/2', parts: [['20 A breaker', 'breaker1'], ['disconnect and whip', 'disconnect'], ['outdoor GFCI service receptacle', 'serviceRecept']],
+        },
+        'minisplit:18k': {
+          volts: 240, amps: 20, poles: 2, wire: '12 AWG copper', gfci: 'no',
+          connection: 'To the outdoor unit: disconnect within sight of it (NEC 440.14), plus a 120 V GFCI service receptacle within 25′ (210.63). Breaker per the nameplate MOCP (15–25 A for 18k models).', hours: [3, 5], cable: '12/2', parts: [['2-pole breaker', 'breaker2'], ['disconnect and whip', 'disconnect'], ['outdoor GFCI service receptacle', 'serviceRecept']],
+        },
+        'minisplit:24k': {
+          volts: 240, amps: 25, poles: 2, wire: '10 AWG copper', gfci: 'no',
+          connection: 'To the outdoor unit: disconnect within sight of it (NEC 440.14), plus a 120 V GFCI service receptacle within 25′ (210.63). Breaker per the nameplate MOCP.', hours: [3, 5], cable: '10/2', parts: [['2-pole breaker', 'breaker2'], ['disconnect and whip', 'disconnect'], ['outdoor GFCI service receptacle', 'serviceRecept']],
+        },
+        plunge: {
+          volts: 120, amps: 20, poles: 1, wire: '12 AWG copper', gfci: 'yes',
+          connection: '20 A receptacle at least 6′ from the tub, within reach of its cord; no extension cord.', hours: [2, 3], cable: '12/2', parts: [['20 A breaker', 'breaker1'], ['20 A GFCI receptacle', 'gfciRecept'], ['box and cover', 'box']],
+        },
+        treadmill: {
+          volts: 120, amps: 20, poles: 1, wire: '12 AWG copper', gfci: 'yes',
+          connection: 'Receptacle at the console end; nothing else on the circuit; plugs in through a surge suppressor.', hours: [2, 3], cable: '12/2', parts: [['20 A breaker', 'breaker1'], ['20 A GFCI receptacle', 'gfciRecept'], ['box and cover', 'box']],
+        },
+      };
+      // Gear that only needs an ordinary outlet on an existing garage circuit.
+      const SHARED_OUTLET = ['stair', 'tv', 'ebikes'];
+
+      // The point on the edge of an item's footprint at the middle of one of its own sides
+      // (named in its canonical frame: top = wall side), wherever it's turned.
+      function sidePoint(it, side) {
+        const order = ['top', 'right', 'bottom', 'left'];
+        const s = order[(order.indexOf(side) + it.rot / 90) % 4];
+        const f = footprint(it), cx = f.x + f.w / 2, cy = f.y + f.d / 2;
+        return { top: { x: cx, y: f.y }, right: { x: f.x + f.w, y: cy }, bottom: { x: cx, y: f.y + f.d }, left: { x: f.x, y: cy } }[s];
+      }
+      const distToRect = (p, r) => Math.hypot(Math.max(r.x - p.x, 0, p.x - r.x - r.w), Math.max(r.y - p.y, 0, p.y - r.y - r.d));
+      // Every 3" along the walls, skipping the garage door opening and the wall behind the landing.
+      function wallPoints(o) {
+        const pts = [], box = landingRects(o.landing).box;
+        for (let x = 0; x <= ROOM.w; x += 3) {
+          pts.push({ x, y: 0, wall: 'top' });
+          if (x < o.door.x || x > o.door.x + o.door.w) pts.push({ x, y: ROOM.d, wall: 'bottom' });
+        }
+        for (let y = 3; y < ROOM.d; y += 3) {
+          if (y < box.y || y > box.y + box.d) pts.push({ x: 0, y, wall: 'left' });
+          pts.push({ x: ROOM.w, y, wall: 'right' });
+        }
+        return pts;
+      }
+      // Where an item's outlet, junction box or (for the mini-split) outdoor unit goes: the wall
+      // spot nearest its wall side. The plunge's cord leaves its component end, and its outlet
+      // has to be at least 6' from the tub. The mini-split's power goes to its outdoor unit,
+      // just outside the wall behind it.
+      function connectionPoint(it, opts) {
+        const o = normOpts(opts);
+        if (isWall(it)) {
+          const f = footprint(it), wall = WALL_OF[it.rot], out = 30;
+          const at = { top: { x: f.x + f.w / 2, y: 0 }, right: { x: ROOM.w, y: f.y + f.d / 2 }, bottom: { x: f.x + f.w / 2, y: ROOM.d }, left: { x: 0, y: f.y + f.d / 2 } }[wall];
+          const n = { top: [0, -1], right: [1, 0], bottom: [0, 1], left: [-1, 0] }[wall];
+          return { x: round1(at.x), y: round1(at.y), wall, outside: { x: round1(at.x + n[0] * out), y: round1(at.y + n[1] * out) } };
+        }
+        const plunge = it.type === 'plunge';
+        const from = sidePoint(it, plunge ? 'right' : 'top'), f = footprint(it);
+        let best = null, bestD = Infinity;
+        for (const p of wallPoints(o)) {
+          if (plunge && distToRect(p, f) < 72) continue;
+          const d = Math.hypot(p.x - from.x, p.y - from.y);
+          if (d < bestD) {
+            best = p;
+            bestD = d;
+          }
+        }
+        return best;
+      }
+      // Rough wire run for quoting, in feet: from the panel along the ceiling (both plan
+      // directions), 10' to go up and come back down, 3' more to reach an outdoor unit, plus 10%,
+      // rounded up to 5'.
+      function runLength(pt, panel) {
+        const p = normPanel(panel);
+        const inches = Math.abs(pt.x - p.x) + pt.y + (pt.outside ? 36 : 0);
+        return Math.ceil(((inches / 12 + 10) * 1.1) / 5) * 5;
+      }
+      // The new circuits for what's on the plan, numbered, with where each lands.
+      function circuits(state) {
+        const o = normOpts(state), elec = normElec(state.elec), items = state.items || [];
+        const rows = [];
+        const keyFor = { sauna: `sauna:${elec.sauna}`, minisplit: `minisplit:${elec.split}`, plunge: 'plunge', treadmill: 'treadmill' };
+        for (const type of ['sauna', 'minisplit', 'plunge', 'treadmill']) {
+          const it = items.find(i => i.type === type);
+          if (!it) continue;
+          const point = connectionPoint(it, o);
+          rows.push({ n: rows.length + 1, uid: it.uid, type, key: keyFor[type], ...CIRCUIT_SPECS[keyFor[type]], point, run: runLength(point, o.panel) });
+        }
+        const shared = items.filter(i => SHARED_OUTLET.includes(i.type)).map(i => typeOf(i).outlet || typeOf(i).short);
+        return { rows, shared, spaces: rows.reduce((s, r) => s + r.poles, 0) };
+      }
+      // Low–high cost lines in three groups: the electrician's fixed part (once per visit), the
+      // incremental part of each circuit (labor + wire for its run + parts), and the mini-split
+      // itself. Circuit lines round to $5. Contingencies (panel upgrade, subpanel) are listed but
+      // not added in.
+      function costEstimate(state) {
+        const { rows } = circuits(state), elec = normElec(state.elec), R = COSTS.rate;
+        const r5 = v => Math.round(v / 5) * 5;
+        const lines = [];
+        if (rows.length) {
+          const h = COSTS.panelHours;
+          lines.push({ group: 'fixed', label: 'Service call and setup', detail: 'Trip charge and getting started', low: COSTS.serviceCall[0], high: COSTS.serviceCall[1] });
+          lines.push({ group: 'fixed', label: 'Panel work and load calculation', detail: `${h[0]}–${h[1]} h at $${R[0]}–$${R[1]}/h`, low: h[0] * R[0], high: h[1] * R[1] });
+          lines.push({ group: 'fixed', label: 'Electrical permit', detail: 'One per job, whatever the number of circuits', low: COSTS.permit[0], high: COSTS.permit[1] });
+        }
+        for (const r of rows) {
+          const w = COSTS.wire[r.cable];
+          const labor = [r.hours[0] * R[0], r.hours[1] * R[1]];
+          const wire = [r.run * w[0], r.run * w[1]];
+          const parts = r.parts.reduce((a, [, key]) => [a[0] + COSTS[key][0], a[1] + COSTS[key][1]], [0, 0]);
+          lines.push({
+            group: 'circuit', n: r.n,
+            label: `Circuit ${r.n}: ${typeOf({ type: r.type }).short} (${r.volts} V, ${r.amps} A)`,
+            detail: `${r.hours[0]}–${r.hours[1]} h labor · ~${r.run} ft of ${r.cable} · ${r.parts.map(pt => pt[0]).join(', ')}`,
+            labor: labor.map(r5), wire: wire.map(r5), parts: parts.map(r5),
+            low: r5(labor[0] + wire[0] + parts[0]), high: r5(labor[1] + wire[1] + parts[1]),
+          });
+        }
+        if (rows.some(r => r.type === 'minisplit')) {
+          const unit = COSTS.unit[elec.install][elec.split];
+          const pro = elec.install === 'pro';
+          lines.push({ group: 'hvac', label: `${elec.split.replace('k', ',000')} BTU unit, ${pro ? 'installed by an HVAC pro' : 'DIY kit'}`, detail: pro ? 'Equipment, line set and install' : 'Pre-charged kit; you mount it and run the line set', low: unit[0], high: unit[1] });
+          lines.push({ group: 'hvac', label: 'Mechanical permit', detail: pro ? 'Often already in a pro’s quote' : 'You pull it yourself', low: COSTS.permitMech[0], high: COSTS.permitMech[1] });
+        }
+        const sum = g => {
+          const ls = lines.filter(l => !g || g.includes(l.group));
+          return [ls.reduce((s, l) => s + l.low, 0), ls.reduce((s, l) => s + l.high, 0)];
+        };
+        return {
+          lines,
+          fixed: sum(['fixed']),
+          incremental: sum(['circuit']),
+          electric: sum(['fixed', 'circuit']),
+          hvac: sum(['hvac']),
+          total: sum(null),
+          contingencies: [
+            { label: 'Panel upgrade to 200 A, if the load calculation or open spaces fall short', low: COSTS.panelUpgrade[0], high: COSTS.panelUpgrade[1] },
+            { label: 'Subpanel in the garage instead of separate runs to the main panel', low: COSTS.subpanel[0], high: COSTS.subpanel[1] },
+          ],
+        };
+      }
+
+      // ---- Equipment prices and the overall cost summary ----
+      // USD seen 2026-11-14, before tax. One entry per type (the sauna's follows the Electrician
+      // tab's choice; the mini-split is priced by COSTS.unit). A single figure is that exact
+      // model; a range means the model isn't picked or the price depends on options. Several
+      // makers were running Black Friday prices with no end date posted.
+      const PRICES = {
+        mikolo: { low: 3000, high: 3500, note: '$2,999.99 for the machine, $3,499.99 with the upgraded 235 lb stacks (Black Friday pricing); free delivery.', url: 'https://gym-mikolo.com/products/anubis%E2%84%A2-2-0-ultimate-smith-machine-functional-trainer-with-dual-weight-stacks?variant=50872900223274' },
+        rogue: { low: 5247, high: 5815, note: 'Weight-stack versions on sale, about $255 off, by height, color and stack; free freight, ships in 4–6 weeks.', url: 'https://www.roguefitness.com/rogue-fm-6-functional-trainer' },
+        bench: { low: 350, high: 645, note: 'Model not picked: REP AB-3000 2.0 $349.99 up to a Rogue Adjustable Bench 3.0 at $535–$645.', url: 'https://repfitness.com/products/ab-3000-fid-adjustable-bench' },
+        dumbbells: { low: 1800, high: 1800, note: '125 lb pair $1,499.99 plus the matching REP stand $299.99; free shipping.', url: 'https://repfitness.com/products/rep-x-pepin-fast-series-adjustable-dumbbell?variant=43428954964126' },
+        treadmill: { low: 2500, high: 2700, note: 'Costco $2,499.99 (doorstep delivery, no setup), or NordicTrack $2,699.99 on sale (normally $3,699.99; assembly extra).', url: 'https://www.costco.com/p/-/nordictrack-x16-treadmill/4000359878' },
+        stair: { low: 3690, high: 4100, note: '$4,099.99, or $3,689.99 with the Black Friday code FEDLC; free shipping; pre-orders ship late November.', url: 'https://www.fedfitness.com/products/stair-climber-machine-ultra' },
+        'bag-hanging': { low: 195, high: 360, note: 'Model not picked: a 100 lb bag $175–$300 (Everlast, Title) plus a ceiling mount $20–$60.', url: 'https://www.everlast.com/products/100lb-elite-pro-heavy-bag' },
+        'bag-standing': { low: 420, high: 420, note: '$419.99; free shipping.', url: 'https://www.centurymartialarts.com/products/xxl-wavemaster-black' },
+        sauna: {
+          byChoice: {
+            trad6: { low: 5100, high: 20000, note: 'Model not picked: from an Almost Heaven Rainelle 4 with a 6 kW heater, $5,127 on sale ($9,502 with upgrades; freight extra), up to $20,000 to leave room for a premium or custom build.', url: 'https://almostheaven.com/products/rainelle-4-person-indoor-sauna' },
+            trad8: { low: 5100, high: 20000, note: 'Model not picked: from the Rainelle 4 with its 8 kW heater option (about $5,100) or a Golden Designs Kuusamo 6-person at $9,999, up to $20,000 to leave room for a premium or custom build.', url: 'https://goldendesigninc.com/products/golden-designs-kuusamo-edition-6-person-indoor-traditional-steam-sauna-gdi-7206-01-canadian-red-cedar-interior' },
+            ir: { low: 4300, high: 20000, note: 'Model not picked: from a Dynamic Vila Grande 4-person at $4,299 (Maxxus $5,999, Plunge Infrared $6,690 on sale, Golden Designs 6-person $8,999), up to $20,000 to leave room for a premium build.', url: 'https://goldendesigninc.com/products/new-2026-model-dynamic-vila-grande-4-person-full-spectrum-nero-zero-emf-far-ir-sauna-dyn-6415-03-fs' },
+          },
+        },
+        plunge: { low: 6990, high: 7490, note: 'Black Friday: $6,990 cold-only, $7,490 with heating; includes a cover and a maintenance kit; free in-home delivery in core zones.', url: 'https://plunge.com/products/plunge-all-in' },
+        yoga: { low: 118, high: 156, note: 'Lululemon The Mat 5mm $118 to a Manduka PRO at $125–$156.', url: 'https://www.manduka.com/products/manduka-pro-yoga-mat' },
+        tv: { low: 250, high: 330, note: 'Samsung U7900F $249.99 on sale (normally $329.99); TCL Q5 and Q6 $280–$300 at Best Buy.', url: 'https://www.samsung.com/us/tvs/uhd-4k-tv/50-inch-class-crystal-uhd-u7900f-4k-smart-tv-sku-un50u7900ffxza/' },
+        ebikes: { low: 5600, high: 8200, note: 'Two at $2,799.99 each on sale (normally $4,099.99), before any tariff surcharge Specialized adds in the cart on some items.', url: 'https://www.specialized.com/us/en/turbo-vado-40-step-through/p/4277442?color=5440990-4277442' },
+      };
+      // Bought with the TV: a long-arm full-motion mount so it can swing over either machine.
+      const MOUNT_PRICE = { low: 55, high: 280, note: 'Mounting Dream 30″ arm about $55 (Amazon) to a Kanto PDX700 about $260–$280.', url: 'https://www.kantomounts.com/products/pdx700' };
+      // Gym mats per square foot, multiplied by the mat area right of the edge on the plan.
+      const MAT_PRICE = { low: 1.45, high: 3.25, note: 'Basic rubber: 8 mm rolls $1.43–$2.08 a sq ft, 3/4″ stall mats $1.92 (Tractor Supply) to $3.21 (REP). Garage Floor Compare covers lower-emission options.', url: 'https://www.living.fit/products/rubber-flooring-rolls' };
+
+      function priceOf(typeId, elec) {
+        if (typeId === 'minisplit') {
+          const e = normElec(elec), u = COSTS.unit[e.install][e.split];
+          return { low: u[0], high: u[1], note: `${ELEC_CHOICES.split[e.split]}, ${ELEC_CHOICES.install[e.install].toLowerCase()}` };
+        }
+        const p = PRICES[typeId];
+        return p && p.byChoice ? p.byChoice[normElec(elec).sauna] : p || null;
+      }
+      const sumLines = ls => [ls.reduce((s, l) => s + l.low, 0), ls.reduce((s, l) => s + l.high, 0)];
+      // Everything the gym costs, for what's on the plan: equipment by group (catalog order),
+      // the mats, and the electrical and mini-split figures from costEstimate. Pieces left off
+      // the plan are listed separately for comparison.
+      function costSummary(state) {
+        const elec = normElec(state.elec), items = state.items || [];
+        const onPlan = new Set(items.map(i => i.type));
+        const groups = [];
+        for (const g of GROUPS) {
+          const lines = [];
+          for (const t of TYPES) {
+            if (t.group !== g.id || t.id === 'minisplit' || !onPlan.has(t.id)) continue;
+            lines.push({ type: t.id, label: t.name, ...priceOf(t.id, elec) });
+            if (t.id === 'tv') lines.push({ type: 'tv-mount', label: 'Long-arm TV wall mount', ...MOUNT_PRICE });
+          }
+          if (lines.length) groups.push({ id: g.id, name: g.name, lines, subtotal: sumLines(lines) });
+        }
+        const equipLines = groups.flatMap(g => g.lines);
+        const area = matArea(state.mat, state.landing);
+        if (area >= 1) {
+          const lines = [{
+            type: 'mats', label: `Gym mats, about ${Math.round(area)} sq ft`, note: MAT_PRICE.note, url: MAT_PRICE.url,
+            low: Math.round((area * MAT_PRICE.low) / 5) * 5, high: Math.round((area * MAT_PRICE.high) / 5) * 5,
+          }];
+          groups.push({ id: 'floor', name: 'Floor', lines, subtotal: sumLines(lines) });
+        }
+        const est = costEstimate(state);
+        const n = est.lines.filter(l => l.group === 'circuit').length;
+        const install = [];
+        if (n) install.push({ type: 'electrician', label: 'Electrician', low: est.electric[0], high: est.electric[1], note: `From the Electrician tab: the fixed part plus ${n} new ${n === 1 ? 'circuit' : 'circuits'}` });
+        for (const l of est.lines.filter(x => x.group === 'hvac')) install.push({ type: 'hvac', label: `Mini-split: ${l.label}`, low: l.low, high: l.high, note: l.detail });
+        if (install.length) groups.push({ id: 'install', name: 'Electrical and climate', lines: install, subtotal: sumLines(install) });
+        const floor = groups.find(g => g.id === 'floor');
+        const inst = groups.find(g => g.id === 'install');
+        return {
+          groups,
+          equipment: sumLines(equipLines),
+          floor: floor ? floor.subtotal : [0, 0],
+          install: inst ? inst.subtotal : [0, 0],
+          total: sumLines(groups.flatMap(g => g.lines)),
+          notOnPlan: TYPES.filter(t => !onPlan.has(t.id)).map(t => ({ type: t.id, label: t.name, ...priceOf(t.id, elec) })),
+        };
+      }
+
+      function defaultState() {
+        return {
+          items: DEFAULT_ITEMS.map(it => ({ ...it })), clearance: true, door: { ...DEFAULT_DOOR }, landing: { ...DEFAULT_LANDING },
+          panel: { ...DEFAULT_PANEL }, mat: DEFAULT_MAT, elec: { ...ELEC_DEFAULT }, tab: 'layout', overlay: { ...DEFAULT_OVERLAY },
+        };
+      }
+
+      function serialize(state) {
+        const items = state.items.map(it => {
+          const out = { uid: it.uid, type: it.type, x: it.x, y: it.y, rot: it.rot };
+          if (it.w != null) out.w = it.w;
+          if (it.d != null) out.d = it.d;
+          return out;
+        });
+        return JSON.stringify({
+          v: 1, gv: GARAGE_VERSION, items, clearance: !!state.clearance,
+          door: normDoor(state.door), landing: normLanding(state.landing), panel: normPanel(state.panel), mat: normMat(state.mat),
+          elec: normElec(state.elec), tab: TABS.includes(state.tab) ? state.tab : 'layout', overlay: normOverlay(state.overlay),
+        });
+      }
+
+      const okSize = v => Number.isFinite(v) && v >= 6 && v <= ROOM.w;
+
+      // Validated state from storage, or null if it can't be used. Bad items are dropped
+      // one by one so a single corrupt entry doesn't wipe the layout.
+      function parse(text) {
+        let raw;
+        try {
+          raw = JSON.parse(text);
+        } catch (e) {
+          return null;
+        }
+        if (!raw || typeof raw !== 'object' || raw.v !== 1 || !Array.isArray(raw.items)) return null;
+        const items = cleanItems(raw.items);
+        const current = raw.gv === GARAGE_VERSION;
+        return {
+          items,
+          clearance: raw.clearance !== false,
+          door: normDoor(current ? raw.door : DEFAULT_DOOR),
+          landing: normLanding(current ? raw.landing : DEFAULT_LANDING),
+          panel: normPanel(raw.panel),
+          mat: normMat(raw.mat),
+          elec: normElec(raw.elec),
+          tab: TABS.includes(raw.tab) ? raw.tab : 'layout',
+          overlay: normOverlay(raw.overlay),
+        };
+      }
+
+      // Validated equipment: known types, one of each, finite positions, inside the room; wall
+      // items go back on a wall. Bad entries are dropped one by one.
+      function cleanItems(rawItems) {
+        const items = [], used = new Set(), types = new Set();
+        rawItems.forEach((it, k) => {
+          if (!it || typeof it !== 'object' || !BY_ID[it.type] || types.has(it.type)) return;
+          if (!Number.isFinite(it.x) || !Number.isFinite(it.y) || !ROTS.includes(it.rot)) return;
+          let uid = typeof it.uid === 'string' && it.uid && it.uid.length <= 40 ? it.uid : `r${k}`;
+          while (used.has(uid)) uid += 'x';
+          used.add(uid);
+          const out = { uid, type: it.type, x: it.x, y: it.y, rot: it.rot };
+          if (okSize(it.w)) out.w = it.w;
+          if (okSize(it.d)) out.d = it.d;
+          types.add(it.type);
+          if (isWall(out)) {
+            const f = footprint(out);
+            items.push(onWall(out, f.x + f.w / 2, f.y + f.d / 2));
+          } else {
+            items.push(clampItem(out));
+          }
+        });
+        return items;
+      }
+
+      globalThis.GarageLayout = {
+        ROOM, SNAP, ROTS, STORE_KEY, GARAGE_VERSION, GARAGE, DEFAULT_DOOR, DEFAULT_LANDING, DEFAULT_PANEL, PANEL, normPanel, panelRects, airflowZone, STEP_CLEAR, WALLS, WALL_OF, BEHIND, GROUPS, TYPES,
+        DEFAULT_ITEMS, EXIT_CLEAR, typeOf, fmtLen, fmtIn, listJoin, size, footprint, rotateSides, useSide, zoneOf, overlaps, clampItem,
+        PRESETS, applyPreset, matchesPreset, applyLayout, sameLayout, cleanItems, SAVED_KEY, cleanName, uniqueName,
+        snapshot, serializeSaved, parseSaved, DEFAULT_MAT, normMat, snapMat, matArea, isWall, onWall, hits, normDoor, normLanding, landingRects, overheadZone, CURRENT_GARAGE, DEFAULT_OVERLAY, normOverlay, overlayBox, turnOverlay, overlayPoints, rotateItem, snapAxis, moveItem, names, analyze, placeNew, coverage,
+        defaultState, serialize, parse,
+        TABS, PRICES, MOUNT_PRICE, MAT_PRICE, priceOf, costSummary, COSTS, COST_SOURCES, ELEC_DEFAULT, ELEC_CHOICES, normElec, CIRCUIT_SPECS, SHARED_OUTLET, sidePoint, connectionPoint, runLength, circuits, costEstimate,
+      };
+    })();
+  </script>
+
+  <script>
+    (function () {
+      'use strict';
+      const G = window.GarageLayout;
+      const $ = id => document.getElementById(id);
+      const W = G.ROOM.w, D = G.ROOM.d;
+      const planSvg = $('plan');
+      const content = $('plan-content');
+
+      let state = load();
+      let selected = null;
+      let drag = null;
+      let lastTap = { uid: null, t: 0 };
+      let seq = 0;
+      let frame = 0;
+      let saved = loadSaved();
+      let undoFn = null; // undoes the latest layout action (load, switch, save over, delete)
+      let quiet = false;
+      let matDrag = null;
+      let curDrag = null; // true while the page itself moves focus, so focusin doesn't re-select
+
+      function load() {
+        try {
+          const s = G.parse(localStorage.getItem(G.STORE_KEY));
+          if (s) return s;
+        } catch (e) { /* storage blocked: use the default */ }
+        return G.defaultState();
+      }
+      function save() {
+        try {
+          localStorage.setItem(G.STORE_KEY, G.serialize(state));
+        } catch (e) { /* storage blocked: layout lasts for this visit only */ }
+      }
+      const opts = () => ({ clearance: state.clearance, door: state.door, landing: state.landing, panel: state.panel });
+      const findIdx = uid => state.items.findIndex(it => it.uid === uid);
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+      const n1 = v => Math.round(v * 10) / 10;
+      const newUid = () => `i${Date.now().toString(36)}${(seq++).toString(36)}`;
+
+      // ---- Plan ----------------------------------------------------------
+      function pxPerUnit() {
+        const m = planSvg.getScreenCTM();
+        return m && m.a > 0 ? m.a : 2;
+      }
+
+      // Pick the longest label that fits inside the footprint, upright or turned on its side.
+      function labelFor(t, f, fsU) {
+        const charW = 0.58 * fsU, pad = 2.5;
+        const dims = t.dims || `${Math.round(f.w)} × ${Math.round(f.d)}″`;
+        const fits = (len, lines, along, across) => len * charW <= along - pad * 2 && lines * fsU * 1.15 <= across - pad;
+        for (const txt of [t.short, t.abbr]) {
+          for (const vertical of [false, true]) {
+            if (vertical && f.d <= f.w) continue;
+            const along = vertical ? f.d : f.w, across = vertical ? f.w : f.d;
+            if (fits(Math.max(txt.length, dims.length), 2, along, across)) return { txt, dims, vertical };
+            if (fits(txt.length, 1, along, across)) return { txt, dims: null, vertical };
+          }
+        }
+        return null;
+      }
+
+      // Each type's drawing, in its own inches with the wall side up; turned and scaled per item.
+      const ART = {};
+      for (const t of G.TYPES) {
+        ART[t.id] = (t.art || [])
+          .map(([kind, ...v]) => {
+            if (kind === 'r') return `<rect class="${v[4]}" x="${v[0]}" y="${v[1]}" width="${v[2]}" height="${v[3]}"${v[5] ? ` rx="${v[5]}"` : ''}/>`;
+            if (kind === 'l') return `<line class="${v[4]}" x1="${v[0]}" y1="${v[1]}" x2="${v[2]}" y2="${v[3]}"/>`;
+            return `<circle class="${v[3]}" cx="${v[0]}" cy="${v[1]}" r="${v[2]}"/>`;
+          })
+          .join('');
+      }
+
+      // Direction each rotation's use side faces (for the TV: into the room).
+      const FACING = { 0: [0, 1], 90: [-1, 0], 180: [0, -1], 270: [1, 0] };
+
+      function frontLine(f, side) {
+        const inset = 2.5;
+        if (side === 'bottom' || side === 'top') {
+          const y = side === 'bottom' ? f.y + f.d - inset : f.y + inset;
+          return [f.x + f.w * 0.25, y, f.x + f.w * 0.75, y];
+        }
+        const x = side === 'right' ? f.x + f.w - inset : f.x + inset;
+        return [x, f.y + f.d * 0.25, x, f.y + f.d * 0.75];
+      }
+
+      function renderPlan() {
+        const ppu = pxPerUnit();
+        const u = px => n1(px / ppu); // screen pixels → plan units
+        const res = G.analyze(state.items, opts());
+        const door = state.door;
+        const lr = G.landingRects(state.landing);
+        const box = lr.box;
+        // House door: 36" opening centered on the landing part (not the treads).
+        const landD = box.d - lr.run;
+        const doorLen = Math.min(36, landD);
+        const doorY = box.y + lr.run + (landD - doorLen) / 2;
+        const out = [];
+
+        // Floor and grid
+        out.push(`<rect class="floor" x="0" y="0" width="${W}" height="${D}"/>`);
+        const mx = state.mat;
+        if (mx < W) out.push(`<rect class="mats" x="${mx}" y="0" width="${n1(W - mx)}" height="${D}"/>`);
+        for (let x = 12; x < W; x += 12) out.push(`<line class="${x % 60 ? 'g1' : 'g5'}" x1="${x}" y1="0" x2="${x}" y2="${D}"/>`);
+        for (let y = 12; y < D; y += 12) out.push(`<line class="${y % 60 ? 'g1' : 'g5'}" x1="0" y1="${y}" x2="${W}" y2="${y}"/>`);
+
+        // Foot labels along the top and left
+        const axFs = u(11);
+        const step = ppu * 24 >= 30 ? 2 : 4;
+        for (let ft = 0; ft <= 28; ft += step) out.push(`<text class="ax" x="${ft * 12}" y="${n1(-5 - axFs * 0.3)}" font-size="${axFs}" text-anchor="middle">${ft}′</text>`);
+        if (28 % step) out.push(`<text class="ax" x="${W}" y="${n1(-5 - axFs * 0.3)}" font-size="${axFs}" text-anchor="middle">28′</text>`);
+        for (let ft = step; ft <= 22; ft += step) out.push(`<text class="ax" x="${n1(-6 - axFs * 0.2)}" y="${n1(ft * 12 + axFs * 0.35)}" font-size="${axFs}" text-anchor="end">${ft}′</text>`);
+        if (22 % step) out.push(`<text class="ax" x="${n1(-6 - axFs * 0.2)}" y="${n1(D + axFs * 0.35)}" font-size="${axFs}" text-anchor="end">22′</text>`);
+
+        // Garage door overhead zone
+        const oz = G.overheadZone(door);
+        const ozFs = u(10.5);
+        out.push(`<rect class="overhead" x="${oz.x}" y="${oz.y}" width="${oz.w}" height="${oz.d}"/>`);
+        out.push(`<text class="overhead-t" x="${n1(oz.x + oz.w / 2)}" y="${n1(D - 4 - ozFs * 0.3)}" font-size="${ozFs}" text-anchor="middle">Open garage door overhead</text>`);
+
+        // Landing and steps to the house door, plus the clear floor at the foot of the steps
+        const lFs = u(10);
+        if (lr.foot.d > 0) {
+          out.push(`<rect class="doorzone" x="0" y="${n1(lr.foot.y)}" width="${box.w}" height="${n1(lr.foot.d)}"/>`);
+          if (lr.foot.d >= lFs * 2.6) out.push(`<text class="door-t" font-size="${lFs}" text-anchor="middle"><tspan x="${n1(box.w / 2)}" y="${n1(lr.foot.y + lr.foot.d / 2 - lFs * 0.2)}">Keep</tspan><tspan x="${n1(box.w / 2)}" dy="${n1(lFs * 1.1)}">clear</tspan></text>`);
+        }
+        out.push(`<rect class="landing" x="0" y="${n1(box.y)}" width="${box.w}" height="${box.d}"/>`);
+        for (let k = 1; k <= 3; k++) {
+          const ty = n1(box.y + (lr.run * k) / 3);
+          out.push(`<line class="tread" x1="0" y1="${ty}" x2="${box.w}" y2="${ty}"/>`);
+        }
+        const lcx = n1(box.w / 2), lcy = n1(box.y + lr.run + landD / 2);
+        if (landD >= lFs * 4.5) out.push(`<text class="landing-t" x="${lcx}" y="${n1(lcy + lFs * 0.35)}" font-size="${lFs}" text-anchor="middle" transform="rotate(-90 ${lcx} ${lcy})">Landing</text>`);
+
+        // Electrical panel on the back wall, and the clear floor code wants in front of it
+        const pr = G.panelRects(state.panel, state.items);
+        const ps = pr.space, panelCx = n1(ps.x + ps.w / 2);
+        out.push(`<rect class="doorzone${res.panel ? ' bad' : ''}" x="${n1(ps.x)}" y="0" width="${ps.w}" height="${ps.d}"/>`);
+        out.push(`<rect class="panel" x="${n1(pr.box.x)}" y="0" width="${pr.box.w}" height="${pr.box.d}"/>`);
+        if (ps.w >= lFs * 6) out.push(`<text class="door-t" font-size="${lFs}" text-anchor="middle"><tspan x="${panelCx}" y="${n1(pr.box.d + (ps.d - pr.box.d) / 2 - lFs * 0.2)}">Panel</tspan><tspan x="${panelCx}" dy="${n1(lFs * 1.1)}">keep clear</tspan></text>`);
+
+        // Clearance zones, clipped to the room
+        if (state.clearance) {
+          out.push('<g clip-path="url(#room-clip)">');
+          for (const it of state.items) {
+            const z = G.zoneOf(it) || G.airflowZone(it);
+            if (!z) continue;
+            const t = G.typeOf(it);
+            const zc = `zone g-${t.group} ${res.zone[it.uid] || ''}`;
+            if (z.round) out.push(`<circle class="${zc}" cx="${n1(z.cx)}" cy="${n1(z.cy)}" r="${n1(z.r)}"/>`);
+            else out.push(`<rect class="${zc}" x="${n1(z.x)}" y="${n1(z.y)}" width="${n1(z.w)}" height="${n1(z.d)}"/>`);
+          }
+          out.push('</g>');
+        }
+
+        // Selected TV: wedge of ±viewAngle in front of the screen, clipped to the room
+        const selIt = state.items[findIdx(selected)];
+        if (selIt && G.typeOf(selIt).viewAngle) {
+          const f = G.footprint(selIt), n = FACING[selIt.rot], a = (G.typeOf(selIt).viewAngle * Math.PI) / 180, L = 600;
+          const vx = f.x + f.w / 2, vy = f.y + f.d / 2;
+          const ray = sgn => [vx + L * (n[0] * Math.cos(a) - n[1] * Math.sin(a) * sgn), vy + L * (n[0] * Math.sin(a) * sgn + n[1] * Math.cos(a))];
+          const [ax, ay] = ray(1), [bx, by] = ray(-1);
+          out.push(`<g clip-path="url(#room-clip)"><path class="view" d="M${n1(vx)},${n1(vy)} L${n1(ax)},${n1(ay)} L${n1(bx)},${n1(by)} Z"/></g>`);
+        }
+
+        // Current garage: checkered fill under the equipment, so open floor inside it drags it
+        const cur = state.overlay.on ? G.overlayPoints(state.overlay) : null;
+        if (cur) {
+          const c = G.CURRENT_GARAGE;
+          const aria = `Current garage, ${G.fmtLen(c.w)} wide (${G.fmtLen(c.w + c.extra)} for half its length) by ${G.fmtLen(c.d)} long. Drag it, or use the arrow keys, to move it; R turns it and F flips it.`;
+          out.push(`<polygon class="cur-fill" data-cg="1" tabindex="0" role="button" aria-label="${esc(aria)}" points="${cur.map(p => p.join(',')).join(' ')}"/>`);
+        }
+
+        // Mat edge: dashed line plus a wide invisible strip to grab it (equipment sits on top)
+        out.push(`<line class="mat-line" x1="${mx}" y1="0" x2="${mx}" y2="${D}"/>`);
+        out.push(`<line class="mat-hit" data-mat="1" x1="${mx}" y1="0" x2="${mx}" y2="${D}"/>`);
+
+        // Walls, with gaps for the two doors
+        const t2 = 2; // wall stroke is 4 units, centered just outside the floor
+        out.push(`<line class="wall" x1="${-t2}" y1="${-t2}" x2="${W + t2}" y2="${-t2}"/>`);
+        out.push(`<line class="wall" x1="${W + t2}" y1="${-t2}" x2="${W + t2}" y2="${D + t2}"/>`);
+        out.push(`<line class="wall" x1="${-t2}" y1="${-t2}" x2="${-t2}" y2="${n1(doorY)}"/>`);
+        out.push(`<line class="wall" x1="${-t2}" y1="${n1(doorY + doorLen)}" x2="${-t2}" y2="${D + t2}"/>`);
+        out.push(`<line class="leaf" x1="${-t2}" y1="${n1(doorY)}" x2="${-t2}" y2="${n1(doorY + doorLen)}"/>`);
+        if (door.x > 0) out.push(`<line class="wall" x1="${-t2}" y1="${D + t2}" x2="${door.x}" y2="${D + t2}"/>`);
+        if (door.x + door.w < W) out.push(`<line class="wall" x1="${door.x + door.w}" y1="${D + t2}" x2="${W + t2}" y2="${D + t2}"/>`);
+        out.push(`<line class="gdoor" x1="${door.x}" y1="${D + t2}" x2="${door.x + door.w}" y2="${D + t2}"/>`);
+        const gdFs = u(11);
+        out.push(`<text class="door-t" x="${n1(door.x + door.w / 2)}" y="${n1(D + 5 + gdFs)}" font-size="${gdFs}" text-anchor="middle">Garage door · ${G.fmtLen(door.w)}</text>`);
+
+        // Items (selected one drawn last so it sits on top)
+        const nm = G.names(state.items);
+        const order = state.items.filter(it => it.uid !== selected).concat(state.items.filter(it => it.uid === selected));
+        const fs = u(12.5), fsSub = u(10.5);
+        for (const it of order) {
+          const t = G.typeOf(it);
+          const f = G.footprint(it);
+          const lvl = res.item[it.uid] || '';
+          const cls = ['it', `g-${t.group}`, lvl, it.uid === selected ? 'sel' : '', drag && drag.uid === it.uid && drag.moved ? 'dragging' : ''].join(' ');
+          const status = lvl === 'bad' ? ' Has a conflict.' : lvl === 'warn' ? ' Short on room.' : '';
+          const aria = `${nm[it.uid]}, ${G.fmtLen(f.w)} by ${G.fmtLen(f.d)}, ${G.fmtLen(f.x)} from the left wall and ${G.fmtLen(f.y)} from the back wall.${status}`;
+          const g = [`<g class="${cls}" data-uid="${esc(it.uid)}" tabindex="0" role="button" aria-label="${esc(aria)}">`];
+          const cx = n1(f.x + f.w / 2), cy = n1(f.y + f.d / 2);
+          if (t.round) {
+            const r = Math.min(f.w, f.d) / 2;
+            g.push(`<circle class="halo" cx="${cx}" cy="${cy}" r="${n1(r + 2.5)}"/>`);
+            g.push(`<circle class="body" cx="${cx}" cy="${cy}" r="${n1(r)}"/>`);
+            if (ART[t.id]) g.push(`<g class="art" transform="translate(${cx} ${cy}) scale(${(2 * r) / t.w}) translate(${-t.w / 2} ${-t.d / 2})">${ART[t.id]}</g>`);
+          } else {
+            const [fx1, fy1, fx2, fy2] = frontLine(f, G.useSide(it.rot));
+            g.push(`<rect class="halo" x="${n1(f.x - 2.5)}" y="${n1(f.y - 2.5)}" width="${n1(f.w + 5)}" height="${n1(f.d + 5)}" rx="3"/>`);
+            g.push(`<rect class="body" x="${n1(f.x)}" y="${n1(f.y)}" width="${n1(f.w)}" height="${n1(f.d)}" rx="2"/>`);
+            if (ART[t.id]) {
+              const sz = G.size(it);
+              g.push(`<g class="art" transform="translate(${cx} ${cy}) rotate(${it.rot}) scale(${sz.w / t.w} ${sz.d / t.d}) translate(${-t.w / 2} ${-t.d / 2})">${ART[t.id]}</g>`);
+            }
+            if (t.wallMount) g.push(`<rect class="hit" x="${n1(f.x - u(8))}" y="${n1(f.y - u(8))}" width="${n1(f.w + u(16))}" height="${n1(f.d + u(16))}"/>`);
+            else if (!t.noFront) g.push(`<line class="front" x1="${n1(fx1)}" y1="${n1(fy1)}" x2="${n1(fx2)}" y2="${n1(fy2)}"/>`);
+          }
+          // Round items lose their corners, so fit the label to the inscribed square.
+          const inner = t.round ? { ...f, w: f.w * 0.72, d: f.d * 0.72 } : f;
+          const lab = labelFor({ short: nm[it.uid], abbr: t.abbr, dims: t.round ? `${Math.round(f.w)}″` : null }, inner, fs);
+          if (t.wallMount) {
+            // The screen is a thin strip: label it just in front, out in the room.
+            const n = FACING[it.rot], off = (it.rot % 180 === 0 ? f.d : f.w) / 2 + fs * 0.9;
+            g.push(`<text class="lbl-out" x="${n1(cx + n[0] * off)}" y="${n1(cy + n[1] * off + fs * 0.35)}" font-size="${fs}" stroke-width="${u(3.5)}" text-anchor="middle">${esc(nm[it.uid])}</text>`);
+          } else if (!lab) {
+            // Too small for a label inside: put the name just below (or above, at the garage door wall).
+            const below = f.y + f.d + fs * 1.1 <= D;
+            const ly = below ? f.y + f.d + fs * 1.05 : f.y - fs * 0.45;
+            g.push(`<text class="lbl-out" x="${cx}" y="${n1(ly)}" font-size="${fs}" stroke-width="${u(3.5)}" text-anchor="middle">${esc(nm[it.uid])}</text>`);
+          } else {
+            const rotA = lab.vertical ? ` transform="rotate(-90 ${cx} ${cy})"` : '';
+            if (lab.dims) {
+              g.push(`<text class="lbl" font-size="${fs}" stroke-width="${u(4)}" text-anchor="middle"${rotA}><tspan x="${cx}" y="${n1(cy - fs * 0.15)}">${esc(lab.txt)}</tspan><tspan class="sub" x="${cx}" y="${n1(cy + fs * 0.95)}" font-size="${fsSub}">${lab.dims}</tspan></text>`);
+            } else {
+              g.push(`<text class="lbl" x="${cx}" y="${n1(cy + fs * 0.35)}" font-size="${fs}" stroke-width="${u(4)}" text-anchor="middle"${rotA}>${esc(lab.txt)}</text>`);
+            }
+          }
+          g.push('</g>');
+          out.push(g.join(''));
+        }
+
+        // Current garage outline over everything, labeled in a top corner that's inside it
+        if (cur) {
+          out.push(`<polygon class="cur-line" points="${cur.map(p => p.join(',')).join(' ')}"/>`);
+          const b = G.overlayBox(state.overlay), cfs = u(10.5), pad = u(5);
+          const has = (x, y) => cur.some(p => Math.abs(p[0] - x) < 0.5 && Math.abs(p[1] - y) < 0.5);
+          const left = has(b.x, b.y);
+          out.push(`<text class="cur-t" x="${n1(left ? b.x + pad : b.x + b.w - pad)}" y="${n1(b.y + pad + cfs * 0.8)}" font-size="${cfs}" stroke-width="${u(3.5)}" text-anchor="${left ? 'start' : 'end'}">Current garage</text>`);
+        }
+
+        // Distances from the selected item to each wall
+        const si = findIdx(selected);
+        if (si >= 0) {
+          const f = G.footprint(state.items[si]);
+          const cx = f.x + f.w / 2, cy = f.y + f.d / 2;
+          const dFs = u(11), halo = u(3.5);
+          const dimLine = (x1, y1, x2, y2, len, tx, ty) => {
+            if (len < 0.5) return;
+            out.push(`<line class="dim" x1="${n1(x1)}" y1="${n1(y1)}" x2="${n1(x2)}" y2="${n1(y2)}"/>`);
+            out.push(`<text class="dim-t" x="${n1(tx)}" y="${n1(ty + dFs * 0.35)}" font-size="${dFs}" stroke-width="${halo}" text-anchor="middle">${G.fmtLen(len)}</text>`);
+          };
+          dimLine(0, cy, f.x, cy, f.x, f.x / 2, cy);
+          dimLine(f.x + f.w, cy, W, cy, W - f.x - f.w, (f.x + f.w + W) / 2, cy);
+          dimLine(cx, 0, cx, f.y, f.y, cx, f.y / 2);
+          dimLine(cx, f.y + f.d, cx, D, D - f.y - f.d, cx, (f.y + f.d + D) / 2);
+        }
+
+        // Mat edge handle, above the back wall so equipment never covers it
+        const ph = u(18), pw = u(74), pfs = u(11.5);
+        const py = Math.max(-27.5, -5 - axFs * 1.2 - ph - u(3));
+        const pcx = Math.min(Math.max(mx, -30 + pw / 2), 348 - pw / 2);
+        const mText = mx >= W ? 'No mats' : mx <= 0 ? 'Mats cover the whole floor' : `Mats start ${G.fmtLen(mx)} from the left wall`;
+        out.push(`<g class="mat-handle" data-mat="1" tabindex="0" role="slider" aria-label="Gym mat edge. Left of it is sealed concrete, right of it is gym mats." aria-valuemin="0" aria-valuemax="${W}" aria-valuenow="${Math.round(mx)}" aria-valuetext="${mText}">`);
+        out.push(`<line class="mat-tick" x1="${mx}" y1="${n1(py + ph)}" x2="${mx}" y2="0"/>`);
+        out.push(`<rect class="mat-pill" x="${n1(pcx - pw / 2)}" y="${n1(py)}" width="${pw}" height="${ph}" rx="${n1(ph / 2)}"/>`);
+        out.push(`<text class="mat-pill-t" x="${n1(pcx)}" y="${n1(py + ph / 2 + pfs * 0.36)}" font-size="${pfs}" text-anchor="middle">◂ Mats ▸</text></g>`);
+
+        // Re-rendering replaces the nodes; give focus back to whatever had it.
+        const active = document.activeElement;
+        const hadFocus = content.contains(active);
+        const matFocus = hadFocus && active.classList.contains('mat-handle');
+        const curFocus = hadFocus && active.classList.contains('cur-fill');
+        content.innerHTML = out.join('');
+        if (matFocus) focusMat();
+        else if (curFocus) focusCur();
+        else if (hadFocus) focusSelected();
+        return res;
+      }
+
+      // ---- Side panel ----------------------------------------------------
+      const ICON_BAD = '<svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="currentColor"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      const ICON_WARN = '<svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l7 12.5H1z" fill="currentColor"/><path d="M8 6v4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="12" r="1" fill="#fff"/></svg>';
+      const ICON_OK = '<svg class="ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="currentColor"/><path d="M4.8 8.3l2.2 2.2 4.2-4.6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function renderSelected() {
+        const box = $('sel');
+        const i = findIdx(selected);
+        const focusId = box.contains(document.activeElement) ? document.activeElement.id : null;
+        if (i < 0) {
+          box.innerHTML = '<h2>Selected</h2><p class="hint">Click or tap a piece of equipment to see its size, clearance and sources. Drag it to move it; double-click, double-tap or press R to turn it.</p>';
+          return;
+        }
+        const it = state.items[i];
+        const t = G.typeOf(it);
+        const f = G.footprint(it);
+        const s = G.size(it);
+        const nm = G.names(state.items)[it.uid];
+        const group = G.GROUPS.find(gr => gr.id === t.group).name;
+        const custom = it.w != null || it.d != null;
+        const srcs = t.sources.length
+          ? `<ul class="srcs">${t.sources.map(src => `<li><a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.label)}</a></li>`).join('')}</ul>`
+          : '';
+        box.innerHTML = `
+          <h2>Selected</h2>
+          <div class="sel-name">${esc(nm)}</div>
+          <p class="sel-sub">${esc(t.name)} · ${group}</p>
+          <div class="stat-grid">
+            ${t.wallMount
+              ? `<div class="stat"><div class="k">${t.faceName}</div><div class="v">${G.fmtIn(s.w)} × ${G.fmtIn(t.faceH)}</div></div>
+            <div class="stat"><div class="k">Mounted on the</div><div class="v">${G.WALLS[G.WALL_OF[it.rot]]}</div></div>`
+              : `<div class="stat"><div class="k">${t.round ? 'Diameter' : 'Footprint as placed'}</div><div class="v">${t.round ? G.fmtIn(f.w) : `${G.fmtIn(f.w)} × ${G.fmtIn(f.d)}`}</div></div>
+            <div class="stat"><div class="k">Height</div><div class="v">${t.h ? G.fmtLen(t.h) : '—'}</div></div>`}
+            <div class="stat"><div class="k">From left wall</div><div class="v">${G.fmtLen(f.x)}</div></div>
+            <div class="stat"><div class="k">From back wall</div><div class="v">${G.fmtLen(f.y)}</div></div>
+          </div>
+          <p class="needs"><b>Needs:</b> ${esc(t.needs)}</p>
+          ${t.power ? `<p class="needs"><b>Power:</b> ${esc(t.power)}</p>` : ''}
+          <div class="btn-row">
+            ${t.round || t.wallMount ? '' : `<button type="button" class="btn primary" id="sel-rot"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6"/><path d="M13 2.5v3h-3"/></svg>Turn 90°</button>`}
+            <button type="button" class="btn danger" id="sel-del">Remove</button>
+          </div>
+          <div class="size-row"${t.wallMount ? ' hidden' : ''}>
+            ${t.round
+              ? `<label class="field">Diameter (in)<input type="number" id="sel-dia" min="6" max="120" step="0.5" inputmode="decimal" value="${n1(s.w)}"/></label>`
+              : `<label class="field">Width (in)<input type="number" id="sel-w" min="6" max="336" step="0.5" inputmode="decimal" value="${n1(s.w)}"/></label>
+            <label class="field">Depth (in)<input type="number" id="sel-d" min="6" max="336" step="0.5" inputmode="decimal" value="${n1(s.d)}"/></label>`}
+            ${custom ? '<button type="button" class="linkbtn" id="sel-size-reset">Reset size</button>' : ''}
+            ${t.round ? '' : `<p class="size-hint">${t.noFront ? 'Width runs along the bikes, depth across both.' : 'Before turning: depth runs from the wall side to the side you use it from.'}</p>`}
+          </div>
+          <p class="note">${esc(t.note)}</p>
+          ${srcs}`;
+        if (focusId && $(focusId)) $(focusId).focus({ preventScroll: true });
+      }
+
+      function renderIssues(res) {
+        const sq = G.coverage(state.items);
+        const pct = Math.round((sq / ((W * D) / 144)) * 100);
+        const summary = `<p class="foot">Equipment covers ${Math.round(sq)} sq ft (${pct}%) of the 616 sq ft floor.${state.clearance ? '' : ' Clearance zones are off, so only collisions are checked.'}</p>`;
+        if (!state.items.length) {
+          $('issues').innerHTML = '<p class="hint">The garage is empty. Check equipment below to place it.</p>';
+          return;
+        }
+        if (!res.issues.length) {
+          $('issues').innerHTML = `<p class="ok">${ICON_OK}<span>Everything fits${state.clearance ? ', with its clearance' : ''}.</span></p>${summary}`;
+          return;
+        }
+        $('issues').innerHTML = `<ul class="issues">${res.issues
+          .map(is => `<li class="${is.level}"><button type="button" data-uid="${esc(is.uid)}">${is.level === 'bad' ? ICON_BAD : ICON_WARN}<span>${esc(is.text)}</span></button></li>`)
+          .join('')}</ul>${summary}`;
+      }
+
+      function renderCatalog() {
+        const box = $('catalog');
+        const focusType = box.contains(document.activeElement) ? document.activeElement.dataset.type : null;
+        const placed = new Set(state.items.map(it => it.type));
+        box.innerHTML = G.GROUPS.map(gr => {
+          const rows = G.TYPES.filter(t => t.group === gr.id)
+            .map(t => {
+              const on = placed.has(t.id);
+              const size = t.wallMount ? `${n1(t.w)}″ wide, on a wall` : t.round ? `${n1(t.w)}″ across` : `${n1(t.w)}″ × ${n1(t.d)}″`;
+              return `<label class="cat-row${on ? ' on' : ''}"><input type="checkbox" data-type="${t.id}"${on ? ' checked' : ''}/><span class="cat-sw g-${t.group}" aria-hidden="true"></span><span class="cat-txt"><b>${esc(t.name)}</b><span>${size} · <span class="state">${on ? 'On the plan' : 'Not on the plan'}</span></span></span></label>`;
+            })
+            .join('');
+          return `<h3 class="cat-group">${gr.name}</h3>${rows}`;
+        }).join('');
+        if (focusType) {
+          const el = box.querySelector(`[data-type="${focusType}"]`);
+          if (el) el.focus({ preventScroll: true });
+        }
+      }
+
+      function miniPlan(p) {
+        const box = G.landingRects(state.landing).box;
+        const door = state.door;
+        const parts = [`<rect class="mp-floor" x="0" y="0" width="${W}" height="${D}"/>`];
+        if (p.mat < W) parts.push(`<rect class="mp-mats" x="${p.mat}" y="0" width="${W - p.mat}" height="${D}"/>`);
+        parts.push(`<rect class="mp-landing" x="0" y="${box.y}" width="${box.w}" height="${box.d}"/>`);
+        const pb = G.panelRects(state.panel, []).box;
+        parts.push(`<rect class="mp-panel" x="${pb.x}" y="0" width="${pb.w}" height="10"/>`);
+        for (const it of p.items) {
+          const t = G.typeOf(it), f = G.footprint(it);
+          parts.push(t.round
+            ? `<circle class="mp-it g-${t.group}" cx="${f.x + f.w / 2}" cy="${f.y + f.d / 2}" r="${f.w / 2}"/>`
+            : `<rect class="mp-it g-${t.group}" x="${f.x}" y="${f.y}" width="${f.w}" height="${f.d}" rx="3"/>`);
+        }
+        parts.push(`<rect class="mp-wall" x="-3" y="-3" width="${W + 6}" height="${D + 6}"/>`);
+        parts.push(`<line class="mp-gap" x1="${door.x}" y1="${D + 3}" x2="${door.x + door.w}" y2="${D + 3}"/>`);
+        parts.push(`<line class="mp-door" x1="${door.x}" y1="${D + 3}" x2="${door.x + door.w}" y2="${D + 3}"/>`);
+        return `<svg class="mini" viewBox="-8 -8 ${W + 16} ${D + 16}" aria-hidden="true">${parts.join('')}</svg>`;
+      }
+
+      function renderPresets() {
+        const focusId = $('presets').contains(document.activeElement) ? document.activeElement.dataset.preset : null;
+        $('presets').innerHTML = G.PRESETS.map(p => {
+          const on = G.matchesPreset(state, p.id);
+          return `<article class="preset${on ? ' current' : ''}">
+            ${miniPlan(p)}
+            <h3>${esc(p.name)}${on ? '<span class="tag">Current</span>' : ''}</h3>
+            <p>${esc(p.blurb)}</p>
+            <div class="preset-stat">Gym mats: about ${Math.round(G.matArea(p.mat, state.landing))} sq ft</div>
+            <button type="button" class="btn${on ? '' : ' primary'}" data-preset="${p.id}"${on ? ' disabled' : ''}>${on ? 'In use' : 'Use this layout'}</button>
+          </article>`;
+        }).join('');
+        if (focusId) {
+          const b = $('presets').querySelector(`[data-preset="${focusId}"]`);
+          if (b && !b.disabled) b.focus({ preventScroll: true });
+        }
+      }
+
+      function loadSaved() {
+        try {
+          return G.parseSaved(localStorage.getItem(G.SAVED_KEY));
+        } catch (e) {
+          return [];
+        }
+      }
+      function storeSaved() {
+        try {
+          localStorage.setItem(G.SAVED_KEY, G.serializeSaved(saved));
+        } catch (e) { /* storage blocked: saved layouts last for this visit only */ }
+      }
+
+      function renderSaved() {
+        const box = $('saved');
+        const active = document.activeElement;
+        if (box.contains(active) && active.matches('input')) return; // don't disturb a rename in progress
+        const focusKey = box.contains(active) && active.dataset.act ? `${active.dataset.act}:${active.dataset.id}` : null;
+        if (!saved.length) {
+          box.innerHTML = '<p class="hint">Nothing saved yet.</p>';
+          return;
+        }
+        box.innerHTML = saved.map(l => {
+          const on = G.sameLayout(state, l);
+          const when = l.savedAt ? new Date(l.savedAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+          const id = esc(l.id);
+          return `<article class="preset${on ? ' current' : ''}">
+            ${miniPlan(l)}
+            <h3><input class="saved-name" data-rename="${id}" value="${esc(l.name)}" maxlength="60" aria-label="Name of this saved layout"/>${on ? '<span class="tag">Current</span>' : ''}</h3>
+            <div class="preset-stat">${l.items.length} pieces · gym mats about ${Math.round(G.matArea(l.mat, state.landing))} sq ft${when ? ` · saved ${esc(when)}` : ''}</div>
+            <div class="btn-row">
+              <button type="button" class="btn${on ? '' : ' primary'}" data-act="load" data-id="${id}"${on ? ' disabled' : ''}>${on ? 'Loaded' : 'Load'}</button>
+              <button type="button" class="btn" data-act="update" data-id="${id}"${on ? ' disabled' : ''}>Save over</button>
+              <button type="button" class="btn danger" data-act="delete" data-id="${id}">Delete</button>
+            </div>
+          </article>`;
+        }).join('');
+        if (focusKey) {
+          const [act, fid] = focusKey.split(':');
+          const b = box.querySelector(`[data-act="${act}"][data-id="${CSS.escape(fid)}"]`);
+          if (b && !b.disabled) b.focus({ preventScroll: true });
+        }
+      }
+
+      function renderSettings() {
+        $('show-clear').checked = state.clearance;
+        $('show-cur').checked = state.overlay.on;
+        $('cur-ctl').hidden = !state.overlay.on;
+        const vals = {
+          'door-w': n1(state.door.w / 12),
+          'door-r': n1((W - state.door.x - state.door.w) / 12),
+          'land-from': state.landing.from,
+          'land-len': state.landing.len,
+          'land-depth': state.landing.depth,
+          'panel-x': n1(state.panel.x / 12),
+          'mat-x': n1(state.mat / 12),
+        };
+        for (const id in vals) if (document.activeElement !== $(id)) $(id).value = vals[id];
+        const area = Math.round(G.matArea(state.mat, state.landing));
+        $('mat-area').innerHTML = state.mat >= W
+          ? 'No mats: the whole floor is sealed concrete.'
+          : `Mats cover ${G.fmtLen(W - state.mat)} × 22′, about ${area} sq ft; the rest is sealed concrete. <a href="../garage-floor/">Compare mats</a>`;
+      }
+
+      // ---- Tabs and the electrician view -----------------------------------
+      const INTRO = {
+        layout: ['Layout', 'What fits in the garage gym?', $('intro-text').textContent],
+        elec: ['Electrical', 'What the electrician needs to know',
+          'Every new circuit the gym needs, where each one lands, what Georgia’s code asks for, and a rough cost. It follows the layout: move a piece on the Layout tab and this page updates. Print it for your electrician, or use it to compare quotes.'],
+        costs: ['Costs', 'What the whole gym costs',
+          'Every piece on the plan with its current price, the gym mats, and the electrical and mini-split work from the Electrician tab, added up. Add or remove equipment on the Layout tab and the total follows.'],
+      };
+      function renderTabs() {
+        const tab = G.TABS.includes(state.tab) ? state.tab : 'layout';
+        for (const t of G.TABS) {
+          const on = t === tab;
+          $(`tab-${t}`).setAttribute('aria-selected', String(on));
+          $(`tab-${t}`).tabIndex = on ? 0 : -1;
+          $(`panel-${t}`).hidden = !on;
+        }
+        const [eyebrow, title, text] = INTRO[tab];
+        $('intro-eyebrow').textContent = eyebrow;
+        $('intro-title').textContent = title;
+        $('intro-text').textContent = text;
+      }
+
+      const money = v => `$${Math.round(v).toLocaleString('en-US')}`;
+      const moneyRange = r => (r[0] === r[1] ? money(r[0]) : `${money(r[0])}–${money(r[1])}`);
+      // Where on the walls a connection point is, in words.
+      function whereText(pt) {
+        const along = pt.wall === 'top' || pt.wall === 'bottom' ? `${G.fmtLen(pt.x)} from the left wall` : `${G.fmtLen(pt.y)} from the back wall`;
+        return pt.outside ? `Outdoor unit outside the ${G.WALLS[pt.wall]}, ${along}` : `On the ${G.WALLS[pt.wall]}, ${along}`;
+      }
+      // Simplified plan: panel, faint equipment, and a numbered marker where each new circuit lands.
+      function electricPlan(c) {
+        const box = G.landingRects(state.landing).box;
+        const pr = G.panelRects(state.panel, state.items);
+        const door = state.door;
+        const p = [`<rect class="e-floor" x="0" y="0" width="${W}" height="${D}"/>`];
+        p.push(`<rect class="e-landing" x="0" y="${n1(box.y)}" width="${box.w}" height="${box.d}"/>`);
+        p.push(`<rect class="e-space" x="${n1(pr.space.x)}" y="0" width="${pr.space.w}" height="${pr.space.d}"/>`);
+        for (const it of state.items) {
+          const t = G.typeOf(it), f = G.footprint(it);
+          const cx = n1(f.x + f.w / 2), cy = n1(f.y + f.d / 2);
+          if (t.wallMount) {
+            p.push(`<rect class="e-wallit" x="${n1(f.x)}" y="${n1(f.y)}" width="${n1(f.w)}" height="${n1(f.d)}"/>`);
+            continue;
+          }
+          p.push(t.round
+            ? `<circle class="e-it" cx="${cx}" cy="${cy}" r="${n1(f.w / 2)}"/>`
+            : `<rect class="e-it" x="${n1(f.x)}" y="${n1(f.y)}" width="${n1(f.w)}" height="${n1(f.d)}" rx="2"/>`);
+          const need = t.abbr.length * 5 + 6;
+          if (f.w >= need && f.d >= 12) p.push(`<text class="e-lbl" x="${cx}" y="${n1(cy + 3)}" text-anchor="middle">${esc(t.abbr)}</text>`);
+          else if (f.d >= need && f.w >= 12) p.push(`<text class="e-lbl" x="${cx}" y="${n1(cy + 3)}" text-anchor="middle" transform="rotate(-90 ${cx} ${cy})">${esc(t.abbr)}</text>`);
+        }
+        p.push(`<rect class="e-panel" x="${n1(pr.box.x)}" y="0" width="${pr.box.w}" height="${pr.box.d}"/>`);
+        p.push(`<rect class="e-wall" x="-2.5" y="-2.5" width="${W + 5}" height="${D + 5}"/>`);
+        p.push(`<line class="e-gap" x1="${door.x}" y1="${D + 2.5}" x2="${door.x + door.w}" y2="${D + 2.5}"/>`);
+        p.push(`<line class="e-door" x1="${door.x}" y1="${D + 2.5}" x2="${door.x + door.w}" y2="${D + 2.5}"/>`);
+        p.push(`<text class="e-panel-t" x="${n1(state.panel.x)}" y="-10" text-anchor="middle">Panel</text>`);
+        const inward = { top: [0, 13], right: [-13, 0], bottom: [0, -13], left: [13, 0] };
+        const marks = [];
+        for (const r of c.rows) {
+          const pt = r.point;
+          let m;
+          if (pt.outside) {
+            m = pt.outside;
+            const side = pt.wall === 'top' || pt.wall === 'bottom';
+            const w = side ? 38 : 16, h = side ? 16 : 38;
+            p.push(`<rect class="e-out" x="${n1(m.x - w / 2)}" y="${n1(m.y - h / 2)}" width="${w}" height="${h}" rx="2"/>`);
+          } else {
+            m = { x: pt.x + inward[pt.wall][0], y: pt.y + inward[pt.wall][1] };
+          }
+          p.push(`<line class="e-run" x1="${n1(state.panel.x)}" y1="4" x2="${n1(m.x)}" y2="${n1(m.y)}"/>`);
+          marks.push(`<circle class="e-mark" cx="${n1(m.x)}" cy="${n1(m.y)}" r="10"/><text class="e-mark-t" x="${n1(m.x)}" y="${n1(m.y + 4)}" text-anchor="middle">${r.n}</text>`);
+        }
+        const label = c.rows.map(r => `${r.n}: ${G.typeOf({ type: r.type }).short}, ${whereText(r.point)}`).join('; ');
+        return `<svg class="eplan" viewBox="-44 -52 424 354" role="img" aria-label="Electrical plan. Panel on the back wall, ${G.fmtLen(state.panel.x)} from the left wall.${label ? ` New circuits: ${esc(label)}.` : ''}">${p.join('')}${marks.join('')}</svg>`;
+      }
+
+      function renderElectric() {
+        const host = $('panel-elec');
+        const focusId = host.contains(document.activeElement) ? document.activeElement.id : null;
+        const c = G.circuits(state), est = G.costEstimate(state), elec = G.normElec(state.elec);
+        const has = type => state.items.some(i => i.type === type);
+        const row = type => c.rows.find(r => r.type === type);
+        const select = (key, label) => `<label class="field">${label}<select id="elec-${key}" data-elec="${key}">${Object.entries(G.ELEC_CHOICES[key])
+          .map(([v, txt]) => `<option value="${v}"${elec[key] === v ? ' selected' : ''}>${esc(txt)}</option>`).join('')}</select></label>`;
+        const choices = [
+          has('sauna') ? select('sauna', 'Sauna') : '',
+          has('minisplit') ? select('split', 'Mini-split size') : '',
+          has('minisplit') ? select('install', 'Mini-split install') : '',
+        ].join('');
+        const gfci = { yes: 'Yes', no: 'No (listed HVAC; Georgia exempts it)', ask: '<span class="gfci-ask">Likely yes: confirm with the inspector</span>' };
+        const lower1 = s => s.charAt(0).toLowerCase() + s.slice(1);
+        const forText = r => {
+          if (r.type === 'sauna') return `Sauna (${esc(lower1(G.ELEC_CHOICES.sauna[elec.sauna]))})`;
+          if (r.type === 'minisplit') return `Mini-split (${esc(G.ELEC_CHOICES.split[elec.split])})`;
+          return esc(G.typeOf({ type: r.type }).short);
+        };
+        const sched = c.rows.length
+          ? `<div class="tbl-wrap"><table class="sched"><thead><tr><th>#</th><th>For</th><th>Circuit</th><th>Wire</th><th>GFCI</th><th>Hookup and location</th><th class="num">Run (rough)</th></tr></thead><tbody>${c.rows
+            .map(r => `<tr><td><span class="badge-n">${r.n}</span></td><td>${forText(r)}</td><td class="nowrap">${r.volts} V · ${r.amps} A · ${r.poles}-pole</td><td>${esc(r.wire)}</td><td>${gfci[r.gfci]}</td><td class="hook">${esc(r.connection)}<span class="where">${esc(whereText(r.point))}</span></td><td class="num">~${r.run} ft</td></tr>`)
+            .join('')}</tbody></table></div>`
+          : '<p class="hint">Nothing on the plan needs a new circuit.</p>';
+        const sharedNote = c.shared.length ? `<p class="hint">${esc(G.listJoin(c.shared).replace(/^./, ch => ch.toUpperCase()))} ${c.shared.length > 1 || c.shared[0].endsWith('s') ? 'plug' : 'plugs'} into the existing garage outlets (GFCI). The trainer, bench and dumbbells need no power.</p>` : '';
+        const sauna = row('sauna'), split = row('minisplit');
+        const notes = [
+          `<li><b>Panel:</b> keep 30″ wide × 36″ deep clear in front of it, and nothing foreign (pipes, the mini-split, a TV) on the wall above it (NEC 110.26).</li>`,
+          `<li><b>GFCI</b> on every garage receptacle, 120 V and 240 V (NEC 210.8(A)(2)).</li>`,
+          sauna && sauna.gfci === 'ask' ? `<li><b>Sauna heater:</b> wire sized for 125% of the heater’s current (NEC 424.4(B)); a lockable breaker or a disconnect within sight (424.19). Georgia’s 210.8(F) puts GFCI on hardwired outlets up to 50 A in an at-grade garage, so a 2-pole GFCI breaker is likely required, yet Finnleo, Harvia, HUUM and Saunum warn one can nuisance-trip their heaters. Get the inspector’s answer before buying the sauna, and favor a heater whose maker allows GFCI.</li>` : '',
+          sauna && sauna.gfci === 'yes' ? `<li><b>Infrared sauna:</b> its 6-20 receptacle needs GFCI in the garage (a 2-pole GFCI breaker); check that the model’s manual allows it (some say not to).</li>` : '',
+          split ? `<li><b>Mini-split:</b> breaker from the nameplate MOCP and wire from its MCA (NEC 440); a disconnect within sight of the outdoor unit (440.14); a 120 V GFCI service receptacle within 25′ of it (210.63). Its own circuit needs no GFCI: Georgia’s 2026 amendment exempts listed HVAC (210.8(F) Ex. 2).</li>` : '',
+          row('plunge') ? `<li><b>Plunge:</b> its own 20 A circuit, the outlet at least 6′ from the tub, and no extension cord (Plunge’s setup guide).</li>` : '',
+          row('treadmill') ? `<li><b>Treadmill:</b> nothing else on its circuit, and a surge suppressor (UL 1449, 450 J or more), per NordicTrack.</li>` : '',
+          `<li><b>Code in force:</b> the 2023 NEC with Georgia’s 2026 amendments. New circuits need a permit, which the electrician usually pulls.</li>`,
+        ].join('');
+        const questions = [
+          `<li>What’s the service size (the main breaker’s rating), and are there ${c.spaces} open breaker spaces? Is a load calculation needed?</li>`,
+          sauna && sauna.gfci === 'ask' ? '<li>Will the inspector require a GFCI breaker on the hardwired sauna heater (Georgia’s 210.8(F) reads that way)?</li><li>NM cable or wire in conduit? That decides 30 A on 10 AWG or 40 A on 8 AWG for the sauna.</li><li>Does the sauna controller need a neutral for 120 V lights?</li>' : '',
+          '<li>How will the runs go: through the attic, or along the walls in conduit?</li>',
+          split ? '<li>Where will the outdoor unit and its disconnect sit, and is there an outdoor GFCI outlet within 25′ already?</li>' : '',
+          '<li>If the panel is short on spaces: tandem breakers, a subpanel or an upgrade?</li>',
+        ].join('');
+        const costRows = [];
+        const costLine = l => `<tr><td>${esc(l.label)}${l.detail ? `<span class="cost-detail">${esc(l.detail)}</span>` : ''}</td><td class="num">${money(l.low)}</td><td class="num">${money(l.high)}</td></tr>`;
+        const costHead = txt => `<tr class="grp"><th colspan="3" scope="colgroup">${txt}</th></tr>`;
+        const costSub = (txt, r, cls = 'sub') => `<tr class="${cls}"><td>${txt}</td><td class="num">${money(r[0])}</td><td class="num">${money(r[1])}</td></tr>`;
+        const ofGroup = g => est.lines.filter(l => l.group === g);
+        if (ofGroup('fixed').length) {
+          const n = ofGroup('circuit').length;
+          costRows.push(costHead('Electrician: fixed, paid once per visit'), ...ofGroup('fixed').map(costLine), costSub('Fixed part', est.fixed));
+          costRows.push(costHead('Electrician: per circuit, each one adds'), ...ofGroup('circuit').map(costLine), costSub(`${n} ${n === 1 ? 'circuit' : 'circuits'}`, est.incremental));
+          costRows.push(costSub('Electrician total', est.electric, 'sub strong'));
+        }
+        if (ofGroup('hvac').length) costRows.push(costHead('Mini-split'), ...ofGroup('hvac').map(costLine), costSub('Mini-split total', est.hvac));
+        costRows.push(costSub('Total', est.total, 'total'));
+        const conts = est.contingencies.map(l => `<tr class="cont"><td>${esc(l.label)}</td><td class="num">${money(l.low)}</td><td class="num">${money(l.high)}</td></tr>`).join('');
+        const srcs = G.COST_SOURCES.length ? `<ul class="srcs">${G.COST_SOURCES.map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a></li>`).join('')}</ul>` : '';
+        host.innerHTML = `
+          <section class="card">
+            <div class="elec-top">
+              <div class="elec-figs">
+                <div class="elec-fig"><div class="k">New circuits</div><div class="v">${c.rows.length}</div></div>
+                <div class="elec-fig"><div class="k">Breaker spaces</div><div class="v">${c.spaces}</div></div>
+                <div class="elec-fig"><div class="k">Rough cost</div><div class="v">${est.total[1] ? moneyRange(est.total) : '—'}</div></div>
+              </div>
+              <button type="button" class="btn no-print" id="elec-print">Print this page</button>
+            </div>
+            ${choices ? `<div class="elec-choices no-print">${choices}</div>` : ''}
+            <p class="hint">Main panel: on the back wall, ${G.fmtLen(state.panel.x)} from the left wall (set on the Layout tab).</p>
+          </section>
+          <div class="elec-grid">
+            <section class="card" aria-labelledby="eplan-title">
+              <h2 id="eplan-title">Where the circuits go</h2>
+              ${electricPlan(c)}
+              <p class="hint">Numbered dots are the new outlets and hookups, matching the schedule below; dashed lines are rough home runs to the panel. The box outside the wall is the mini-split’s outdoor unit. Spots are suggestions: the electrician picks the exact boxes.</p>
+            </section>
+            <section class="card" aria-labelledby="enotes-title">
+              <h2 id="enotes-title">What code asks for</h2>
+              <ul class="notes">${notes}</ul>
+              <h3>Questions to settle with the electrician</h3>
+              <ul class="notes">${questions}</ul>
+            </section>
+          </div>
+          <section class="card" aria-labelledby="esched-title">
+            <h2 id="esched-title">Circuit schedule</h2>
+            ${sched}
+            ${sharedNote}
+          </section>
+          <section class="card" aria-labelledby="ecost-title">
+            <h2 id="ecost-title">Cost estimate</h2>
+            <div class="tbl-wrap"><table class="costs"><thead><tr><th>Item</th><th class="num">Low</th><th class="num">High</th></tr></thead><tbody>${costRows.join('')}</tbody></table></div>
+            <h3>Possible extras, not in the total</h3>
+            <div class="tbl-wrap"><table class="costs"><tbody>${conts}</tbody></table></div>
+            <p class="hint">The fixed part comes with every visit, so have all the circuits done in one trip; adding one later repeats it. Each circuit’s price follows its run on the plan. Rough Atlanta prices for late 2026: the hourly rate, wire, breakers, devices, permits and units are published prices; labor hours, boxes and covers are my estimates. Real quotes depend on attic access, open panel spaces and permit fees, so get two or three. Sources:</p>
+            ${srcs}
+          </section>`;
+        if (focusId && $(focusId)) $(focusId).focus({ preventScroll: true });
+      }
+
+      function renderCosts() {
+        const host = $('panel-costs');
+        const sum = G.costSummary(state);
+        const elec = G.normElec(state.elec);
+        const fig = (k, r) => `<div class="elec-fig"><div class="k">${k}</div><div class="v">${r[1] ? moneyRange(r) : '—'}</div></div>`;
+        const src = l => (l.url ? ` <a href="${esc(l.url)}"${l.url.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>source</a>` : '');
+        const rows = [];
+        for (const g of sum.groups) {
+          rows.push(`<tr class="grp"><th colspan="3" scope="colgroup">${esc(g.name)}</th></tr>`);
+          for (const l of g.lines) {
+            rows.push(`<tr><td>${esc(l.label)}${l.note || l.url ? `<span class="cost-detail">${esc(l.note || '')}${src(l)}</span>` : ''}</td><td class="num">${money(l.low)}</td><td class="num">${money(l.high)}</td></tr>`);
+          }
+          if (g.lines.length > 1) rows.push(`<tr class="sub"><td>${esc(g.name)} subtotal</td><td class="num">${money(g.subtotal[0])}</td><td class="num">${money(g.subtotal[1])}</td></tr>`);
+        }
+        rows.push(`<tr class="total"><td>Total</td><td class="num">${money(sum.total[0])}</td><td class="num">${money(sum.total[1])}</td></tr>`);
+        const off = sum.notOnPlan.length
+          ? `<section class="card" aria-labelledby="off-title">
+              <h2 id="off-title">Not on the plan</h2>
+              <p class="hint">For comparison. Tick a piece under Layout → Equipment to add it to the plan and the total.</p>
+              <div class="tbl-wrap"><table class="costs"><tbody>${sum.notOnPlan.map(l => `<tr class="cont"><td>${esc(l.label)}${l.note || l.url ? `<span class="cost-detail">${esc(l.note || '')}${src(l)}</span>` : ''}</td><td class="num">${money(l.low)}</td><td class="num">${money(l.high)}</td></tr>`).join('')}</tbody></table></div>
+            </section>`
+          : '';
+        const saunaNote = state.items.some(i => i.type === 'sauna') ? ` The sauna is priced as ${esc(G.ELEC_CHOICES.sauna[elec.sauna].toLowerCase().replace('kw', 'kW'))}; change it on the Electrician tab.` : '';
+        host.innerHTML = `
+          <section class="card">
+            <div class="elec-top">
+              <div class="elec-figs">
+                ${fig('Total', sum.total)}
+                ${fig('Equipment', sum.equipment)}
+                ${fig('Gym mats', sum.floor)}
+                ${fig('Electrical and climate', sum.install)}
+              </div>
+              <button type="button" class="btn no-print" id="costs-print">Print this page</button>
+            </div>
+            <p class="hint">Prices for what’s on the plan, before sales tax.${saunaNote}</p>
+          </section>
+          <section class="card" aria-labelledby="costs-title">
+            <h2 id="costs-title">Cost by piece</h2>
+            <div class="tbl-wrap"><table class="costs"><thead><tr><th>Item</th><th class="num">Low</th><th class="num">High</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>
+            <p class="hint">A single price means that exact model at its current list price; a range means the model isn’t picked yet or the price depends on options. Not included: sealing the bare concrete (see <a href="../garage-floor/">Garage Floor Compare</a>), sales tax, and delivery where not noted.</p>
+          </section>
+          ${off}`;
+      }
+
+      function renderAll() {
+        renderTabs();
+        const res = renderPlan();
+        renderSelected();
+        renderIssues(res);
+        renderCatalog();
+        renderSaved();
+        renderPresets();
+        renderSettings();
+        renderElectric();
+        renderCosts();
+      }
+      function scheduleRender() {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          renderAll();
+        });
+      }
+
+      // ---- Actions -------------------------------------------------------
+      function commit() {
+        save();
+        renderAll();
+      }
+      function select(uid) {
+        selected = uid;
+        renderAll();
+      }
+      function focusSelected() {
+        if (!selected) return;
+        const node = content.querySelector(`[data-uid="${CSS.escape(selected)}"]`);
+        if (!node) return;
+        quiet = true;
+        node.focus({ preventScroll: true });
+        quiet = false;
+      }
+      function focusCur() {
+        const node = content.querySelector('.cur-fill');
+        if (!node) return;
+        quiet = true;
+        node.focus({ preventScroll: true });
+        quiet = false;
+      }
+      function focusMat() {
+        const node = content.querySelector('.mat-handle');
+        if (!node) return;
+        quiet = true;
+        node.focus({ preventScroll: true });
+        quiet = false;
+      }
+      function rotateSelected() {
+        const i = findIdx(selected);
+        if (i < 0) return;
+        state.items[i] = G.rotateItem(state.items[i]);
+        commit();
+      }
+      function removeSelected() {
+        const i = findIdx(selected);
+        if (i < 0) return;
+        state.items.splice(i, 1);
+        selected = null;
+        commit();
+      }
+      function nudge(dx, dy) {
+        const i = findIdx(selected);
+        if (i < 0) return;
+        const it = state.items[i];
+        state.items[i] = G.typeOf(it).wallMount
+          ? G.moveItem(it, it.x + dx, it.y + dy, [], opts())
+          : G.clampItem({ ...it, x: n1(it.x + dx), y: n1(it.y + dy) });
+        commit();
+      }
+      // Put a type on the plan (once) and select it; focus stays on the checkbox.
+      function addType(typeId) {
+        if (state.items.some(it => it.type === typeId)) return;
+        const uid = newUid();
+        state.items.push(G.placeNew(typeId, state.items, opts(), uid));
+        selected = uid;
+        commit();
+      }
+      function removeType(typeId) {
+        const i = state.items.findIndex(it => it.type === typeId);
+        if (i < 0) return;
+        if (state.items[i].uid === selected) selected = null;
+        state.items.splice(i, 1);
+        commit();
+      }
+      function setSize(key, value) {
+        const i = findIdx(selected);
+        if (i < 0) return;
+        const it = { ...state.items[i] };
+        const t = G.typeOf(it);
+        if (!Number.isFinite(value) || value < 6 || value > W) {
+          renderSelected();
+          return;
+        }
+        // `key` is 'w', 'd', or both for round items (diameter).
+        for (const k of [].concat(key)) {
+          if (Math.abs(value - t[k]) < 0.05) delete it[k];
+          else it[k] = n1(value);
+        }
+        state.items[i] = G.clampItem(it);
+        commit();
+      }
+
+      // ---- Pointer: drag, select, double-tap to turn ----------------------
+      function toPlan(e) {
+        const pt = planSvg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        return pt.matrixTransform(planSvg.getScreenCTM().inverse());
+      }
+
+      planSvg.addEventListener('pointerdown', e => {
+        if (e.button !== 0) return;
+        if (e.target.closest('[data-mat]')) {
+          e.preventDefault();
+          matDrag = { id: e.pointerId, sx: toPlan(e).x, ox: state.mat };
+          try {
+            planSvg.setPointerCapture(e.pointerId);
+          } catch (err) { /* pointer already gone */ }
+          focusMat();
+          return;
+        }
+        if (e.target.closest('[data-cg]')) {
+          e.preventDefault();
+          const p = toPlan(e);
+          curDrag = { id: e.pointerId, sx: p.x, sy: p.y, ox: state.overlay.x, oy: state.overlay.y };
+          try {
+            planSvg.setPointerCapture(e.pointerId);
+          } catch (err) { /* pointer already gone */ }
+          if (selected) select(null);
+          focusCur();
+          return;
+        }
+        const node = e.target.closest('.it');
+        if (!node) {
+          if (selected) select(null);
+          return;
+        }
+        e.preventDefault();
+        const uid = node.dataset.uid;
+        const now = performance.now();
+        if (lastTap.uid === uid && now - lastTap.t < 400) {
+          lastTap = { uid: null, t: 0 };
+          selected = uid;
+          rotateSelected();
+          focusSelected();
+          return;
+        }
+        lastTap = { uid, t: now };
+        const it = state.items[findIdx(uid)];
+        const p = toPlan(e);
+        drag = { uid, id: e.pointerId, sx: p.x, sy: p.y, ox: it.x, oy: it.y, moved: false };
+        try {
+          planSvg.setPointerCapture(e.pointerId);
+        } catch (err) { /* pointer already gone; the drag still follows pointermove */ }
+        selected = uid;
+        renderAll();
+        focusSelected();
+      });
+      planSvg.addEventListener('pointermove', e => {
+        if (matDrag && e.pointerId === matDrag.id) {
+          state.mat = G.snapMat(matDrag.ox + toPlan(e).x - matDrag.sx, state.items, state.landing);
+          scheduleRender();
+          return;
+        }
+        if (curDrag && e.pointerId === curDrag.id) {
+          const p = toPlan(e);
+          state.overlay = G.normOverlay({ ...state.overlay, x: curDrag.ox + p.x - curDrag.sx, y: curDrag.oy + p.y - curDrag.sy });
+          scheduleRender();
+          return;
+        }
+        if (!drag || e.pointerId !== drag.id) return;
+        const p = toPlan(e);
+        const dx = p.x - drag.sx, dy = p.y - drag.sy;
+        if (!drag.moved && Math.hypot(dx, dy) * pxPerUnit() < 4) return;
+        drag.moved = true;
+        const i = findIdx(drag.uid);
+        state.items[i] = G.moveItem(state.items[i], drag.ox + dx, drag.oy + dy, state.items, opts());
+        scheduleRender();
+      });
+      function endDrag(e) {
+        if (matDrag && e.pointerId === matDrag.id) {
+          matDrag = null;
+          commit();
+          return;
+        }
+        if (curDrag && e.pointerId === curDrag.id) {
+          curDrag = null;
+          commit();
+          return;
+        }
+        if (!drag || e.pointerId !== drag.id) return;
+        const moved = drag.moved;
+        drag = null;
+        if (moved) {
+          lastTap = { uid: null, t: 0 };
+          commit();
+        }
+      }
+      planSvg.addEventListener('pointerup', endDrag);
+      planSvg.addEventListener('pointercancel', endDrag);
+      // Stop the page from scrolling when a drag starts on an item (touch).
+      planSvg.addEventListener('touchstart', e => {
+        if (e.target.closest && e.target.closest('.it, [data-mat], [data-cg]')) e.preventDefault();
+      }, { passive: false });
+      planSvg.addEventListener('focusin', e => {
+        if (quiet) return;
+        const node = e.target.closest && e.target.closest('.it');
+        if (node && node.dataset.uid !== selected) select(node.dataset.uid);
+      });
+
+      // ---- Keyboard ------------------------------------------------------
+      // On the current-garage outline: arrows move it 1" (Shift: 12"), R turns it, F flips it.
+      planSvg.addEventListener('keydown', e => {
+        if (!e.target.closest || !e.target.closest('.cur-fill') || e.metaKey || e.ctrlKey || e.altKey) return;
+        const step = e.shiftKey ? 12 : 1;
+        const moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+        const o = state.overlay;
+        let next;
+        if (e.key in moves) next = { ...o, x: o.x + moves[e.key][0], y: o.y + moves[e.key][1] };
+        else if (e.key === 'r' || e.key === 'R') next = G.turnOverlay(o);
+        else if (e.key === 'f' || e.key === 'F') next = { ...o, flip: !o.flip };
+        else return;
+        e.preventDefault();
+        e.stopPropagation();
+        setCur(next);
+      });
+      // Arrow keys move the mat edge 1" (Shift: 12"); Home/End send it to a wall.
+      planSvg.addEventListener('keydown', e => {
+        if (!e.target.closest || !e.target.closest('.mat-handle')) return;
+        const step = e.shiftKey ? 12 : 1;
+        const moves = { ArrowLeft: -step, ArrowDown: -step, ArrowRight: step, ArrowUp: step };
+        let x;
+        if (e.key in moves) x = state.mat + moves[e.key];
+        else if (e.key === 'Home') x = 0;
+        else if (e.key === 'End') x = W;
+        else return;
+        e.preventDefault();
+        e.stopPropagation();
+        state.mat = G.normMat(x);
+        commit();
+      });
+      document.addEventListener('keydown', e => {
+        if (!selected || e.metaKey || e.ctrlKey || e.altKey) return;
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        const onItem = !!(e.target.closest && e.target.closest('.it'));
+        const free = onItem || e.target === document.body;
+        const step = e.shiftKey ? 12 : 1;
+        if (e.key === 'r' || e.key === 'R') {
+          e.preventDefault();
+          rotateSelected();
+        } else if (free && e.key === 'ArrowLeft') {
+          e.preventDefault();
+          nudge(-step, 0);
+        } else if (free && e.key === 'ArrowRight') {
+          e.preventDefault();
+          nudge(step, 0);
+        } else if (free && e.key === 'ArrowUp') {
+          e.preventDefault();
+          nudge(0, -step);
+        } else if (free && e.key === 'ArrowDown') {
+          e.preventDefault();
+          nudge(0, step);
+        } else if (free && (e.key === 'Delete' || e.key === 'Backspace')) {
+          e.preventDefault();
+          removeSelected();
+        } else if (e.key === 'Escape') {
+          select(null);
+        }
+      });
+
+      // ---- Panel controls -------------------------------------------------
+      $('sel').addEventListener('click', e => {
+        if (e.target.closest('#sel-rot')) rotateSelected();
+        else if (e.target.closest('#sel-del')) removeSelected();
+        else if (e.target.closest('#sel-size-reset')) {
+          const i = findIdx(selected);
+          if (i < 0) return;
+          const it = { ...state.items[i] };
+          delete it.w;
+          delete it.d;
+          state.items[i] = G.clampItem(it);
+          commit();
+        }
+      });
+      $('sel').addEventListener('change', e => {
+        if (e.target.id === 'sel-w') setSize('w', parseFloat(e.target.value));
+        else if (e.target.id === 'sel-d') setSize('d', parseFloat(e.target.value));
+        else if (e.target.id === 'sel-dia') setSize(['w', 'd'], parseFloat(e.target.value));
+      });
+      $('issues').addEventListener('click', e => {
+        const b = e.target.closest('[data-uid]');
+        if (!b) return;
+        select(b.dataset.uid);
+        focusSelected();
+      });
+      $('catalog').addEventListener('change', e => {
+        const type = e.target.dataset.type;
+        if (!type) return;
+        if (e.target.checked) addType(type);
+        else removeType(type);
+      });
+      $('show-clear').addEventListener('change', e => {
+        state.clearance = e.target.checked;
+        commit();
+      });
+      const setCur = o => {
+        state.overlay = G.normOverlay(o);
+        commit();
+      };
+      $('show-cur').addEventListener('change', e => setCur({ ...state.overlay, on: e.target.checked }));
+      $('cur-turn').addEventListener('click', () => setCur(G.turnOverlay(state.overlay)));
+      $('cur-flip').addEventListener('click', () => setCur({ ...state.overlay, flip: !state.overlay.flip }));
+      function setDoor() {
+        // The gap to the right wall is the measured number, so it stays put when the width changes.
+        const ftIn = (id, fallback) => {
+          const v = parseFloat($(id).value);
+          return Number.isFinite(v) ? v * 12 : fallback;
+        };
+        const right = ftIn('door-r', W - state.door.x - state.door.w);
+        const w = Math.min(ftIn('door-w', state.door.w), W - right);
+        state.door = G.normDoor({ w, x: W - right - w });
+        commit();
+      }
+      $('door-w').addEventListener('change', setDoor);
+      $('door-r').addEventListener('change', setDoor);
+      function setLanding() {
+        const num = (id, fallback) => {
+          const v = parseFloat($(id).value);
+          return Number.isFinite(v) ? v : fallback;
+        };
+        state.landing = G.normLanding({
+          from: num('land-from', state.landing.from),
+          len: num('land-len', state.landing.len),
+          depth: num('land-depth', state.landing.depth),
+        });
+        commit();
+      }
+      for (const id of ['land-from', 'land-len', 'land-depth']) $(id).addEventListener('change', setLanding);
+      $('panel-x').addEventListener('change', e => {
+        const v = parseFloat(e.target.value);
+        if (Number.isFinite(v)) state.panel = G.normPanel({ x: v * 12 });
+        commit();
+      });
+      $('mat-x').addEventListener('change', e => {
+        const v = parseFloat(e.target.value);
+        if (Number.isFinite(v)) state.mat = G.normMat(v * 12);
+        commit();
+      });
+      // One status line per card; only the latest action can be undone.
+      const STATUS = ['preset-status', 'saved-status'];
+      function setStatus(id, msg, fn) {
+        undoFn = fn || null;
+        for (const s of STATUS) $(s).textContent = '';
+        $(id).innerHTML = esc(msg) + (fn ? ' <button type="button" class="linkbtn" data-undo>Undo</button>' : '');
+        if (fn) $(id).querySelector('[data-undo]').focus({ preventScroll: true });
+      }
+      for (const id of STATUS) {
+        $(id).addEventListener('click', e => {
+          if (!e.target.closest('[data-undo]') || !undoFn) return;
+          const fn = undoFn;
+          undoFn = null;
+          fn();
+          $(id).textContent = 'Undone.';
+        });
+      }
+      const clone = v => JSON.parse(JSON.stringify(v));
+      function switchTo(layout, statusId, msg) {
+        const prev = clone(state);
+        state = G.applyLayout(state, layout);
+        selected = null;
+        commit();
+        setStatus(statusId, msg, () => {
+          state = prev;
+          selected = null;
+          commit();
+        });
+      }
+
+      $('presets').addEventListener('click', e => {
+        const b = e.target.closest('[data-preset]');
+        if (!b || b.disabled) return;
+        const p = G.PRESETS.find(x => x.id === b.dataset.preset);
+        switchTo(p, 'preset-status', `Switched to “${p.name}”.`);
+      });
+
+      $('save-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const l = G.snapshot(state, $('save-name').value, saved, Date.now());
+        saved.unshift(l);
+        storeSaved();
+        $('save-name').value = '';
+        renderSaved();
+        setStatus('saved-status', `Saved “${l.name}”.`);
+      });
+      $('saved').addEventListener('click', e => {
+        const b = e.target.closest('[data-act]');
+        if (!b || b.disabled) return;
+        const i = saved.findIndex(l => l.id === b.dataset.id);
+        if (i < 0) return;
+        const l = saved[i];
+        if (b.dataset.act === 'load') {
+          switchTo(l, 'saved-status', `Loaded “${l.name}”.`);
+        } else if (b.dataset.act === 'update') {
+          saved[i] = { ...G.snapshot(state, l.name, [], Date.now()), id: l.id, name: l.name };
+          storeSaved();
+          renderSaved();
+          setStatus('saved-status', `Saved the current plan over “${l.name}”.`, () => {
+            const j = saved.findIndex(x => x.id === l.id);
+            if (j >= 0) saved[j] = l;
+            storeSaved();
+            renderSaved();
+          });
+        } else if (b.dataset.act === 'delete') {
+          saved.splice(i, 1);
+          storeSaved();
+          renderSaved();
+          setStatus('saved-status', `Deleted “${l.name}”.`, () => {
+            saved.splice(Math.min(i, saved.length), 0, l);
+            storeSaved();
+            renderSaved();
+          });
+        }
+      });
+      $('saved').addEventListener('change', e => {
+        const inp = e.target.closest('[data-rename]');
+        if (!inp) return;
+        const l = saved.find(x => x.id === inp.dataset.rename);
+        if (!l) return;
+        l.name = G.uniqueName(G.cleanName(inp.value, l.name), saved.filter(x => x !== l));
+        inp.value = l.name;
+        storeSaved();
+      });
+
+      // Tabs: click or arrow keys; the choice is saved with the layout.
+      function setTab(tab, focus) {
+        state.tab = tab;
+        save();
+        renderTabs();
+        if (focus) $(`tab-${tab}`).focus();
+      }
+      $('tab-layout').addEventListener('click', () => setTab('layout'));
+      $('tab-elec').addEventListener('click', () => setTab('elec'));
+      $('tab-costs').addEventListener('click', () => setTab('costs'));
+      $('panel-costs').addEventListener('click', e => {
+        if (e.target.closest('#costs-print')) window.print();
+      });
+      $('tabs').addEventListener('keydown', e => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
+        e.preventDefault();
+        const T = G.TABS, i = Math.max(T.indexOf(state.tab), 0);
+        const next = e.key === 'Home' ? T[0] : e.key === 'End' ? T[T.length - 1] : T[(i + (e.key === 'ArrowRight' ? 1 : T.length - 1)) % T.length];
+        setTab(next, true);
+      });
+      $('panel-elec').addEventListener('change', e => {
+        const key = e.target.dataset.elec;
+        if (!key) return;
+        state.elec = G.normElec({ ...state.elec, [key]: e.target.value });
+        commit();
+      });
+      $('panel-elec').addEventListener('click', e => {
+        if (e.target.closest('#elec-print')) window.print();
+      });
+
+      // Labels are sized in screen pixels, so redraw when the plan changes width.
+      if (window.ResizeObserver) new ResizeObserver(() => scheduleRender()).observe(planSvg);
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

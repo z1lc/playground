@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birth to Pre-K Effort Map</title>
+  <meta name="description" content="What raising a child from birth to Georgia Pre-K asks of you, stage by stage: ten kinds of work with an overall effort score." />
+  <meta name="theme-color" content="#F7F6FA" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#141219" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    /* Lavender load ramp: one hue (OKLCH h≈295), lightness strictly monotone with
+       ΔL ≥ 0.06 between steps (dataviz validator, --ordinal). Level 0 means "none"
+       and is meant to recede into the surface, so it gets a hairline border.
+       Text on each level clears 5.6:1 in both modes. */
+    :root {
+      color-scheme: light dark;
+      --ground:     #F7F6FA;
+      --surface:    #FFFFFF;
+      --ink:        #1D1A26;
+      --ink-2:      #3F3A4D;
+      --muted:      #5D576B;
+      --line:       #E2DFEA;
+      --accent-ink: #5E3BA3;
+      --bar:        #8C74CC;   /* strip bars, 3.6:1 vs ground */
+      --bar-active: #4C258C;   /* hovered / current stage, 10:1 vs ground */
+      --on-bar-active: #FFFFFF;
+      --ring:       #4C258C;
+      --shadow:     rgba(29, 26, 38, 0.18);
+      --lv0: #F4F2FB; --lv1: #E1DBF8; --lv2: #C9BDF2; --lv3: #A895E1; --lv4: #7455B8; --lv5: #502E8E;
+      --on0: #1D1A26; --on1: #1D1A26; --on2: #1D1A26; --on3: #1D1A26; --on4: #FFFFFF; --on5: #FFFFFF;
+      --label-w: 168px;
+      --gap: 4px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ground:     #141219;
+        --surface:    #1B1922;
+        --ink:        #ECE9F4;
+        --ink-2:      #C9C4D6;
+        --muted:      #A39DB3;
+        --line:       #2E2A3A;
+        --accent-ink: #C3B0FD;
+        --bar:        #6F59A6;   /* 3.2:1 vs ground */
+        --bar-active: #CBBCFC;   /* 10.7:1 vs ground */
+        --on-bar-active: #15121C;
+        --ring:       #CBBCFC;
+        --shadow:     rgba(0, 0, 0, 0.5);
+        --lv0: #211F29; --lv1: #322B47; --lv2: #483B6B; --lv3: #634F95; --lv4: #A18CDE; --lv5: #CBBCFC;
+        --on0: #ECE9F4; --on1: #ECE9F4; --on2: #ECE9F4; --on3: #ECE9F4; --on4: #15121C; --on5: #15121C;
+      }
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    a { color: var(--accent-ink); }
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+    /* ---- Intro ------------------------------------------------------- */
+    .intro { padding-top: 44px; padding-bottom: 20px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: flex-end; justify-content: space-between; }
+    .intro-text { flex: 1 1 560px; min-width: 0; }
+    .eyebrow { margin: 0 0 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); }
+    h1 { margin: 0 0 10px; font-size: 38px; line-height: 1.1; font-weight: 700; letter-spacing: -0.015em; }
+    .lede { margin: 0; max-width: 680px; color: var(--ink-2); font-size: 16px; }
+    .intro-side { flex: 0 1 280px; min-width: 220px; }
+    .due-link {
+      display: inline; padding: 0; border: 0; background: none; cursor: pointer; white-space: nowrap;
+      color: var(--accent-ink); font: inherit; font-weight: 500;
+      text-decoration: underline dotted; text-underline-offset: 3px;
+    }
+    .due-link:hover { text-decoration-style: solid; }
+    .due-dialog {
+      width: min(380px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: 16px;
+      background: var(--surface); color: var(--ink); box-shadow: 0 20px 50px var(--shadow);
+    }
+    .due-dialog::backdrop { background: rgba(20, 18, 25, 0.45); }
+    .due-dialog form { padding: 20px; }
+    .due-dialog h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+    .due-help { margin: 0 0 14px; font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+    .dialog-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+    .done-btn { min-height: 44px; padding: 0 20px; border: 0; border-radius: 10px; background: var(--bar-active); color: var(--on-bar-active); font: inherit; font-weight: 600; cursor: pointer; }
+    .side-label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .due-input {
+      display: block; width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--surface); color: var(--ink); font: inherit; font-size: 15px;
+    }
+    .due-input:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+    .due-note { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+    .due-note strong { color: var(--ink); font-weight: 600; }
+    .due-warn { display: block; margin-top: 4px; color: var(--accent-ink); font-weight: 500; }
+    .legend-swatches { display: flex; gap: var(--gap); }
+    .legend-swatches span { flex: 1 1 0; height: 20px; border-radius: 4px; }
+    .legend-swatches span:first-child { box-shadow: inset 0 0 0 1px var(--line); }
+    .legend-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    @media (max-width: 600px) { .intro { padding-top: 28px; } h1 { font-size: 30px; } .lede { font-size: 15px; } .intro-side { flex-basis: 100%; } }
+
+    /* ---- Sticky band: effort strip (+ column headers on desktop) ------ */
+    .band { position: sticky; top: 0; z-index: 20; background: var(--ground); border-bottom: 1px solid var(--line); }
+    .band-inner { padding-top: 10px; padding-bottom: 8px; }
+    .strip-grid { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr); gap: var(--gap); align-items: end; }
+    .strip-head { display: flex; flex-direction: column; gap: 2px; padding: 0 12px 20px 0; }
+    .strip-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .strip-note { font-size: 12px; line-height: 1.35; color: var(--muted); }
+    .strip-caption { display: none; font-size: 13px; font-weight: 600; color: var(--ink); }
+    .strip-bars { display: flex; gap: 2px; height: 54px; align-items: stretch; }
+    .sbar {
+      min-width: 0; padding: 0; border: 0; background: transparent; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 2px;
+    }
+    .sbar-score { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; text-align: center; color: var(--ink-2); line-height: 1; }
+    .sbar-fill { display: block; background: var(--bar); border-radius: 4px 4px 1px 1px; transition: background-color 0.12s; }
+    .sbar.active .sbar-fill { background: var(--bar-active); }
+    .sbar.active .sbar-score { color: var(--ink); font-weight: 700; }
+    .sbar:focus-visible { outline-offset: 1px; border-radius: 4px; }
+    .strip-axis { display: flex; gap: 2px; margin-top: 4px; }
+    .strip-axis span { min-width: 0; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+    .strip-axis span.active { color: var(--ink); font-weight: 600; }
+    .strip-ticks { display: none; position: relative; height: 16px; margin-top: 3px; }
+    .strip-ticks span { position: absolute; top: 0; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+    .strip-ticks span:first-child { transform: none; }
+
+    .colheads { display: grid; grid-template-columns: var(--label-w) repeat(9, minmax(0, 1fr)); gap: var(--gap); margin-top: 8px; }
+    .colhead { padding: 4px 7px; border-radius: 6px; display: flex; flex-direction: column; gap: 0; min-width: 0; transition: background-color 0.12s; }
+    .colhead .ages { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .colhead .name { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .colhead.active { background: var(--bar-active); color: var(--on-bar-active); }
+    .colhead.active .name { color: var(--on-bar-active); }
+
+    /* ---- Desktop grid ----------------------------------------------- */
+    .map { padding-top: 14px; padding-bottom: 8px; }
+    .row { display: grid; grid-template-columns: var(--label-w) repeat(9, minmax(0, 1fr)); gap: var(--gap); margin-bottom: var(--gap); }
+    .row-label { display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 4px 8px 4px 0; min-width: 0; }
+    .row-label .lane { font-size: 14px; font-weight: 600; line-height: 1.25; }
+    .row-label .sub { font-size: 12px; color: var(--muted); line-height: 1.3; }
+    .cell {
+      display: flex; align-items: center; text-align: left;
+      min-height: 54px; width: 100%; padding: 7px; border: 0; border-radius: 6px;
+      font-size: 12.5px; font-weight: 500; line-height: 1.3; cursor: pointer;
+      overflow-wrap: break-word;
+    }
+    .cell.lv0 { background: var(--lv0); color: var(--on0); box-shadow: inset 0 0 0 1px var(--line); }
+    .cell.lv1 { background: var(--lv1); color: var(--on1); }
+    .cell.lv2 { background: var(--lv2); color: var(--on2); }
+    .cell.lv3 { background: var(--lv3); color: var(--on3); }
+    .cell.lv4 { background: var(--lv4); color: var(--on4); }
+    .cell.lv5 { background: var(--lv5); color: var(--on5); }
+    .map .cell.col-active { outline: 2px solid var(--ring); outline-offset: 1px; }
+    .map .cell:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+    /* ---- Mobile: one stage at a time --------------------------------- */
+    .carousel { display: none; }
+    @media (max-width: 1099px) { :root { --label-w: 148px; } }
+    @media (max-width: 999px) {
+      .colheads, .map, .strip-axis, .strip-note { display: none; }
+      .strip-grid { display: block; }
+      .strip-head { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; padding: 0 0 4px; }
+      .strip-caption { display: block; }
+      .strip-ticks { display: block; }
+      .strip-bars { height: 54px; }
+      .sbar-score { font-size: 11px; }
+      .carousel {
+        display: flex; overflow-x: auto; overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory; scrollbar-width: none;
+        margin-top: 14px; padding-bottom: 8px;
+      }
+      .carousel::-webkit-scrollbar { display: none; }
+    }
+    .panel { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+    .panel-head { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+    .panel-top { display: flex; align-items: center; gap: 10px; }
+    .panel-title { flex: 1 1 auto; min-width: 0; }
+    .panel-ages { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent-ink); }
+    .panel-name { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.15; }
+    .panel-score { flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; background: var(--bar-active); color: var(--on-bar-active); border-radius: 999px; padding: 6px 12px; }
+    .panel-summary { margin: 10px 0 0; font-size: 15px; color: var(--ink-2); }
+    .panel-nav { display: flex; gap: 8px; margin-top: 12px; }
+    .nav-btn {
+      flex: 1 1 0; min-height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--ground);
+      font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .nav-btn:disabled { opacity: 0.4; cursor: default; }
+    .prow { display: flex; align-items: stretch; gap: 10px; margin-bottom: 6px; }
+    .prow .row-label { flex: 0 0 40%; padding: 4px 0; }
+    .prow .cell { flex: 1 1 auto; width: auto; min-height: 52px; font-size: 14px; }
+
+    /* ---- Popup: tooltip on hover, bottom sheet on touch --------------- */
+    .tip {
+      position: fixed; z-index: 50; max-width: 320px; width: max-content;
+      background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 12px;
+      box-shadow: 0 10px 30px var(--shadow); padding: 12px 14px 13px;
+    }
+    .tip[hidden] { display: none; }
+    .tip-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .tip-kicker { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 600; letter-spacing: 0.03em; color: var(--accent-ink); padding-top: 2px; }
+    .tip-close { display: none; flex: 0 0 auto; width: 44px; height: 44px; margin: -10px -12px -6px 0; border: 0; background: transparent; border-radius: 10px; cursor: pointer; align-items: center; justify-content: center; color: var(--ink-2); }
+    .tip-title { margin: 4px 0 4px; font-size: 15px; font-weight: 700; line-height: 1.3; display: flex; align-items: center; gap: 8px; }
+    .tip-chip { flex: 0 0 auto; width: 12px; height: 12px; border-radius: 3px; }
+    .tip-chip.lv0 { background: var(--lv0); box-shadow: inset 0 0 0 1px var(--line); }
+    .tip-chip.lv1 { background: var(--lv1); } .tip-chip.lv2 { background: var(--lv2); } .tip-chip.lv3 { background: var(--lv3); }
+    .tip-chip.lv4 { background: var(--lv4); } .tip-chip.lv5 { background: var(--lv5); }
+    .tip-body { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+    .tip.sheet {
+      left: 12px; right: 12px; bottom: 12px; top: auto; max-width: none; width: auto;
+      padding: 14px 16px 18px; border-radius: 16px;
+    }
+    .tip.sheet .tip-close { display: flex; }
+    .tip.sheet .tip-body { font-size: 15px; }
+
+    /* ---- Footer ------------------------------------------------------- */
+    footer { padding-top: 18px; padding-bottom: 48px; font-size: 13px; color: var(--muted); }
+    footer p { margin: 0 0 6px; max-width: 820px; }
+
+    @media (prefers-reduced-motion: reduce) { .sbar-fill, .colhead { transition: none; } .carousel { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="wrap intro">
+    <div class="intro-text">
+      <p class="eyebrow">Birth → Georgia Pre-K</p>
+      <h1>Where the work piles up</h1>
+      <p class="lede">Ten kinds of work, one row each. Darker cells are heavier. The strip shows the overall effort score: 1 means you could leave them alone for up to an hour, 10 means you can’t look away for more than a few seconds. Hover or tap any cell for details, and set your due date to see how long the wait for Pre-K is. <button type="button" class="due-link" id="dueLink" aria-haspopup="dialog"></button></p>
+    </div>
+    <div class="intro-side">
+      <div class="legend" aria-hidden="true">
+        <div class="side-label">Load</div>
+        <div class="legend-swatches"><span style="background:var(--lv0)"></span><span style="background:var(--lv1)"></span><span style="background:var(--lv2)"></span><span style="background:var(--lv3)"></span><span style="background:var(--lv4)"></span><span style="background:var(--lv5)"></span></div>
+        <div class="legend-ends"><span>None</span><span>Heavy</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="band" id="band">
+    <div class="wrap band-inner">
+      <div class="strip-grid">
+        <div class="strip-head">
+          <span class="strip-title">Effort score</span>
+          <span class="strip-note">1–10 by age. Bar width is how long the stage lasts.</span>
+          <span class="strip-caption" id="stripCaption" aria-live="polite"></span>
+        </div>
+        <div class="strip-plot">
+          <div class="strip-bars" id="stripBars"></div>
+          <div class="strip-axis" id="stripAxis" aria-hidden="true"></div>
+          <div class="strip-ticks" id="stripTicks" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="colheads" id="colheads" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="map" id="map" aria-label="Workload by age, all stages"></section>
+    <section class="carousel" id="carousel" aria-label="Workload by age, one stage at a time" aria-roledescription="carousel"></section>
+  </main>
+
+  <footer class="wrap">
+    <p>Typical ranges for a healthy, full-term child. Every kid varies a lot, and none of this is medical advice. Ask your pediatrician about yours.</p>
+    <p>Georgia Pre-K is free and open to every child who turns 4 on or before September 1 of the school year. The last bar is the wait between turning 4 and the first day of Pre-K, taken as August 1, so it changes with the due date. Scores are a judgment call. <a href="https://github.com/z1lc/playground/blob/main/kid-effort/RESEARCH.md">How every number was chosen</a>.</p>
+  </footer>
+
+  <dialog class="due-dialog" id="dueDialog" aria-labelledby="dueTitle">
+    <form method="dialog">
+      <h2 id="dueTitle">Due date</h2>
+      <p class="due-help">Sets the last bar: the wait between turning 4 and the first day of Georgia Pre-K.</p>
+      <label class="sr-only" for="due">Due date</label>
+      <input type="date" id="due" class="due-input" min="1900-01-01" max="2200-12-31" />
+      <p class="due-note" id="dueNote" aria-live="polite"></p>
+      <div class="dialog-actions"><button type="submit" class="done-btn">Done</button></div>
+    </form>
+  </dialog>
+
+  <div class="tip" id="tip" role="tooltip" hidden>
+    <div class="tip-head">
+      <span class="tip-kicker" id="tipKicker"></span>
+      <button type="button" class="tip-close" id="tipClose" aria-label="Close details">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>
+      </button>
+    </div>
+    <p class="tip-title" id="tipTitle"></p>
+    <p class="tip-body" id="tipBody"></p>
+  </div>
+
+  <script id="effort-core">
+    // Pure data + helpers. No DOM access here, so kid-effort.test.js can
+    // evaluate this block in a bare `node:vm` context.
+    (function () {
+      'use strict';
+
+      // Georgia Pre-K: the child must be 4 on or before September 1 of the school
+      // year. Each provider sets its own first day; most follow the local school
+      // district, which in metro Atlanta starts around August 1, so that's assumed.
+      const CUTOFF = { month: 9, day: 1 };
+      const PREK_START = { month: 8, day: 1 };
+      const DEFAULT_DUE = { month: 6, day: 20 };
+      const DAY_MS = 86400000;
+      const DAYS_PER_MONTH = 365.25 / 12;
+      const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const MAX_LEVEL = 5;
+      const LEVEL_WORDS = ['none', 'light', 'some', 'moderate', 'heavy', 'very heavy'];
+
+      // DATA:BEGIN
+      const STAGES = [
+        {"id": "m0", "short": "0–3m", "ages": "0–3 months", "name": "Newborn", "startMo": 0, "endMo": 3, "score": 8, "summary": "Round-the-clock feeds, changes and crying, but they stay exactly where you put them."},
+        {"id": "m3", "short": "3–6m", "ages": "3–6 months", "name": "Rolling", "startMo": 3, "endMo": 6, "score": 6, "summary": "Nights stretch and crying eases, though rolling means no more leaving them on the bed."},
+        {"id": "m6", "short": "6–9m", "ages": "6–9 months", "name": "Sitter", "startMo": 6, "endMo": 9, "score": 7, "summary": "Everything goes in the mouth and crawling is close, so this is the baby-proofing deadline."},
+        {"id": "m9", "short": "9–12m", "ages": "9–12 months", "name": "Crawler", "startMo": 9, "endMo": 12, "score": 8, "summary": "Fast on all fours, pulling up on furniture and fascinated by stairs, cords and cabinets."},
+        {"id": "m12", "short": "12–18m", "ages": "12–18 months", "name": "Walker", "startMo": 12, "endMo": 18, "score": 9, "summary": "Upright, unsteady and quick, with twice as much of the house suddenly in reach."},
+        {"id": "m18", "short": "18–24m", "ages": "18–24 months", "name": "Climber", "startMo": 18, "endMo": 24, "score": 10, "summary": "Peak supervision: running and climbing with no sense of danger, plus the first real tantrums."},
+        {"id": "y2", "short": "2y", "ages": "2–3 years", "name": "Two", "startMo": 24, "endMo": 36, "score": 7, "summary": "Words replace some of the crying, but tantrums peak and potty training is a project of its own."},
+        {"id": "y3", "short": "3y", "ages": "3–4 years", "name": "Three", "startMo": 36, "endMo": 48, "score": 5, "summary": "Real conversations and real independence, enough to cook dinner while they play nearby."},
+        {"id": "y4", "short": "4y", "ages": "4 years", "name": "Pre-K", "startMo": 48, "endMo": 54, "score": 3, "summary": "Georgia Pre-K is free for children who are 4 on or before September 1, so how long this stage lasts depends on the birthday."},
+      ];
+      const LANES = [
+        { id: "night", name: "Night wakings", sub: "per night", cells: [
+          {"text": "2–4×", "level": 5, "detail": "Newborns feed every 2–3 hours around the clock, so expect two to four wake-ups between bedtime and morning. About half of babies manage a five-hour stretch, midnight to 5 am, by 3 months."},
+          {"text": "0–2×", "level": 4, "detail": "Night wake-ups fall fast after 3 months, averaging about one a night in studies. Many formula-fed babies drop middle-of-the-night feeds by 4 months, while breastfed babies often keep one or two."},
+          {"text": "0–2×", "level": 3, "detail": "At 6 months about a third of babies still wake a parent every night, and most of the rest about once a week. Waking briefly and resettling within a few minutes is normal and needs no help."},
+          {"text": "0–1×", "level": 2, "detail": "Most babies wake about once a night or less, though learning to crawl is linked to a temporary bump. At 12 months about 1 in 4 still don’t sleep six hours straight."},
+          {"text": "0–1×", "level": 2, "detail": "Night waking keeps easing, averaging under one a night between ages 1 and 2. Illness, travel and new skills still cause short setbacks."},
+          {"text": "0–1×", "level": 2, "detail": "By 2 most toddlers wake a parent about one night a week. Named “sleep regressions” at fixed ages have no research behind them, but molars, illness and big milestones can disrupt a week or two."},
+          {"text": "0–1×", "level": 2, "detail": "About 1 in 3 children still wake often at 2½. Nightmares, potty trips and escapes from a new bed are the usual reasons."},
+          {"text": "Occasional", "level": 1, "detail": "Most 3-year-olds sleep through, though frequent waking still affects about 1 in 7 children at 6. Night terrors are common at this age: the child seems awake but isn’t, and rarely remembers it."},
+          {"text": "Occasional", "level": 1, "detail": "Wake-ups are now mostly wet beds, nightmares or illness. About 1 in 3 four-year-olds still wet the bed some nights, which is normal at this age."},
+        ] },
+        { id: "feeding", name: "Feeding", sub: "and who does it", cells: [
+          {"text": "8–12 feeds", "level": 5, "detail": "Newborns feed 8 to 12 times in 24 hours, day and night, and every feed needs you. With burping and changes, that adds up to several hours a day."},
+          {"text": "6–12 feeds", "level": 4, "detail": "Formula-fed babies settle into 6–8 feeds a day, every 3–4 hours, while breastfed babies often still feed 8–12 times. Solids aren’t recommended before 4 months, and about 6 months is the usual start."},
+          {"text": "Purées + milk", "level": 4, "detail": "Solids usually start around 6 months, spoon-fed by you, while milk stays the main nutrition. Expect slow, messy meals, and offer water in a cup alongside."},
+          {"text": "Finger foods", "level": 3, "detail": "Babies rake food into their fist at about 9 months and pick up small bits between finger and thumb by 12. Meals become three a day plus snacks and milk, and they start feeding themselves, slowly and messily."},
+          {"text": "Fingers + spoon", "level": 3, "detail": "Switch to whole cow’s milk at 12 months and wean off bottles sometime between 12 and 18 months. By 18 months most feed themselves with fingers, try a spoon and drink from an open cup."},
+          {"text": "Spoon, picky", "level": 2, "detail": "Most 2-year-olds eat with a spoon, and wariness of new foods often starts between 18 and 24 months. Picky eating is very common from 2 to 4 and usually fades on its own."},
+          {"text": "Family meals", "level": 2, "detail": "Toddlers can eat what the family eats, cut small, and most use a fork by 3. You still plan, prep and supervise every meal and snack."},
+          {"text": "Mostly independent", "level": 1, "detail": "Three-year-olds feed themselves with a fork and spoon. Picky phases are still common and usually pass."},
+          {"text": "Independent", "level": 1, "detail": "By 4 many children can serve themselves or pour water with an adult nearby. Your job is mostly making the food, not getting it into them."},
+        ] },
+        { id: "diapers", name: "Diapers → potty", sub: "per day", cells: [
+          {"text": "8–12 a day", "level": 5, "detail": "Newborns go through about 8–12 diapers a day, often one per feed. Six or more wet diapers a day after day 5 is a sign they’re eating enough."},
+          {"text": "6–8 a day", "level": 4, "detail": "Changes slow as stools become less frequent, but there are still several a day. No health authority publishes per-day counts past the newborn weeks, so this is an estimate."},
+          {"text": "5–7 a day", "level": 4, "detail": "Starting solids changes stools and often means messier changes. Rolling and squirming make every change a two-handed job."},
+          {"text": "5–7 a day", "level": 4, "detail": "Crawlers and cruisers often resist lying down to be changed. Many parents switch to pull-on diapers changed standing up."},
+          {"text": "5–6 a day", "level": 3, "detail": "Diaper changes are routine by now: a few minutes each, several times a day. Real potty readiness usually isn’t there yet."},
+          {"text": "5–6 a day", "level": 3, "detail": "Signs of potty readiness, like staying dry for two hours or telling you about a wet diaper, often show up between 18 and 24 months. Starting intensive training early doesn’t finish it any sooner."},
+          {"text": "Potty training", "level": 5, "detail": "Most US families start training between 2 and 3. The median age for staying dry during the day is about 32 months for girls and 35 for boys, with accidents and constant bathroom runs along the way."},
+          {"text": "Day-trained", "level": 2, "detail": "Most children are dry during the day by about 3½, but staying dry at night comes later. About 40% still wet at night after daytime training, so pull-ups at bedtime are normal."},
+          {"text": "Mostly trained", "level": 1, "detail": "Most children are toilet trained by 4, though many still need help wiping and reminders to go. About 1 in 3 four-year-olds still wet the bed some nights, and it usually resolves on its own."},
+        ] },
+        { id: "naps", name: "Naps & schedule", sub: "naps per day", cells: [
+          {"text": "3–5, erratic", "level": 4, "detail": "Newborns sleep 16–17 hours a day but only 1–2 hours at a time, so naps have no pattern yet. Many only nap while held or moving."},
+          {"text": "3–4", "level": 3, "detail": "Daytime sleep consolidates into 3–4 naps with a rough rhythm. From 4 months the recommended total is 12–16 hours a day, naps included."},
+          {"text": "2–3", "level": 3, "detail": "Most babies take two or three naps, about 2.2 on average between 6 and 11 months. Your day is planned around them."},
+          {"text": "2", "level": 2, "detail": "Two naps, morning and afternoon, are the norm by 9–12 months. Predictable naps make the day easier to plan."},
+          {"text": "2 → 1", "level": 3, "detail": "Most toddlers drop to one afternoon nap between 12 and 18 months. The switch can mean a few weeks of short naps and overtired evenings."},
+          {"text": "1", "level": 2, "detail": "One afternoon nap is standard, and fewer than 3 in 100 children stop napping before 2. Toddlers need 11–14 hours of sleep a day in total."},
+          {"text": "1", "level": 2, "detail": "Most 2-year-olds still nap once a day, but about a third have stopped by 3. A skipped nap often means an earlier bedtime."},
+          {"text": "0–1", "level": 1, "detail": "More than half of children stop napping between 3 and 4. Those who still nap often fight it, and a late nap can push bedtime back."},
+          {"text": "Quiet time", "level": 0, "detail": "About 4 in 5 children have stopped napping by 5, so many 4-year-olds just need quiet time. Georgia Pre-K caps rest time at 60 minutes and gives non-sleepers quiet activities."},
+        ] },
+        { id: "mobility", name: "Mobility", sub: "what they can reach", cells: [
+          {"text": "Can’t move yet", "level": 0, "detail": "Young babies work on head control and pushing up on their forearms during tummy time. They mostly stay where you put them, though wriggling can still carry them off a bed or sofa."},
+          {"text": "Rolls", "level": 2, "detail": "Most babies roll both ways somewhere between 4 and 7 months. Rolling comes fast and without warning, so a bed, sofa or changing table is no longer safe for even a second."},
+          {"text": "Sits, starts crawling", "level": 3, "detail": "Half of babies sit alone by about 6 months and crawl by about 8, though anywhere from 6½ to 10½ months is typical. About 1 in 25 skip crawling altogether."},
+          {"text": "Crawls, cruises", "level": 4, "detail": "Babies pull up to stand and walk along furniture, which puts tabletops, cords and stairs in reach. Half stand with help by about 7½ months and walk holding on by 9."},
+          {"text": "Walks", "level": 5, "detail": "Half of children walk alone by 12 months and nearly all by 17½; the CDC lists 18 months only because it marks when 3 in 4 can. New walkers are quick, top-heavy and fall constantly."},
+          {"text": "Runs, climbs", "level": 5, "detail": "By 18 months most climb on and off the couch, and by 2 they run. Climbing puts counters, windows and anything stacked within reach."},
+          {"text": "Jumps, climbs out", "level": 4, "detail": "Two-year-olds jump, kick and climb furniture with confidence. The AAP says to move to a bed once they can climb out of the crib or reach 35 inches tall."},
+          {"text": "Trike, climbs well", "level": 3, "detail": "Three-year-olds pedal a tricycle and climb playground ladders well. They are steadier now, but still fast enough to reach a street or pool in seconds."},
+          {"text": "Coordinated", "level": 2, "detail": "Four-year-olds catch a large ball, hop and climb with real skill. Falls are rarer, but their speed and confidence outpace their judgment near traffic and water."},
+        ] },
+        { id: "proofing", name: "Baby-proofing", sub: "new setup work", cells: [
+          {"text": "Safe sleep", "level": 1, "detail": "Babies sleep on their backs in a crib or bassinet with a fitted sheet only, in your room for at least the first 6 months. Stop swaddling at the first sign of rolling, which can start around 2 months."},
+          {"text": "Raised surfaces", "level": 2, "detail": "Once rolling starts, never leave them alone on a bed, sofa or changing table, and keep a hand on them even with the strap on. Take down the crib mobile by 5 months, and lower the crib mattress before they can sit."},
+          {"text": "The big pass", "level": 5, "detail": "Before crawling, cover outlets, go cordless on blinds, gate the top and bottom of stairs (a wall-screwed gate at the top), and anchor dressers and TVs. Drop the crib mattress to its lowest setting before they can stand."},
+          {"text": "Locks", "level": 4, "detail": "Add cabinet and drawer latches, a toilet-lid lock and a locked spot for cleaners and medicines. Move diaper changes to the floor once they are pulling up."},
+          {"text": "Stove, windows", "level": 4, "detail": "Fit stove-knob covers, and window stops that open no more than 4 inches or guards above the first floor, since screens don’t stop falls. Empty buckets and baths right after use: drowning kills more children aged 1 to 4 than any other cause."},
+          {"text": "Doors, climbables", "level": 3, "detail": "Add door-knob covers and move chairs and other climbables away from windows and counters. Re-check every furniture anchor: most tip-over deaths are children between 1 and 3½, and TVs are involved in nearly half."},
+          {"text": "Toddler-bed room", "level": 2, "detail": "Once they move to a bed, their bedroom becomes a playroom at night. Gate the bedroom door or the top of the stairs, and make sure every dresser is anchored."},
+          {"text": "Water & roads", "level": 1, "detail": "Rules start to matter more than locks: no playing in the street, and walk around the car before backing out. Pools need a fence on all four sides, at least 4 feet high."},
+          {"text": "Rules, not locks", "level": 0, "detail": "Safety agencies add no new devices at this age, so the work is teaching and supervising. Keep the rules for water and streets, and store any guns unloaded and locked."},
+        ] },
+        { id: "mouthing", name: "Mouthing & choking", sub: "what goes in", cells: [
+          {"text": "Nothing yet", "level": 0, "detail": "Newborns can’t grab objects yet, so nothing reaches their mouth that you didn’t put there. Two-thirds of children who die from choking are under a year old, which is why the next stages matter."},
+          {"text": "Hands, then toys", "level": 2, "detail": "Babies bring their hands to their mouths by 4 months and put toys in to explore them by 6. Anything within reach of the play mat should be too big to swallow."},
+          {"text": "Everything", "level": 4, "detail": "Mouthing is how babies explore, so anything they can grab goes in. Toys for children under 3 can’t have small parts: anything that fits in a test tube about 1¼ inches wide."},
+          {"text": "Everything", "level": 5, "detail": "Crawling plus mouthing is the peak combination, because crawlers find coins, batteries and crumbs on the floor. Finger foods need to be soft and cut small."},
+          {"text": "Most things", "level": 4, "detail": "Children up to 18 months mouth objects for about half an hour a day on average. Keep floors and low surfaces clear, and cut round foods like grapes into small pieces."},
+          {"text": "Small parts", "level": 3, "detail": "Mouthing stays frequent until about 2, around 80 times an hour in one study, then roughly halves. Small parts from older children’s toys are the hazard to watch."},
+          {"text": "Mostly food", "level": 2, "detail": "Object mouthing drops to a few minutes a day after 2, so food becomes the main choking risk. The AAP advises holding back hot dogs, nuts, popcorn, whole grapes and hard candy until 4 or older."},
+          {"text": "Mostly food", "level": 2, "detail": "Toys are rarely mouthed now, but round, firm foods still choke 3-year-olds. Cut grapes, hot dogs and cherry tomatoes small, and keep nuts, popcorn and gum away until at least 4."},
+          {"text": "Low", "level": 1, "detail": "Most high-risk foods can come back after 4, cut sensibly and eaten sitting down. Balloons stay a choking risk until about 8."},
+        ] },
+        { id: "feelings", name: "Big feelings", sub: "crying → tantrums", cells: [
+          {"text": "Crying, ~2 h a day", "level": 4, "detail": "Babies cry about two hours a day in the first six weeks, falling to about an hour by 3 months. Colic, which clusters in the evening, usually stops by 3 to 4 months."},
+          {"text": "Smiles, less crying", "level": 2, "detail": "Crying drops to about an hour or two a day, and babies smile and laugh back at you. Colic has usually passed by now."},
+          {"text": "Stranger wariness", "level": 2, "detail": "Wariness of strangers shows up around 6 to 9 months, and babies may get shy or clingy with new people. Handing them to a sitter can start to involve tears."},
+          {"text": "Separation anxiety", "level": 3, "detail": "Separation anxiety usually starts around 9 months and peaks between 10 and 18 months. Drop-offs and bedtimes can mean crying every time you leave the room."},
+          {"text": "Clingy, frustrated", "level": 3, "detail": "Separation anxiety is at its peak, and wanting more than they can say or do brings frustration. Short meltdowns start to appear."},
+          {"text": "Tantrums common", "level": 4, "detail": "Most 18- to 24-month-olds have tantrums, about 87% in one study. Most last under a minute, and 3 in 4 are over within five minutes."},
+          {"text": "Tantrum peak", "level": 5, "detail": "Tantrums peak between 2½ and 3, when about 91% of children have them. Most are short, but they can come often."},
+          {"text": "Negotiation", "level": 3, "detail": "By 3½ to 4 the share of children having tantrums falls to about 59%, and words start to replace meltdowns. Most preschoolers have one at least monthly, but fewer than 1 in 10 have one every day."},
+          {"text": "Mostly verbal", "level": 2, "detail": "Four-year-olds can usually tell you what’s wrong and talk about their day. Big feelings still happen, but they are shorter and easier to talk through."},
+        ] },
+        { id: "solo", name: "Solo play", sub: "before they need you", cells: [
+          {"text": "Asleep or held", "level": 3, "detail": "Awake time is short, and most of it is feeding, changing or being held. Tummy time should be closely supervised, a few minutes at a time, a few times a day."},
+          {"text": "5–10 min on a mat", "level": 3, "detail": "Babies can bat at toys on a play mat for a few minutes before they need you. These times are estimates: no health authority publishes play-alone times by age."},
+          {"text": "~5 min", "level": 4, "detail": "Sitting babies can play with a toy or two in a playpen for a few minutes. The WHO advises not keeping infants strapped into a seat or stroller for more than an hour at a time."},
+          {"text": "1–2 min", "level": 4, "detail": "Crawlers want to be on the move and near you, so contented solo play is brief. A playpen buys a few minutes, often with protest."},
+          {"text": "Under 1 min", "level": 5, "detail": "Toddlers switch toys every few seconds; in one home study the median time with a single toy was about 10 seconds. Solo time really means watched roaming."},
+          {"text": "Seconds", "level": 5, "detail": "Toddlers flit from thing to thing and reach hazards fast. There is no expert guideline for how long a toddler can go unsupervised, even in a childproofed room; the consensus is continuous, close supervision."},
+          {"text": "5–10 min", "level": 3, "detail": "Focused play grows a lot between 2 and 3, and many can stay with blocks or books for several minutes. You still need to be within earshot and check often."},
+          {"text": "15–30 min", "level": 2, "detail": "Three-year-olds can get absorbed in pretend play or drawing for a good stretch. That is enough time to cook dinner nearby, with regular check-ins."},
+          {"text": "30–60 min", "level": 1, "detail": "Four-year-olds can play on their own for long stretches in a safe space while you are in the house. Water and cars still need an adult every time."},
+        ] },
+        { id: "visits", name: "Well-child visits", sub: "AAP schedule", cells: [
+          {"text": "3–5 d · 1 · 2 mo", "level": 3, "detail": "After the newborn exam, checkups come at 3–5 days, by 1 month and at 2 months. The 3–5 day visit should fall within two or three days of leaving the hospital, and the 2-month visit brings the first big round of shots."},
+          {"text": "4 mo", "level": 1, "detail": "One checkup at 4 months, with another full round of vaccines. Shots can leave them fussy for a day."},
+          {"text": "6 mo", "level": 1, "detail": "The 6-month visit is the last of the three big infant vaccine rounds. Expect questions about solids and sleep."},
+          {"text": "9 mo", "level": 1, "detail": "The 9-month visit is usually light on shots. It is the first of three checkups with a formal developmental screening."},
+          {"text": "12 · 15 mo", "level": 2, "detail": "Two checkups, at 12 and 15 months, share the next big vaccine round, including MMR, chickenpox and hepatitis A. Anemia and lead checks also start around 12 months."},
+          {"text": "18 mo", "level": 1, "detail": "The 18-month visit includes autism and developmental screenings. It usually has few shots, if any."},
+          {"text": "24 · 30 mo", "level": 2, "detail": "Two checkups this year, with a second autism screening at 24 months and a developmental screening at 30. Most children need few vaccines then, apart from a yearly flu shot."},
+          {"text": "3 y", "level": 1, "detail": "Checkups drop to once a year from age 3. Vision screening by eye chart or picture chart usually starts around now."},
+          {"text": "4 y", "level": 1, "detail": "The 4-year visit brings the pre-kindergarten boosters: DTaP, polio, MMR and chickenpox. Georgia Pre-K is free for children who turn 4 on or before September 1, and each provider runs its own registration."},
+        ] },
+      ];
+      // DATA:END
+
+      function sentenceCount(text) {
+        return (String(text).match(/[.!?](?=\s+[A-Z“"‘(]|\s*$)/g) || []).length;
+      }
+
+      // ---- Due date → Pre-K start -------------------------------------------
+      const pad2 = n => String(n).padStart(2, '0');
+      const isoOf = (y, m, d) => `${y}-${pad2(m)}-${pad2(d)}`;
+
+      function parseISO(iso) {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ''));
+        if (!m) return null;
+        const y = +m[1], mo = +m[2], d = +m[3];
+        if (y < 1900 || y > 2200) return null;
+        const t = Date.UTC(y, mo - 1, d);
+        const back = new Date(t);
+        if (back.getUTCMonth() !== mo - 1 || back.getUTCDate() !== d) return null;
+        return { y, m: mo, d, t };
+      }
+
+      // The next June 20 on or after today.
+      function defaultDue(todayISO) {
+        const today = parseISO(todayISO);
+        if (!today) return isoOf(2027, DEFAULT_DUE.month, DEFAULT_DUE.day);
+        const thisYear = Date.UTC(today.y, DEFAULT_DUE.month - 1, DEFAULT_DUE.day);
+        return isoOf(thisYear >= today.t ? today.y : today.y + 1, DEFAULT_DUE.month, DEFAULT_DUE.day);
+      }
+
+      const formatDate = iso => { const p = parseISO(iso); return p ? `${MONTH_NAMES[p.m - 1]} ${p.d}, ${p.y}` : ''; };
+
+      // When a child born on `dueISO` can start Georgia Pre-K.
+      function prekPlan(dueISO) {
+        const b = parseISO(dueISO);
+        if (!b) return null;
+        const madeCutoff = b.m < CUTOFF.month || (b.m === CUTOFF.month && b.d <= CUTOFF.day);
+        const startYear = b.y + 4 + (madeCutoff ? 0 : 1);
+        const start = Date.UTC(startYear, PREK_START.month - 1, PREK_START.day);
+        const turns4 = Date.UTC(b.y + 4, b.m - 1, b.d);
+        const ageMonths = (startYear - b.y) * 12 + (PREK_START.month - b.m) - (PREK_START.day < b.d ? 1 : 0);
+        return {
+          due: isoOf(b.y, b.m, b.d), month: b.m, day: b.d, madeCutoff, startYear,
+          prekMo: Math.round(((start - b.t) / DAY_MS / DAYS_PER_MONTH) * 10) / 10,
+          waitDays: Math.round((start - turns4) / DAY_MS),     // ≤ 0: starts Pre-K before turning 4
+          daysPastCutoff: Math.round((b.t - Date.UTC(b.y, CUTOFF.month - 1, CUTOFF.day)) / DAY_MS),
+          ageAtStart: { years: Math.floor(ageMonths / 12), months: ageMonths % 12 },
+        };
+      }
+
+      const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+      function waitPhrase(days) {
+        if (days < 14) return plural(days, 'day');
+        if (days < 60) return `about ${Math.round(days / 7)} weeks`;
+        return `about ${plural(Math.round(days / DAYS_PER_MONTH), 'month')}`;
+      }
+
+      // One sentence for the 4-year stage, which is the wait for Pre-K.
+      function prekSummary(p) {
+        const born = `Born ${MONTH_NAMES[p.month - 1]} ${p.day}`;
+        if (!p.madeCutoff) return `${born}, they miss Georgia’s September 1 cutoff by ${plural(p.daysPastCutoff, 'day')}, so Pre-K waits until August ${p.startYear}, ${waitPhrase(p.waitDays)} after they turn 4.`;
+        if (p.waitDays > 0) return `${born}, they turn 4 before Georgia’s September 1 cutoff and start Pre-K in August ${p.startYear}, ${waitPhrase(p.waitDays)} later.`;
+        return `${born}, they make Georgia’s September 1 cutoff and start Pre-K in August ${p.startYear} ${p.waitDays === 0 ? 'on their 4th birthday' : 'just before turning 4'}, so there is no wait at age 4.`;
+      }
+
+      // Short lines for the note under the due-date field.
+      function prekNote(p) {
+        const a = p.ageAtStart;
+        const main = `Pre-K starts around August 1, ${p.startYear}, at ${a.years} years${a.months ? ', ' + plural(a.months, 'month') : ''}.`;
+        const cutoff = p.madeCutoff
+          ? 'They turn 4 before the September 1 cutoff.'
+          : `They miss the September 1 cutoff by ${plural(p.daysPastCutoff, 'day')}.`;
+        let warn = null;
+        if (p.madeCutoff && p.daysPastCutoff > -14) warn = `Arriving ${plural(1 - p.daysPastCutoff, 'day')} late or more would push Pre-K back to ${p.startYear + 1}.`;
+        if (!p.madeCutoff && p.daysPastCutoff <= 14) warn = `Arriving ${plural(p.daysPastCutoff, 'day')} early or more would move Pre-K up to ${p.startYear - 1}.`;
+        return { main, cutoff, warn };
+      }
+
+      // The stages for one child: the 3-year stage ends at Pre-K if that comes
+      // before age 4, and the 4-year stage is the wait from the 4th birthday.
+      function stagesFor(plan, base) {
+        const out = (base || STAGES).map(s => Object.assign({}, s));
+        if (!plan) return out;
+        const y3 = out.find(s => s.id === 'y3'), y4 = out.find(s => s.id === 'y4');
+        y3.endMo = Math.min(48, plan.prekMo);
+        y4.startMo = y3.endMo;
+        y4.endMo = Math.max(plan.prekMo, y4.startMo);
+        y4.summary = prekSummary(plan);
+        return out;
+      }
+
+      // Bar geometry for the strip: width ∝ months, height ∝ score.
+      function stripLayout(stages) {
+        const total = stages.length ? stages[stages.length - 1].endMo : 0;
+        let left = 0;
+        return stages.map(s => {
+          const widthPct = total > 0 ? ((s.endMo - s.startMo) / total) * 100 : 0;
+          const out = { leftPct: left, widthPct, heightPct: s.score * 10 };
+          left += widthPct;
+          return out;
+        });
+      }
+
+      function stageFromScroll(scrollLeft, panelWidth, n) {
+        if (!(panelWidth > 0) || !(n > 0)) return 0;
+        return Math.min(n - 1, Math.max(0, Math.round(scrollLeft / panelWidth)));
+      }
+
+      // `due` is only set once the user picks a date; until then the page uses
+      // defaultDue(today), so the default keeps rolling forward.
+      function defaultState() { return { stage: 0, due: null }; }
+
+      function loadState(json) {
+        const def = defaultState();
+        if (!json) return def;
+        let raw;
+        try { raw = JSON.parse(json); } catch (e) { return def; }
+        if (!raw || typeof raw !== 'object') return def;
+        const s = raw.stage;
+        return {
+          stage: Number.isInteger(s) && s >= 0 && s < STAGES.length ? s : def.stage,
+          due: parseISO(raw.due) ? raw.due : def.due,
+        };
+      }
+
+      function selfCheck(stages, lanes) {
+        const problems = [];
+        const ids = new Set();
+        let expectStart = 0;
+        stages.forEach((s, i) => {
+          const at = `stage ${s.id || i}: `;
+          if (!s.id || ids.has(s.id)) problems.push(at + 'missing or duplicate id');
+          ids.add(s.id);
+          if (s.startMo !== expectStart) problems.push(at + `gap: starts at ${s.startMo}, expected ${expectStart}`);
+          // Only the last stage (the wait for Pre-K) may be empty.
+          if (!(s.endMo > s.startMo) && !(i === stages.length - 1 && s.endMo === s.startMo)) problems.push(at + 'endMo must be after startMo');
+          expectStart = s.endMo;
+          if (!(Number.isInteger(s.score) && s.score >= 1 && s.score <= 10)) problems.push(at + 'bad score');
+          for (const k of ['short', 'ages', 'name', 'summary']) if (!s[k]) problems.push(at + 'missing ' + k);
+          if (s.summary && sentenceCount(s.summary) !== 1) problems.push(at + 'summary should be one sentence');
+        });
+        const laneIds = new Set();
+        lanes.forEach((l, i) => {
+          const at = `lane ${l.id || i}: `;
+          if (!l.id || laneIds.has(l.id)) problems.push(at + 'missing or duplicate id');
+          laneIds.add(l.id);
+          if (!l.name) problems.push(at + 'missing name');
+          if (!Array.isArray(l.cells) || l.cells.length !== stages.length) { problems.push(at + `needs ${stages.length} cells`); return; }
+          l.cells.forEach((c, j) => {
+            const cat = at + `cell ${j}: `;
+            if (!c.text) problems.push(cat + 'missing text');
+            if (!(Number.isInteger(c.level) && c.level >= 0 && c.level <= MAX_LEVEL)) problems.push(cat + 'bad level');
+            const n = sentenceCount(c.detail || '');
+            if (n < 2 || n > 3) problems.push(cat + `detail has ${n} sentences, needs 2–3`);
+            if ((c.detail || '').length > 340) problems.push(cat + 'detail too long');
+          });
+        });
+        return problems;
+      }
+
+      globalThis.KidEffort = {
+        CUTOFF, PREK_START, DEFAULT_DUE, MAX_LEVEL, LEVEL_WORDS, STAGES, LANES,
+        sentenceCount, parseISO, formatDate, defaultDue, prekPlan, prekSummary, prekNote, stagesFor,
+        stripLayout, stageFromScroll, defaultState, loadState, selfCheck,
+      };
+    })();
+  </script>
+
+  <script>
+    (function () {
+      'use strict';
+      const K = globalThis.KidEffort;
+
+      // ---- State / persistence -----------------------------------------
+      const LS_KEY = 'kidEffort.state.v1';
+      const now = new Date();
+      const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      let saved = null;
+      try { saved = localStorage.getItem(LS_KEY); } catch (e) { saved = null; }
+      const state = K.loadState(saved);
+      const dueOf = () => state.due || K.defaultDue(todayISO);
+      function persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ } }
+
+      const $ = id => document.getElementById(id);
+      const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      // S is the stage list for the current due date: only the last two
+      // stages' lengths (and the last one's summary) depend on it.
+      let S = K.stagesFor(K.prekPlan(dueOf()));
+      const L = K.LANES, N = S.length;
+      K.selfCheck(S, L).forEach(p => console.warn('[kid-effort] ' + p));
+      const desk = window.matchMedia('(min-width: 1000px)');
+      const cellLabel = (lane, j) => `${lane.name}, ${S[j].ages}: ${lane.cells[j].text} (${K.LEVEL_WORDS[lane.cells[j].level]} load)`;
+
+      // ---- Render --------------------------------------------------------
+      // The strip depends on the due date, so it re-renders when that changes.
+      // A stage with no length (no wait for Pre-K) gets no bar.
+      function renderStrip() {
+        const layout = K.stripLayout(S);
+        const total = S[N - 1].endMo;
+        const flex = s => (s.endMo > s.startMo ? `flex:${(s.endMo - s.startMo).toFixed(2)} 1 0` : 'display:none');
+        $('stripBars').innerHTML = S.map((s, j) =>
+          `<button type="button" class="sbar" data-stage="${j}" style="${flex(s)}" aria-label="${esc(`${s.name}, ${s.ages}: effort ${s.score} of 10`)}">` +
+          `<span class="sbar-score">${s.score}</span><span class="sbar-fill" style="height:${(layout[j].heightPct * 0.74).toFixed(1)}%"></span></button>`
+        ).join('');
+        $('stripAxis').innerHTML = S.map((s, j) => `<span data-stage="${j}" style="${flex(s)}">${esc(s.short)}</span>`).join('');
+        $('stripTicks').innerHTML = [[0, 'Birth'], [12, '1y'], [24, '2y'], [36, '3y'], [48, '4y']].filter(([m]) => m < total)
+          .map(([m, t]) => `<span style="left:${((m / total) * 100).toFixed(2)}%">${t}</span>`).join('');
+      }
+      renderStrip();
+      $('colheads').innerHTML = '<div></div>' + S.map((s, j) =>
+        `<div class="colhead" data-stage="${j}"><span class="ages">${esc(s.ages.replace(' months', ' mo').replace(' years', ' y'))}</span><span class="name">${esc(s.name)}</span></div>`
+      ).join('');
+
+      const cellBtn = (lane, i, j) => {
+        const c = lane.cells[j];
+        return `<button type="button" class="cell lv${c.level}" data-lane="${i}" data-stage="${j}" aria-label="${esc(cellLabel(lane, j))}">${esc(c.text)}</button>`;
+      };
+      const rowLabel = lane => `<div class="row-label"><span class="lane">${esc(lane.name)}</span>${lane.sub ? `<span class="sub">${esc(lane.sub)}</span>` : ''}</div>`;
+      $('map').innerHTML = L.map((lane, i) => `<div class="row">${rowLabel(lane)}${S.map((s, j) => cellBtn(lane, i, j)).join('')}</div>`).join('');
+      $('carousel').innerHTML = S.map((s, j) =>
+        `<article class="panel" data-stage="${j}" aria-roledescription="slide" aria-label="${esc(`${s.ages}, ${s.name}`)}">` +
+        `<div class="panel-head"><div class="panel-top"><div class="panel-title"><div class="panel-ages">${esc(s.ages)}</div><h2 class="panel-name">${esc(s.name)}</h2></div>` +
+        `<span class="panel-score" aria-label="Effort ${s.score} of 10">${s.score}/10</span></div>` +
+        `<p class="panel-summary" data-stage="${j}">${esc(s.summary)}</p>` +
+        `<div class="panel-nav"><button type="button" class="nav-btn" data-go="${j - 1}" ${j === 0 ? 'disabled' : ''} aria-label="Previous stage">‹ ${j > 0 ? esc(S[j - 1].short) : ''}</button>` +
+        `<button type="button" class="nav-btn" data-go="${j + 1}" ${j === N - 1 ? 'disabled' : ''} aria-label="Next stage">${j < N - 1 ? esc(S[j + 1].short) : ''} ›</button></div></div>` +
+        L.map((lane, i) => `<div class="prow">${rowLabel(lane)}${cellBtn(lane, i, j)}</div>`).join('') +
+        `</article>`
+      ).join('');
+
+      // ---- Active stage (darkened bar / column) ---------------------------
+      let hoverStage = null;   // desktop: whatever the pointer or focus is on
+      function activeStage() { return desk.matches ? hoverStage : state.stage; }
+      let shown = undefined;
+      function paintActive() {
+        const a = activeStage();
+        if (a === shown) return;
+        shown = a;
+        document.querySelectorAll('.sbar, .strip-axis span, .colhead').forEach(el => el.classList.toggle('active', +el.dataset.stage === a));
+        document.querySelectorAll('.map .cell').forEach(el => el.classList.toggle('col-active', +el.dataset.stage === a));
+        document.querySelectorAll('.sbar').forEach(el => el.setAttribute('aria-current', +el.dataset.stage === a ? 'true' : 'false'));
+        const s = S[state.stage];
+        $('stripCaption').textContent = `${s.ages} · ${s.name} · ${s.score}/10`;
+      }
+      function setHover(j) { hoverStage = j; paintActive(); }
+
+      // ---- Popup -------------------------------------------------------
+      const tip = $('tip');
+      let tipFor = null;      // element the popup is describing
+      let tipSheet = false;
+      function fillTip(el) {
+        const j = +el.dataset.stage, s = S[j];
+        if (el.classList.contains('sbar')) {
+          $('tipKicker').textContent = `${s.ages} · ${s.name}`;
+          $('tipTitle').innerHTML = `Effort ${s.score} / 10`;
+          $('tipBody').textContent = s.summary;
+        } else {
+          const lane = L[+el.dataset.lane], c = lane.cells[j];
+          $('tipKicker').textContent = `${lane.name} · ${s.ages}`;
+          $('tipTitle').innerHTML = `<span class="tip-chip lv${c.level}" aria-hidden="true"></span>${esc(c.text)}`;
+          $('tipBody').textContent = c.detail;
+        }
+      }
+      function placeTip(el) {
+        const r = el.getBoundingClientRect();
+        tip.style.left = '0px'; tip.style.top = '0px';
+        const w = tip.offsetWidth, h = tip.offsetHeight;
+        const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+        // Below the cell by default; above if it doesn't fit (it may cover the
+        // sticky band, which sits underneath it); else pinned to the viewport.
+        let top = r.bottom + 8;
+        if (top + h > vh - 16) {
+          const above = r.top - 8 - h;
+          top = above >= 16 ? above : Math.max(16, vh - 16 - h);
+        }
+        const left = Math.min(Math.max(16, r.left + r.width / 2 - w / 2), Math.max(16, vw - 16 - w));
+        tip.style.left = left + 'px';
+        tip.style.top = Math.max(16, top) + 'px';
+      }
+      function openTip(el, asSheet) {
+        if (tipFor && tipFor !== el) tipFor.removeAttribute('aria-describedby');
+        tipFor = el; tipSheet = asSheet;
+        fillTip(el);
+        tip.classList.toggle('sheet', asSheet);
+        tip.setAttribute('role', asSheet ? 'dialog' : 'tooltip');
+        if (asSheet) { tip.setAttribute('aria-label', 'Details'); tip.style.left = ''; tip.style.top = ''; } else tip.removeAttribute('aria-label');
+        tip.hidden = false;
+        el.setAttribute('aria-describedby', 'tip');
+        if (!asSheet) placeTip(el);
+      }
+      function closeTip() {
+        if (tipFor) tipFor.removeAttribute('aria-describedby');
+        if (tipSheet && desk.matches) setHover(null);
+        tipFor = null; tipSheet = false;
+        tip.hidden = true;
+      }
+      $('tipClose').addEventListener('click', closeTip);
+
+      // Pointer type decides tooltip (mouse) vs bottom sheet (touch/pen), so
+      // hybrid laptops behave correctly whichever way they're used.
+      let lastPointer = 'mouse';
+      document.addEventListener('pointerdown', e => { lastPointer = e.pointerType || 'mouse'; }, true);
+      const target = e => e.target.closest && e.target.closest('.cell, .sbar');
+
+      document.addEventListener('pointerover', e => {
+        if (e.pointerType !== 'mouse') return;
+        const el = target(e);
+        if (!el) return;
+        if (desk.matches) setHover(+el.dataset.stage);
+        openTip(el, false);
+      });
+      document.addEventListener('pointerout', e => {
+        if (e.pointerType !== 'mouse') return;
+        const el = target(e);
+        if (!el || el.contains(e.relatedTarget)) return;
+        const next = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.cell, .sbar');
+        if (!next) { if (!tipSheet) closeTip(); if (desk.matches) setHover(null); }
+      });
+      document.addEventListener('focusin', e => {
+        const el = target(e);
+        if (!el || lastPointer !== 'mouse' && tipSheet) return;
+        if (desk.matches) setHover(+el.dataset.stage);
+        if (!tipSheet) openTip(el, false);
+      });
+      document.addEventListener('focusout', e => {
+        const el = target(e);
+        if (!el || tipSheet) return;
+        const next = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.cell, .sbar');
+        if (!next) { closeTip(); if (desk.matches) setHover(null); }
+      });
+      document.addEventListener('click', e => {
+        const go = e.target.closest && e.target.closest('.nav-btn');
+        if (go) { goTo(+go.dataset.go, true); return; }
+        const el = target(e);
+        if (el && el.classList.contains('sbar') && !desk.matches) { closeTip(); goTo(+el.dataset.stage, true); return; }
+        if (el && lastPointer !== 'mouse') { if (desk.matches) setHover(+el.dataset.stage); openTip(el, true); return; }
+        if (tipSheet && !tip.contains(e.target)) closeTip();
+      });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && !tip.hidden) closeTip(); });
+      window.addEventListener('scroll', () => { if (!tip.hidden && !tipSheet) closeTip(); }, { passive: true });
+      window.addEventListener('resize', () => { if (!tip.hidden && !tipSheet) closeTip(); });
+
+      // ---- Due date (a link in the intro opens a small dialog) -------------
+      const due = $('due'), dlg = $('dueDialog');
+      function renderDue() {
+        const n = K.prekNote(K.prekPlan(dueOf()));
+        $('dueLink').textContent = `Due date: ${K.formatDate(dueOf())}`;
+        $('dueLink').setAttribute('aria-label', `Change due date, currently ${K.formatDate(dueOf())}`);
+        $('dueNote').innerHTML = `<strong>${esc(n.main)}</strong> ${esc(n.cutoff)}` +
+          (n.warn ? `<span class="due-warn">${esc(n.warn)}</span>` : '');
+      }
+      function applyDue() {
+        S = K.stagesFor(K.prekPlan(dueOf()));
+        renderStrip();
+        const last = document.querySelector(`.panel-summary[data-stage="${N - 1}"]`);
+        if (last) last.textContent = S[N - 1].summary;
+        renderDue();
+        shown = undefined;
+        paintActive();
+      }
+      $('dueLink').addEventListener('click', () => {
+        closeTip();
+        due.value = dueOf();
+        if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+      });
+      dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });   // backdrop
+      due.addEventListener('input', () => {
+        if (!K.parseISO(due.value) || due.value === dueOf()) return;
+        state.due = due.value;
+        persist();
+        applyDue();
+      });
+      renderDue();
+
+      // ---- Mobile carousel -------------------------------------------------
+      const car = $('carousel');
+      function goTo(j, smooth) {
+        if (!(j >= 0 && j < N)) return;
+        car.scrollTo({ left: j * car.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+      }
+      let ticking = false;
+      car.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          if (!car.clientWidth) return;
+          const j = K.stageFromScroll(car.scrollLeft, car.clientWidth, N);
+          if (j !== state.stage) { state.stage = j; persist(); if (tipSheet) closeTip(); paintActive(); }
+        });
+      }, { passive: true });
+      function onLayoutChange() {
+        closeTip();
+        hoverStage = null; shown = undefined;
+        if (!desk.matches) goTo(state.stage, false);
+        paintActive();
+      }
+      desk.addEventListener('change', onLayoutChange);
+      onLayoutChange();
+    })();
+  </script>
+</body>
+</html>
